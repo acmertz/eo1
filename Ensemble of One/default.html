@@ -14,6 +14,10 @@
     <link rel="stylesheet" href="lib/font-awesome-4.1.0/css/font-awesome.min.css">
     <script src="/js/default.js"></script>
     <script src="lib/jquery-2.1.1.min.js"></script>
+
+    <!-- Classes, functions, and global variables -->
+    <script src="/js/fileio.js"></script>
+    <script src="/js/platform.js"></script>
 </head>
 <body>
     <div id="appContainer">
@@ -24,7 +28,7 @@
             <div id="menuPageMainContent">
                 <header id="mainMenuHeader" class="parallaxCapable">
                     <div class="tickerSpacer"></div>
-                    <div id="tickerTicket"><div id="tickerText" onclick="showTickerDialog();" onmousedown="mouseDownTicker();" onmouseup="mouseUpTicker();" onmouseover="mouseOverTicker();" onmouseout="mouseOutTicker();">Beta 0.4!</div></div>
+                    <div id="tickerTicket"><div id="tickerText" onclick="showTickerDialog();" onmousedown="mouseDownTicker();" onmouseup="mouseUpTicker();">Beta 0.4!</div></div>
                     <div class="tickerSpacer"></div>
                 </header>
 
@@ -81,11 +85,11 @@
                             </tr>
                             <tr>
                                 <td>Location: </td>
-                                <td><label class="fa fa-laptop"><input type="radio" name="mainMenuProjectLocation" checked />This device</label></td>
+                                <td><label class="fa fa-laptop"><input type="radio" name="mainMenuProjectLocation" id="mainMenuProjectCreateLocal" checked />This device</label></td>
                             </tr>
                             <tr>
                                 <td></td>
-                                <td><label class="fa fa-cloud"><input type="radio" name="mainMenuProjectLocation" disabled />Cloud</label></td>
+                                <td><label class="fa fa-cloud"><input type="radio" name="mainMenuProjectLocation" id="mainMenuProjectCreateCloud" disabled />Cloud</label></td>
                             </tr>
                         </table>
                         <h3 class="mainMenuFilmReelButton" onclick="validateAndCreateProject();"><i class="fa fa-check"></i> Create!</h3>
@@ -117,36 +121,42 @@
             </div>
 
             <div id="tickerDialog" class="mainMenuFlipDialog">
-                <div id="tickerDialogContent">
-                    <h2>Welcome to Ensemble of One!</h2>
-                    <p hidden>Hey, you! ...yes, you. If you're reading this message, you've been given access to an early beta version of Ensemble of One. What that means is that anything and everything you see may be subject to change before the final release. In fact, some things will probably change quite a bit before I'm through with them. No worries, though - it's all in the interest of hand-crafting an experience that you, the user, will enjoy.</p>
-                    <p hidden>I'm sure you'll run into some serious brokenness along the way - this <em>is</em> a beta release, after all. Some of the buttons don't quite work the way they should yet (in fact, some of them don't do anything at all), and some of the menus don't go anywhere. You're here to help me find these things - anything that doesn't work or even just seems out of place - and let me know about them so I can fix them. It's a team effort, you see.</p>
-                    <p>Thanks for trying out this beta version of Ensemble of One! Keep in mind that not everything's finished yet, so don't panic if something doesn't quite seem to be working properly. Just let me know if you find any bugs!</p>
-                    <p>You don't have to do anything, by the way. It's okay if you just want to try out the beta and nothing more than that, but I would really, <em>really</em> appreciate your support. The more you help, the better Ensemble of One will be once I finally get around to releasing it. Got it? Great.</p>
-                    <p>Go ahead and give things a whirl - kick the tires, so to speak. I'm looking forward to your feedback.</p>
-                    <p>~Aaron Mertzenich, <img src="img/placeholder_logo.png" alt="[Placeholder] Software" draggable="false" /></p>
-                    <button onclick="exitCurrentPage();">Beta button!</button>
+                <div id="tickerDialogContainer">
+                    <div id="tickerDialogContent" class="mainMenuDialogContent">
+                        <h2>Welcome to Ensemble of One!</h2>
+                        <p hidden>Hey, you! ...yes, you. If you're reading this message, you've been given access to an early beta version of Ensemble of One. What that means is that anything and everything you see may be subject to change before the final release. In fact, some things will probably change quite a bit before I'm through with them. No worries, though - it's all in the interest of hand-crafting an experience that you, the user, will enjoy.</p>
+                        <p hidden>I'm sure you'll run into some serious brokenness along the way - this <em>is</em> a beta release, after all. Some of the buttons don't quite work the way they should yet (in fact, some of them don't do anything at all), and some of the menus don't go anywhere. You're here to help me find these things - anything that doesn't work or even just seems out of place - and let me know about them so I can fix them. It's a team effort, you see.</p>
+                        <p>Thanks for trying out this beta version of Ensemble of One! Keep in mind that not everything's finished yet, so don't panic if something doesn't quite seem to be working properly. Just let me know if you find any bugs!</p>
+                        <p>You don't have to do anything, by the way. It's okay if you just want to try out the beta and nothing more than that, but I would really, <em>really</em> appreciate your support. The more you help, the better Ensemble of One will be once I finally get around to releasing it. Got it? Great.</p>
+                        <p>Go ahead and give things a whirl - kick the tires, so to speak. I'm looking forward to your feedback.</p>
+                        <p>~Aaron Mertzenich, <img src="img/placeholder_logo.png" alt="[Placeholder] Software" draggable="false" /></p>
+                        <button onclick="exitCurrentPage();">Beta button!</button>
+                    </div>
                 </div>
             </div>
 
             <div id="settingsDialog" class="mainMenuFlipDialog">
-                <div id="settingsDialogContent">
-                    <h2>Settings</h2>
-                    <h3>Audio & Video</h3>
-                    <p><label><input type="checkbox">Optimize videos for editing</label></p>
+                <div id="settingsDialogContainer">
+                    <div id="settingsDialogContent" class="mainMenuDialogContent">
+                        <h2>Settings</h2>
+                        <h3>Audio & Video</h3>
+                        <p><label><input type="checkbox">Optimize videos for editing</label></p>
 
-                    <h3>Editor & Projects</h3>
-                    <p><label><input type="checkbox"> Always show the toolbox</label></p>
-                    <p><label><input type="checkbox"> Prevent sleep while editing</label></p>
+                        <h3>Editor & Projects</h3>
+                        <p><label><input type="checkbox"> Always show the toolbox</label></p>
+                        <p><label><input type="checkbox"> Prevent sleep while editing</label></p>
 
-                    <h3>Permissions</h3>
-                    <p><label><input type="checkbox"> Camera</label></p>
-                    <p><label><input type="checkbox"> Webcam</label></p>
-                    <p><label><input type="checkbox"> Background</label></p>
-
+                        <h3>Permissions</h3>
+                        <p><label><input type="checkbox"> Camera</label></p>
+                        <p><label><input type="checkbox"> Webcam</label></p>
+                        <p><label><input type="checkbox"> Background</label></p>
+                    </div>
                 </div>
             </div>
         </div>
+
+
+        <div class ="pageContainer" id="editorPageContainer"></div>
     </div>
 </body>
 </html>

@@ -99,12 +99,6 @@ var mouseUpTicker = function () {
     }, 100);
 }
 
-var mouseOverTicker = function () {
-}
-
-var mouseOutTicker = function () {
-}
-
 var mouseDownNewProjectButton = function () {
     $("#newProjectButton").addClass("mainMenuPhotoButtonClicking");
 }
@@ -115,8 +109,16 @@ var mouseUpNewProjectButton = function () {
 
 var validateAndCreateProject = function () {
     // Slide the reel up to show the loading frame.
-    $("#newProjectDialog").removeClass("newProjectDialogVisible");
-    $("#newProjectDialog").addClass("newProjectLoading");
+    var projectName = document.getElementById("mainMenuProjectNameInput").value;
+    var local = document.getElementById("mainMenuProjectCreateLocal").checked;
+
+    if (projectName.length > 0) {
+        $("#newProjectDialog").removeClass("newProjectDialogVisible");
+        $("#newProjectDialog").addClass("newProjectLoading");
+    }
+    else {
+
+    }
 }
 
 var mainMenuProjectNameInputKeyUp = function () {
@@ -151,6 +153,7 @@ var showTickerDialog = function () {
     console.log("Showing the ticker dialog.");
     $("#tickerDialog").removeClass("tickerDialogHidden");
     $("#tickerDialog").addClass("tickerDialogVisible");
+    window.setTimeout(function () { WinJS.UI.Animation.enterContent(document.getElementById("tickerDialogContent")); }, 400);
     $("#tickerDialogClickEater").addClass("mainMenuClickEaterVisible");
 }
 
@@ -158,6 +161,7 @@ var hideTickerDialog = function () {
     console.log("Hiding the ticker dialog.");
     $("#tickerDialog").removeClass("tickerDialogVisible");
     $("#tickerDialog").addClass("tickerDialogHidden");
+    window.setTimeout(function () { WinJS.UI.Animation.exitContent(document.getElementById("tickerDialogContent")); }, 300);
     $("#tickerDialogClickEater").removeClass("mainMenuClickEaterVisible");
 }
 
@@ -167,6 +171,7 @@ var showSettingsDialog = function () {
     window.setTimeout(function () { $("#clapperTop").removeClass("clapperClapping"); }, 100);
     $("#settingsDialog").removeClass("settingsDialogHidden");
     $("#settingsDialog").addClass("settingsDialogVisible");
+    window.setTimeout(function () { WinJS.UI.Animation.enterContent(document.getElementById("settingsDialogContent")); }, 400);
     $("#settingsDialogClickEater").addClass("mainMenuClickEaterVisible");
 }
 
@@ -174,5 +179,6 @@ var hideSettingsDialog = function () {
     console.log("Hiding the settings dialog.");
     $("#settingsDialog").removeClass("settingsDialogVisible");
     $("#settingsDialog").addClass("settingsDialogHidden");
+    window.setTimeout(function () { WinJS.UI.Animation.exitContent(document.getElementById("settingsDialogContent")); }, 300);
     $("#settingsDialogClickEater").removeClass("mainMenuClickEaterVisible");
 }

@@ -652,12 +652,16 @@
 	perspective: 1050px;
 }
 
+.mainMenuDialogContent {
+    opacity: 0;
+}
+
 .tickerDialogVisible, .settingsDialogVisible {
 	z-index: auto;
 	visibility: visible;
 }
 
-.tickerDialogVisible #tickerDialogContent {
+.tickerDialogVisible #tickerDialogContainer {
 	animation: tickerDialogEnter 0.3s ease-in-out;
 	-webkit-animation: tickerDialogEnter 0.3s ease-in-out;
 }
@@ -713,7 +717,7 @@
 	}
 }
 
-#tickerDialogContent, #settingsDialogContent {
+#tickerDialogContainer, #settingsDialogContainer {
 	max-width: 50%;
 	border: 2px solid gray;
 	border-radius: 5px;
@@ -728,7 +732,7 @@
 	padding: 50px;
 }
 
-.settingsDialogVisible #settingsDialogContent {
+.settingsDialogVisible #settingsDialogContainer {
 	animation: settingsDialogEnter 0.3s ease-in-out;
 	-webkit-animation: settingsDialogEnter 0.3s ease-in-out;
 }
