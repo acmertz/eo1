@@ -24,10 +24,17 @@
 
         hide: function () {
             /// <summary>Plays the Main Menu hide animation and detaches all event listeners.</summary>
-            console.log("Navigating to the main menu.");
+            console.log("Hiding the Main Menu.");
+            window.clearInterval(this._projectLoadTimer);
 
             // Hide the current page
             $("#mainMenuPageContainer").addClass("pageContainerHidden");
+            window.setTimeout(function () {
+                WinJS.UI.Animation.exitContent(document.getElementById("imgMainLogo")).done(function () {
+                    document.getElementById("mainMenuPageContainer").style.display = "none";
+                    Ensemble.Pages.Editor.showInitial();
+                });
+            }, 500)
 
             this._detachListeners();
         },
@@ -82,11 +89,21 @@
         validateAndCreateProject: function () {
             /// <summary>Animates the New Project dialog upward to show the loading message.</summary>
             var projectName = document.getElementById("mainMenuProjectNameInput").value;
-            var local = document.getElementById("mainMenuProjectCreateLocal").checked;
+            var projectLocation = document.getElementById("mainMenuProjectLocation").value;
+            var projectAspect = document.getElementById("mainMenuProjectAspect").value;
 
             if (projectName.length > 0) {
+                console.log("Creating new project...");
                 $("#newProjectDialog").removeClass("newProjectDialogVisible");
                 $("#newProjectDialog").addClass("newProjectLoading");
+
+                Ensemble.Session.projectLoading = true;
+                this._projectLoadTimer = window.setInterval(function () {
+                    if (!Ensemble.Session.projectLoading) {
+                        Ensemble.Pages.MainMenu.hide();
+                    }
+                }, 1000);
+                Ensemble.FileIO.createProject(projectName, projectLocation, projectAspect);
             }
             else {
 
@@ -306,7 +323,9 @@
 
         _validateProjectButtonOnClickListener: function () {
             Ensemble.Pages.MainMenu.validateAndCreateProject();
-        }
+        },
+
+        _projectLoadTimer: null
 
     });
 })();

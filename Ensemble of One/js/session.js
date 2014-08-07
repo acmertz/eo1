@@ -5,6 +5,14 @@
         //Name of the page currently visible to the user.
         _currentPage: null,
 
+        currentProjectName: null,
+        currentProjectFileName: null,
+        currentProjectAspect: null,
+        maxResolution: [2560,1440],
+        horizontalDividerPosition: null,
+        verticalDividerPosition: null,
+        projectLoading: false,
+
         setCurrentPage: function (pageName) {
             /// <summary>Sets the page currently displayed in the application.</summary>
             /// <param name="pageName" type="String">The name of the page. Values other than "mainMenu" and "editor" will generate an exception.</param>

@@ -21,7 +21,7 @@
                     break;
             }
             if (valid) {
-                if (this.currentPlatform == null) this.currentPlatform = value;
+                if (this.currentPlatform == null) this.currentPlatform = platform;
                 else throw new Error("Current platform cannot be changed once the app is running.");
             }
             else {

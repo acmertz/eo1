@@ -84,6 +84,7 @@
 .pageContainerHidden {
 	transform: scale(0.75);
 	-webkit-transform: scale(0.75);
+    opacity: 0;
 
 	animation: pageContainerExitScale 0.3s ease-in-out;
 	-webkit-animation: pageContainerExitScale 0.3s ease-in-out;

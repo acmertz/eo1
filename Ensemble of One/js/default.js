@@ -11,6 +11,7 @@
             if (args.detail.previousExecutionState !== activation.ApplicationExecutionState.terminated) {
                 // TODO: This application has been newly launched. Initialize
                 // your application here.
+                Ensemble.Platform.setCurrentPlatform("win8");
                 Ensemble.Session.setCurrentPage("mainMenu");
 
                 args.detail.splashScreen.addEventListener("dismissed", function () {

@@ -11,11 +11,13 @@
 
     <!-- Ensemble of One references -->
     <link href="/css/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/editor.css" />
     <script src="/js/default.js"></script>
 
     <!-- Libraries -->
     <link rel="stylesheet" href="lib/font-awesome-4.1.0/css/font-awesome.min.css">
     <script src="lib/jquery-2.1.1.min.js"></script>
+    <script src="lib/XMLWriter.js"></script>
 
     <!-- Classes, functions, and global variables -->
     <script src="/js/editor/clockmgr.js"></script>
@@ -28,6 +30,7 @@
     <script src="/js/editor/renderer.js"></script>
     <script src="/js/editor/timelinemgr.js"></script>
     <script src="/js/pages/mainmenu.js"></script>
+    <script src="/js/pages/editor.js"></script>
     <script src="/js/fileio.js"></script>
     <script src="/js/platform.js"></script>
     <script src="/js/session.js"></script>
@@ -99,11 +102,18 @@
                             </tr>
                             <tr>
                                 <td>Location: </td>
-                                <td><label class="fa fa-laptop"><input type="radio" name="mainMenuProjectLocation" id="mainMenuProjectCreateLocal" checked />This device</label></td>
+                                <td><select id="mainMenuProjectLocation">
+                                    <option selected value="local">This device</option>
+                                    <option disabled value="cloud">Cloud storage</option>
+                                </select>
                             </tr>
                             <tr>
-                                <td></td>
-                                <td><label class="fa fa-cloud"><input type="radio" name="mainMenuProjectLocation" id="mainMenuProjectCreateCloud" disabled />Cloud</label></td>
+                                <td>Aspect ratio: </td>
+                                <td><select id="mainMenuProjectAspect">
+                                    <option selected value="16:9">Widescreen (HDTV, 16:9)</option>
+                                    <option value="16:10">Widescreen (laptop, 16:10)</option>
+                                    <option value="4:3">Standard (tube TV, 4:3)</option>
+                                </select></td>
                             </tr>
                         </table>
                         <h3 class="mainMenuFilmReelButton" id="mainMenuValidateProjectButton"><i class="fa fa-check"></i> Create!</h3>
@@ -144,7 +154,6 @@
                         <p>You don't have to do anything, by the way. It's okay if you just want to try out the beta and nothing more than that, but I would really, <em>really</em> appreciate your support. The more you help, the better Ensemble of One will be once I finally get around to releasing it. Got it? Great.</p>
                         <p>Go ahead and give things a whirl - kick the tires, so to speak. I'm looking forward to your feedback.</p>
                         <p>~Aaron Mertzenich, <img src="img/placeholder_logo.png" alt="[Placeholder] Software" draggable="false" /></p>
-                        <button onclick="exitCurrentPage();">Beta button!</button>
                     </div>
                 </div>
             </div>
@@ -170,7 +179,90 @@
         </div>
 
 
-        <div class ="pageContainer" id="editorPageContainer" hidden></div>
+        <div class ="pageContainer" id="editorPageContainer">
+            <div id="editorUpperHalf">
+                <div>
+                    <button data-win-control="WinJS.UI.AppBarCommand"
+                            data-win-options="{id:'secondary1',
+                            type:'button',
+                            label:'Undo',
+                            icon: 'undo'}"></button><br />
+                    <button data-win-control="WinJS.UI.AppBarCommand"
+                            data-win-options="{id:'secondary1',
+                            type:'button',
+                            label:'Empty',
+                            icon: 'pin'}" disabled></button><br />
+                    <button data-win-control="WinJS.UI.AppBarCommand"
+                            data-win-options="{id:'secondary1',
+                            type:'button',
+                            label:'Empty',
+                            icon: 'pin'}" disabled></button><br />
+                </div>
+
+                <div id="editorCanvasContainer">
+                    <div id="editorCanvasContent">
+                        <canvas id="editorCanvas" class="videoPlaybackSurface"></canvas>
+                    </div>
+                    <div id="editorPlayControls">
+                        <div class="editorPlayControlSection" id="editorPlayControlsLeft">
+                            <span id="editorTimeDisplay">00:00.000</span>
+                        </div>
+                        <div class="editorPlayControlSection" id="editorPlayControlsMain">
+                            <i class="fa fa-2x fa-step-backward" title="Skip backward"></i>
+                            <i class="fa fa-3x fa-play" title="Play"></i>
+                            <i class="fa fa-2x fa-step-forward" title="Skip forward"></i>
+                        </div>
+                        <div class="editorPlayControlSection" id="editorPlayControlsRight">
+                            <i class="fa fa-2x fa-arrows-alt" title="Full screen"></i>
+                        </div>
+
+                        
+                    </div>
+                </div>
+
+                <div>
+                    <button data-win-control="WinJS.UI.AppBarCommand"
+                            data-win-options="{id:'secondary1',
+                            type:'button',
+                            label:'Empty',
+                            icon: 'pin'}" disabled></button><br />
+                    <button data-win-control="WinJS.UI.AppBarCommand"
+                            data-win-options="{id:'secondary1',
+                            type:'button',
+                            label:'Empty',
+                            icon: 'pin'}" disabled></button><br />
+                    <button data-win-control="WinJS.UI.AppBarCommand"
+                            data-win-options="{id:'secondary1',
+                            type:'button',
+                            label:'Empty',
+                            icon: 'pin'}" disabled></button><br />
+                </div>
+            </div>
+
+            <div id="editorHorizontalDivider" class="editorHorizontalDividerHidden"></div>
+
+            <div id="editorLowerHalf">
+                <div id="editorTimelineScrollbar"></div>
+                <div id="editorTimelineContainer">
+                    <div class="editorTimelineSideControls">
+                        <div class="spacer"></div>
+                        <i class="fa fa-2x fa-angle-up" title="Scroll up"></i>
+                        <i class="fa fa-2x fa-angle-down" title="Scroll down"></i>
+                    </div>
+                    <div id="editorTimelineContent"></div>
+                    <div class="editorTimelineSideControls">
+                        <div class="spacer"></div>
+                        <i class="fa fa-2x fa-search-plus" title="Zoom in"></i>
+                        <i class="fa fa-2x fa-search-minus" title="Zoom out"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div id="editorMenuDialog"></div>
+
+            <div id="editorMenuButton" class="fa fa-2x fa-bars"></div>
+
+        </div>
     </div>
 </body>
 </html>

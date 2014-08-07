@@ -1,3 +1,188 @@
 ﻿#editorPageContainer {
+    display: flex;
+    visibility: hidden;
+    flex-direction: column;
 
+}
+
+#editorPageContainer #editorUpperHalf {
+    flex: 1;
+    opacity: 0;
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+#editorPageContainer #editorCanvasContainer {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#editorPageContainer #editorCanvasContainer #editorCanvasContent {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#editorPageContainer #editorCanvasContainer #editorPlayControls {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+#editorPlayControls .editorPlayControlSection {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.editorPlayControlSection i {
+    border: 2px solid black;
+    border-radius: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    margin-top: 10px;
+    background-color: white;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.editorPlayControlSection i:active {
+    background-color: black;
+    color: white;
+}
+
+#editorPlayControls #editorPlayControlsLeft {
+    justify-content: flex-start;
+}
+
+#editorPlayControls #editorPlayControlsMain {
+    justify-content: center;
+}
+
+#editorPlayControls #editorPlayControlsRight {
+    justify-content: flex-end;
+}
+
+#editorPageContainer #editorHorizontalDivider {
+    height: 12px;
+    width: 100%;
+    background: linear-gradient(to right, white 60%, black 60%);
+	background-size: 22px 2px;
+
+    border-top: 5px solid black;
+	border-bottom: 5px solid black;
+
+    cursor: ns-resize;
+
+    transition: transform 0.4s ease-in-out;
+    -webkit-transition: -webkit-transform 0.4s ease-in-out;
+}
+
+#editorPageContainer .editorHorizontalDividerHidden {
+    transform: translateX(100%);
+    -webkit-transform: translateX(100%);
+}
+
+#editorPageContainer #editorLowerHalf {
+    flex: 1;
+    opacity: 0;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#editorPageContainer #editorLowerHalf #editorTimelineScrollbar {
+    width: 100%;
+}
+
+#editorPageContainer #editorLowerHalf #editorTimelineContainer {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+#editorPageContainer #editorLowerHalf #editorTimelineContainer .editorTimelineSideControls {
+    width: 50px;
+    height: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.editorTimelineSideControls .spacer {
+    flex: 1;
+}
+
+.editorTimelineSideControls i {
+    border: 2px solid black;
+    border-radius: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    margin-top: 10px;
+    background-color: white;
+}
+
+.editorTimelineSideControls i:active {
+    background-color: black;
+    color: white;
+}
+
+#editorPageContainer #editorLowerHalf #editorTimelineContainer #editorTimelineContent {
+    flex: 1;
+    height: 100%;
+    border: 2px solid gray;
+    border-radius: 2px;
+    background: linear-gradient(to bottom, rgb(255,255,255) 50%, rgb(240,240,240) 50%);
+	background-size: 100px 150px;
+    overflow-x: scroll;
+    cursor: text;
+}
+
+#editorPageContainer #editorMenuButton {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    padding: 20px;
+    background-color: rgba(240,240,240, 0.75);
+    border-bottom-right-radius: 10px;
+    border-right: 2px solid lightgray;
+    border-bottom: 2px solid lightgray;
+
+    transition: background-color 0.4s ease-in-out;
+    -webkit-transition: background-color 0.4s ease-in-out;
+}
+
+#editorPageContainer #editorMenuButton:hover {
+    background-color: rgba(255,255,255, 1);
+    transition: none;
+    -webkit-transition: none;
+}
+
+.videoPlaybackSurface {
+    background-color: black;
+    width: 640px;
+    height: 360px;
 }

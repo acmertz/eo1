@@ -64,6 +64,9 @@
     <Content Include="img\packaging\splashScreen.scale-140.png" />
     <Content Include="img\packaging\splashScreen.scale-180.png" />
     <Content Include="img\placeholder_logo.png" />
+    <Content Include="img\projectThumbnails\1610.jpg" />
+    <Content Include="img\projectThumbnails\169.jpg" />
+    <Content Include="img\projectThumbnails\43.jpg" />
     <Content Include="img\stripes.png" />
     <Content Include="img\stripes_reverse.png" />
     <Content Include="js\default.js" />
@@ -116,6 +119,7 @@
     <Content Include="lib\font-awesome-4.1.0\scss\_stacked.scss" />
     <Content Include="lib\font-awesome-4.1.0\scss\_variables.scss" />
     <Content Include="lib\jquery-2.1.1.min.js" />
+    <Content Include="lib\XMLWriter.js" />
     <None Include="Ensemble of One_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
