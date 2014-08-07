@@ -11,12 +11,17 @@
             if (args.detail.previousExecutionState !== activation.ApplicationExecutionState.terminated) {
                 // TODO: This application has been newly launched. Initialize
                 // your application here.
+                Ensemble.Session.setCurrentPage("mainMenu");
+
                 args.detail.splashScreen.addEventListener("dismissed", function () {
-                    console.log("App started up.");
+                    console.info("App started up.");
 
                     // Load all needed resources here
 
-                    window.setTimeout(function () { showMainMenuInitial(); }, 0);
+                    window.setTimeout(function () {
+                        //showMainMenuInitial();
+                        Ensemble.Pages.MainMenu.showInitial();
+                    }, 0);
                 });
             } else {
                 // TODO: This application has been reactivated from suspension.
@@ -38,147 +43,3 @@
 
     app.start();
 })();
-
-var showMainMenuInitial = function () {
-    tickerTimer = window.setInterval(function () {
-        if ($("#tickerTicket").hasClass("tickerHovering")) $("#tickerTicket").removeClass("tickerHovering");
-        else $("#tickerTicket").addClass("tickerHovering");
-    }, 500);
-    // New project button
-    $("#newProjectButton").addClass("mainMenuPhotoButtonVisible");
-
-    // Open project button
-    window.setTimeout(function () { $("#openProjectButton").addClass("mainMenuPhotoButtonVisible"); }, 200);
-
-    // Settings button
-    window.setTimeout(function () {
-        $("#settingsButton").addClass("settingsButtonVisible");
-        $("#tickerTicket").addClass("tickerButtonVisible");
-        $("#newProjectDialog").removeClass("newProjectDialogHidden");
-        $("#openProjectDialog").removeClass("openProjectDialogHidden");
-    }, 800);
-
-    // Edge "film strips"
-}
-
-var exitCurrentPage = function () {
-    console.log("Navigating to the main menu.");
-
-    // Hide the current page
-    $("#mainMenuPageContainer").addClass("pageContainerHidden");
-}
-
-var showNewProjectDialog = function () {
-    console.log("Showing the new project dialog.");
-    $("#newProjectDialog").addClass("newProjectDialogVisible");
-    $("#newProjectClickEater").addClass("mainMenuClickEaterVisible");
-    $("#mainMenuPageContainer").addClass("mainMenuParallaxToRight");
-    window.setTimeout(function () { $("#mainMenuProjectNameInput").focus(); }, 500);
-}
-
-var hideNewProjectDialog = function () {
-    if ($("#newProjectDialog").hasClass("newProjectDialogVisible")) {
-        console.log("Hiding the new project dialog.");
-        $("#newProjectDialog").removeClass("newProjectDialogVisible");
-        $("#newProjectClickEater").removeClass("mainMenuClickEaterVisible");
-        $("#mainMenuPageContainer").removeClass("mainMenuParallaxToRight");
-    }
-    else {
-    }
-}
-
-var mouseDownTicker = function () {
-    $("#tickerTicket").removeClass("tickerReleased");
-    $("#tickerTicket").addClass("tickerDepressed");
-}
-
-var mouseUpTicker = function () {
-    window.setTimeout(function () {
-        $("#tickerTicket").removeClass("tickerDepressed");
-        $("#tickerTicket").addClass("tickerReleased");
-    }, 100);
-}
-
-var mouseDownNewProjectButton = function () {
-    $("#newProjectButton").addClass("mainMenuPhotoButtonClicking");
-}
-
-var mouseUpNewProjectButton = function () {
-    window.setTimeout(function () { $("#newProjectButton").removeClass("mainMenuPhotoButtonClicking"); }, 100);
-}
-
-var validateAndCreateProject = function () {
-    // Slide the reel up to show the loading frame.
-    var projectName = document.getElementById("mainMenuProjectNameInput").value;
-    var local = document.getElementById("mainMenuProjectCreateLocal").checked;
-
-    if (projectName.length > 0) {
-        $("#newProjectDialog").removeClass("newProjectDialogVisible");
-        $("#newProjectDialog").addClass("newProjectLoading");
-    }
-    else {
-
-    }
-}
-
-var mainMenuProjectNameInputKeyUp = function () {
-    if (window.event.which == 13) {
-        // Enter key pressed
-        validateAndCreateProject();
-    }
-}
-
-var showOpenProjectDialog = function () {
-    // Enumerate saved projects and show the open project film reel.
-    $("#openProjectDialog").addClass("openProjectDialogVisible");
-    $("#openProjectClickEater").addClass("mainMenuClickEaterVisible");
-    $("#mainMenuPageContainer").addClass("mainMenuParallaxToLeft");
-}
-
-var hideOpenProjectDialog = function () {
-    $("#openProjectDialog").removeClass("openProjectDialogVisible");
-    $("#openProjectClickEater").removeClass("mainMenuClickEaterVisible");
-    $("#mainMenuPageContainer").removeClass("mainMenuParallaxToLeft");
-}
-
-var mouseDownOpenProjectButton = function () {
-    $("#openProjectButton").addClass("mainMenuPhotoButtonClicking");
-}
-
-var mouseUpOpenProjectButton = function () {
-    window.setTimeout(function () { $("#openProjectButton").removeClass("mainMenuPhotoButtonClicking"); }, 100);
-}
-
-var showTickerDialog = function () {
-    console.log("Showing the ticker dialog.");
-    $("#tickerDialog").removeClass("tickerDialogHidden");
-    $("#tickerDialog").addClass("tickerDialogVisible");
-    window.setTimeout(function () { WinJS.UI.Animation.enterContent(document.getElementById("tickerDialogContent")); }, 400);
-    $("#tickerDialogClickEater").addClass("mainMenuClickEaterVisible");
-}
-
-var hideTickerDialog = function () {
-    console.log("Hiding the ticker dialog.");
-    $("#tickerDialog").removeClass("tickerDialogVisible");
-    $("#tickerDialog").addClass("tickerDialogHidden");
-    window.setTimeout(function () { WinJS.UI.Animation.exitContent(document.getElementById("tickerDialogContent")); }, 300);
-    $("#tickerDialogClickEater").removeClass("mainMenuClickEaterVisible");
-}
-
-var showSettingsDialog = function () {
-    console.log("Showing the settings dialog.");
-    $("#clapperTop").addClass("clapperClapping");
-    window.setTimeout(function () { $("#clapperTop").removeClass("clapperClapping"); }, 100);
-    $("#settingsDialog").removeClass("settingsDialogHidden");
-    $("#settingsDialog").addClass("settingsDialogVisible");
-    window.setTimeout(function () { WinJS.UI.Animation.enterContent(document.getElementById("settingsDialogContent")); }, 400);
-    $("#settingsDialogClickEater").addClass("mainMenuClickEaterVisible");
-}
-
-var hideSettingsDialog = function () {
-    console.log("Hiding the settings dialog.");
-    $("#settingsDialog").removeClass("settingsDialogVisible");
-    $("#settingsDialog").addClass("settingsDialogHidden");
-    window.setTimeout(function () { WinJS.UI.Animation.exitContent(document.getElementById("settingsDialogContent")); }, 300);
-    $("#settingsDialogClickEater").removeClass("mainMenuClickEaterVisible");
-}

@@ -9,15 +9,29 @@
     <script src="//Microsoft.WinJS.2.0/js/base.js"></script>
     <script src="//Microsoft.WinJS.2.0/js/ui.js"></script>
 
-    <!-- Ensemble_of_One references -->
+    <!-- Ensemble of One references -->
     <link href="/css/default.css" rel="stylesheet" />
-    <link rel="stylesheet" href="lib/font-awesome-4.1.0/css/font-awesome.min.css">
     <script src="/js/default.js"></script>
+
+    <!-- Libraries -->
+    <link rel="stylesheet" href="lib/font-awesome-4.1.0/css/font-awesome.min.css">
     <script src="lib/jquery-2.1.1.min.js"></script>
 
     <!-- Classes, functions, and global variables -->
+    <script src="/js/editor/clockmgr.js"></script>
+    <script src="/js/editor/encoder.js"></script>
+    
+    <script src="/js/editor/index.js"></script>
+    <script src="/js/editor/indexsegment.js"></script>
+    <script src="/js/editor/mediaclip.js"></script>
+    <script src="/js/editor/mediamgr.js"></script>
+    <script src="/js/editor/renderer.js"></script>
+    <script src="/js/editor/timelinemgr.js"></script>
+    <script src="/js/pages/mainmenu.js"></script>
     <script src="/js/fileio.js"></script>
     <script src="/js/platform.js"></script>
+    <script src="/js/session.js"></script>
+    <script src="/js/settings.js"></script>
 </head>
 <body>
     <div id="appContainer">
@@ -28,13 +42,13 @@
             <div id="menuPageMainContent">
                 <header id="mainMenuHeader" class="parallaxCapable">
                     <div class="tickerSpacer"></div>
-                    <div id="tickerTicket"><div id="tickerText" onclick="showTickerDialog();" onmousedown="mouseDownTicker();" onmouseup="mouseUpTicker();">Beta 0.4!</div></div>
+                    <div id="tickerTicket"><div id="tickerText">Beta 0.4!</div></div>
                     <div class="tickerSpacer"></div>
                 </header>
 
                 <div id="mainMenuControls">
                     <div class="mainMenuPhotoButtonContainer parallaxCapable">
-                        <div id="newProjectButton" class="mainMenuPhotoButton" onclick="showNewProjectDialog();" onmousedown="mouseDownNewProjectButton();" onmouseup="mouseUpNewProjectButton();">
+                        <div id="newProjectButton" class="mainMenuPhotoButton">
                             <div class="mainMenuButtonIcon"><i class="fa fa-4x fa-plus-square-o"></i></div>
                             <div>New</div>
                         </div>
@@ -43,7 +57,7 @@
                     <div class="imgMainLogoContainer parallaxCapable"><!--<img src="img/Eo1LogoShad.png" alt="Main logo" draggable="false" id="imgMainLogo" />--></div>
 
                     <div class="mainMenuPhotoButtonContainer parallaxCapable">
-                        <div id="openProjectButton" class="mainMenuPhotoButton" onclick="showOpenProjectDialog();" onmousedown="mouseDownOpenProjectButton();" onmouseup="mouseUpOpenProjectButton();">
+                        <div id="openProjectButton" class="mainMenuPhotoButton">
                             <i class="mainMenuButtonIcon fa fa-4x fa-folder-open-o"></i>
                             <div>Open</div>
                         </div>
@@ -51,7 +65,7 @@
                 </div>
 
                 <footer id="mainMenuFooter" class="parallaxCapable">
-                    <div id="settingsButton" onclick="showSettingsDialog();">
+                    <div id="settingsButton">
                         <div id="clapper">
                             <div id="clapperTop" class="clapperPiece"></div>
                             <div id="clapperBottom" class="clapperPiece"></div>
@@ -65,10 +79,10 @@
 
 
 
-            <div class="mainMenuClickEater" id="newProjectClickEater" onclick="hideNewProjectDialog();"></div>
-            <div class="mainMenuClickEater" id="openProjectClickEater" onclick="hideOpenProjectDialog();"></div>
-            <div class="mainMenuClickEater" id="tickerDialogClickEater" onclick="hideTickerDialog();"></div>
-            <div class="mainMenuClickEater" id="settingsDialogClickEater" onclick="hideSettingsDialog();"></div>
+            <div class="mainMenuClickEater" id="newProjectClickEater"></div>
+            <div class="mainMenuClickEater" id="openProjectClickEater"></div>
+            <div class="mainMenuClickEater" id="tickerDialogClickEater"></div>
+            <div class="mainMenuClickEater" id="settingsDialogClickEater"></div>
 
 
 
@@ -81,7 +95,7 @@
                         <table>
                             <tr>
                                 <td>Name: </td>
-                                <td><input type="text" id="mainMenuProjectNameInput" placeholder="Untitled project" onkeyup="mainMenuProjectNameInputKeyUp();" /></td>
+                                <td><input type="text" id="mainMenuProjectNameInput" placeholder="Untitled project" /></td>
                             </tr>
                             <tr>
                                 <td>Location: </td>
@@ -92,12 +106,12 @@
                                 <td><label class="fa fa-cloud"><input type="radio" name="mainMenuProjectLocation" id="mainMenuProjectCreateCloud" disabled />Cloud</label></td>
                             </tr>
                         </table>
-                        <h3 class="mainMenuFilmReelButton" onclick="validateAndCreateProject();"><i class="fa fa-check"></i> Create!</h3>
+                        <h3 class="mainMenuFilmReelButton" id="mainMenuValidateProjectButton"><i class="fa fa-check"></i> Create!</h3>
                     </div>
                     <div class="filmReelFrame"></div>
                     <div class="filmReelFrame"></div>
                     <div class="filmReelFrame">
-                        <h2>Creating your project...</h2>
+                        <h2>Creating your project...</h2> <br />
                         <!--<i class="fa fa-3x fa-spin fa-spinner"></i>-->
                         <progress class="win-ring win-medium"></progress>
                     </div>
@@ -156,7 +170,7 @@
         </div>
 
 
-        <div class ="pageContainer" id="editorPageContainer"></div>
+        <div class ="pageContainer" id="editorPageContainer" hidden></div>
     </div>
 </body>
 </html>
