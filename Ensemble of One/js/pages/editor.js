@@ -44,75 +44,26 @@
         //// PRIVATE METHODS ////
 
         _attachListeners: function () {
-            //Ticker
-            var tickerButton = document.getElementById("tickerText");
-            tickerButton.addEventListener("click", this._tickerOnClickListener, false);
-            tickerButton.addEventListener("mousedown", this._tickerOnMouseDownListener, false);
-            tickerButton.addEventListener("mouseup", this._tickerOnMouseUpListener, false);
-
-            //New Project button
-            var newProjectButton = document.getElementById("newProjectButton");
-            newProjectButton.addEventListener("click", this._newProjectButtonOnClickListener, false);
-            newProjectButton.addEventListener("mousedown", this._newProjectButtonOnMouseDownListener, false);
-            newProjectButton.addEventListener("mouseup", this._newProjectButtonOnMouseUpListener, false);
-
-            //Open Project button
-            var openProjectButton = document.getElementById("openProjectButton");
-            openProjectButton.addEventListener("click", this._openProjectButtonOnClickListener, false);
-            openProjectButton.addEventListener("mousedown", this._openProjectButtonOnMouseDownListener, false);
-            openProjectButton.addEventListener("mouseup", this._openProjectButtonOnMouseUpListener, false);
-
-            //Settings button
-            var settingsButton = document.getElementById("settingsButton");
-            settingsButton.addEventListener("click", this._settingsButtonOnClickListener, false);
-            settingsButton.addEventListener("mousedown", this._settingsButtonOnMouseDownListener, false);
-            settingsButton.addEventListener("mouseup", this._settingsButtonOnMouseUpListener, false);
-
-            //Click eaters
-            document.getElementById("newProjectClickEater").addEventListener("click", this._newProjectDialogClickEaterOnClickListener, false);
-            document.getElementById("openProjectClickEater").addEventListener("click", this._openProjectDialogClickEaterOnClickListener, false);
-            document.getElementById("tickerDialogClickEater").addEventListener("click", this._tickerDialogClickEaterOnClickListener, false);
-            document.getElementById("settingsDialogClickEater").addEventListener("click", this._settingsDialogClickEaterOnClickListener, false);
-
-            //New Project dialog
-            document.getElementById("mainMenuValidateProjectButton").addEventListener("click", this._validateProjectButtonOnClickListener, false);
-            document.getElementById("mainMenuProjectNameInput").addEventListener("keyup", this._projectNameInputKeyUpListener, false);
+            var menuButton = document.getElementById("editorMenuButton");
+            menuButton.addEventListener("click", this._menuButtonOnClickListener, false);
         },
 
         _detachListeners: function () {
-            //Ticker
-            var tickerButton = document.getElementById("tickerText");
-            tickerButton.removeEventListener("click", this._tickerOnClickListener, false);
-            tickerButton.removeEventListener("mousedown", this._tickerOnMouseDownListener, false);
-            tickerButton.removeEventListener("mouseup", this._tickerOnMouseUpListener, false);
+            var menuButton = document.getElementById("editorMenuButton");
+            menuButton.removeEventListener("click", this._menuButtonOnClickListener, false);
+        },
 
-            //New Project button
-            var newProjectButton = document.getElementById("newProjectButton");
-            newProjectButton.removeEventListener("click", this._newProjectButtonOnClickListener, false);
-            newProjectButton.removeEventListener("mousedown", this._newProjectButtonOnMouseDownListener, false);
-            newProjectButton.removeEventListener("mouseup", this._newProjectButtonOnMouseUpListener, false);
-
-            //Open Project button
-            var openProjectButton = document.getElementById("openProjectButton");
-            openProjectButton.removeEventListener("click", this._openProjectButtonOnClickListener, false);
-            openProjectButton.removeEventListener("mousedown", this._openProjectButtonOnMouseDownListener, false);
-            openProjectButton.removeEventListener("mouseup", this._openProjectButtonOnMouseUpListener, false);
-
-            //Settings button
-            var settingsButton = document.getElementById("settingsButton");
-            settingsButton.removeEventListener("click", this._settingsButtonOnClickListener, false);
-            settingsButton.removeEventListener("mousedown", this._settingsButtonOnMouseDownListener, false);
-            settingsButton.removeEventListener("mouseup", this._settingsButtonOnMouseUpListener, false);
-
-            //Click eaters
-            document.getElementById("newProjectClickEater").removeEventListener("click", this._newProjectDialogClickEaterOnClickListener, false);
-            document.getElementById("openProjectClickEater").removeEventListener("click", this._openProjectDialogClickEaterOnClickListener, false);
-            document.getElementById("tickerDialogClickEater").removeEventListener("click", this._tickerDialogClickEaterOnClickListener, false);
-            document.getElementById("settingsDialogClickEater").removeEventListener("click", this._settingsDialogClickEaterOnClickListener, false);
-
-            //New Project dialog
-            document.getElementById("mainMenuValidateProjectButton").removeEventListener("click", this._validateProjectButtonOnClickListener, false);
-            document.getElementById("mainMenuProjectNameInput").removeEventListener("keyup", this._projectNameInputKeyUpListener, false);
+        _menuButtonOnClickListener: function () {
+            var menuDialog = document.getElementById("editorMenuDialog");
+            if (menuDialog.style.visibility == "hidden" || menuDialog.style.visibility == "") {
+                menuDialog.style.visibility = "visible";
+                WinJS.UI.Animation.fadeIn(menuDialog);
+            }
+            else {
+                WinJS.UI.Animation.fadeOut(menuDialog).done(function () {
+                    menuDialog.style.visibility = "hidden";
+                });
+            }
         }
     });
 })();

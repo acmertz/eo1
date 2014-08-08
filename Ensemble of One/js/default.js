@@ -11,11 +11,16 @@
             if (args.detail.previousExecutionState !== activation.ApplicationExecutionState.terminated) {
                 // TODO: This application has been newly launched. Initialize
                 // your application here.
+                var extendedSplashImage = document.getElementById("imgMainLogo");
+                extendedSplashImage.width = args.detail.splashScreen.imageLocation.width;
+                extendedSplashImage.height = args.detail.splashScreen.imageLocation.height;
+
                 Ensemble.Platform.setCurrentPlatform("win8");
                 Ensemble.Session.setCurrentPage("mainMenu");
 
                 args.detail.splashScreen.addEventListener("dismissed", function () {
                     console.info("App started up.");
+
 
                     // Load all needed resources here
 
