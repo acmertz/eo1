@@ -261,13 +261,22 @@
             <div id="editorMenuDialog">
                 <div id="editorMenuDialogTabs">
                     <i class="fa fa-2x fa-list" id="editorMenuButtonPlaceholder"></i>
-                    <h2 class="editorMenuTabHeader">Project</h2>
-                    <h2 class="editorMenuTabHeader">Edit</h2>
-                    <h2 class="editorMenuTabHeader">Clip</h2>
-                    <h2 class="editorMenuTabHeader">Timeline</h2>
-                    <h2 class="editorMenuTabHeader">Export</h2>
+                    <h2 class="editorMenuTabHeader editorMenuTabFocused" id="editorMenuTabProject">Project</h2>
+                    <h2 class="editorMenuTabHeader editorMenuTabBlurred editorMenuRightAdjacentTab" id="editorMenuTabEdit">Edit</h2>
+                    <h2 class="editorMenuTabHeader editorMenuTabBlurred" id="editorMenuTabClip">Clip</h2>
+                    <h2 class="editorMenuTabHeader editorMenuTabBlurred" id="editorMenuTabTimeline">Timeline</h2>
+                    <h2 class="editorMenuTabHeader editorMenuTabBlurred" id="editorMenuTabExport">Export</h2>
                 </div>
-                <div id="editorMenuDialogContent"></div>
+                <div id="editorMenuDialogContent">
+                    <div class="editorMenuContentItem" id="editorMenuContentProject">
+                        <h1>Project name here!</h1>
+                        <p>This is the main menu. This is where you'll find controls to save and quit your project, view its stats, choose a thumbnail, or even rename it.</p>
+                    </div>
+                    <div class="editorMenuContentItem" id="editorMenuContentEdit" hidden></div>
+                    <div class="editorMenuContentItem" id="editorMenuContentClip" hidden></div>
+                    <div class="editorMenuContentItem" id="editorMenuContentTimeline" hidden></div>
+                    <div class="editorMenuContentItem" id="editorMenuContentExport" hidden></div>
+                </div>
             </div>
 
             <div id="editorMenuButton" class="fa fa-2x fa-list" title="Menu"></div>

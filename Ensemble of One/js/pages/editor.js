@@ -57,11 +57,21 @@
             var menuDialog = document.getElementById("editorMenuDialog");
             if (menuDialog.style.visibility == "hidden" || menuDialog.style.visibility == "") {
                 menuDialog.style.visibility = "visible";
-                WinJS.UI.Animation.fadeIn(menuDialog);
+                WinJS.UI.Animation.fadeIn(menuDialog).done(function () {
+                    //Show the Project menu.
+                    var itemToShow = document.getElementById("editorMenuContentProject");
+                    itemToShow.hidden = false;
+                    WinJS.UI.Animation.enterContent(itemToShow);
+                });
             }
             else {
                 WinJS.UI.Animation.fadeOut(menuDialog).done(function () {
                     menuDialog.style.visibility = "hidden";
+                    var menuItems = document.getElementsByClassName("editorMenuContentItem");
+                    for (var i = 0; i < menuItems.length; i++) {
+                        menuItems[i].style.opacity = 0;
+                        menuItems[i].hidden = true;
+                    }
                 });
             }
         }
