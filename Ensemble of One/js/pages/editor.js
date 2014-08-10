@@ -3,7 +3,11 @@
         /// <summary>Functions used to control the behavior of the Editor page.</summary>
 
         //// PRIVATE INSTANCE VARIABLES ////
+        
 
+        //// PUBLIC INSTANCE VARIABLES ////
+        currentMenuItem: null,
+        currentMenuTab: null,
 
         //// PUBLIC METHODS ////
 
@@ -19,6 +23,8 @@
             }, 500);
             
 
+            this.currentMenuItem = document.getElementById("editorMenuContentProject");
+            this.currentMenuTab = document.getElementById("editorMenuTabProject");
             this._attachListeners();
         },
 
@@ -39,6 +45,39 @@
             this._detachListeners();
         },
 
+        menuShowProjectTab: function () {
+            /// <summary>Hides the currently active menu tab and shows the Project tab in its place.</summary>
+            this._menuHeaderFocusTab(document.getElementById("editorMenuTabProject"), document.getElementById("editorMenuContentProject"));
+            $("#editorMenuTabEdit").addClass("editorMenuRightAdjacentTab");
+        },
+
+        menuShowEditTab: function () {
+            /// <summary>Hides the currently active menu tab and shows the Edit tab in its place.</summary>
+            this._menuHeaderFocusTab(document.getElementById("editorMenuTabEdit"), document.getElementById("editorMenuContentEdit"));
+            $("#editorMenuTabProject").addClass("editorMenuLeftAdjacentTab");
+            $("#editorMenuTabClip").addClass("editorMenuRightAdjacentTab");
+        },
+
+        menuShowClipTab: function () {
+            /// <summary>Hides the currently active menu tab and shows the Clip tab in its place.</summary>
+            this._menuHeaderFocusTab(document.getElementById("editorMenuTabClip"), document.getElementById("editorMenuContentClip"));
+            $("#editorMenuTabEdit").addClass("editorMenuLeftAdjacentTab");
+            $("#editorMenuTabTrack").addClass("editorMenuRightAdjacentTab");
+        },
+
+        menuShowTrackTab: function () {
+            /// <summary>Hides the currently active menu tab and shows the Track tab in its place.</summary>
+            this._menuHeaderFocusTab(document.getElementById("editorMenuTabTrack"), document.getElementById("editorMenuContentTrack"));
+            $("#editorMenuTabClip").addClass("editorMenuLeftAdjacentTab");
+            $("#editorMenuTabExport").addClass("editorMenuRightAdjacentTab");
+        },
+
+        menuShowExportTab: function () {
+            /// <summary>Hides the currently active menu tab and shows the Export tab in its place.</summary>
+            this._menuHeaderFocusTab(document.getElementById("editorMenuTabExport"), document.getElementById("editorMenuContentExport"));
+            $("#editorMenuTabTrack").addClass("editorMenuLeftAdjacentTab");
+        },
+
 
 
         //// PRIVATE METHODS ////
@@ -46,6 +85,21 @@
         _attachListeners: function () {
             var menuButton = document.getElementById("editorMenuButton");
             menuButton.addEventListener("click", this._menuButtonOnClickListener, false);
+
+            var menuHeaderProject = document.getElementById("editorMenuTabProject");
+            menuHeaderProject.addEventListener("click", this._menuHeaderProjectOnClick, false);
+
+            var menuHeaderEdit = document.getElementById("editorMenuTabEdit");
+            menuHeaderEdit.addEventListener("click", this._menuHeaderEditOnClick, false);
+
+            var menuHeaderClip = document.getElementById("editorMenuTabClip");
+            menuHeaderClip.addEventListener("click", this._menuHeaderClipOnClick, false);
+
+            var menuHeaderTrack = document.getElementById("editorMenuTabTrack");
+            menuHeaderTrack.addEventListener("click", this._menuHeaderTrackOnClick, false);
+
+            var menuHeaderExport = document.getElementById("editorMenuTabExport");
+            menuHeaderExport.addEventListener("click", this._menuHeaderExportOnClick, false);
         },
 
         _detachListeners: function () {
@@ -57,12 +111,11 @@
             var menuDialog = document.getElementById("editorMenuDialog");
             if (menuDialog.style.visibility == "hidden" || menuDialog.style.visibility == "") {
                 menuDialog.style.visibility = "visible";
-                WinJS.UI.Animation.fadeIn(menuDialog).done(function () {
-                    //Show the Project menu.
-                    var itemToShow = document.getElementById("editorMenuContentProject");
-                    itemToShow.hidden = false;
-                    WinJS.UI.Animation.enterContent(itemToShow);
-                });
+
+                Ensemble.Pages.Editor.currentMenuItem.style.display = "inline";
+                Ensemble.Pages.Editor.currentMenuItem.style.opacity = 1;
+
+                WinJS.UI.Animation.enterContent(menuDialog);
             }
             else {
                 WinJS.UI.Animation.fadeOut(menuDialog).done(function () {
@@ -70,10 +123,57 @@
                     var menuItems = document.getElementsByClassName("editorMenuContentItem");
                     for (var i = 0; i < menuItems.length; i++) {
                         menuItems[i].style.opacity = 0;
-                        menuItems[i].hidden = true;
+                        menuItems[i].style.display = "none";
                     }
                 });
             }
+        },
+
+        _menuHeaderProjectOnClick: function () {
+            Ensemble.Pages.Editor.menuShowProjectTab();
+        },
+
+        _menuHeaderEditOnClick: function () {
+            Ensemble.Pages.Editor.menuShowEditTab();
+        },
+
+        _menuHeaderClipOnClick: function () {
+            Ensemble.Pages.Editor.menuShowClipTab();
+        },
+
+        _menuHeaderTrackOnClick: function () {
+            Ensemble.Pages.Editor.menuShowTrackTab();
+        },
+
+        _menuHeaderExportOnClick: function () {
+            Ensemble.Pages.Editor.menuShowExportTab();
+        },
+
+        _menuHeaderFocusTab: function (tabToFocus, itemToShow) {
+            /// <summary>Focuses the indicated tab and blurs the tab that was previously focused.</summary>
+            /// <param name="tabToFocus" type="HTML Element">The tab to focus.</param>
+            /// <param name="itemToShow" type="HTML Element">The menu item to show.</param>
+
+            var allTabs = document.getElementsByClassName("editorMenuTabHeader");
+            for (var i = 0; i < allTabs.length; i++) {
+                $(allTabs[i]).removeClass("editorMenuRightAdjacentTab");
+                $(allTabs[i]).removeClass("editorMenuLeftAdjacentTab");
+            }
+
+            $(Ensemble.Pages.Editor.currentMenuTab).removeClass("editorMenuTabFocused");
+            $(Ensemble.Pages.Editor.currentMenuTab).addClass("editorMenuTabBlurred");
+
+            Ensemble.Pages.Editor.currentMenuTab = tabToFocus;
+
+            $(Ensemble.Pages.Editor.currentMenuTab).removeClass("editorMenuTabBlurred");
+            $(Ensemble.Pages.Editor.currentMenuTab).addClass("editorMenuTabFocused");
+
+            WinJS.UI.Animation.exitContent(Ensemble.Pages.Editor.currentMenuItem).done(function () {
+                Ensemble.Pages.Editor.currentMenuItem.style.display = "none";
+                Ensemble.Pages.Editor.currentMenuItem = itemToShow;
+                Ensemble.Pages.Editor.currentMenuItem.style.display = "inline";
+                WinJS.UI.Animation.enterContent(Ensemble.Pages.Editor.currentMenuItem);
+            });
         }
     });
 })();

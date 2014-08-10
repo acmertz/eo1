@@ -264,18 +264,43 @@
                     <h2 class="editorMenuTabHeader editorMenuTabFocused" id="editorMenuTabProject">Project</h2>
                     <h2 class="editorMenuTabHeader editorMenuTabBlurred editorMenuRightAdjacentTab" id="editorMenuTabEdit">Edit</h2>
                     <h2 class="editorMenuTabHeader editorMenuTabBlurred" id="editorMenuTabClip">Clip</h2>
-                    <h2 class="editorMenuTabHeader editorMenuTabBlurred" id="editorMenuTabTimeline">Timeline</h2>
+                    <h2 class="editorMenuTabHeader editorMenuTabBlurred" id="editorMenuTabTrack">Track</h2>
                     <h2 class="editorMenuTabHeader editorMenuTabBlurred" id="editorMenuTabExport">Export</h2>
                 </div>
                 <div id="editorMenuDialogContent">
                     <div class="editorMenuContentItem" id="editorMenuContentProject">
-                        <h1>Project name here!</h1>
-                        <p>This is the main menu. This is where you'll find controls to save and quit your project, view its stats, choose a thumbnail, or even rename it.</p>
+                        <h2><span>Project name here</span><span> <i class="fa fa-pencil"></i></span></h2>
+                        <p>
+                            <img src="" alt="Project thumbnail" id="editorMenuProjectThumbnail" />
+                        </p>
+                        <p>
+                            <button data-win-control="WinJS.UI.AppBarCommand"
+                                    data-win-options="{id:'editorMenuExitButton',
+                                    type:'button',
+                                    label:'Exit',
+                                    icon: 'clear'}"></button><br />
+                        </p>
                     </div>
-                    <div class="editorMenuContentItem" id="editorMenuContentEdit" hidden></div>
-                    <div class="editorMenuContentItem" id="editorMenuContentClip" hidden></div>
-                    <div class="editorMenuContentItem" id="editorMenuContentTimeline" hidden></div>
-                    <div class="editorMenuContentItem" id="editorMenuContentExport" hidden></div>
+
+                    <div class="editorMenuContentItem" id="editorMenuContentEdit" hidden>
+                        <h2>Edit menu</h2>
+                        <p>Edit menu content here.</p>
+                    </div>
+
+                    <div class="editorMenuContentItem" id="editorMenuContentClip" hidden>
+                        <h2>Clip menu</h2>
+                        <p>Clip menu content here.</p>
+                    </div>
+
+                    <div class="editorMenuContentItem" id="editorMenuContentTrack" hidden>
+                        <h2>Track menu</h2>
+                        <p>Track menu content here.</p>
+                    </div>
+
+                    <div class="editorMenuContentItem" id="editorMenuContentExport" hidden>
+                        <h2>Export menu</h2>
+                        <p>Export menu content here.</p>
+                    </div>
                 </div>
             </div>
 
