@@ -77,7 +77,6 @@
             /// <summary>Hides the currently active menu tab and shows the Project tab in its place.</summary>
             this._menuHeaderFocusTab(document.getElementById("editorMenuTabProject"), document.getElementById("editorMenuContentProject"));
             $("#editorMenuTabEdit").addClass("editorMenuRightAdjacentTab");
-            document.getElementById("editorMenuDialogTabs").style.backgroundColor = "white";
         },
 
         menuShowEditTab: function () {
@@ -85,7 +84,6 @@
             this._menuHeaderFocusTab(document.getElementById("editorMenuTabEdit"), document.getElementById("editorMenuContentEdit"));
             $("#editorMenuTabProject").addClass("editorMenuLeftAdjacentTab");
             $("#editorMenuTabClip").addClass("editorMenuRightAdjacentTab");
-            document.getElementById("editorMenuDialogTabs").style.backgroundColor = "rgb(230,230,230)";
         },
 
         menuShowClipTab: function () {
@@ -93,7 +91,6 @@
             this._menuHeaderFocusTab(document.getElementById("editorMenuTabClip"), document.getElementById("editorMenuContentClip"));
             $("#editorMenuTabEdit").addClass("editorMenuLeftAdjacentTab");
             $("#editorMenuTabTrack").addClass("editorMenuRightAdjacentTab");
-            document.getElementById("editorMenuDialogTabs").style.backgroundColor = "rgb(230,230,230)";
         },
 
         menuShowTrackTab: function () {
@@ -101,14 +98,12 @@
             this._menuHeaderFocusTab(document.getElementById("editorMenuTabTrack"), document.getElementById("editorMenuContentTrack"));
             $("#editorMenuTabClip").addClass("editorMenuLeftAdjacentTab");
             $("#editorMenuTabExport").addClass("editorMenuRightAdjacentTab");
-            document.getElementById("editorMenuDialogTabs").style.backgroundColor = "rgb(230,230,230)";
         },
 
         menuShowExportTab: function () {
             /// <summary>Hides the currently active menu tab and shows the Export tab in its place.</summary>
             this._menuHeaderFocusTab(document.getElementById("editorMenuTabExport"), document.getElementById("editorMenuContentExport"));
             $("#editorMenuTabTrack").addClass("editorMenuLeftAdjacentTab");
-            document.getElementById("editorMenuDialogTabs").style.backgroundColor = "rgb(230,230,230)";
         },
 
 

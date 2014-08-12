@@ -220,6 +220,7 @@
     height: 75%;
     visibility: hidden;
     opacity: 0;
+    overflow-x: hidden;
 
     border-right: 2px solid gray;
     border-bottom: 2px solid gray;
@@ -285,6 +286,7 @@
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
+    overflow-y: hidden;
 }
 
 #editorMenuDialogContent .editorMenuContentItem {
@@ -293,6 +295,7 @@
     padding: 10px;
     opacity: 0;
     display: none;
+    overflow-y: auto;
 }
 
 .editorMenuThumbnailSection {
@@ -302,13 +305,44 @@
 
 .editorMenuThumbnailSectionHalf {
     flex: 1;
-    padding: 10px;
+    padding-right: 10px;
 }
 
 #editorMenuProjectThumbnail {
     width: 100%;
     height: 180px;
     background-color: black;
+}
+
+.editorMenuCommandList {
+    font-size: xx-large;
+    background: linear-gradient(to bottom, rgb(255,255,255) 50%, rgb(240,240,240) 50%);
+    background-size: 100px 150px;
+}
+
+.editorMenuCommandListItem {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    line-height: 75px;
+}
+
+.editorMenuCommandListItem span:hover {
+    background-color: rgb(245,245,245);
+}
+
+.editorMenuCommandListItem span:active {
+    background-color: black;
+    color: white;
+}
+
+.editorMenuCommandListItemName {
+    flex: 1;
+}
+
+.editorMenuCommandListItemPinContainer {
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .videoPlaybackSurface {
