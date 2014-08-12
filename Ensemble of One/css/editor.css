@@ -161,38 +161,55 @@
     cursor: text;
 }
 
-#editorPageContainer #editorMenuButton, #editorPageContainer #editorMenuButtonPlaceholder {
+#editorPageContainer #editorMenuButton, .editorMenuButtonPlaceholder {
     padding: 20px;
 }
 
-#editorPageContainer #editorMenuButton {
+.editorMenuButtons {
     position: fixed;
     top: 0px;
     left: 0px;
-    background-color: rgba(240,240,240, 1);
+}
+
+#editorPageContainer #editorMenuButton {
     border-bottom-right-radius: 10px;
-    border-right: 2px solid lightgray;
     border-bottom: 2px solid lightgray;
+}
+
+#editorPageContainer .editorMenuToggle {
+    background-color: rgba(240,240,240, 1);
+    border-right: 2px solid lightgray;
+    padding: 10px;
 
     transition: background-color 0.4s ease-in-out;
     -webkit-transition: background-color 0.4s ease-in-out;
 }
 
-#editorPageContainer #editorMenuButton:hover {
+#editorPageContainer .editorMenuToggle:hover {
     background-color: rgba(255,255,255, 1);
     transition: none;
     -webkit-transition: none;
 }
 
-#editorPageContainer #editorMenuButton:active {
+#editorPageContainer .editorMenuToggle:active {
     background-color: rgba(0,0,0, 1);
     color: white;
     transition: none;
     -webkit-transition: none;
 }
 
-#editorPageContainer #editorMenuButtonPlaceholder {
+#editorPageContainer .editorMenuToggleFocused {
+    background-color: white;
+    pointer-events: none;
+}
+
+.editorMenuButtonPlaceholder {
     visibility: hidden;
+}
+
+#editorEffectsButton {
+    border-bottom: 2px solid lightgray;
+    border-bottom-right-radius: 10px;
 }
 
 #editorPageContainer #editorMenuDialog {
@@ -222,6 +239,7 @@
 #editorMenuDialog #editorMenuDialogTabs {
     /* No flex - just enough to hold the text headings. */
     width: 100%;
+    background-color: white;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -263,8 +281,10 @@
 
 #editorMenuDialog #editorMenuDialogContent {
     flex: 1;
+    width: 100%;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: flex-start;
 }
 
 #editorMenuDialogContent .editorMenuContentItem {
@@ -275,8 +295,18 @@
     display: none;
 }
 
+.editorMenuThumbnailSection {
+    display: flex;
+    flex-direction: row;
+}
+
+.editorMenuThumbnailSectionHalf {
+    flex: 1;
+    padding: 10px;
+}
+
 #editorMenuProjectThumbnail {
-    width: 320px;
+    width: 100%;
     height: 180px;
     background-color: black;
 }
@@ -285,4 +315,13 @@
     background-color: black;
     width: 640px;
     height: 360px;
+}
+
+#editorMenuClickEater {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    display: none;
 }

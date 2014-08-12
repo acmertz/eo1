@@ -12,7 +12,7 @@
         //// PUBLIC METHODS ////
 
         showInitial: function () {
-            /// <summary>Plays the Editor launch animation and attaches all event listeners.</summary>
+            /// <summary>Plays the Editor pagelaunch animation and attaches all event listeners.</summary>
             document.getElementById("editorPageContainer").style.visibility = "visible";
             var upperHalf = document.getElementById("editorUpperHalf");
             var lowerHalf = document.getElementById("editorLowerHalf")
@@ -29,7 +29,7 @@
         },
 
         hide: function () {
-            /// <summary>Plays the Main Menu hide animation and detaches all event listeners.</summary>
+            /// <summary>Plays the Editor page hide animation and detaches all event listeners.</summary>
             console.log("Hiding the Main Menu.");
             window.clearInterval(this._projectLoadTimer);
 
@@ -45,10 +45,39 @@
             this._detachListeners();
         },
 
+        showActionMenu: function () {
+            /// <summary>Shows the Editor page menu and activates its click eater.</summary>
+            document.getElementById("editorMenuClickEater").style.display = "inline";
+
+            var menuDialog = document.getElementById("editorMenuDialog");
+            menuDialog.style.visibility = "visible";
+
+            Ensemble.Pages.Editor.currentMenuItem.style.display = "inline";
+            Ensemble.Pages.Editor.currentMenuItem.style.opacity = 1;
+
+            WinJS.UI.Animation.enterContent(menuDialog);
+        },
+
+        hideActionMenu: function () {
+            /// <summary>Hides the Editor page menu and deactivates its click eater.</summary>
+            document.getElementById("editorMenuClickEater").style.display = "none";
+
+            var menuDialog = document.getElementById("editorMenuDialog");
+            WinJS.UI.Animation.fadeOut(menuDialog).done(function () {
+                menuDialog.style.visibility = "hidden";
+                var menuItems = document.getElementsByClassName("editorMenuContentItem");
+                for (var i = 0; i < menuItems.length; i++) {
+                    menuItems[i].style.opacity = 0;
+                    menuItems[i].style.display = "none";
+                }
+            });
+        },
+
         menuShowProjectTab: function () {
             /// <summary>Hides the currently active menu tab and shows the Project tab in its place.</summary>
             this._menuHeaderFocusTab(document.getElementById("editorMenuTabProject"), document.getElementById("editorMenuContentProject"));
             $("#editorMenuTabEdit").addClass("editorMenuRightAdjacentTab");
+            document.getElementById("editorMenuDialogTabs").style.backgroundColor = "white";
         },
 
         menuShowEditTab: function () {
@@ -56,6 +85,7 @@
             this._menuHeaderFocusTab(document.getElementById("editorMenuTabEdit"), document.getElementById("editorMenuContentEdit"));
             $("#editorMenuTabProject").addClass("editorMenuLeftAdjacentTab");
             $("#editorMenuTabClip").addClass("editorMenuRightAdjacentTab");
+            document.getElementById("editorMenuDialogTabs").style.backgroundColor = "rgb(230,230,230)";
         },
 
         menuShowClipTab: function () {
@@ -63,6 +93,7 @@
             this._menuHeaderFocusTab(document.getElementById("editorMenuTabClip"), document.getElementById("editorMenuContentClip"));
             $("#editorMenuTabEdit").addClass("editorMenuLeftAdjacentTab");
             $("#editorMenuTabTrack").addClass("editorMenuRightAdjacentTab");
+            document.getElementById("editorMenuDialogTabs").style.backgroundColor = "rgb(230,230,230)";
         },
 
         menuShowTrackTab: function () {
@@ -70,12 +101,14 @@
             this._menuHeaderFocusTab(document.getElementById("editorMenuTabTrack"), document.getElementById("editorMenuContentTrack"));
             $("#editorMenuTabClip").addClass("editorMenuLeftAdjacentTab");
             $("#editorMenuTabExport").addClass("editorMenuRightAdjacentTab");
+            document.getElementById("editorMenuDialogTabs").style.backgroundColor = "rgb(230,230,230)";
         },
 
         menuShowExportTab: function () {
             /// <summary>Hides the currently active menu tab and shows the Export tab in its place.</summary>
             this._menuHeaderFocusTab(document.getElementById("editorMenuTabExport"), document.getElementById("editorMenuContentExport"));
             $("#editorMenuTabTrack").addClass("editorMenuLeftAdjacentTab");
+            document.getElementById("editorMenuDialogTabs").style.backgroundColor = "rgb(230,230,230)";
         },
 
 
@@ -100,6 +133,9 @@
 
             var menuHeaderExport = document.getElementById("editorMenuTabExport");
             menuHeaderExport.addEventListener("click", this._menuHeaderExportOnClick, false);
+
+            var menuClickEater = document.getElementById("editorMenuClickEater");
+            menuClickEater.addEventListener("click", this._menuClickEaterOnClickListener, false);
         },
 
         _detachListeners: function () {
@@ -110,23 +146,15 @@
         _menuButtonOnClickListener: function () {
             var menuDialog = document.getElementById("editorMenuDialog");
             if (menuDialog.style.visibility == "hidden" || menuDialog.style.visibility == "") {
-                menuDialog.style.visibility = "visible";
-
-                Ensemble.Pages.Editor.currentMenuItem.style.display = "inline";
-                Ensemble.Pages.Editor.currentMenuItem.style.opacity = 1;
-
-                WinJS.UI.Animation.enterContent(menuDialog);
+                Ensemble.Pages.Editor.showActionMenu();
             }
             else {
-                WinJS.UI.Animation.fadeOut(menuDialog).done(function () {
-                    menuDialog.style.visibility = "hidden";
-                    var menuItems = document.getElementsByClassName("editorMenuContentItem");
-                    for (var i = 0; i < menuItems.length; i++) {
-                        menuItems[i].style.opacity = 0;
-                        menuItems[i].style.display = "none";
-                    }
-                });
+                Ensemble.Pages.Editor.hideActionMenu();
             }
+        },
+
+        _menuClickEaterOnClickListener: function () {
+            Ensemble.Pages.Editor.hideActionMenu();
         },
 
         _menuHeaderProjectOnClick: function () {

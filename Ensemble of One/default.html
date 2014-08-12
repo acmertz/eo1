@@ -258,9 +258,12 @@
                 </div>
             </div>
 
+            <div id="editorMenuClickEater"></div>
+
+
             <div id="editorMenuDialog">
                 <div id="editorMenuDialogTabs">
-                    <i class="fa fa-2x fa-list" id="editorMenuButtonPlaceholder"></i>
+                    <i class="editorMenuButtonPlaceholder fa fa-2x fa-list"></i>
                     <h2 class="editorMenuTabHeader editorMenuTabFocused" id="editorMenuTabProject">Project</h2>
                     <h2 class="editorMenuTabHeader editorMenuTabBlurred editorMenuRightAdjacentTab" id="editorMenuTabEdit">Edit</h2>
                     <h2 class="editorMenuTabHeader editorMenuTabBlurred" id="editorMenuTabClip">Clip</h2>
@@ -268,18 +271,42 @@
                     <h2 class="editorMenuTabHeader editorMenuTabBlurred" id="editorMenuTabExport">Export</h2>
                 </div>
                 <div id="editorMenuDialogContent">
+                    <i class="editorMenuButtonPlaceholder fa fa-2x fa-list"></i>
                     <div class="editorMenuContentItem" id="editorMenuContentProject">
-                        <h2><span>Project name here</span><span> <i class="fa fa-pencil"></i></span></h2>
-                        <p>
-                            <img src="" alt="Project thumbnail" id="editorMenuProjectThumbnail" />
-                        </p>
-                        <p>
-                            <button data-win-control="WinJS.UI.AppBarCommand"
-                                    data-win-options="{id:'editorMenuExitButton',
-                                    type:'button',
-                                    label:'Exit',
-                                    icon: 'clear'}"></button><br />
-                        </p>
+                        <h2><span>Project name here</span><span> <i class="fa fa-pencil-square-o"></i></span></h2>
+                        <div class="editorMenuThumbnailSection">
+                            <div class="editorMenuThumbnailSectionHalf">
+                                <img src="" alt="Project thumbnail" id="editorMenuProjectThumbnail" />
+                            </div>
+                            <div class="editorMenuThumbnailSectionHalf">
+                                <p>
+                                    <span>0</span>
+                                    <span> minutes, </span>
+                                    <span>0</span>
+                                    <span> seconds</span>
+                                </p>
+                                <p>
+                                    <span>0</span>
+                                    <span> clips</span>
+                                </p>
+                                <p>
+                                    <span>16:9</span>
+                                    <span> </span>
+                                    <span>widescreen</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="mainMenuFilmReelButton">
+                                <i class="fa fa-floppy-o"></i> Save
+                            </span> <br /><br /><br />
+                            <span class ="mainMenuFilmReelButton">
+                                <i class="fa fa-folder-open-o"></i> Open
+                            </span><br /><br /><br />
+                            <span class="mainMenuFilmReelButton">
+                                <i class="fa fa-arrow-left"></i> Exit
+                            </span><br /><br /><br />
+                        </div>
                     </div>
 
                     <div class="editorMenuContentItem" id="editorMenuContentEdit" hidden>
@@ -304,7 +331,11 @@
                 </div>
             </div>
 
-            <div id="editorMenuButton" class="fa fa-2x fa-list" title="Menu"></div>
+            <div class="editorMenuButtons">
+                <div id="editorMenuButton" class="editorMenuToggle fa fa-2x fa-list" title="Menu"></div> <br />
+                <div id="editorMediaButton" class="editorMenuToggle fa fa-fw fa-2x fa-video-camera" title="Media"></div> <br />
+                <div id="editorEffectsButton" class="editorMenuToggle fa fa-fw fa-2x fa-star" title="Effects"></div>
+            </div>
 
         </div>
     </div>
