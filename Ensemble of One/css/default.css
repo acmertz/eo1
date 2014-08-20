@@ -7,7 +7,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #FFFDD0;
+    /*background-color: #FFFDD0;*/
+    background-image:
+        repeating-linear-gradient(-45deg, transparent, rgb(200,200,200) 5px,
+            rgb(220,220,220) 5px, transparent, transparent 10px),
+        repeating-linear-gradient(45deg, transparent, rgb(200,200,200) 5px,
+            rgb(220,220,220) 5px, transparent, transparent 10px);
 }
 
 .pageContainer {

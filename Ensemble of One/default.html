@@ -22,7 +22,6 @@
     <!-- Classes, functions, and global variables -->
     <script src="/js/editor/clockmgr.js"></script>
     <script src="/js/editor/encoder.js"></script>
-    
     <script src="/js/editor/index.js"></script>
     <script src="/js/editor/indexsegment.js"></script>
     <script src="/js/editor/mediaclip.js"></script>
@@ -31,10 +30,13 @@
     <script src="/js/editor/timelinemgr.js"></script>
     <script src="/js/pages/mainmenu.js"></script>
     <script src="/js/pages/editor.js"></script>
+    <script src="/js/aspectgenerator.js"></script>
     <script src="/js/fileio.js"></script>
     <script src="/js/platform.js"></script>
+    <script src="/js/projectfile.js"></script>
     <script src="/js/session.js"></script>
     <script src="/js/settings.js"></script>
+    <script src="/js/ui.js"></script>
 </head>
 <body>
     <div id="appContainer">
@@ -112,6 +114,7 @@
                                 <td><select id="mainMenuProjectAspect">
                                     <option selected value="16:9">Widescreen (HDTV, 16:9)</option>
                                     <option value="16:10">Widescreen (laptop, 16:10)</option>
+                                    <option value="2.39:1">Widescreen (cinematic, 2.39:1)</option>
                                     <option value="4:3">Standard (tube TV, 4:3)</option>
                                 </select></td>
                             </tr>
@@ -181,19 +184,19 @@
 
         <div class ="pageContainer" id="editorPageContainer">
             <div id="editorUpperHalf">
-                <div>
+                <div id="editorCustomButtonsLeft">
                     <button data-win-control="WinJS.UI.AppBarCommand"
-                            data-win-options="{id:'secondary1',
+                            data-win-options="{id:'editorCustomButton1',
                             type:'button',
                             label:'Undo',
                             icon: 'undo'}"></button><br />
                     <button data-win-control="WinJS.UI.AppBarCommand"
-                            data-win-options="{id:'secondary1',
+                            data-win-options="{id:'editorCustomButton2',
                             type:'button',
                             label:'Empty',
                             icon: 'pin'}" disabled></button><br />
                     <button data-win-control="WinJS.UI.AppBarCommand"
-                            data-win-options="{id:'secondary1',
+                            data-win-options="{id:'editorCustomButton3',
                             type:'button',
                             label:'Empty',
                             icon: 'pin'}" disabled></button><br />
@@ -208,31 +211,31 @@
                             <span id="editorTimeDisplay">00:00.000</span>
                         </div>
                         <div class="editorPlayControlSection" id="editorPlayControlsMain">
-                            <i class="fa fa-2x fa-step-backward" title="Skip backward"></i>
-                            <i class="fa fa-3x fa-play" title="Play"></i>
-                            <i class="fa fa-2x fa-step-forward" title="Skip forward"></i>
+                            <i class="fa fa-2x fa-step-backward" id="editorSkipBackButton" title="Skip backward"></i>
+                            <i class="fa fa-3x fa-play" id="editorPlaypauseButton" title="Play"></i>
+                            <i class="fa fa-2x fa-step-forward" id="editorSkipForwardButton" title="Skip forward"></i>
                         </div>
                         <div class="editorPlayControlSection" id="editorPlayControlsRight">
-                            <i class="fa fa-2x fa-arrows-alt" title="Full screen"></i>
+                            <i class="fa fa-2x fa-arrows-alt" id="editorFullscreenButton" title="Full screen"></i>
                         </div>
 
                         
                     </div>
                 </div>
 
-                <div>
+                <div id="editorCustomButtonsRight">
                     <button data-win-control="WinJS.UI.AppBarCommand"
-                            data-win-options="{id:'secondary1',
+                            data-win-options="{id:'editorCustomButton4',
                             type:'button',
                             label:'Empty',
                             icon: 'pin'}" disabled></button><br />
                     <button data-win-control="WinJS.UI.AppBarCommand"
-                            data-win-options="{id:'secondary1',
+                            data-win-options="{id:'editorCustomButton5',
                             type:'button',
                             label:'Empty',
                             icon: 'pin'}" disabled></button><br />
                     <button data-win-control="WinJS.UI.AppBarCommand"
-                            data-win-options="{id:'secondary1',
+                            data-win-options="{id:'editorCustomButton6',
                             type:'button',
                             label:'Empty',
                             icon: 'pin'}" disabled></button><br />
@@ -246,14 +249,14 @@
                 <div id="editorTimelineContainer">
                     <div class="editorTimelineSideControls">
                         <div class="spacer"></div>
-                        <i class="fa fa-2x fa-angle-up" title="Scroll up"></i>
-                        <i class="fa fa-2x fa-angle-down" title="Scroll down"></i>
+                        <i class="fa fa-2x fa-angle-up" id="editorTimelineScrollUpButton" title="Scroll up"></i>
+                        <i class="fa fa-2x fa-angle-down" id="editorTimelineScrollDownButton" title="Scroll down"></i>
                     </div>
                     <div id="editorTimelineContent"></div>
                     <div class="editorTimelineSideControls">
                         <div class="spacer"></div>
-                        <i class="fa fa-2x fa-search-plus" title="Zoom in"></i>
-                        <i class="fa fa-2x fa-search-minus" title="Zoom out"></i>
+                        <i class="fa fa-2x fa-search-plus" id="editorTimelineZoomInButton" title="Zoom in"></i>
+                        <i class="fa fa-2x fa-search-minus" id="editorTimelineZoomOutButton" title="Zoom out"></i>
                     </div>
                 </div>
             </div>
@@ -443,7 +446,7 @@
                 </div>
             </div>
 
-            <div class="editorMenuButtons">
+            <div id="editorMenuButtons">
                 <div id="editorMenuButton" class="editorMenuToggle fa fa-2x fa-list" title="Menu"></div> <br />
                 <div id="editorMediaButton" class="editorMenuToggle fa fa-fw fa-2x fa-film" title="Media"></div> <br />
                 <div id="editorEffectsButton" class="editorMenuToggle fa fa-fw fa-2x fa-star" title="Effects"></div>

@@ -14,6 +14,7 @@
         showInitial: function () {
             /// <summary>Plays the Editor pagelaunch animation and attaches all event listeners.</summary>
             document.getElementById("editorPageContainer").style.visibility = "visible";
+            this.viewResized();
             var upperHalf = document.getElementById("editorUpperHalf");
             var lowerHalf = document.getElementById("editorLowerHalf")
             WinJS.UI.Animation.enterPage([upperHalf, lowerHalf], null).then(function () {
@@ -43,6 +44,35 @@
             }, 500)
 
             this._detachListeners();
+        },
+
+        viewResized: function () {
+            /// <summary>Adjusts the size of all display surfaces to match the change in window dimensions.</summary>
+
+            //Main display canvas
+            var leftClearance = Ensemble.Pages.Editor.UI.PageSections.menuButtons.clientWidth + Ensemble.Pages.Editor.UI.PageSections.upperHalf.customButtonsLeft.clientWidth;
+            var maxWidth = window.innerWidth - (2 * leftClearance);
+            var maxHeight = Ensemble.Pages.Editor.UI.PageSections.upperHalf.canvasContainer.clientHeight;
+
+            var finalWidth = 0;
+            var finalHeight = 0;
+
+            if (maxHeight >  Ensemble.Utilities.AspectGenerator.generateHeight(Ensemble.Session.projectAspect, maxWidth)) {
+                //Canvas area is taller than it is wide.
+                //Calculate the canvas height from a predetermined width.
+                finalWidth = maxWidth;
+                finalHeight = Ensemble.Utilities.AspectGenerator.generateHeight(Ensemble.Session.projectAspect, finalWidth);
+            }
+            else {
+                //Canvas area is wider than it is tall.
+                //Calculate the canvas width from a predetermined height.
+                finalHeight = maxHeight;
+                finalWidth = Ensemble.Utilities.AspectGenerator.generateWidth(Ensemble.Session.projectAspect, finalHeight);
+            }
+
+            Ensemble.Pages.Editor.UI.PageSections.upperHalf.canvasAndControls.style.width = finalWidth + "px";
+            Ensemble.Pages.Editor.UI.RenderSurfaces.mainCanvas.style.height = finalHeight + "px";
+
         },
 
         showActionMenu: function () {
@@ -111,8 +141,8 @@
         //// PRIVATE METHODS ////
 
         _attachListeners: function () {
-            var menuButton = document.getElementById("editorMenuButton");
-            menuButton.addEventListener("click", this._menuButtonOnClickListener, false);
+            var editorButtons = Ensemble.Pages.Editor.UI.UserInput.Buttons;
+            editorButtons.actionMenu.addEventListener("click", this._menuButtonOnClickListener, false);
 
             var menuHeaderProject = document.getElementById("editorMenuTabProject");
             menuHeaderProject.addEventListener("click", this._menuHeaderProjectOnClick, false);
@@ -131,11 +161,13 @@
 
             var menuClickEater = document.getElementById("editorMenuClickEater");
             menuClickEater.addEventListener("click", this._menuClickEaterOnClickListener, false);
+
+            window.addEventListener("resize", this.viewResized, false);
         },
 
         _detachListeners: function () {
-            var menuButton = document.getElementById("editorMenuButton");
-            menuButton.removeEventListener("click", this._menuButtonOnClickListener, false);
+            var editorButtons = Ensemble.Pages.Editor.UI.UserInput.Buttons;
+            editorButtons.actionMenu.removeEventListener("click", this._menuButtonOnClickListener, false);
         },
 
         _menuButtonOnClickListener: function () {

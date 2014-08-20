@@ -275,7 +275,7 @@
         },
 
         _openProjectButtonOnClickListener: function (event) {
-            Ensemble.Pages.MainMenu.showOpenProjectDialog();
+            Ensemble.FileIO.enumerateProjects(Ensemble.Pages.MainMenu.showOpenProjectDialog);
         },
 
         _openProjectButtonOnMouseDownListener: function (event) {

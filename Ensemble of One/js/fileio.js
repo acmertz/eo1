@@ -52,19 +52,23 @@
 
                             //Generate a thumbnail.
                             console.log("Creating save files...");
-                            Windows.Storage.FileIO.writeTextAsync(projectFile, xml.toString()).then(function () {
-                                Windows.Storage.StorageFile.getFileFromApplicationUriAsync(new Windows.Foundation.Uri("ms-appx:///img/projectThumbnails/" + aspect.replace(":", "") + ".jpg")).then(function (defaultThumb) {
+                            Windows.Storage.FileIO.writeTextAsync(projectFile, xml.ToString()).then(function () {
+                                var saveaspect = aspect.replace(":", "");
+                                saveaspect = saveaspect.replace(".", "")
+                                Windows.Storage.StorageFile.getFileFromApplicationUriAsync(new Windows.Foundation.Uri("ms-appx:///img/projectThumbnails/" + saveaspect + ".jpg")).then(function (defaultThumb) {
                                     defaultThumb.copyAsync(projectDir, projectFile.name + ".jpg").done(function () {
                                         //Finished creating project files. Now update session state.
-                                        Ensemble.Session.currentProjectName = name;
-                                        Ensemble.Session.currentProjectAspect = aspect;
-                                        Ensemble.Session.currentProjectFileName = projectFile.name;
+                                        Ensemble.Session.projectName = name;
+                                        Ensemble.Session.projectAspect = aspect;
+                                        Ensemble.Session.projectFilename = projectFile.name;
                                         Ensemble.Session.horizontalDividerPosition = 0.5;
                                         Ensemble.Session.verticalDividerPosition = 0.5;
 
                                         Ensemble.Session.projectLoading = false;
                                         console.log("Project finished creating.");
                                     });
+                                }, function (error) {
+                                    console.log("Error retrieving the thumbnail.");
                                 });
                             });
                         });
@@ -77,10 +81,59 @@
             }
         },
 
-        loadProject: function (filename, cloud) {
+        loadProject: function (filename) {
             /// <summary>Loads a previously saved project from storage.</summary>
             /// <param name="filename" type="String">The name of the project to be loaded.</param>
-            /// <param name="cloud" type="Boolean">(Optional) Indicates whether or not the project is to be loaded from the cloud.</param>
+        },
+
+        enumerateProjects: function (callback) {
+            /// <summary>Enumerates all available projects in the project directory.</summary>
+            /// <param name="callback" type="Function">The callback to be fired after all projects have been enumerated.</param>
+            console.info("Enumerating all saved projects...");
+            switch (Ensemble.Platform.currentPlatform) {
+                case "win8":
+                    var dataArray = [];
+                    Windows.Storage.ApplicationData.current.localFolder.getFolderAsync("Projects").then(function (projectDir) {
+                        var projectQueryOptions = new Windows.Storage.Search.QueryOptions(Windows.Storage.Search.CommonFileQuery.orderByName, [".eo1"]);
+                        var projectQuery = projectDir.createFileQueryWithOptions(projectQueryOptions);
+                        projectQuery.getFilesAsync().then(function (projectFiles) {
+                            for (var i = 0; i < projectFiles.length; i++) {
+                                Windows.Storage.FileIO.readTextAsync(projectFiles[i]).then(function (contents) {
+                                    var parser = new DOMParser();
+                                    var xmlDoc = parser.parseFromString(contents, "text/xml");
+
+                                    var ensembleProject = xmlDoc.firstChild;
+
+                                    var loadedProjectName = xmlDoc.getElementsByTagName("ProjectName")[0].childNodes[0].nodeValue;
+                                    console.log("Found project \"" + loadedProjectName + "\" in the Projects directory!");
+                                    try {
+                                        var loadedDateModified = new Date(parseInt(xmlDoc.getElementsByTagName("DateModified")[0].childNodes[0].nodeValue, 10));
+                                        loadedDateModified = loadedDateModified.customFormat("#MMM# #DD#, #YYYY# #h#:#mm##ampm#");
+                                    }
+                                    catch (exception) {
+                                        var loadedDateModified = "Unknown";
+                                    }
+                                    var loadedAspectRatio = xmlDoc.getElementsByTagName("AspectRatio")[0].childNodes[0].nodeValue;
+                                    var loadedNumberOfClips = parseInt(xmlDoc.getElementsByTagName("NumberOfClips")[0].childNodes[0].nodeValue);
+                                    var loadedFilename = xmlDoc.getElementsByTagName("ProjectFilename")[0].childNodes[0].nodeValue;
+                                    var loadedProjectLength = xmlDoc.getElementsByTagName("ProjectLength")[0].childNodes[0].nodeValue;
+                                    var loadedThumbnailPath = "ms-appdata:///local/Projects/" + loadedFilename + ".jpg";
+
+                                    dataArray.push(new Ensemble.Editor.ProjectFile(loadedProjectName, loadedFilename, loadedDateModified, loadedNumberOfClips, loadedAspectRatio, loadedProjectLength, loadedThumbnailPath));
+
+                                    if (dataArray.length == projectFiles.length) {
+                                        callback();
+                                    }
+                                });
+                            }
+                        });
+                    });
+                    break;
+                case "android":
+                    break;
+                case "ios":
+                    break;
+            }
         },
 
         pickMediaFile: function (multi) {

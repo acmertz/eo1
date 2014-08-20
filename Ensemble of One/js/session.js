@@ -5,9 +5,9 @@
         //Name of the page currently visible to the user.
         _currentPage: null,
 
-        currentProjectName: null,
-        currentProjectFileName: null,
-        currentProjectAspect: null,
+        projectName: null,
+        projectFilename: null,
+        projectAspect: null,
         maxResolution: [2560,1440],
         horizontalDividerPosition: null,
         verticalDividerPosition: null,

@@ -33,6 +33,10 @@
     align-items: center;
 }
 
+#editorCanvasContent #editorCanvas {
+    width: 100%;
+}
+
 #editorPageContainer #editorCanvasContainer #editorPlayControls {
     width: 100%;
     display: flex;
@@ -165,7 +169,7 @@
     padding: 20px;
 }
 
-.editorMenuButtons {
+#editorMenuButtons {
     position: fixed;
     top: 0px;
     left: 0px;
@@ -329,6 +333,7 @@
 
 .editorMenuCommandListItemName {
     flex: 1;
+    padding-left: 10px;
 }
 
 .editorMenuCommandListItemPinContainer {
@@ -338,8 +343,6 @@
 
 .videoPlaybackSurface {
     background-color: black;
-    width: 640px;
-    height: 360px;
 }
 
 #editorMenuClickEater {

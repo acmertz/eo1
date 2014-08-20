@@ -23,6 +23,7 @@
 
 
                     // Load all needed resources here
+                    Ensemble.Pages.Editor.UI.relink();
 
                     window.setTimeout(function () {
                         //showMainMenuInitial();
