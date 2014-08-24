@@ -11,7 +11,7 @@
             this.PageSections.upperHalf.customButtonsLeft = document.getElementById("editorCustomButtonsLeft");
             this.PageSections.upperHalf.customButtonsRight = document.getElementById("editorCustomButtonsRight");
 
-            this.PageSections.lowerHalf = document.getElementById("editorLowerHalf");
+            this.PageSections.lowerHalf.entireSection = document.getElementById("editorLowerHalf");
             this.PageSections.divider = document.getElementById("editorHorizontalDivider");
             this.PageSections.menuButtons = document.getElementById("editorMenuButtons");
 
@@ -32,6 +32,9 @@
             this.UserInput.Buttons.effectsMenu = document.getElementById("editorEffectsButton");
 
             this.UserInput.Boundaries.topBottomSplit = document.getElementById("editorHorizontalDivider");
+
+            this.UserInput.ClickEaters.menu = document.getElementById("editorMenuClickEater");
+            this.UserInput.ClickEaters.splitpoint = document.getElementById("topBottomSplitpointClickEater");
 
             this.UserInput.Buttons.timelineScrollUp = document.getElementById("editorTimelineScrollUpButton");
             this.UserInput.Buttons.timelineScrollDown = document.getElementById("editorTimelineScrollDownButton");
@@ -105,6 +108,10 @@
             },
             Boundaries: {
                 topBottomSplit: null
+            },
+            ClickEaters: {
+                menu: null,
+                splitpoint: null
             }
         }
     });

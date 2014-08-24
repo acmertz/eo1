@@ -3,7 +3,8 @@
         /// <summary>Functions used to control the behavior of the Editor page.</summary>
 
         //// PRIVATE INSTANCE VARIABLES ////
-        
+        _uiSplitpointMousedownOffsetY: 0,
+        _screenClickOffsetY: 0,
 
         //// PUBLIC INSTANCE VARIABLES ////
         currentMenuItem: null,
@@ -14,13 +15,14 @@
         showInitial: function () {
             /// <summary>Plays the Editor pagelaunch animation and attaches all event listeners.</summary>
             document.getElementById("editorPageContainer").style.visibility = "visible";
-            this.viewResized();
+            this.layoutInterfaceToSplitpoint(Ensemble.Settings.getEditorDividerPosition() * window.innerHeight);
             var upperHalf = document.getElementById("editorUpperHalf");
             var lowerHalf = document.getElementById("editorLowerHalf")
             WinJS.UI.Animation.enterPage([upperHalf, lowerHalf], null).then(function () {
             });
             window.setTimeout(function () {
                 $("#editorHorizontalDivider").removeClass("editorHorizontalDividerHidden");
+                $("#editorHorizontalDivider").addClass("editorHorizontalDividerVisible")
             }, 500);
             
 
@@ -103,6 +105,56 @@
             });
         },
 
+        uiSplitpointDragBegin: function (screenOffsetY, splitpointOffsetY) {
+            /// <summary>Begins a drag operation on the main UI splitpoint.</summary>
+            /// <param name="screenOffsetY" type="Number">The offset in pixels from the top of the screen that the mousedown occurred.</param>
+            /// <param name="splitpointOffsetY" type="Number">The offset in pixels from the top of the splitpoint element that the mousedown occurred.</param>
+            this._screenClickOffsetY = screenOffsetY;
+            this._uiSplitpointMousedownOffsetY = splitpointOffsetY;
+            $(Ensemble.Pages.Editor.UI.UserInput.Boundaries.topBottomSplit).addClass("zIndexTop");
+            $(Ensemble.Pages.Editor.UI.UserInput.ClickEaters.splitpoint).removeClass("editorClickEaterFaded");
+            Ensemble.Pages.Editor.UI.UserInput.Boundaries.topBottomSplit.removeEventListener("mousedown", this._topBottomSplitMouseDown, false);
+            document.addEventListener("mousemove", this._topBottomSplitDragMove, false);
+            document.addEventListener("mouseup", this._topBottomSplitDragEnd, false);
+            this.uiSplitpointDraggedTo(screenOffsetY);
+        },
+
+        uiSplitpointDraggedTo: function (yPosition) {
+            /// <summary>Begins a drag operation on the main UI splitpoint.</summary>
+            /// <param name="yPosition" type="Number">The new Y coordinate of the splitpoint.</param>
+
+            // TODO: support vendor-specific transform functions
+            Ensemble.Pages.Editor.UI.UserInput.Boundaries.topBottomSplit.style.transform = "translateY(" + (yPosition - this._screenClickOffsetY - this._uiSplitpointMousedownOffsetY) + "px)";
+        },
+
+        uiSplitpointDragEnd: function (yPosition) {
+            /// <summary>Finshes a drag operation on the main UI splitpoint.</summary>
+            /// <param name="yPosition" type="Number">The final Y coordinate of the splitpoint.</param>
+            document.removeEventListener("mousemove", this._topBottomSplitDragMove, false);
+            document.removeEventListener("mouseup", this._topBottomSplitDragEnd, false);
+            Ensemble.Pages.Editor.UI.UserInput.Boundaries.topBottomSplit.addEventListener("mousedown", this._topBottomSplitMouseDown, false);
+
+            $(Ensemble.Pages.Editor.UI.UserInput.Boundaries.topBottomSplit).removeClass("zIndexTop");
+            $(Ensemble.Pages.Editor.UI.UserInput.ClickEaters.splitpoint).addClass("editorClickEaterFaded");
+
+            this.layoutInterfaceToSplitpoint(yPosition);
+            Ensemble.Settings.setEditorDividerPosition(yPosition / window.innerHeight);
+        },
+
+        layoutInterfaceToSplitpoint: function (yPosition) {
+            /// <summary>Sets the UI splitpoint to the specified position and lays out the UI around it.</summary>
+            /// <param name="yPosition" type="Number">The Y coordinate in pixels representing the splitpoint's position.</param>
+
+            // TODO: support vendor-specific transform functions
+            Ensemble.Pages.Editor.UI.UserInput.Boundaries.topBottomSplit.style.transform = "";
+            var topFlex = yPosition / window.innerHeight;
+            var bottomFlex = (window.innerHeight - (yPosition + Ensemble.Pages.Editor.UI.UserInput.Boundaries.topBottomSplit.clientHeight)) / window.innerHeight;
+
+            Ensemble.Pages.Editor.UI.PageSections.upperHalf.entireSection.style.flex = topFlex;
+            Ensemble.Pages.Editor.UI.PageSections.lowerHalf.entireSection.style.flex = bottomFlex;
+            this.viewResized();
+        },
+
         menuShowProjectTab: function () {
             /// <summary>Hides the currently active menu tab and shows the Project tab in its place.</summary>
             this._menuHeaderFocusTab(document.getElementById("editorMenuTabProject"), document.getElementById("editorMenuContentProject"));
@@ -162,6 +214,8 @@
             var menuClickEater = document.getElementById("editorMenuClickEater");
             menuClickEater.addEventListener("click", this._menuClickEaterOnClickListener, false);
 
+            Ensemble.Pages.Editor.UI.UserInput.Boundaries.topBottomSplit.addEventListener("mousedown", this._topBottomSplitMouseDown, false);
+
             window.addEventListener("resize", this.viewResized, false);
         },
 
@@ -182,6 +236,19 @@
 
         _menuClickEaterOnClickListener: function () {
             Ensemble.Pages.Editor.hideActionMenu();
+        },
+
+        _topBottomSplitMouseDown: function (event) {
+            console.log("Mouse down on UI splitpoint at screen Y coordinate of " + event.clientY + " and top offset of " + event.offsetY);
+            Ensemble.Pages.Editor.uiSplitpointDragBegin(event.clientY, event.offsetY);
+        },
+
+        _topBottomSplitDragMove: function (event) {
+            Ensemble.Pages.Editor.uiSplitpointDraggedTo(event.clientY);
+        },
+
+        _topBottomSplitDragEnd: function (event) {
+            Ensemble.Pages.Editor.uiSplitpointDragEnd(event.clientY);
         },
 
         _menuHeaderProjectOnClick: function () {
