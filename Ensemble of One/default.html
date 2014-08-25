@@ -265,183 +265,215 @@
 
 
             <div id="editorMenuDialog">
-                <div id="editorMenuDialogTabs">
-                    <i class="editorMenuButtonPlaceholder fa fa-2x fa-list"></i>
-                    <h2 class="editorMenuTabHeader editorMenuTabFocused" id="editorMenuTabProject">Project</h2>
-                    <h2 class="editorMenuTabHeader editorMenuTabBlurred editorMenuRightAdjacentTab" id="editorMenuTabEdit">Edit</h2>
-                    <h2 class="editorMenuTabHeader editorMenuTabBlurred" id="editorMenuTabClip">Clip</h2>
-                    <h2 class="editorMenuTabHeader editorMenuTabBlurred" id="editorMenuTabTrack">Track</h2>
-                    <h2 class="editorMenuTabHeader editorMenuTabBlurred" id="editorMenuTabExport">Export</h2>
+                <div id="editorActionMenu" class="editorSubMenu">
+                    <div class="editorMenuDialogTabs">
+                        <i class="editorMenuButtonPlaceholder fa fa-2x fa-list"></i>
+                        <h2 class="editorMenuTabHeader editorMenuTabFocused" id="editorMenuTabProject">Project</h2>
+                        <h2 class="editorMenuTabHeader editorMenuTabBlurred editorMenuRightAdjacentTab" id="editorMenuTabEdit">Edit</h2>
+                        <h2 class="editorMenuTabHeader editorMenuTabBlurred" id="editorMenuTabClip">Clip</h2>
+                        <h2 class="editorMenuTabHeader editorMenuTabBlurred" id="editorMenuTabTrack">Track</h2>
+                        <h2 class="editorMenuTabHeader editorMenuTabBlurred" id="editorMenuTabExport">Export</h2>
+                    </div>
+                    <div class="editorMenuDialogContent">
+                        <i class="editorMenuButtonPlaceholder fa fa-2x fa-list"></i>
+                        <div class="editorMenuContentItem" id="editorMenuContentProject">
+                            <h2>Project name here</h2>
+                            <span><i class="fa fa-pencil-square-o"></i> Rename</span>
+                            <div class="editorMenuThumbnailSection">
+                                <div class="editorMenuThumbnailSectionHalf">
+                                    <img src="" alt="Project thumbnail" class="editorMenuThumbnailSectionThumb" id="editorMenuProjectThumbnail" />
+                                </div>
+                                <div class="editorMenuThumbnailSectionHalf">
+                                    <p>
+                                        <span>0</span>
+                                        <span> minutes, </span>
+                                        <span>0</span>
+                                        <span> seconds</span>
+                                    </p>
+                                    <p>
+                                        <span>0</span>
+                                        <span> clips</span>
+                                    </p>
+                                    <p>
+                                        <span>16:9</span>
+                                        <span> </span>
+                                        <span>widescreen</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="editorMenuCommandList">
+                                <div class="editorMenuCommandListItem">
+                                    <span class="editorMenuCommandListItemName"><i class="fa fa-floppy-o"></i> Save</span>
+                                    <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
+                                </div>
+                                <div class="editorMenuCommandListItem">
+                                    <span class="editorMenuCommandListItemName"><i class="fa fa-folder-open-o"></i> Open</span>
+                                </div>
+                                <div class="editorMenuCommandListItem">
+                                    <span class="editorMenuCommandListItemName"><i class="fa fa-arrow-left"></i> Exit</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="editorMenuContentItem" id="editorMenuContentEdit" hidden>
+                            <div class="editorMenuCommandList">
+                                <div class="editorMenuCommandListItem">
+                                    <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-undo"></i> Undo</span>
+                                    <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
+                                </div>
+                                <div class="editorMenuCommandListItem">
+                                    <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-repeat"></i> Redo</span>
+                                    <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
+                                </div>
+                                <div class="editorMenuCommandListItem">
+                                    <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-scissors"></i> Cut</span>
+                                    <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
+                                </div>
+                                <div class="editorMenuCommandListItem">
+                                    <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-files-o"></i> Copy</span>
+                                    <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
+                                </div>
+                                <div class="editorMenuCommandListItem">
+                                    <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-clipboard"></i> Paste</span>
+                                    <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
+                                </div>
+                                <div class="editorMenuCommandListItem">
+                                    <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-trash-o"></i> Remove</span>
+                                    <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
+                                </div>
+                                <div class="editorMenuCommandListItem">
+                                    <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-th"></i> Select all</span>
+                                    <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="editorMenuContentItem" id="editorMenuContentClip" hidden>
+                            <h2>Clip name here</h2>
+                            <span><i class="fa fa-pencil-square-o"></i> Rename</span>
+                            <div class="editorMenuThumbnailSection">
+                                <div class="editorMenuThumbnailSectionHalf">
+                                    <img src="" alt="Project thumbnail" id="editorMenuClipThumbnail" class="editorMenuThumbnailSectionThumb" />
+                                </div>
+                                <div class="editorMenuThumbnailSectionHalf">
+                                    <p>
+                                        <span>0</span>
+                                        <span> minutes, </span>
+                                        <span>0</span>
+                                        <span> seconds</span>
+                                    </p>
+                                    <p>
+                                        <span>0</span>
+                                        <span>x</span>
+                                        <span>0</span>
+                                        <span> pixels</span>
+                                    </p>
+                                    <p>
+                                        <span>16:9</span>
+                                        <span> </span>
+                                        <span>widescreen</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="editorMenuCommandList">
+                                <div class="editorMenuCommandListItem">
+                                    <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-filter"></i> Split</span>
+                                    <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
+                                </div>
+                                <div class="editorMenuCommandListItem">
+                                    <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-road"></i> Trim</span>
+                                    <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
+                                </div>
+                                <div class="editorMenuCommandListItem">
+                                    <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-crop"></i> Crop</span>
+                                    <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
+                                </div>
+                                <div class="editorMenuCommandListItem">
+                                    <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-star-o"></i> Quick effect</span>
+                                    <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
+                                </div>
+                                <div class="editorMenuCommandListItem">
+                                    <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-volume-up"></i> Volume</span>
+                                    <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
+                                </div>
+                                <div class="editorMenuCommandListItem">
+                                    <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-link"></i> Add/remove angle</span>
+                                    <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
+                                </div>
+                                <div class="editorMenuCommandListItem">
+                                    <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-unlock"></i> Lock</span>
+                                    <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="editorMenuContentItem" id="editorMenuContentTrack" hidden>
+                            <div class="editorMenuCommandList">
+                                <div class="editorMenuCommandListItem">
+                                    <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-plus"></i> New track</span>
+                                    <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
+                                </div>
+                                <div class="editorMenuCommandListItem">
+                                    <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-volume-off"></i> Mute</span>
+                                    <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
+                                </div>
+                                <div class="editorMenuCommandListItem">
+                                    <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-exchange"></i> Sync lock</span>
+                                    <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
+                                </div>
+                                <div class="editorMenuCommandListItem">
+                                    <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-angle-double-up"></i> Move to top</span>
+                                    <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
+                                </div>
+                                <div class="editorMenuCommandListItem">
+                                    <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-angle-up"></i> Move up</span>
+                                    <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
+                                </div>
+                                <div class="editorMenuCommandListItem">
+                                    <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-angle-down"></i> Move down</span>
+                                    <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
+                                </div>
+                                <div class="editorMenuCommandListItem">
+                                    <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-angle-double-down"></i> Move to bottom</span>
+                                    <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="editorMenuContentItem" id="editorMenuContentExport" hidden>
+                            <h2>Export menu</h2>
+                            <p>Export menu content here.</p>
+                        </div>
+                    </div>
                 </div>
-                <div id="editorMenuDialogContent">
-                    <i class="editorMenuButtonPlaceholder fa fa-2x fa-list"></i>
-                    <div class="editorMenuContentItem" id="editorMenuContentProject">
-                        <h2>Project name here</h2>
-                        <span><i class="fa fa-pencil-square-o"></i> Rename</span>
-                        <div class="editorMenuThumbnailSection">
-                            <div class="editorMenuThumbnailSectionHalf">
-                                <img src="" alt="Project thumbnail" class="editorMenuThumbnailSectionThumb" id="editorMenuProjectThumbnail" />
-                            </div>
-                            <div class="editorMenuThumbnailSectionHalf">
-                                <p>
-                                    <span>0</span>
-                                    <span> minutes, </span>
-                                    <span>0</span>
-                                    <span> seconds</span>
-                                </p>
-                                <p>
-                                    <span>0</span>
-                                    <span> clips</span>
-                                </p>
-                                <p>
-                                    <span>16:9</span>
-                                    <span> </span>
-                                    <span>widescreen</span>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="editorMenuCommandList">
-                            <div class="editorMenuCommandListItem">
-                                <span class="editorMenuCommandListItemName"><i class="fa fa-floppy-o"></i> Save</span>
-                                <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
-                            </div>
-                            <div class="editorMenuCommandListItem">
-                                <span class="editorMenuCommandListItemName"><i class="fa fa-folder-open-o"></i> Open</span>
-                            </div>
-                            <div class="editorMenuCommandListItem">
-                                <span class="editorMenuCommandListItemName"><i class="fa fa-arrow-left"></i> Exit</span>
-                            </div>
+
+                <div id="editorMediaMenu" class="editorSubMenu editorMenuDialogContent">
+                    <div class="editorMenuDialogTabs">
+                        <i class="editorMenuButtonPlaceholder fa fa-2x fa-list"></i>
+                        <h2 class="editorMenuTabHeader editorMenuTabFocused" id="editorMenuTabMediaLocal">Local</h2>
+                        <h2 class="editorMenuTabHeader editorMenuTabBlurred editorMenuRightAdjacentTab" id="editorMenuTabMediaCamera">Camera</h2>
+                        <h2 class="editorMenuTabHeader editorMenuTabBlurred" id="editorMenuTabMediaMic">Mic</h2>
+                    </div>
+                    <div class="editorMenuDialogContent">
+                        <i class="editorMenuButtonPlaceholder fa fa-2x fa-list"></i>
+                        <div class="editorMenuContentItem" id="editorMediaMenuContentLocal">
+                            <p>Use this menu to insert video and audio clips from your Libraries, browse for files on your local device, or record from attached capture devices.</p>
                         </div>
                     </div>
+                </div>
 
-                    <div class="editorMenuContentItem" id="editorMenuContentEdit" hidden>
-                        <div class="editorMenuCommandList">
-                            <div class="editorMenuCommandListItem">
-                                <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-undo"></i> Undo</span>
-                                <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
-                            </div>
-                            <div class="editorMenuCommandListItem">
-                                <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-repeat"></i> Redo</span>
-                                <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
-                            </div>
-                            <div class="editorMenuCommandListItem">
-                                <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-scissors"></i> Cut</span>
-                                <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
-                            </div>
-                            <div class="editorMenuCommandListItem">
-                                <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-files-o"></i> Copy</span>
-                                <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
-                            </div>
-                            <div class="editorMenuCommandListItem">
-                                <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-clipboard"></i> Paste</span>
-                                <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
-                            </div>
-                            <div class="editorMenuCommandListItem">
-                                <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-trash-o"></i> Remove</span>
-                                <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
-                            </div>
-                            <div class="editorMenuCommandListItem">
-                                <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-th"></i> Select all</span>
-                                <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
-                            </div>
-                        </div>
+                <div id="editorEffectsMenu" class="editorSubMenu editorMenuDialogContent">
+                    <div class="editorMenuDialogTabs">
+                        <i class="editorMenuButtonPlaceholder fa fa-2x fa-list"></i>
+                        <h2 class="editorMenuTabHeader editorMenuTabFocused" id="editorMenuTabEffectsEffects">Effects</h2>
+                        <h2 class="editorMenuTabHeader editorMenuTabBlurred editorMenuRightAdjacentTab" id="editorMenuTabEffectsAnimations">Animations</h2>
+                        <h2 class="editorMenuTabHeader editorMenuTabBlurred" id="editorMenuTabEffectsTitles">Titles</h2>
                     </div>
-
-                    <div class="editorMenuContentItem" id="editorMenuContentClip" hidden>
-                        <h2>Clip name here</h2>
-                        <span><i class="fa fa-pencil-square-o"></i> Rename</span>
-                        <div class="editorMenuThumbnailSection">
-                            <div class="editorMenuThumbnailSectionHalf">
-                                <img src="" alt="Project thumbnail" id="editorMenuClipThumbnail" class="editorMenuThumbnailSectionThumb" />
-                            </div>
-                            <div class="editorMenuThumbnailSectionHalf">
-                                <p>
-                                    <span>0</span>
-                                    <span> minutes, </span>
-                                    <span>0</span>
-                                    <span> seconds</span>
-                                </p>
-                                <p>
-                                    <span>0</span>
-                                    <span>x</span>
-                                    <span>0</span>
-                                    <span> pixels</span>
-                                </p>
-                                <p>
-                                    <span>16:9</span>
-                                    <span> </span>
-                                    <span>widescreen</span>
-                                </p>
-                            </div>
+                    <div class="editorMenuDialogContent">
+                        <i class="editorMenuButtonPlaceholder fa fa-2x fa-list"></i>
+                        <div class="editorMenuContentItem" id="editorEffectsMenuContentEffects">
+                            <p>Use this menu to add effects, animations, and transitions to your project.</p>
                         </div>
-                        <div class="editorMenuCommandList">
-                            <div class="editorMenuCommandListItem">
-                                <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-filter"></i> Split</span>
-                                <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
-                            </div>
-                            <div class="editorMenuCommandListItem">
-                                <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-road"></i> Trim</span>
-                                <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
-                            </div>
-                            <div class="editorMenuCommandListItem">
-                                <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-crop"></i> Crop</span>
-                                <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
-                            </div>
-                            <div class="editorMenuCommandListItem">
-                                <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-star-o"></i> Quick effect</span>
-                                <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
-                            </div>
-                            <div class="editorMenuCommandListItem">
-                                <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-volume-up"></i> Volume</span>
-                                <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
-                            </div>
-                            <div class="editorMenuCommandListItem">
-                                <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-link"></i> Add/remove angle</span>
-                                <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
-                            </div>
-                            <div class="editorMenuCommandListItem">
-                                <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-unlock"></i> Lock</span>
-                                <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="editorMenuContentItem" id="editorMenuContentTrack" hidden>
-                        <div class="editorMenuCommandList">
-                            <div class="editorMenuCommandListItem">
-                                <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-plus"></i> New track</span>
-                                <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
-                            </div>
-                            <div class="editorMenuCommandListItem">
-                                <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-volume-off"></i> Mute</span>
-                                <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
-                            </div>
-                            <div class="editorMenuCommandListItem">
-                                <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-exchange"></i> Sync lock</span>
-                                <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
-                            </div>
-                            <div class="editorMenuCommandListItem">
-                                <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-angle-double-up"></i> Move to top</span>
-                                <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
-                            </div>
-                            <div class="editorMenuCommandListItem">
-                                <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-angle-up"></i> Move up</span>
-                                <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
-                            </div>
-                            <div class="editorMenuCommandListItem">
-                                <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-angle-down"></i> Move down</span>
-                                <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
-                            </div>
-                            <div class="editorMenuCommandListItem">
-                                <span class="editorMenuCommandListItemName"><i class="fa fa-fw fa-angle-double-down"></i> Move to bottom</span>
-                                <span class="editorMenuCommandListItemPinContainer"><i class="fa fa-thumb-tack"></i></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="editorMenuContentItem" id="editorMenuContentExport" hidden>
-                        <h2>Export menu</h2>
-                        <p>Export menu content here.</p>
                     </div>
                 </div>
             </div>

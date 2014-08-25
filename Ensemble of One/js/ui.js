@@ -14,6 +14,10 @@
             this.PageSections.lowerHalf.entireSection = document.getElementById("editorLowerHalf");
             this.PageSections.divider = document.getElementById("editorHorizontalDivider");
             this.PageSections.menuButtons = document.getElementById("editorMenuButtons");
+            this.PageSections.menu.entireSection = document.getElementById("editorMenuDialog");
+            this.PageSections.menu.actionMenu.entireSection = document.getElementById("editorActionMenu");
+            this.PageSections.menu.mediaMenu.entireSection = document.getElementById("editorMediaMenu");
+            this.PageSections.menu.effectsMenu.entireSection = document.getElementById("editorEffectsMenu");
 
             this.RenderSurfaces.mainCanvas = document.getElementById("editorCanvas");
 
@@ -48,11 +52,6 @@
             /// <summary>Dialogs, flyouts, and popups used to display information and get user input.</summary>
         },
 
-        ClickEaters: {
-            /// <summary>Invisible surfaces used to light-dismiss popups and other dialogs.</summary>
-            actionMenu: null
-        },
-
         PageSections: {
             /// <summary>Dialogs, flyouts, and popups used to display information and get user input.</summary>
             upperHalf: {
@@ -71,7 +70,20 @@
             //Horizontal divider bar that separates the top half of the page from the lower half.
             divider: null,
             //Free-floating menu buttons that toggle the visibility of the Editor menu.
-            menuButtons: null
+            menuButtons: null,
+            //Transient, light-dismiss menu dialog that appears in the top left corner of the screen.
+            menu: {
+                entireSection: null,
+                actionMenu: {
+                    entireSection: null
+                },
+                mediaMenu: {
+                    entireSection: null
+                },
+                effectsMenu: {
+                    entireSection: null
+                }
+            }
         },
 
         TextFields: {
