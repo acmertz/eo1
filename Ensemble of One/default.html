@@ -136,13 +136,21 @@
 
             <div id="openProjectDialog" class="mainMenuDialog openProjectDialogHidden">
                 <aside class="filmReelBorder"></aside>
-                <div id="openProjectDialogContent">
+                <div class="openProjectDialogContent" id="menuOpenProjectDialogContentEmpty">
                     <div class="filmReelFrame"></div>
                     <div class="filmReelFrame">
                         <h2>No projects found</h2>
                         <div>Tap <i class="fa fa-plus-square-o"></i> on the main menu to get started!</div>
                     </div>
                     <div class="filmReelFrame"></div>
+                </div>
+                <div class="openProjectDialogContent" id="menuOpenProjectDialogContentFull">
+                    <div id="openProjectDialogList"></div>
+                    <div id="openProjectDialogControls">
+                        <h3 class="mainMenuFilmReelButton animGroup2" id="mainMenuDeleteProjectButton" title="Delete"><i class="fa fa-trash-o"></i> Delete</h3>
+                        <h3 class="mainMenuFilmReelButton" id="mainMenuConfirmOpenProjectButton" title="Open"><i class="fa fa-check"></i> Open</h3>
+                        <h3 class="mainMenuFilmReelButton animGroup2" id="mainMenuRenameProjectButton" title="Rename"><i class="fa fa-pencil-square-o"></i> Rename</h3>
+                    </div>
                 </div>
                 <aside class="filmReelBorder"></aside>
             </div>

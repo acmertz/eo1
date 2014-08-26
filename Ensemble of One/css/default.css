@@ -569,10 +569,97 @@
 	color: white;
 }
 
-#openProjectDialogContent {
+.openProjectDialogContent {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
+}
+
+#menuOpenProjectDialogContentFull {
+    display: none;
+    background-color: white;
+    justify-content: center;
+    align-items: center;
+}
+
+#openProjectDialogList {
+    flex: 1;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#openProjectDialogControls {
+    display: flex;
+    padding: 10px;
+    transform: translateY(100%);
+    -webkit-transform: translateY(100%);
+}
+
+#openProjectDialogControls .animGroup2 {
+    transform: translateY(50%);
+    -webkit-transform: translateY(50%);
+}
+
+.openProjectDialogControlsVisible {
+    transform: translateY(0%) !important;
+    -webkit-transform: translateY(0%) !important;
+    animation: openProjectDialogControlsEnter 0.4s ease-in-out;
+    -webkit-animation: openProjectDialogControlsEnter 0.4s ease-in-out;
+}
+
+@keyframes openProjectDialogControlsEnter {
+    0% {
+        transform: translateY(100%);
+    }
+    100% {
+        transform: translateY(0%);
+    }
+}
+
+@-webkit-keyframes openProjectDialogControlsEnter {
+    0% {
+        -webkit-transform: translateY(100%);
+    }
+    100% {
+        -webkit-transform: translateY(0%);
+    }
+}
+
+.openProjectDialogControlsVisible .animGroup2 {
+    transform: translateY(0%) !important;
+    -webkit-transform: translateY(0%) !important;
+    animation: openProjectDialogControlsGroup2Enter 0.4s ease-in-out;
+    -webkit-animation: openProjectDialogControlsGroup2Enter 0.4s ease-in-out;
+}
+
+@keyframes openProjectDialogControlsGroup2Enter {
+    0% {
+        transform: translateY(50%);
+    }
+    50% {
+        transform: translateY(50%);
+    }
+    100% {
+        transform: translateY(0%);
+    }
+}
+
+@-webkit-keyframes openProjectDialogControlsGroup2Enter {
+    0% {
+        -webkit-transform: translateY(50%);
+    }
+    50% {
+        -webkit-transform: translateY(50%);
+    }
+    100% {
+        -webkit-transform: translateY(0%);
+    }
+}
+
+#openProjectDialogControls .mainMenuFilmReelButton {
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .filmReelFrame {
@@ -624,6 +711,68 @@
 .openProjectDialogVisible {
 	transform: translateX(-550px) translateZ(0);
 	-webkit-transform: translateX(-550px) translateZ(0);
+}
+
+.projectListItem {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 75px;
+    margin-bottom: 10px;
+    border: 2px solid transparent;
+}
+
+.projectListItemSelected {
+    border: 2px solid lightgray !important;
+}
+
+.projectListItemImgContainer {
+    height: 100%;
+    width: 180px;
+    text-align: center;
+    background-color: black;
+    margin-right: 5px;
+}
+
+.projectListItemImg {
+    height: 100%;
+    background-color: black;
+}
+
+.projectListItemMeta {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.projectListItemSubMeta {
+    flex: 1;
+    width: 100%;
+}
+
+.projectListItemTitle {
+    color: blue;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow-x: hidden;
+    font-size: x-large;
+}
+
+.projectListItemDetails {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 10px;
+}
+
+.projectListItemDetailsRow {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.projectListItemDetailsRowItem {
+    flex: 1;
 }
 
 .mainMenuClickEater {

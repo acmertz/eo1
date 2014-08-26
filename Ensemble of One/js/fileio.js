@@ -97,34 +97,37 @@
                         var projectQueryOptions = new Windows.Storage.Search.QueryOptions(Windows.Storage.Search.CommonFileQuery.orderByName, [".eo1"]);
                         var projectQuery = projectDir.createFileQueryWithOptions(projectQueryOptions);
                         projectQuery.getFilesAsync().then(function (projectFiles) {
-                            for (var i = 0; i < projectFiles.length; i++) {
-                                Windows.Storage.FileIO.readTextAsync(projectFiles[i]).then(function (contents) {
-                                    var parser = new DOMParser();
-                                    var xmlDoc = parser.parseFromString(contents, "text/xml");
+                            if (projectFiles.length == 0) callback([]);
+                            else {
+                                for (var i = 0; i < projectFiles.length; i++) {
+                                    Windows.Storage.FileIO.readTextAsync(projectFiles[i]).then(function (contents) {
+                                        var parser = new DOMParser();
+                                        var xmlDoc = parser.parseFromString(contents, "text/xml");
 
-                                    var ensembleProject = xmlDoc.firstChild;
+                                        var ensembleProject = xmlDoc.firstChild;
 
-                                    var loadedProjectName = xmlDoc.getElementsByTagName("ProjectName")[0].childNodes[0].nodeValue;
-                                    console.log("Found project \"" + loadedProjectName + "\" in the Projects directory!");
-                                    try {
-                                        var loadedDateModified = new Date(parseInt(xmlDoc.getElementsByTagName("DateModified")[0].childNodes[0].nodeValue, 10));
-                                        loadedDateModified = loadedDateModified.customFormat("#MMM# #DD#, #YYYY# #h#:#mm##ampm#");
-                                    }
-                                    catch (exception) {
-                                        var loadedDateModified = "Unknown";
-                                    }
-                                    var loadedAspectRatio = xmlDoc.getElementsByTagName("AspectRatio")[0].childNodes[0].nodeValue;
-                                    var loadedNumberOfClips = parseInt(xmlDoc.getElementsByTagName("NumberOfClips")[0].childNodes[0].nodeValue);
-                                    var loadedFilename = xmlDoc.getElementsByTagName("ProjectFilename")[0].childNodes[0].nodeValue;
-                                    var loadedProjectLength = xmlDoc.getElementsByTagName("ProjectLength")[0].childNodes[0].nodeValue;
-                                    var loadedThumbnailPath = "ms-appdata:///local/Projects/" + loadedFilename + ".jpg";
+                                        var loadedProjectName = xmlDoc.getElementsByTagName("ProjectName")[0].childNodes[0].nodeValue;
+                                        console.log("Found project \"" + loadedProjectName + "\" in the Projects directory!");
+                                        try {
+                                            var loadedDateModified = new Date(parseInt(xmlDoc.getElementsByTagName("DateModified")[0].childNodes[0].nodeValue, 10));
+                                            loadedDateModified = loadedDateModified.customFormat("#MMM# #DD#, #YYYY# #h#:#mm##ampm#");
+                                        }
+                                        catch (exception) {
+                                            var loadedDateModified = "Unknown";
+                                        }
+                                        var loadedAspectRatio = xmlDoc.getElementsByTagName("AspectRatio")[0].childNodes[0].nodeValue;
+                                        var loadedNumberOfClips = parseInt(xmlDoc.getElementsByTagName("NumberOfClips")[0].childNodes[0].nodeValue);
+                                        var loadedFilename = xmlDoc.getElementsByTagName("ProjectFilename")[0].childNodes[0].nodeValue;
+                                        var loadedProjectLength = xmlDoc.getElementsByTagName("ProjectLength")[0].childNodes[0].nodeValue;
+                                        var loadedThumbnailPath = "ms-appdata:///local/Projects/" + loadedFilename + ".jpg";
 
-                                    dataArray.push(new Ensemble.Editor.ProjectFile(loadedProjectName, loadedFilename, loadedDateModified, loadedNumberOfClips, loadedAspectRatio, loadedProjectLength, loadedThumbnailPath));
+                                        dataArray.push(new Ensemble.Editor.ProjectFile(loadedProjectName, loadedFilename, loadedDateModified, loadedNumberOfClips, loadedAspectRatio, loadedProjectLength, loadedThumbnailPath));
 
-                                    if (dataArray.length == projectFiles.length) {
-                                        callback();
-                                    }
-                                });
+                                        if (dataArray.length == projectFiles.length) {
+                                            callback(dataArray);
+                                        }
+                                    });
+                                }
                             }
                         });
                     });

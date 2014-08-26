@@ -112,8 +112,87 @@
 
 
 
-        showOpenProjectDialog: function () {
+        showOpenProjectDialog: function (projects) {
             /// <summary>Enumerates saved projects and shows the Open Project dialog.</summary>
+            /// <param name="projects" type="Array">An array containing the projects found in the application directory.</param>
+            if (projects.length == 0) {
+                document.getElementById("menuOpenProjectDialogContentFull").style.display = "none";
+                document.getElementById("menuOpenProjectDialogContentEmpty").style.display = "flex";
+            }
+            else {
+                document.getElementById("menuOpenProjectDialogContentEmpty").style.display = "none";
+                document.getElementById("menuOpenProjectDialogContentFull").style.display = "flex";
+
+                var projectListView = document.getElementById("openProjectDialogList");
+                $(projectListView).empty();
+                for (var i = 0; i < projects.length; i++) {
+                    var projectElement = document.createElement("div");
+                    projectElement.className = "projectListItem";
+                    projectElement.id = projects[i].filename;
+
+                    var newImgCont = document.createElement("div");
+                    newImgCont.className = "projectListItemImgContainer";
+
+                    var newImg = document.createElement("img");
+                    newImg.className = "projectListItemImg";
+                    newImg.src = projects[i].thumbnail;
+                    newImgCont.appendChild(newImg);
+                    projectElement.appendChild(newImgCont);
+
+
+
+                    var newMeta = document.createElement("div");
+                    newMeta.className = "projectListItemMeta";
+
+                    var newTitle = document.createElement("div");
+                    newTitle.className = "projectListItemSubMeta projectListItemTitle";
+                    newTitle.innerText = projects[i].name;
+                    newMeta.appendChild(newTitle);
+
+
+
+                    var newDetails = document.createElement("div");
+                    newDetails.className = "projectListItemSubMeta projectListItemDetails";
+
+                    var newRow1 = document.createElement("div");
+                    newRow1.className = "projectListItemDetailsRow";
+
+                    var newDuration = document.createElement("div");
+                    newDuration.className = "projectListItemDetailsRowItem";
+                    newDuration.innerText = "Duration: " + projects[i].duration + "ms";
+                    newRow1.appendChild(newDuration);
+
+                    var newDate = document.createElement("div");
+                    newDate.className = "projectListItemDetailsRowItem";
+                    newDate.innerText = "Modified: " + projects[i].modified;
+                    newRow1.appendChild(newDate);
+
+                    var newRow2 = document.createElement("div");
+                    newRow2.className = "projectListItemDetailsRow";
+
+                    var newAspect = document.createElement("div");
+                    newAspect.className = "projectListItemDetailsRowItem";
+                    newAspect.innerText = "Aspect ratio: " + projects[i].aspectRatio;
+                    newRow2.appendChild(newAspect);
+
+                    var newNumClips = document.createElement("div");
+                    newNumClips.className = "projectListItemDetailsRowItem";
+                    newNumClips.innerText = "Clips: " + projects[i].numberOfClips;
+                    newRow2.appendChild(newNumClips);
+
+                    newDetails.appendChild(newRow1);
+                    newDetails.appendChild(newRow2);
+                    newMeta.appendChild(newDetails);
+
+                    projectElement.appendChild(newMeta);
+                    projectElement.addEventListener("mousedown", Ensemble.Pages.MainMenu._projectListItemOnMouseDownListener, false);
+                    projectElement.addEventListener("mouseup", Ensemble.Pages.MainMenu._projectListItemOnMouseUpListener, false);
+                    projectElement.addEventListener("click", Ensemble.Pages.MainMenu._projectListItemOnClickListener, false);
+
+                    projectListView.appendChild(projectElement);
+                }
+            }
+            $("#openProjectDialogControls").removeClass("openProjectDialogControlsVisible");
             $("#openProjectDialog").addClass("openProjectDialogVisible");
             $("#openProjectClickEater").addClass("mainMenuClickEaterVisible");
             $("#mainMenuPageContainer").addClass("mainMenuParallaxToLeft");
@@ -124,6 +203,14 @@
             $("#openProjectDialog").removeClass("openProjectDialogVisible");
             $("#openProjectClickEater").removeClass("mainMenuClickEaterVisible");
             $("#mainMenuPageContainer").removeClass("mainMenuParallaxToLeft");
+        },
+
+        projectListSelectItem: function (item) {
+            /// <summary>Deselects all items in the project list, and then selects the given item.</summary>
+            /// <param name="item" type="DOMElement">The item to select.</param>
+            $(".projectListItem").removeClass("projectListItemSelected");
+            $(item).addClass("projectListItemSelected");
+            $("#openProjectDialogControls").addClass("openProjectDialogControlsVisible");
         },
 
         mouseDownOpenProjectButton: function () {
@@ -323,6 +410,21 @@
 
         _validateProjectButtonOnClickListener: function () {
             Ensemble.Pages.MainMenu.validateAndCreateProject();
+        },
+
+        _projectListItemOnMouseDownListener: function (event) {
+            console.log("Detected mousedown on a list item.");
+            WinJS.UI.Animation.pointerDown(event.currentTarget);
+        },
+
+        _projectListItemOnMouseUpListener: function (event) {
+            console.log("Detected mouseup on a list item.");
+            WinJS.UI.Animation.pointerUp(event.currentTarget);
+        },
+
+        _projectListItemOnClickListener: function (event) {
+            console.log("Detected a click on a list item.");
+            Ensemble.Pages.MainMenu.projectListSelectItem(event.currentTarget);
         },
 
         _projectLoadTimer: null
