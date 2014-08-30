@@ -147,9 +147,9 @@
                 <div class="openProjectDialogContent" id="menuOpenProjectDialogContentFull">
                     <div id="openProjectDialogList"></div>
                     <div id="openProjectDialogControls">
-                        <h3 class="mainMenuFilmReelButton animGroup2" id="mainMenuDeleteProjectButton" title="Delete"><i class="fa fa-trash-o"></i> Delete</h3>
                         <h3 class="mainMenuFilmReelButton" id="mainMenuConfirmOpenProjectButton" title="Open"><i class="fa fa-check"></i> Open</h3>
                         <h3 class="mainMenuFilmReelButton animGroup2" id="mainMenuRenameProjectButton" title="Rename"><i class="fa fa-pencil-square-o"></i> Rename</h3>
+                        <h3 class="mainMenuFilmReelButton mainMenuFilmReelDelete animGroup3" id="mainMenuDeleteProjectButton" title="Delete"><i class="fa fa-trash-o"></i> Delete</h3>
                     </div>
                 </div>
                 <aside class="filmReelBorder"></aside>
@@ -187,6 +187,21 @@
                     </div>
                 </div>
             </div>
+
+
+            <div class="mainMenuClickEater" id="deleteProjectConfirmationClickEater"></div>
+
+            <div id="deleteProjectConfirmationDialog" class="mainMenuZoomDialog">
+                <div class="mainMenuZoomDialogContent">
+                    <h2><i class="fa fa-warning"></i> Delete "<span id="deleteProjectConfirmationDialogNameDisplay"></span>?"</h2>
+                    <p>Deleting is forever - you'll never see your project again. Are you absolutely sure you want to do this?</p>
+                    <div class="mainMenuFilmReelButtonContainerHorizontal">
+                        <h3 class="mainMenuFilmReelButton" id="mainMenuConfirmDeleteProjectButton" title="Permanently delete the project"><i class="fa fa-trash-o"></i> Delete it</h3>
+                        <h3 class="mainMenuFilmReelButton" id="mainMenuCancelDeleteProjectButton" title="Cancel deleting the project"><i class="fa fa-times"></i> Cancel</h3>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
 

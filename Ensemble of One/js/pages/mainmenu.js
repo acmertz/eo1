@@ -210,6 +210,8 @@
             /// <param name="item" type="DOMElement">The item to select.</param>
             $(".projectListItem").removeClass("projectListItemSelected");
             $(item).addClass("projectListItemSelected");
+
+            $("#openProjectDialogControls").removeClass("openProjectDialogControlsHidden");
             $("#openProjectDialogControls").addClass("openProjectDialogControlsVisible");
         },
 
@@ -221,6 +223,21 @@
         mouseUpOpenProjectButton: function () {
             /// <summary>Plays the Open Project button mouseup effect.</summary>
             window.setTimeout(function () { $("#openProjectButton").removeClass("mainMenuPhotoButtonClicking"); }, 100);
+        },
+
+        showDeleteProjectConfirmationDialog: function () {
+            /// <summary>Shows a dialog asking the user to confirm he or she would like to delete the selected project.</summary>
+            document.getElementById("deleteProjectConfirmationDialogNameDisplay").innerText = document.getElementsByClassName("projectListItemSelected")[0].getElementsByClassName("projectListItemTitle")[0].innerText;
+            $("#deleteProjectConfirmationDialog").removeClass("mainMenuZoomDialogHidden");
+            $("#deleteProjectConfirmationDialog").addClass("mainMenuZoomDialogVisible");
+            $("#deleteProjectConfirmationClickEater").addClass("mainMenuClickEaterVisible");
+        },
+
+        hideDeleteProjectConfirmationDialog: function () {
+            /// <summary>Hides the delete project confirmation dialog.</summary>
+            $("#deleteProjectConfirmationDialog").removeClass("mainMenuZoomDialogVisible");
+            $("#deleteProjectConfirmationDialog").addClass("mainMenuZoomDialogHidden");
+            $("#deleteProjectConfirmationClickEater").removeClass("mainMenuClickEaterVisible");
         },
 
         showTickerDialog: function () {
@@ -261,6 +278,41 @@
             $("#settingsDialogClickEater").removeClass("mainMenuClickEaterVisible");
         },
 
+        deleteProject: function (projectFileName) {
+            /// <summary>Deletes the project with the given filename, should it exist.</summary>
+            /// <param name="projectFileName" type="String">The filename of the project to be deleted.</param>
+            console.log("Deleting " + projectFileName + "...");
+            Ensemble.FileIO.deleteProject(projectFileName);
+            this.hideDeleteProjectConfirmationDialog();
+
+            var listItems = document.getElementsByClassName("projectListItem");
+            if (listItems.length > 1) {
+                $("#openProjectDialogControls").removeClass("openProjectDialogControlsVisible");
+                $("#openProjectDialogControls").addClass("openProjectDialogControlsHidden");
+
+
+                var deleted = document.getElementById(projectFileName);
+                var affected = [];
+
+                var found = false;
+                for (var i = 0; i < listItems.length; i++) {
+                    if (found) affected.push(listItems[i]);
+                    else if (listItems[i] == deleted) found = true;
+                }
+
+                var anim = WinJS.UI.Animation.createDeleteFromListAnimation(deleted, affected);
+
+                deleted.style.position = "fixed";
+                deleted.style.opacity = 0;
+
+                anim.execute().then(function (complete) {
+                    deleted.parentNode.removeChild(deleted);
+                });
+            }
+            else this.hideOpenProjectDialog();
+            
+        },
+
 
 
         //// PRIVATE METHODS ////
@@ -299,6 +351,14 @@
             //New Project dialog
             document.getElementById("mainMenuValidateProjectButton").addEventListener("click", this._validateProjectButtonOnClickListener, false);
             document.getElementById("mainMenuProjectNameInput").addEventListener("keyup", this._projectNameInputKeyUpListener, false);
+
+            //Open Project dialog
+            document.getElementById("mainMenuConfirmOpenProjectButton").addEventListener("click", this._projectListOpenSelectedOnClickListener, false);
+            document.getElementById("mainMenuRenameProjectButton").addEventListener("click", this._projectListRenameSelectedOnClickListener, false);
+            document.getElementById("mainMenuDeleteProjectButton").addEventListener("click", this._projectListDeleteSelectedOnClickListener, false);
+
+            document.getElementById("mainMenuConfirmDeleteProjectButton").addEventListener("click", this._confirmDeleteProjectButtonOnClickListener, false);
+            document.getElementById("mainMenuCancelDeleteProjectButton").addEventListener("click", this._cancelDeleteProjectButtonOnClickListener, false);
         },
 
         _detachListeners: function () {
@@ -335,6 +395,14 @@
             //New Project dialog
             document.getElementById("mainMenuValidateProjectButton").removeEventListener("click", this._validateProjectButtonOnClickListener, false);
             document.getElementById("mainMenuProjectNameInput").removeEventListener("keyup", this._projectNameInputKeyUpListener, false);
+
+            //Open Project dialog
+            document.getElementById("mainMenuConfirmOpenProjectButton").removeEventListener("click", this._projectListOpenSelectedOnClickListener, false);
+            document.getElementById("mainMenuRenameProjectButton").removeEventListener("click", this._projectListRenameSelectedOnClickListener, false);
+            document.getElementById("mainMenuDeleteProjectButton").removeEventListener("click", this._projectListDeleteSelectedOnClickListener, false);
+
+            document.getElementById("mainMenuConfirmDeleteProjectButton").removeEventListener("click", this._confirmDeleteProjectButtonOnClickListener, false);
+            document.getElementById("mainMenuCancelDeleteProjectButton").removeEventListener("click", this._cancelDeleteProjectButtonOnClickListener, false);
         },
 
         _tickerOnClickListener: function (event) {
@@ -425,6 +493,27 @@
         _projectListItemOnClickListener: function (event) {
             console.log("Detected a click on a list item.");
             Ensemble.Pages.MainMenu.projectListSelectItem(event.currentTarget);
+        },
+
+        _projectListOpenSelectedOnClickListener: function (event) {
+            console.log("Open the selected project.");
+        },
+
+        _projectListRenameSelectedOnClickListener: function (event) {
+            console.log("Rename the selected project.");
+        },
+
+        _projectListDeleteSelectedOnClickListener: function (event) {
+            console.log("Delete the selected project.");
+            Ensemble.Pages.MainMenu.showDeleteProjectConfirmationDialog();
+        },
+
+        _confirmDeleteProjectButtonOnClickListener: function (event) {
+            Ensemble.Pages.MainMenu.deleteProject(document.getElementsByClassName("projectListItemSelected")[0].id);
+        },
+
+        _cancelDeleteProjectButtonOnClickListener: function (event) {
+            Ensemble.Pages.MainMenu.hideDeleteProjectConfirmationDialog();
         },
 
         _projectLoadTimer: null

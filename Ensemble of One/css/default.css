@@ -596,11 +596,6 @@
     -webkit-transform: translateY(100%);
 }
 
-#openProjectDialogControls .animGroup2 {
-    transform: translateY(50%);
-    -webkit-transform: translateY(50%);
-}
-
 .openProjectDialogControlsVisible {
     transform: translateY(0%) !important;
     -webkit-transform: translateY(0%) !important;
@@ -635,6 +630,37 @@
 
 @keyframes openProjectDialogControlsGroup2Enter {
     0% {
+        transform: translateY(25%);
+    }
+    50% {
+        transform: translateY(25%);
+    }
+    100% {
+        transform: translateY(0%);
+    }
+}
+
+@-webkit-keyframes openProjectDialogControlsGroup2Enter {
+    0% {
+        -webkit-transform: translateY(25%);
+    }
+    50% {
+        -webkit-transform: translateY(25%);
+    }
+    100% {
+        -webkit-transform: translateY(0%);
+    }
+}
+
+.openProjectDialogControlsVisible .animGroup3 {
+    transform: translateY(0%) !important;
+    -webkit-transform: translateY(0%) !important;
+    animation: openProjectDialogControlsGroup2Enter 0.4s ease-in-out;
+    -webkit-animation: openProjectDialogControlsGroup2Enter 0.4s ease-in-out;
+}
+
+@keyframes openProjectDialogControlsGroup3Enter {
+    0% {
         transform: translateY(50%);
     }
     50% {
@@ -657,7 +683,32 @@
     }
 }
 
-#openProjectDialogControls .mainMenuFilmReelButton {
+.openProjectDialogControlsHidden {
+    transform: translateY(100%) !important;
+    -webkit-transform: translateY(100%) !important;
+    animation: openProjectDialogControlsExit 0.2s ease-in-out;
+    -webkit-animation: openProjectDialogControlsExit 0.2s ease-in-out;
+}
+
+@keyframes openProjectDialogControlsExit {
+    0% {
+        transform: translateY(0%);
+    }
+    100% {
+        transform: translateY(100%);
+    }
+}
+
+@-webkit-keyframes openProjectDialogControlsExit {
+    0% {
+        -webkit-transform: translateY(0%);
+    }
+    100% {
+        -webkit-transform: translateY(100%);
+    }
+}
+
+#openProjectDialogControls .mainMenuFilmReelButton, .mainMenuZoomDialogContent .mainMenuFilmReelButton {
     margin-left: 10px;
     margin-right: 10px;
 }
@@ -781,14 +832,122 @@
 	left: 0px;
 	width: 100%;
 	height: 100%;
-	background-color: rgba(0,0,0,0);
+	background-color: black;
+    opacity: 0;
 	pointer-events: none;
-	transition: background-color 0.6s ease-in-out;
+	transition: opacity 0.6s ease-in-out;
 }
 
 .mainMenuClickEaterVisible {
 	pointer-events: all;
-	background-color: rgba(0,0,0,0.5);
+	opacity: 0.5;
+}
+
+.mainMenuZoomDialog {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+    display: none;
+
+	justify-content: center;
+	align-items: center;
+}
+
+.mainMenuZoomDialogContent {
+    background: rgba(255,255,255,0.9);
+    border-radius: 10px;
+    border: 2px solid gray;
+    padding: 50px;
+}
+
+.mainMenuFilmReelButtonContainerHorizontal {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.mainMenuZoomDialogVisible {
+    animation: mainMenuZoomDialogEnter 0.4s ease-in-out;
+    -webkit-animation: mainMenuZoomDialogEnter 0.4s ease-in-out;
+    transform: scale(1);
+    -webkit-transform: scale(1);
+    display: flex;
+}
+
+@keyframes mainMenuZoomDialogEnter {
+    0% {
+        transform: scale(0);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    75% {
+        transform: scale(0.97);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@-webkit-keyframes mainMenuZoomDialogEnter {
+    0% {
+        -webkit-transform: scale(0);
+    }
+
+    80% {
+        -webkit-transform: scale(1.1);
+    }
+
+    90% {
+        -webkit-transform: scale(0.95);
+    }
+
+    100% {
+        -webkit-transform: scale(1);
+    }
+}
+
+.mainMenuZoomDialogHidden {
+    animation: mainMenuZoomDialogExit 0.4s ease-in-out;
+    -webkit-animation: mainMenuZoomDialogExit 0.4s ease-in-out;
+    display: flex;
+    pointer-events: none;
+    transform: scale(0);
+    -webkit-transform: scale(0);
+}
+
+@keyframes mainMenuZoomDialogExit {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(0);
+    }
+}
+
+@-webkit-keyframes mainMenuZoomDialogExit {
+    0% {
+        -webkit-transform: scale(1);
+    }
+
+    50% {
+        -webkit-transform: scale(1.05);
+    }
+
+    100% {
+        -webkit-transform: scale(0);
+    }
 }
 
 .mainMenuFlipDialog {

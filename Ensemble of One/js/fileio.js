@@ -147,6 +147,32 @@
 
         saveProject: function () {
             /// <summary>Saves the currently loaded project to disk.</summary>
+        },
+
+        deleteProject: function (filename) {
+            /// <summary>Permanently deletes the project with the given filename.</summary>
+            /// <param name="filename" type="String">The filename of the project to be deleted.</param>
+            switch (Ensemble.Platform.currentPlatform) {
+                case "win8":
+                    var dataArray = [];
+                    Windows.Storage.ApplicationData.current.localFolder.getFolderAsync("Projects").then(function (projectDir) {
+                        projectDir.getFileAsync(filename).then(function (projectFile) {
+                            projectFile.deleteAsync(Windows.Storage.StorageDeleteOption.permanentDelete).then(function (done) {
+                                console.log("Deleted project file.");
+                            });
+                        });
+                        projectDir.getFileAsync(filename + ".jpg").then(function (projectFile) {
+                            projectFile.deleteAsync(Windows.Storage.StorageDeleteOption.permanentDelete).then(function (done) {
+                                console.log("Deleted project thumbnail.");
+                            });
+                        });
+                    });
+                    break;
+                case "android":
+                    break;
+                case "ios":
+                    break;
+            }
         }
     });
 })();
