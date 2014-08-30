@@ -34,11 +34,14 @@
             this.UserInput.Buttons.actionMenu = document.getElementById("editorMenuButton");
             this.UserInput.Buttons.mediaMenu = document.getElementById("editorMediaButton");
             this.UserInput.Buttons.effectsMenu = document.getElementById("editorEffectsButton");
+            this.UserInput.Buttons.mediaBrowserLocation = document.getElementById("editorMediaBrowserLocationButton");
 
             this.UserInput.Boundaries.topBottomSplit = document.getElementById("editorHorizontalDivider");
 
             this.UserInput.ClickEaters.menu = document.getElementById("editorMenuClickEater");
             this.UserInput.ClickEaters.splitpoint = document.getElementById("topBottomSplitpointClickEater");
+
+            this.UserInput.Flyouts.mediaBrowserLocation = document.getElementById("editorMediaBrowserLocationFlyout");
 
             this.UserInput.Buttons.timelineScrollUp = document.getElementById("editorTimelineScrollUpButton");
             this.UserInput.Buttons.timelineScrollDown = document.getElementById("editorTimelineScrollDownButton");
@@ -116,7 +119,8 @@
                 timelineZoomOut: null,
                 actionMenu: null,
                 mediaMenu: null,
-                effectsMenu: null
+                effectsMenu: null,
+                mediaBrowserLocation: null
             },
             Boundaries: {
                 topBottomSplit: null
@@ -124,6 +128,9 @@
             ClickEaters: {
                 menu: null,
                 splitpoint: null
+            },
+            Flyouts: {
+                mediaBrowserLocation: null
             }
         }
     });

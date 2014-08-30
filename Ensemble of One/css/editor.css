@@ -436,6 +436,11 @@
     padding-right: 10px;
 }
 
+#editorMenuMediaBrowserFileList {
+    background-color: gray;
+    height: 80%;
+}
+
 .videoPlaybackSurface {
     background-color: black;
 }

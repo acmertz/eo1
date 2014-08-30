@@ -1,5 +1,13 @@
 ﻿// For an introduction to the Blank template, see the following documentation:
 // http://go.microsoft.com/fwlink/?LinkId=232509
+
+var clockMGR = null;
+var mediaMGR = null;
+var renderPool = {
+    main: null,
+    fullscreen: null
+};
+
 (function () {
     "use strict";
 
@@ -24,6 +32,9 @@
 
                     // Load all needed resources here
                     Ensemble.Pages.Editor.UI.relink();
+                    clockMGR = new Ensemble.Editor.ClockMGR();
+                    mediaMGR = new Ensemble.Editor.MediaMGR();
+                    renderPool.main = new Ensemble.Editor.Renderer(Ensemble.Pages.Editor.UI.RenderSurfaces.mainCanvas);
 
                     window.setTimeout(function () {
                         //showMainMenuInitial();

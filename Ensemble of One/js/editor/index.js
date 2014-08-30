@@ -3,9 +3,12 @@
         function () {
             /// <summary>Manages the timing and grouping of MediaClip instances.</summary>
             //Constructor
+            this.indexData = [];
         },
         {
             //Instance members
+            //An array containing all of the IndexSegments that represent timing information within the project.
+            indexData: null
         },
         {
             //Static members

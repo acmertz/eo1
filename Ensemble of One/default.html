@@ -470,7 +470,7 @@
                     </div>
                 </div>
 
-                <div id="editorMediaMenu" class="editorSubMenu editorMenuDialogContent">
+                <div id="editorMediaMenu" class="editorSubMenu">
                     <div class="editorMenuDialogTabs">
                         <i class="editorMenuButtonPlaceholder fa fa-2x fa-list"></i>
                         <h2 class="editorMenuTabHeader editorMenuTabFocused" id="editorMenuTabMediaLocal">Local</h2>
@@ -480,12 +480,15 @@
                     <div class="editorMenuDialogContent">
                         <i class="editorMenuButtonPlaceholder fa fa-2x fa-list"></i>
                         <div class="editorMenuContentItem" id="editorMediaMenuContentLocal">
-                            <p>Use this menu to insert video and audio clips from your Libraries, browse for files on your local device, or record from attached capture devices.</p>
+                            <h2 id="editorMediaBrowserLocationButton">Videos library <i class="fa fa-angle-down"></i></h2>
+                            <div id="editorMenuMediaBrowserFileList">
+
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div id="editorEffectsMenu" class="editorSubMenu editorMenuDialogContent">
+                <div id="editorEffectsMenu" class="editorSubMenu">
                     <div class="editorMenuDialogTabs">
                         <i class="editorMenuButtonPlaceholder fa fa-2x fa-list"></i>
                         <h2 class="editorMenuTabHeader editorMenuTabFocused" id="editorMenuTabEffectsEffects">Effects</h2>
@@ -509,7 +512,15 @@
 
             <div id="topBottomSplitpointClickEater" class="editorClickEater editorClickEaterFaded"></div>
 
+            
         </div>
+    </div>
+    <div id="editorMediaBrowserLocationFlyout" data-win-control="WinJS.UI.Menu">
+        <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'alwaysSaveMenuItem',label:'Videos library'}"></button>
+        <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'replyMenuItem',label:'Music library'}"></button>
+        <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'replyAllMenuItem',label:'Pictures library'}"></button>
+        <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'separator',type:'separator'}" />
+        <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'forwardMenuItem',label:'Browse...'}"></button>
     </div>
 </body>
 </html>

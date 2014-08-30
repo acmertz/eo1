@@ -143,7 +143,7 @@
 
             var menuInstance = Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.entireSection.getElementsByClassName("editorMenuContentItem")[0];
             menuInstance.style.opacity = 1;
-            menuInstance.style.display = "inline";
+            menuInstance.style.display = "flex";
 
             WinJS.UI.Animation.enterContent(menuDialog);
             this.menuOpen = true;
@@ -283,6 +283,8 @@
             editorButtons.mediaMenu.addEventListener("click", this._mediaMenuButtonOnClickListener, false);
             editorButtons.effectsMenu.addEventListener("click", this._effectsMenuButtonOnClickListener, false);
 
+            Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocation.addEventListener("click", this._mediaBrowserButtonOnClickListener, false);
+
             var menuHeaderProject = document.getElementById("editorMenuTabProject");
             menuHeaderProject.addEventListener("click", this._menuHeaderProjectOnClick, false);
 
@@ -366,6 +368,10 @@
                     Ensemble.Pages.Editor.swapSubmenus(Ensemble.Pages.Editor.currentSubmenu, Ensemble.Pages.Editor.UI.PageSections.menu.effectsMenu.entireSection);
                 }
             }
+        },
+
+        _mediaBrowserButtonOnClickListener: function () {
+            Ensemble.Pages.Editor.UI.UserInput.Flyouts.mediaBrowserLocation.winControl.show(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocation, "bottom", "left");
         },
 
         _menuClickEaterOnClickListener: function () {
