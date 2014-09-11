@@ -335,6 +335,10 @@
     display: none;
     width: 100%;
     opacity: 0;
+    flex: 1;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
 }
 
 .editorMenuDialogTabs {
@@ -383,6 +387,7 @@
 #editorMenuDialog .editorMenuDialogContent {
     width: 100%;
     display: flex;
+    flex: 1;
     flex-direction: row;
     justify-content: flex-start;
     overflow-y: hidden;
@@ -394,6 +399,7 @@
     padding: 10px;
     opacity: 0;
     display: none;
+    flex-direction: column;
     overflow-y: auto;
 }
 
@@ -438,7 +444,7 @@
 
 #editorMenuMediaBrowserFileList {
     background-color: gray;
-    height: 80%;
+    flex: 1;
 }
 
 .videoPlaybackSurface {

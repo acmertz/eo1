@@ -101,7 +101,7 @@
             var menuDialog = Ensemble.Pages.Editor.UI.PageSections.menu.entireSection;
             menuDialog.style.visibility = "visible";
 
-            Ensemble.Pages.Editor.UI.PageSections.menu.actionMenu.entireSection.style.display = "inline";
+            Ensemble.Pages.Editor.UI.PageSections.menu.actionMenu.entireSection.style.display = "flex";
             Ensemble.Pages.Editor.UI.PageSections.menu.actionMenu.entireSection.style.opacity = 1;
 
             Ensemble.Pages.Editor.currentActionMenuItem.style.display = "inline";
@@ -138,7 +138,7 @@
 
             this.hideAllSubmenus();
 
-            Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.entireSection.style.display = "inline";
+            Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.entireSection.style.display = "flex";
             Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.entireSection.style.opacity = 1;
 
             var menuInstance = Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.entireSection.getElementsByClassName("editorMenuContentItem")[0];
@@ -159,7 +159,7 @@
 
             this.hideAllSubmenus();
 
-            Ensemble.Pages.Editor.UI.PageSections.menu.effectsMenu.entireSection.style.display = "inline";
+            Ensemble.Pages.Editor.UI.PageSections.menu.effectsMenu.entireSection.style.display = "flex";
             Ensemble.Pages.Editor.UI.PageSections.menu.effectsMenu.entireSection.style.opacity = 1;
 
             var menuInstance = Ensemble.Pages.Editor.UI.PageSections.menu.effectsMenu.entireSection.getElementsByClassName("editorMenuContentItem")[0];
@@ -184,7 +184,7 @@
             /// <param name="submenu2" type="HTMLElement">The submenu to show.</param>
             WinJS.UI.Animation.exitContent(submenu1).then(function () {
                 submenu1.style.display = "none";
-                submenu2.style.display = "inline";
+                submenu2.style.display = "flex";
                 WinJS.UI.Animation.enterContent(submenu2);
                 Ensemble.Pages.Editor.currentSubmenu = submenu2;
             });
