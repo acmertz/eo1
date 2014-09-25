@@ -35,6 +35,9 @@
             this.UserInput.Buttons.mediaMenu = document.getElementById("editorMediaButton");
             this.UserInput.Buttons.effectsMenu = document.getElementById("editorEffectsButton");
             this.UserInput.Buttons.mediaBrowserLocation = document.getElementById("editorMediaBrowserLocationButton");
+            this.UserInput.Buttons.mediaMenuTabLocal = document.getElementById("editorMenuTabMediaLocal");
+            this.UserInput.Buttons.mediaMenuTabCamera = document.getElementById("editorMenuTabMediaCamera");
+            this.UserInput.Buttons.mediaMenuTabMic = document.getElementById("editorMenuTabMediaMic");
 
             this.UserInput.Boundaries.topBottomSplit = document.getElementById("editorHorizontalDivider");
 
@@ -120,7 +123,10 @@
                 actionMenu: null,
                 mediaMenu: null,
                 effectsMenu: null,
-                mediaBrowserLocation: null
+                mediaBrowserLocation: null,
+                mediaMenuTabLocal: null,
+                mediaMenuTabCamera: null,
+                mediaMenuTabMic: null
             },
             Boundaries: {
                 topBottomSplit: null

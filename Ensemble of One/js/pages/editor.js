@@ -42,7 +42,7 @@
             this.currentActionMenuItem = document.getElementById("editorMenuContentProject");
             this.currentActionMenuTab = document.getElementById("editorMenuTabProject");
             this.currentMediaMenuItem = document.getElementById("editorMediaMenuContentLocal");
-            this.currentMediaMenuTab = null;
+            this.currentMediaMenuTab = Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabLocal;
             this.currentEffectsMenuItem = document.getElementById("editorEffectsMenuContentEffects");
             this.currentEffectsMenuTab = null;
             this._attachListeners();
@@ -273,6 +273,25 @@
             $("#editorMenuTabTrack").addClass("editorMenuLeftAdjacentTab");
         },
 
+        mediaMenuShowLocalTab: function () {
+            /// <summary>Hides the currently active media menu tab and shows the Local tab in its place.</summary>
+            this._mediaMenuHeaderFocusTab(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabLocal, document.getElementById("editorMediaMenuContentLocal"));
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabCamera).addClass("editorMenuRightAdjacentTab");
+        },
+
+        mediaMenuShowCameraTab: function () {
+            /// <summary>Hides the currently active media menu tab and shows the Camera tab in its place.</summary>
+            this._mediaMenuHeaderFocusTab(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabCamera, document.getElementById("editorMediaMenuContentCamera"));
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabLocal).addClass("editorMenuLeftAdjacentTab");
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabMic).addClass("editorMenuRightAdjacentTab");
+        },
+
+        mediaMenuShowMicTab: function () {
+            /// <summary>Hides the currently active media menu tab and shows the Mic tab in its place.</summary>
+            this._mediaMenuHeaderFocusTab(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabMic, document.getElementById("editorMediaMenuContentMic"));
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabCamera).addClass("editorMenuLeftAdjacentTab");
+        },
+
 
 
         //// PRIVATE METHODS ////
@@ -302,6 +321,14 @@
 
             var menuClickEater = document.getElementById("editorMenuClickEater");
             menuClickEater.addEventListener("click", this._menuClickEaterOnClickListener, false);
+
+
+            //Media menu
+            Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabLocal.addEventListener("click", this._mediaMenuTabLocalOnClickListener, false);
+            Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabCamera.addEventListener("click", this._mediaMenuTabCameraOnClickListener, false);
+            Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabMic.addEventListener("click", this._mediaMenuTabMicOnClickListener, false);
+
+
 
             Ensemble.Pages.Editor.UI.UserInput.Boundaries.topBottomSplit.addEventListener("mousedown", this._topBottomSplitMouseDown, false);
 
@@ -343,7 +370,7 @@
                 }
                 else {
                     //Switch to the tab instead.
-                    Ensemble.Pages.Editor.currentMediaMenuItem.style.display = "inline";
+                    Ensemble.Pages.Editor.currentMediaMenuItem.style.display = "flex";
                     Ensemble.Pages.Editor.currentMediaMenuItem.style.opacity = 1;
 
                     Ensemble.Pages.Editor.swapSubmenus(Ensemble.Pages.Editor.currentSubmenu, Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.entireSection);
@@ -411,16 +438,30 @@
             Ensemble.Pages.Editor.menuShowExportTab();
         },
 
+        _menuHeaderClearActionMenuTabs: function () {
+            /// <summary>Clears focus on all menu header tabs across all Editor menus.</summary>
+            var allTabs = document.getElementsByClassName("actionMenuTab");
+            for (var i = 0; i < allTabs.length; i++) {
+                $(allTabs[i]).removeClass("editorMenuRightAdjacentTab");
+                $(allTabs[i]).removeClass("editorMenuLeftAdjacentTab");
+            }
+        },
+
+        _menuHeaderClearMediaMenuTabs: function () {
+            /// <summary>Clears focus on all menu header tabs across all Editor menus.</summary>
+            var allTabs = document.getElementsByClassName("mediaMenuTab");
+            for (var i = 0; i < allTabs.length; i++) {
+                $(allTabs[i]).removeClass("editorMenuRightAdjacentTab");
+                $(allTabs[i]).removeClass("editorMenuLeftAdjacentTab");
+            }
+        },
+
         _menuHeaderFocusTab: function (tabToFocus, itemToShow) {
             /// <summary>Focuses the indicated tab and blurs the tab that was previously focused.</summary>
             /// <param name="tabToFocus" type="HTML Element">The tab to focus.</param>
             /// <param name="itemToShow" type="HTML Element">The menu item to show.</param>
 
-            var allTabs = document.getElementsByClassName("editorMenuTabHeader");
-            for (var i = 0; i < allTabs.length; i++) {
-                $(allTabs[i]).removeClass("editorMenuRightAdjacentTab");
-                $(allTabs[i]).removeClass("editorMenuLeftAdjacentTab");
-            }
+            this._menuHeaderClearActionMenuTabs();
 
             $(Ensemble.Pages.Editor.currentActionMenuTab).removeClass("editorMenuTabFocused");
             $(Ensemble.Pages.Editor.currentActionMenuTab).addClass("editorMenuTabBlurred");
@@ -436,6 +477,43 @@
                 Ensemble.Pages.Editor.currentActionMenuItem.style.display = "inline";
                 WinJS.UI.Animation.enterContent(Ensemble.Pages.Editor.currentActionMenuItem);
             });
-        }        
+        },
+
+        _mediaMenuHeaderFocusTab: function (tabToFocus, itemToShow) {
+            /// <summary>Focuses the indicated tab and blurs the tab that was previously focused.</summary>
+            /// <param name="tabToFocus" type="HTML Element">The tab to focus.</param>
+            /// <param name="itemToShow" type="HTML Element">The menu item to show.</param>
+            this._menuHeaderClearMediaMenuTabs();
+
+            $(Ensemble.Pages.Editor.currentMediaMenuTab).removeClass("editorMenuTabFocused");
+            $(Ensemble.Pages.Editor.currentMediaMenuTab).addClass("editorMenuTabBlurred");
+
+            Ensemble.Pages.Editor.currentMediaMenuTab = tabToFocus;
+
+            $(Ensemble.Pages.Editor.currentMediaMenuTab).removeClass("editorMenuTabBlurred");
+            $(Ensemble.Pages.Editor.currentMediaMenuTab).addClass("editorMenuTabFocused");
+
+            WinJS.UI.Animation.exitContent(Ensemble.Pages.Editor.currentMediaMenuItem).done(function () {
+                Ensemble.Pages.Editor.currentMediaMenuItem.style.display = "none";
+                Ensemble.Pages.Editor.currentMediaMenuItem = itemToShow;
+                Ensemble.Pages.Editor.currentMediaMenuItem.style.display = "flex";
+                WinJS.UI.Animation.enterContent(Ensemble.Pages.Editor.currentMediaMenuItem);
+            });
+        },
+
+        _mediaMenuTabLocalOnClickListener: function (event) {
+            console.log("Clicked the Media Menu Local tab.")
+            Ensemble.Pages.Editor.mediaMenuShowLocalTab();
+        },
+
+        _mediaMenuTabCameraOnClickListener: function (event) {
+            console.log("Clicked the Media Menu Camera tab.")
+            Ensemble.Pages.Editor.mediaMenuShowCameraTab();
+        },
+
+        _mediaMenuTabMicOnClickListener: function (event) {
+            console.log("Clicked the Media Menu Mic tab.")
+            Ensemble.Pages.Editor.mediaMenuShowMicTab();
+        }
     });
 })();
