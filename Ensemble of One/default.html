@@ -31,7 +31,10 @@
     <script src="/js/pages/mainmenu.js"></script>
     <script src="/js/pages/editor.js"></script>
     <script src="/js/aspectgenerator.js"></script>
+    <script src="/js/ensemblefile.js"></script>
+    <script src="/js/ensemblefolder.js"></script>
     <script src="/js/fileio.js"></script>
+    <script src="/js/mediabrowser.js"></script>
     <script src="/js/platform.js"></script>
     <script src="/js/projectfile.js"></script>
     <script src="/js/session.js"></script>
@@ -480,7 +483,15 @@
                     <div class="editorMenuDialogContent">
                         <i class="editorMenuButtonPlaceholder fa fa-2x fa-list"></i>
                         <div class="editorMenuContentItem" id="editorMediaMenuContentLocal">
-                            <h2 id="editorMediaBrowserLocationButton">Videos library <i class="fa fa-angle-down"></i></h2>
+                            <div>
+                                <h2 id="editorMediaBrowserLocationButton">Videos library <i class="fa fa-angle-down"></i></h2>
+                                <div id="editorMediaBrowserFolderControlContainer">
+                                    <span class="mediaBrowserFolderControl">&#xE10F;</span> <!--Home--> 
+                                    <span class="mediaBrowserFolderControl">&#xE110;</span> <!--Up one level-->
+                                    <span class="mediaBrowserFolderControl">&#xE117;</span> <!--Refresh-->
+                                </div>
+                            </div>
+                            
                             <div id="editorMenuMediaBrowserFileList">
 
                             </div>

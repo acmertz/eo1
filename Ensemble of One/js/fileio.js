@@ -145,6 +145,76 @@
             /// <returns type="File">The selected file. Returns null if no file was selected.</returns>
         },
 
+        pickItemsFromFolder: function (folder, callback) {
+            /// <summary>Picks all supported files and folders within the given directory and passes them via callback.</summary>
+            /// <param name="folder" type="Ensemble.EnsembleFolder">The folder within which to look up files.</param>
+            /// <param name="callback" type="Function">The function call to execute upon completion.</param>
+            switch (Ensemble.Platform.currentPlatform) {
+                case "win8":
+                    folder._src.getFoldersAsync().then(function (containedFolders) {
+                        console.log("Got a list of folders in the current folder.");
+                        folder._src.getFilesAsync().then(function (containedFiles) {
+                            for (var i = 0; i < containedFolders.length; i++) {
+                                console.log("Folder is: " + containedFolders[i].name);
+                            }
+                            for (var i = 0; i < containedFiles.length; i++) {
+                                console.log("File is: " + containedFiles[i].name);
+                                console.log("    (content type: " + containedFiles[i].contentType + ")");
+                                console.log("    (filetype: " + containedFiles[i].fileType + ")");
+                            }
+                        });
+                    });
+                    break;
+                case "ios":
+                    break;
+                case "android":
+                    break;
+            }
+        },
+
+        getHomeDirectory: function (directoryName) {
+            /// <summary>Returns the home directory of the given media type.</summary>
+            /// <param name="directoryName" type="String">The string representing the home directory name. Must be one of the following: "video" "music" "picture"</param>
+            /// <returns type="Ensemble.EnsembleFolder">An EnsembleFolder representing the given home directory.</returns>
+            var returnVal = null;
+            switch (directoryName) {
+                case "video":
+                    switch (Ensemble.Platform.currentPlatform) {
+                        case "win8":
+                            returnVal = new Ensemble.EnsembleFolder(Windows.Storage.KnownFolders.videosLibrary);
+                            break;
+                        case "ios":
+                            break;
+                        case "android":
+                            break;
+                    }
+                    break;
+                case "music":
+                    switch (Ensemble.Platform.currentPlatform) {
+                        case "win8":
+                            returnVal = new Ensemble.EnsembleFolder(Windows.Storage.KnownFolders.musicLibrary);
+                            break;
+                        case "ios":
+                            break;
+                        case "android":
+                            break;
+                    }
+                    break;
+                case "picture":
+                    switch (Ensemble.Platform.currentPlatform) {
+                        case "win8":
+                            returnVal = new Ensemble.EnsembleFolder(Windows.Storage.KnownFolders.picturesLibrary);
+                            break;
+                        case "ios":
+                            break;
+                        case "android":
+                            break;
+                    }
+                    break;
+            }
+            return returnVal;
+        },
+
         saveProject: function () {
             /// <summary>Saves the currently loaded project to disk.</summary>
         },

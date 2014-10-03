@@ -275,6 +275,7 @@
 
         mediaMenuShowLocalTab: function () {
             /// <summary>Hides the currently active media menu tab and shows the Local tab in its place.</summary>
+            Ensemble.Pages.Editor.refreshMediaBrowser();
             this._mediaMenuHeaderFocusTab(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabLocal, document.getElementById("editorMediaMenuContentLocal"));
             $(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabCamera).addClass("editorMenuRightAdjacentTab");
         },
@@ -290,6 +291,12 @@
             /// <summary>Hides the currently active media menu tab and shows the Mic tab in its place.</summary>
             this._mediaMenuHeaderFocusTab(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabMic, document.getElementById("editorMediaMenuContentMic"));
             $(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabCamera).addClass("editorMenuLeftAdjacentTab");
+        },
+
+        refreshMediaBrowser: function () {
+            /// <summary>Refreshes the Media Browser at its current location</summary>
+            console.log("Refreshing the Media Browser...");
+            Ensemble.MediaBrowser.navigateToFolder(Ensemble.MediaBrowser.currentLocation());
         },
 
 
