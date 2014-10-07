@@ -17,6 +17,7 @@
             this.PageSections.menu.entireSection = document.getElementById("editorMenuDialog");
             this.PageSections.menu.actionMenu.entireSection = document.getElementById("editorActionMenu");
             this.PageSections.menu.mediaMenu.entireSection = document.getElementById("editorMediaMenu");
+            this.PageSections.menu.mediaMenu.local.mediaList = document.getElementById("editorMenuMediaBrowserFileList");
             this.PageSections.menu.effectsMenu.entireSection = document.getElementById("editorEffectsMenu");
 
             this.RenderSurfaces.mainCanvas = document.getElementById("editorCanvas");
@@ -84,7 +85,10 @@
                     entireSection: null
                 },
                 mediaMenu: {
-                    entireSection: null
+                    entireSection: null,
+                    local: {
+                        mediaList: null
+                    }
                 },
                 effectsMenu: {
                     entireSection: null

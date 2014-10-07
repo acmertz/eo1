@@ -1,6 +1,17 @@
 ﻿(function () {
     WinJS.Namespace.define("Ensemble.FileIO", {
         /// <summary>Provides platform-agnostic interfaces for accessing the host device's file system.</summary>
+
+        _win8_supportedVideoTypes: [".3g2", ".3gp2", ".3gp", ".3gpp", ".m4v", ".mp4v", ".mp4", ".mov", ".m2ts", ".asf", ".wm", ".wmv", ".avi"],
+        _win8_supportedAudioTypes: [".m4a", ".wma", ".aac", ".adt", ".adts", ".mp3", ".wav", ".ac3", ".ec3"],
+        _win8_supportedImageTypes: [".jpg", ".jpeg", ".png", ".gif", ".bmp"],
+
+        _pickItemsCallback: null,
+        _pickItemsTempFiles: [],
+        _pickItemsTempFilesCount: 0,
+        _pickItemsTempFolders: [],
+        _pickItemsTempFoldersCount: 0,
+
         createProject: function (name, location, aspect) {
             /// <summary>Creates save files for a new project.</summary>
             /// <param name="name" type="String">The name of the project.</param>
@@ -149,6 +160,7 @@
             /// <summary>Picks all supported files and folders within the given directory and passes them via callback.</summary>
             /// <param name="folder" type="Ensemble.EnsembleFolder">The folder within which to look up files.</param>
             /// <param name="callback" type="Function">The function call to execute upon completion.</param>
+            Ensemble.FileIO._pickItemsCallback = callback;
             switch (Ensemble.Platform.currentPlatform) {
                 case "win8":
                     folder._src.getFoldersAsync().then(function (containedFolders) {
@@ -156,12 +168,61 @@
                         folder._src.getFilesAsync().then(function (containedFiles) {
                             for (var i = 0; i < containedFolders.length; i++) {
                                 console.log("Folder is: " + containedFolders[i].name);
+
+                                var newFolder = new Ensemble.EnsembleFile(containedFiles[i]);
+                                newFolder.dateCreated = containedFiles[i].dateCreated;
+                                newFolder.displayName = containedFiles[i].displayName;
+                                newFolder.displayType = containedFiles[i].displayType;
+                                newFolder._winFolderRelativeId = containedFiles[i].folderRelativeId;
+                                newFolder._winProperties = containedFiles[i].properties;
+                                newFolder.fullName = containedFiles[i].name;
+                                newFolder.path = containedFiles[i].path;
+
+                                newFolder.icon = "&#xE188;";
+                                newFolder.eo1type = "folder";
+
+                                Ensemble.FileIO._pickItemsTempFolders.push(newFolder);
                             }
                             for (var i = 0; i < containedFiles.length; i++) {
                                 console.log("File is: " + containedFiles[i].name);
                                 console.log("    (content type: " + containedFiles[i].contentType + ")");
                                 console.log("    (filetype: " + containedFiles[i].fileType + ")");
+
+                                var newFile = new Ensemble.EnsembleFile(containedFiles[i]);
+                                newFile.mime = containedFiles[i].contentType;
+                                newFile.dateCreated = containedFiles[i].dateCreated;
+                                newFile.displayName = containedFiles[i].displayName;
+                                newFile.displayType = containedFiles[i].displayType;
+                                newFile.fileType = containedFiles[i].fileType;
+                                newFile._winFolderRelativeId = containedFiles[i].folderRelativeId;
+                                newFile._winProperties = containedFiles[i].properties;
+                                newFile.fullName = containedFiles[i].name;
+                                newFile.path = containedFiles[i].path;
+
+
+                                //Check that the file is supported.
+                                if (newFile.mime.indexOf("audio") > -1 || newFile.mime.indexOf("video") > -1 || newFile.mime.indexOf("image") > -1) {
+                                    if (Ensemble.FileIO._win8_supportedAudioTypes.indexOf(newFile.fileType) > -1 || Ensemble.FileIO._win8_supportedVideoTypes.indexOf(newFile.fileType) > -1 || Ensemble.FileIO._win8_supportedImageTypes.indexOf(newFile.fileType) > -1) {
+                                        //File is of supported media type and extension.
+                                        if (newFile.mime.indexOf("audio") > -1) {
+                                            newFile.icon = "&#xE189;";
+                                            newFile.eo1type = "audio";
+                                        }
+                                        else if (newFile.mime.indexOf("video") > -1) {
+                                            newFile.icon = "&#xE116;";
+                                            newFile.eo1type = "video";
+                                        }
+                                        else if (newFile.mime.indexOf("image") > -1) {
+                                            newFile.icon = "&#xE116;";
+                                            newFile.eo1type = "picture";
+                                        }
+                                    }
+                                }
+                                
+                                Ensemble.FileIO._pickItemsTempFiles.push(newFile);
                             }
+                            //Now that all files and folders have been added up, pull media information.
+                            Ensemble.FileIO._winRetrievePickItemsTempFilesMediaProperties();
                         });
                     });
                     break;
@@ -169,6 +230,71 @@
                     break;
                 case "android":
                     break;
+            }
+        },
+
+        _winRetrievePickItemsTempFilesMediaProperties: function () {
+            /// <summary>Retrieves media properties for all of the temporary media items. </summary>
+            for (var i = 0; i < Ensemble.FileIO._pickItemsTempFiles.length; i++) {
+                var num = i;
+                var cur = Ensemble.FileIO._pickItemsTempFiles[i];
+                switch (Ensemble.FileIO._pickItemsTempFiles[i].eo1type) {
+                    case "video":
+                        Ensemble.FileIO._winRetrieveVideoProperties(Ensemble.FileIO._pickItemsTempFiles[i]._src, i);
+                        break;
+                    case "audio":
+                        Ensemble.FileIO._pickItemsTempFiles[i]._src.properties.getMusicPropertiesAsync().done(function (success) {
+                            console.log("Retrieved music properties.");
+                            Ensemble.FileIO._pickItemsTempFiles[num].album = success.album;
+                            Ensemble.FileIO._pickItemsTempFiles[num].albumArtist = success.albumArtist;
+                            Ensemble.FileIO._pickItemsTempFiles[num].artist = success.artist;
+                            Ensemble.FileIO._pickItemsTempFiles[num].bitrate = success.bitrate;
+                            Ensemble.FileIO._pickItemsTempFiles[num].duration = success.duration;
+                            Ensemble.FileIO._pickItemsTempFiles[num].genre = success.genre;
+                            Ensemble.FileIO._pickItemsTempFiles[num].title = success.title;
+                            Ensemble.FileIO._winCompleteMediaPropertyLookup();
+                        });
+                        break;
+                    case "picture":
+                        Ensemble.FileIO._pickItemsTempFiles[i].properties._src.getImagePropertiesAsync().done(function (success) {
+                            Ensemble.FileIO._pickItemsTempFiles[num].dateTaken = success.dateTaken;
+                            Ensemble.FileIO._pickItemsTempFiles[num].height = success.height;
+                            Ensemble.FileIO._pickItemsTempFiles[num].width = success.width;
+                            Ensemble.FileIO._pickItemsTempFiles[num].title = success.title;
+                            Ensemble.FileIO._winCompleteMediaPropertyLookup();
+                        });
+                        break;
+                }
+            }
+        },
+
+        _winRetrieveVideoProperties: function (srcfile, index) {
+            /// <summary>Retrieves media properties for all of the temporary media items. </summary>
+            /// <param name="srcfile" type="Windows.Storage.StorageFile">The file whose properties to look up.</param>
+            /// <param name="index" type="Number">The file's position in the overall list.</param>
+            (function () {
+                srcfile.properties.getVideoPropertiesAsync().done(function (success) {
+                    console.log("Retrieved video properties for the item at index " + index + ".");
+                    Ensemble.FileIO._pickItemsTempFiles[index].bitrate = success.bitrate;
+                    Ensemble.FileIO._pickItemsTempFiles[index].duration = success.duration;
+                    Ensemble.FileIO._pickItemsTempFiles[index].height = success.height;
+                    Ensemble.FileIO._pickItemsTempFiles[index].width = success.width;
+                    Ensemble.FileIO._pickItemsTempFiles[index].title = success.title;
+                    Ensemble.FileIO._winCompleteMediaPropertyLookup();
+                });
+            })();
+        },
+
+        _winCompleteMediaPropertyLookup: function () {
+            Ensemble.FileIO._pickItemsTempFilesCount++;
+            if (Ensemble.FileIO._pickItemsTempFilesCount == Ensemble.FileIO._pickItemsTempFiles.length - 1) {
+                //Lookup complete. Execute callback.
+                Ensemble.FileIO._pickItemsCallback(Ensemble.FileIO._pickItemsTempFiles, Ensemble.FileIO._pickItemsTempFolders);
+
+                //Reset the temporary file-lookup references.
+                Ensemble.FileIO._pickItemsTempFilesCount = 0;
+                Ensemble.FileIO._pickItemsTempFiles = [];
+                Ensemble.FileIO._pickItemsTempFolders = [];
             }
         },
 

@@ -443,8 +443,9 @@
 }
 
 #editorMenuMediaBrowserFileList {
-    background-color: gray;
+    background-color: lightgray;
     flex: 1;
+    overflow-y: scroll;
 }
 
 #editorMediaBrowserLocationButton {

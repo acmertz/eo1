@@ -42,7 +42,20 @@
                     this._breadCrumbsPicture.push(destination);
                     break;
             }
-            Ensemble.FileIO.pickItemsFromFolder(destination, callback);
+            Ensemble.FileIO.pickItemsFromFolder(destination, Ensemble.MediaBrowser._populateMediaBrowserDisplay);
+        },
+
+        _populateMediaBrowserDisplay: function (files, folders) {
+            /// <summary>Given a set of files and folders, fills the media browser display with representations of the data.</summary>
+            /// <param name="files" type="Array">The files to display.</param>
+            /// <param name="folders" type="Array">The folders to display.</param>
+            console.info("Finished looking up files and retrieving their information!");
+            Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.innerHTML = "";
+            for (var i = 0; i < files.length; i++) {
+                var mediaEntry = document.createElement("div");
+                mediaEntry.innerText = files[i].displayName;
+                Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.appendChild(mediaEntry);
+            }
         },
 
         enumerateProjects: function (callback) {
