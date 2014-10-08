@@ -53,7 +53,42 @@
             Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.innerHTML = "";
             for (var i = 0; i < files.length; i++) {
                 var mediaEntry = document.createElement("div");
-                mediaEntry.innerText = files[i].displayName;
+                mediaEntry.className = "mediaBrowserListItem";
+
+                var iconSpace = document.createElement("div");
+                iconSpace.className = "mediaBrowserListItemIcon";
+                iconSpace.innerHTML = files[i].icon;
+
+                var metaData = document.createElement("div");
+                metaData.className = "mediaBrowserListItemMeta";
+
+                var titleRow = document.createElement("div");
+                titleRow.className = "mediaBrowserListItemRow mediaBrowserListItemTitle";
+                titleRow.innerText = files[i].title || files[i].displayName;
+
+                var detailsRow = document.createElement("div");
+                detailsRow.className = "mediaBrowserListItemRow";
+
+                var durationDiv = document.createElement("div");
+                durationDiv.className = "mediaBrowserListItemRowComponent";
+                durationDiv.innerText = Ensemble.Utilities.TimeConverter.convertTime(files[i].duration, true);
+
+                var qualityDiv = document.createElement("div");
+                qualityDiv.className = "mediaBrowserListItemRowComponent";
+                qualityDiv.innerText = Ensemble.Utilities.FriendlyResolutionGenerator.turnFriendly(files[i].width, files[i].height);
+
+
+                //Assemble the parts together.
+                detailsRow.appendChild(durationDiv);
+                detailsRow.appendChild(qualityDiv);
+                metaData.appendChild(titleRow);
+                metaData.appendChild(detailsRow);
+                mediaEntry.appendChild(iconSpace);
+                mediaEntry.appendChild(metaData);
+
+                mediaEntry.addEventListener("mousedown", Ensemble.Pages.MainMenu._projectListItemOnMouseDownListener, false);
+                mediaEntry.addEventListener("mouseup", Ensemble.Pages.MainMenu._projectListItemOnMouseUpListener, false);
+
                 Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.appendChild(mediaEntry);
             }
         },
