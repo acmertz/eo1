@@ -169,14 +169,14 @@
                             for (var i = 0; i < containedFolders.length; i++) {
                                 console.log("Folder is: " + containedFolders[i].name);
 
-                                var newFolder = new Ensemble.EnsembleFile(containedFiles[i]);
-                                newFolder.dateCreated = containedFiles[i].dateCreated;
-                                newFolder.displayName = containedFiles[i].displayName;
-                                newFolder.displayType = containedFiles[i].displayType;
-                                newFolder._winFolderRelativeId = containedFiles[i].folderRelativeId;
-                                newFolder._winProperties = containedFiles[i].properties;
-                                newFolder.fullName = containedFiles[i].name;
-                                newFolder.path = containedFiles[i].path;
+                                var newFolder = new Ensemble.EnsembleFile(containedFolders[i]);
+                                newFolder.dateCreated = containedFolders[i].dateCreated;
+                                newFolder.displayName = containedFolders[i].displayName;
+                                newFolder.displayType = containedFolders[i].displayType;
+                                newFolder._winFolderRelativeId = containedFolders[i].folderRelativeId;
+                                newFolder._winProperties = containedFolders[i].properties;
+                                newFolder.fullName = containedFolders[i].name;
+                                newFolder.path = containedFolders[i].path;
 
                                 newFolder.icon = "&#xE188;";
                                 newFolder.eo1type = "folder";

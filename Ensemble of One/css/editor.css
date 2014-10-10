@@ -308,8 +308,8 @@
     position: fixed;
     left: 0px;
     top: 0px;
-    visibility: hidden;
-    opacity: 0;
+    /*visibility: hidden;*/
+    /*opacity: 0;*/
     overflow-x: hidden;
 
 
@@ -320,6 +320,23 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
+
+    -webkit-transform: translateX(-100%);
+    -moz-transform: translateX(-100%);
+    -o-transform: translateX(-100%);
+    transform: translateX(-100%);
+
+    -webkit-transition: -webkit-transform 0.4s ease-in-out;
+    -moz-transition: -moz-transform 0.4s ease-in-out;
+    -o-transition: -o-transform 0.4s ease-in-out;
+    transition: transform 0.4s ease-in-out;
+}
+
+.editorMenuDialogVisible {
+    -webkit-transform: translateX(0%) !important;
+    -moz-transform: translateX(0% !important);
+    -o-transform: translateX(0%) !important;
+    transform: translateX(0%) !important;
 }
 
 #editorActionMenu {

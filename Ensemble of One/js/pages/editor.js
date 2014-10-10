@@ -107,7 +107,10 @@
             Ensemble.Pages.Editor.currentActionMenuItem.style.display = "inline";
             Ensemble.Pages.Editor.currentActionMenuItem.style.opacity = 1;
 
-            WinJS.UI.Animation.enterContent(menuDialog);
+            //WinJS.UI.Animation.enterContent(menuDialog);
+            menuDialog.style.opacity = 1;
+            $(menuDialog).addClass("editorMenuDialogVisible");
+
             this.menuOpen = true;
             this.currentSubmenu = Ensemble.Pages.Editor.UI.PageSections.menu.actionMenu.entireSection;
         },
@@ -119,6 +122,7 @@
             var menuDialog = Ensemble.Pages.Editor.UI.PageSections.menu.entireSection;
             WinJS.UI.Animation.fadeOut(menuDialog).done(function () {
                 menuDialog.style.visibility = "hidden";
+                $(menuDialog).removeClass("editorMenuDialogVisible");
                 var menuItems = document.getElementsByClassName("editorMenuContentItem");
                 for (var i = 0; i < menuItems.length; i++) {
                     menuItems[i].style.opacity = 0;
@@ -145,7 +149,10 @@
             menuInstance.style.opacity = 1;
             menuInstance.style.display = "flex";
 
-            WinJS.UI.Animation.enterContent(menuDialog);
+            //WinJS.UI.Animation.enterContent(menuDialog);
+            menuDialog.style.opacity = 1;
+            $(menuDialog).addClass("editorMenuDialogVisible");
+
             this.menuOpen = true;
             this.currentSubmenu = Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.entireSection;
         },
@@ -166,7 +173,10 @@
             menuInstance.style.opacity = 1;
             menuInstance.style.display = "inline";
 
-            WinJS.UI.Animation.enterContent(menuDialog);
+            //WinJS.UI.Animation.enterContent(menuDialog);
+            menuDialog.style.opacity = 1;
+            $(menuDialog).addClass("editorMenuDialogVisible");
+
             this.menuOpen = true;
             this.currentSubmenu = Ensemble.Pages.Editor.UI.PageSections.menu.effectsMenu.entireSection;
         },

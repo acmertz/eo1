@@ -33,6 +33,7 @@
                 WinJS.UI.Animation.exitContent(document.getElementById("imgMainLogo")).done(function () {
                     document.getElementById("mainMenuPageContainer").style.display = "none";
                     Ensemble.Pages.Editor.showInitial();
+                    //document.getElementById("mainMenuPageContainer").parentElement.removeChild(document.getElementById("mainMenuPageContainer")); //Remove the main menu from the DOM.
                 });
             }, 500)
 

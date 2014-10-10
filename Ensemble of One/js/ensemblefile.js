@@ -7,15 +7,15 @@
             this._src = targetFile;
             this.icon = "&#xE132;";
 
-            this.mime = "Unknown";
-            this.dateCreated = "Unknown";
-            this.displayName = "Unnamed";
-            this.displayType = "Unknown";
-            this.fileType = "Unknown";
+            this.mime = "";
+            this.dateCreated = "";
+            this.displayName = "";
+            this.displayType = "";
+            this.fileType = "";
             this._winFolderRelativeId = "";
             this._winProperties = null;
-            this.fullName = "Unknown";
-            this.path = "Unknown";
+            this.fullName = "";
+            this.path = "";
 
             this.eo1type = "file";
 
@@ -29,7 +29,7 @@
             this.genre= "";
             this.height= 0;
             this.width= 0;
-            this.title= "Unknown";
+            this.title= "";
         },
         {
             //Instance members
