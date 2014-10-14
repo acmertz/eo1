@@ -69,6 +69,10 @@
                 var detailsRow = document.createElement("div");
                 detailsRow.className = "mediaBrowserListItemRow";
 
+                var typeDiv = document.createElement("div");
+                typeDiv.className = "mediaBrowserListItemRowComponent";
+                typeDiv.innerText = folders[i].displayType;
+
                 var durationDiv = document.createElement("div");
                 durationDiv.className = "mediaBrowserListItemRowComponent";
                 //durationDiv.innerText = Ensemble.Utilities.TimeConverter.convertTime(files[i].duration, true);
@@ -79,6 +83,7 @@
 
 
                 //Assemble the parts together.
+                detailsRow.appendChild(typeDiv);
                 detailsRow.appendChild(durationDiv);
                 detailsRow.appendChild(qualityDiv);
                 metaData.appendChild(titleRow);
@@ -86,8 +91,8 @@
                 mediaEntry.appendChild(iconSpace);
                 mediaEntry.appendChild(metaData);
 
-                mediaEntry.addEventListener("mousedown", Ensemble.Pages.MainMenu._projectListItemOnMouseDownListener, false);
-                mediaEntry.addEventListener("mouseup", Ensemble.Pages.MainMenu._projectListItemOnMouseUpListener, false);
+                //mediaEntry.addEventListener("mousedown", Ensemble.Pages.MainMenu._projectListItemOnMouseDownListener, false);
+                //mediaEntry.addEventListener("mouseup", Ensemble.Pages.MainMenu._projectListItemOnMouseUpListener, false);
 
                 Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.appendChild(mediaEntry);
             }
@@ -109,6 +114,10 @@
                 var detailsRow = document.createElement("div");
                 detailsRow.className = "mediaBrowserListItemRow";
 
+                var typeDiv = document.createElement("div");
+                typeDiv.className = "mediaBrowserListItemRowComponent";
+                typeDiv.innerText = files[i].displayType;
+
                 var durationDiv = document.createElement("div");
                 durationDiv.className = "mediaBrowserListItemRowComponent";
                 durationDiv.innerText = Ensemble.Utilities.TimeConverter.convertTime(files[i].duration, true);
@@ -119,6 +128,7 @@
 
 
                 //Assemble the parts together.
+                detailsRow.appendChild(typeDiv);
                 detailsRow.appendChild(durationDiv);
                 detailsRow.appendChild(qualityDiv);
                 metaData.appendChild(titleRow);
@@ -126,8 +136,8 @@
                 mediaEntry.appendChild(iconSpace);
                 mediaEntry.appendChild(metaData);
 
-                mediaEntry.addEventListener("mousedown", Ensemble.Pages.MainMenu._projectListItemOnMouseDownListener, false);
-                mediaEntry.addEventListener("mouseup", Ensemble.Pages.MainMenu._projectListItemOnMouseUpListener, false);
+                //mediaEntry.addEventListener("mousedown", Ensemble.Pages.MainMenu._projectListItemOnMouseDownListener, false);
+                //mediaEntry.addEventListener("mouseup", Ensemble.Pages.MainMenu._projectListItemOnMouseUpListener, false);
 
                 Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.appendChild(mediaEntry);
             }

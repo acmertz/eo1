@@ -291,7 +291,6 @@
 
 #editorPageContainer .editorMenuToggleFocused {
     background-color: white;
-    pointer-events: none;
 }
 
 .editorMenuButtonPlaceholder {
@@ -321,22 +320,35 @@
     justify-content: flex-start;
     align-items: flex-start;
 
-    -webkit-transform: translateX(-100%);
-    -moz-transform: translateX(-100%);
-    -o-transform: translateX(-100%);
     transform: translateX(-100%);
-
-    -webkit-transition: -webkit-transform 0.4s ease-in-out;
-    -moz-transition: -moz-transform 0.4s ease-in-out;
-    -o-transition: -o-transform 0.4s ease-in-out;
-    transition: transform 0.4s ease-in-out;
 }
 
 .editorMenuDialogVisible {
-    -webkit-transform: translateX(0%) !important;
-    -moz-transform: translateX(0% !important);
-    -o-transform: translateX(0%) !important;
     transform: translateX(0%) !important;
+    animation: editorMenuDialogEnter 0.3s ease-in-out;
+}
+
+@keyframes editorMenuDialogEnter {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(0%);
+    }
+}
+
+.editorMenuDialogHidden {
+    transform: translateX(-100%);
+    animation: editorMenuDialogExit 0.3s ease-in-out;
+}
+
+@keyframes editorMenuDialogExit {
+    0% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
 }
 
 #editorActionMenu {
@@ -468,6 +480,11 @@
 #editorMediaBrowserLocationButton {
     display: inline-block;
     float: left;
+    transition: transform 0.1s ease-in-out;
+}
+
+#editorMediaBrowserLocationButton:active {
+    transform: scale(0.95);
 }
 
 #editorMediaBrowserFolderControlContainer {

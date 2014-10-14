@@ -97,9 +97,9 @@
         showActionMenu: function () {
             /// <summary>Shows the Editor page menu and activates its click eater.</summary>
             Ensemble.Pages.Editor.UI.UserInput.ClickEaters.menu.style.display = "inline";
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.actionMenu).addClass("editorMenuToggleFocused");
 
             var menuDialog = Ensemble.Pages.Editor.UI.PageSections.menu.entireSection;
-            menuDialog.style.visibility = "visible";
 
             Ensemble.Pages.Editor.UI.PageSections.menu.actionMenu.entireSection.style.display = "flex";
             Ensemble.Pages.Editor.UI.PageSections.menu.actionMenu.entireSection.style.opacity = 1;
@@ -108,7 +108,7 @@
             Ensemble.Pages.Editor.currentActionMenuItem.style.opacity = 1;
 
             //WinJS.UI.Animation.enterContent(menuDialog);
-            menuDialog.style.opacity = 1;
+            $(menuDialog).removeClass("editorMenuDialogHidden");
             $(menuDialog).addClass("editorMenuDialogVisible");
 
             this.menuOpen = true;
@@ -120,25 +120,25 @@
             document.getElementById("editorMenuClickEater").style.display = "none";
 
             var menuDialog = Ensemble.Pages.Editor.UI.PageSections.menu.entireSection;
-            WinJS.UI.Animation.fadeOut(menuDialog).done(function () {
-                menuDialog.style.visibility = "hidden";
-                $(menuDialog).removeClass("editorMenuDialogVisible");
+            $(menuDialog).removeClass("editorMenuDialogVisible");
+            $(menuDialog).addClass("editorMenuDialogHidden");
+            window.setTimeout(function (event) {
                 var menuItems = document.getElementsByClassName("editorMenuContentItem");
                 for (var i = 0; i < menuItems.length; i++) {
                     menuItems[i].style.opacity = 0;
                     menuItems[i].style.display = "none";
                 }
                 Ensemble.Pages.Editor.hideAllSubmenus();
-            });
-            this.menuOpen = false;
+            }, 300);
+            this.menuOpen = false;           
         },
 
         showMediaMenu: function () {
             /// <summary>Shows the Media Menu, hiding any other menus if necessary.</summary>
             Ensemble.Pages.Editor.UI.UserInput.ClickEaters.menu.style.display = "inline";
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenu).addClass("editorMenuToggleFocused");
 
             var menuDialog = Ensemble.Pages.Editor.UI.PageSections.menu.entireSection;
-            menuDialog.style.visibility = "visible";
 
             this.hideAllSubmenus();
 
@@ -150,7 +150,7 @@
             menuInstance.style.display = "flex";
 
             //WinJS.UI.Animation.enterContent(menuDialog);
-            menuDialog.style.opacity = 1;
+            $(menuDialog).removeClass("editorMenuDialogHidden");
             $(menuDialog).addClass("editorMenuDialogVisible");
 
             this.menuOpen = true;
@@ -160,9 +160,9 @@
         showEffectsMenu: function () {
             /// <summary>Shows the Media Menu, hiding any other menus if necessary.</summary>
             Ensemble.Pages.Editor.UI.UserInput.ClickEaters.menu.style.display = "inline";
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.effectsMenu).addClass("editorMenuToggleFocused");
 
             var menuDialog = Ensemble.Pages.Editor.UI.PageSections.menu.entireSection;
-            menuDialog.style.visibility = "visible";
 
             this.hideAllSubmenus();
 
@@ -174,7 +174,7 @@
             menuInstance.style.display = "inline";
 
             //WinJS.UI.Animation.enterContent(menuDialog);
-            menuDialog.style.opacity = 1;
+            $(menuDialog).removeClass("editorMenuDialogHidden");
             $(menuDialog).addClass("editorMenuDialogVisible");
 
             this.menuOpen = true;
@@ -359,7 +359,8 @@
 
         _menuButtonOnClickListener: function () {
             var menuDialog = Ensemble.Pages.Editor.UI.PageSections.menu.entireSection;
-            if (menuDialog.style.visibility == "hidden" || menuDialog.style.visibility == "") {
+            $(".editorMenuToggleFocused").removeClass("editorMenuToggleFocused");
+            if (!$(menuDialog).hasClass("editorMenuDialogVisible")) {
                 Ensemble.Pages.Editor.showActionMenu();
             }
             else {
@@ -378,7 +379,8 @@
 
         _mediaMenuButtonOnClickListener: function () {
             var menuDialog = Ensemble.Pages.Editor.UI.PageSections.menu.entireSection;
-            if (menuDialog.style.visibility == "hidden" || menuDialog.style.visibility == "") {
+            $(".editorMenuToggleFocused").removeClass("editorMenuToggleFocused");
+            if (!$(menuDialog).hasClass("editorMenuDialogVisible")) {
                 Ensemble.Pages.Editor.showMediaMenu();
             }
             else {
@@ -397,7 +399,8 @@
 
         _effectsMenuButtonOnClickListener: function () {
             var menuDialog = Ensemble.Pages.Editor.UI.PageSections.menu.entireSection;
-            if (menuDialog.style.visibility == "hidden" || menuDialog.style.visibility == "") {
+            $(".editorMenuToggleFocused").removeClass("editorMenuToggleFocused");
+            if (!$(menuDialog).hasClass("editorMenuDialogVisible")) {
                 Ensemble.Pages.Editor.showEffectsMenu();
             }
             else {
