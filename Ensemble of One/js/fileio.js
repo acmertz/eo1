@@ -213,7 +213,7 @@
                                             newFile.eo1type = "video";
                                         }
                                         else if (newFile.mime.indexOf("image") > -1) {
-                                            newFile.icon = "&#xE116;";
+                                            newFile.icon = "&#xE114;";
                                             newFile.eo1type = "picture";
                                         }
                                         Ensemble.FileIO._pickItemsTempFiles.push(newFile);
@@ -258,7 +258,7 @@
                         });
                         break;
                     case "picture":
-                        Ensemble.FileIO._pickItemsTempFiles[i].properties._src.getImagePropertiesAsync().done(function (success) {
+                        Ensemble.FileIO._pickItemsTempFiles[i]._src.properties.getImagePropertiesAsync().done(function (success) {
                             Ensemble.FileIO._pickItemsTempFiles[num].dateTaken = success.dateTaken;
                             Ensemble.FileIO._pickItemsTempFiles[num].height = success.height;
                             Ensemble.FileIO._pickItemsTempFiles[num].width = success.width;
