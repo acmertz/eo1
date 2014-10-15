@@ -216,10 +216,11 @@
                                             newFile.icon = "&#xE116;";
                                             newFile.eo1type = "picture";
                                         }
+                                        Ensemble.FileIO._pickItemsTempFiles.push(newFile);
                                     }
                                 }
                                 
-                                Ensemble.FileIO._pickItemsTempFiles.push(newFile);
+                                
                             }
                             //Now that all files and folders have been added up, pull media information.
                             Ensemble.FileIO._winRetrievePickItemsTempFilesMediaProperties();
@@ -235,6 +236,7 @@
 
         _winRetrievePickItemsTempFilesMediaProperties: function () {
             /// <summary>Retrieves media properties for all of the temporary media items. </summary>
+            if (Ensemble.FileIO._pickItemsTempFiles.length == 0) Ensemble.FileIO._winCompleteMediaPropertyLookup();
             for (var i = 0; i < Ensemble.FileIO._pickItemsTempFiles.length; i++) {
                 var num = i;
                 var cur = Ensemble.FileIO._pickItemsTempFiles[i];
@@ -287,7 +289,7 @@
 
         _winCompleteMediaPropertyLookup: function () {
             Ensemble.FileIO._pickItemsTempFilesCount++;
-            if (Ensemble.FileIO._pickItemsTempFilesCount == Ensemble.FileIO._pickItemsTempFiles.length - 1) {
+            if (Ensemble.FileIO._pickItemsTempFilesCount >= Ensemble.FileIO._pickItemsTempFiles.length) {
                 //Lookup complete. Execute callback.
                 Ensemble.FileIO._pickItemsCallback(Ensemble.FileIO._pickItemsTempFiles, Ensemble.FileIO._pickItemsTempFolders);
 
@@ -361,6 +363,33 @@
                             projectFile.deleteAsync(Windows.Storage.StorageDeleteOption.permanentDelete).then(function (done) {
                                 console.log("Deleted project thumbnail.");
                             });
+                        });
+                    });
+                    break;
+                case "android":
+                    break;
+                case "ios":
+                    break;
+            }
+        },
+
+        deleteAllProjects: function () {
+            /// <summary>Permanently deletes all projects and their accompanying thumbnails.</summary>
+            console.log("Deleting all projects...");
+            switch (Ensemble.Platform.currentPlatform) {
+                case "win8":
+                    Windows.Storage.ApplicationData.current.localFolder.getFolderAsync("Projects").then(function (projectDir) {
+                        var projectQueryOptions = new Windows.Storage.Search.QueryOptions(Windows.Storage.Search.CommonFileQuery.orderByName, [".eo1", ".jpg"]);
+                        var projectQuery = projectDir.createFileQueryWithOptions(projectQueryOptions);
+                        projectQuery.getFilesAsync().then(function (projectFiles) {
+                            if (projectFiles.length > 0) {
+                                for (var i = 0; i < projectFiles.length; i++) {
+                                    projectFiles[i].deleteAsync(Windows.Storage.StorageDeleteOption.permanentDelete).done(function (success) {
+                                        //console.log("Deleted a project file.");
+                                    });
+                                }
+                            }
+                            else console.log("No projects to delete.");
                         });
                     });
                     break;

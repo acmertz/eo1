@@ -39,6 +39,11 @@
             this.UserInput.Buttons.mediaMenuTabLocal = document.getElementById("editorMenuTabMediaLocal");
             this.UserInput.Buttons.mediaMenuTabCamera = document.getElementById("editorMenuTabMediaCamera");
             this.UserInput.Buttons.mediaMenuTabMic = document.getElementById("editorMenuTabMediaMic");
+            this.UserInput.Buttons.mediaBrowserUpOneLevel = document.getElementById("editorMediaBrowserUpOneLevelButton");
+            this.UserInput.Buttons.mediaBrowserRefresh = document.getElementById("editorMediaBrowserRefreshButton");
+            this.UserInput.Buttons.mediaBrowserLocationVideos = document.getElementById("editorMediaBrowserLocationVideosLibrary");
+            this.UserInput.Buttons.mediaBrowserLocationMusic = document.getElementById("editorMediaBrowserLocationMusicLibrary");
+            this.UserInput.Buttons.mediaBrowserLocationPictures = document.getElementById("editorMediaBrowserLocationPicturesLibrary");
 
             this.UserInput.Boundaries.topBottomSplit = document.getElementById("editorHorizontalDivider");
 
@@ -130,7 +135,12 @@
                 mediaBrowserLocation: null,
                 mediaMenuTabLocal: null,
                 mediaMenuTabCamera: null,
-                mediaMenuTabMic: null
+                mediaMenuTabMic: null,
+                mediaBrowserUpOneLevel: null,
+                mediaBrowserRefresh: null,
+                mediaBrowserLocationVideos: null,
+                mediaBrowserLocationMusic: null,
+                mediaBrowserLocationPictures: null
             },
             Boundaries: {
                 topBottomSplit: null

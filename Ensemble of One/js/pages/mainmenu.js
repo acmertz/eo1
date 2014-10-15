@@ -314,6 +314,20 @@
             
         },
 
+        showDeleteAllProjectsConfirmationDialog: function () {
+            /// <summary>Shows a zoom dialog to confirm that the user really wants to delete all projects.</summary>
+            $("#deleteAllProjectsConfirmationDialog").removeClass("mainMenuZoomDialogHidden");
+            $("#deleteAllProjectsConfirmationDialog").addClass("mainMenuZoomDialogVisible");
+            $("#deleteProjectConfirmationClickEater").addClass("mainMenuClickEaterVisible");
+        },
+
+        hideDeleteAllProjectsConfirmationDialog: function () {
+            /// <summary>Hides "Delete all projects" confirmation zoom dialog.</summary>
+            $("#deleteAllProjectsConfirmationDialog").removeClass("mainMenuZoomDialogVisible");
+            $("#deleteAllProjectsConfirmationDialog").addClass("mainMenuZoomDialogHidden");
+            $("#deleteProjectConfirmationClickEater").removeClass("mainMenuClickEaterVisible");
+        },
+
 
 
         //// PRIVATE METHODS ////
@@ -360,6 +374,11 @@
 
             document.getElementById("mainMenuConfirmDeleteProjectButton").addEventListener("click", this._confirmDeleteProjectButtonOnClickListener, false);
             document.getElementById("mainMenuCancelDeleteProjectButton").addEventListener("click", this._cancelDeleteProjectButtonOnClickListener, false);
+
+            //Delete Project dialog
+            document.getElementById("mainMenuDeleteAllProjectsButton").addEventListener("click", this._deleteAllProjectsButtonOnClickListener, false);
+            document.getElementById("mainMenuConfirmDeleteAllProjectsButton").addEventListener("click", this._confirmDeleteAllProjectsButtonOnClickListener, false);
+            document.getElementById("mainMenuCancelDeleteAllProjectsButton").addEventListener("click", this._cancelDeleteAllProjectsButtonOnClickListener, false);
         },
 
         _detachListeners: function () {
@@ -515,6 +534,19 @@
 
         _cancelDeleteProjectButtonOnClickListener: function (event) {
             Ensemble.Pages.MainMenu.hideDeleteProjectConfirmationDialog();
+        },
+
+        _deleteAllProjectsButtonOnClickListener: function (event) {
+            Ensemble.Pages.MainMenu.showDeleteAllProjectsConfirmationDialog();
+        },
+
+        _confirmDeleteAllProjectsButtonOnClickListener: function (event) {
+            Ensemble.Pages.MainMenu.hideDeleteAllProjectsConfirmationDialog();
+            Ensemble.FileIO.deleteAllProjects();
+        },
+
+        _cancelDeleteAllProjectsButtonOnClickListener: function (event) {
+            Ensemble.Pages.MainMenu.hideDeleteAllProjectsConfirmationDialog();
         },
 
         _projectLoadTimer: null

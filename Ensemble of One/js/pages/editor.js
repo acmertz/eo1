@@ -152,6 +152,7 @@
             //WinJS.UI.Animation.enterContent(menuDialog);
             $(menuDialog).removeClass("editorMenuDialogHidden");
             $(menuDialog).addClass("editorMenuDialogVisible");
+            Ensemble.Pages.Editor.refreshMediaBrowser();
 
             this.menuOpen = true;
             this.currentSubmenu = Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.entireSection;
@@ -195,6 +196,7 @@
             WinJS.UI.Animation.exitContent(submenu1).then(function () {
                 submenu1.style.display = "none";
                 submenu2.style.display = "flex";
+                if (submenu2 === Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.entireSection) Ensemble.Pages.Editor.refreshMediaBrowser();
                 WinJS.UI.Animation.enterContent(submenu2);
                 Ensemble.Pages.Editor.currentSubmenu = submenu2;
             });
@@ -311,6 +313,15 @@
 
 
 
+
+
+
+
+
+
+
+
+
         //// PRIVATE METHODS ////
 
         _attachListeners: function () {
@@ -344,8 +355,11 @@
             Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabLocal.addEventListener("click", this._mediaMenuTabLocalOnClickListener, false);
             Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabCamera.addEventListener("click", this._mediaMenuTabCameraOnClickListener, false);
             Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabMic.addEventListener("click", this._mediaMenuTabMicOnClickListener, false);
-
-
+            Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserUpOneLevel.addEventListener("click", this._mediaBrowserUpOneLevelButtonOnClickListener, false);
+            Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserRefresh.addEventListener("click", this._mediaBrowserRefreshButtonOnClickListener, false);
+            Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocationVideos.addEventListener("click", this._mediaBrowserLocationSelectedOnClickListener, false);
+            Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocationMusic.addEventListener("click", this._mediaBrowserLocationSelectedOnClickListener, false);
+            Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocationPictures.addEventListener("click", this._mediaBrowserLocationSelectedOnClickListener, false);
 
             Ensemble.Pages.Editor.UI.UserInput.Boundaries.topBottomSplit.addEventListener("mousedown", this._topBottomSplitMouseDown, false);
 
@@ -534,6 +548,32 @@
         _mediaMenuTabMicOnClickListener: function (event) {
             console.log("Clicked the Media Menu Mic tab.")
             Ensemble.Pages.Editor.mediaMenuShowMicTab();
+        },
+
+        _mediaBrowserUpOneLevelButtonOnClickListener: function (event) {
+            console.log("Media browser navigating up one level (if possible)...");
+            Ensemble.MediaBrowser.upOneLevel();
+        },
+
+        _mediaBrowserRefreshButtonOnClickListener: function (event) {
+            Ensemble.Pages.Editor.refreshMediaBrowser();
+        },
+
+        _mediaBrowserLocationSelectedOnClickListener: function (event) {
+            switch (event.currentTarget) {
+                case Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocationVideos:
+                    Ensemble.MediaBrowser.setContext("video");
+                    Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocation.innerHTML = "Videos library &#xe228;";
+                    break;
+                case Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocationMusic:
+                    Ensemble.MediaBrowser.setContext("music");
+                    Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocation.innerHTML = "Music library &#xe228;";
+                    break;
+                case Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocationPictures:
+                    Ensemble.MediaBrowser.setContext("picture");
+                    Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocation.innerHTML = "Pictures library &#xe228;";
+                    break;
+            }
         }
     });
 })();

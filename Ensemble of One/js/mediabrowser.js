@@ -6,6 +6,16 @@
         _breadCrumbsPicture: [],
         _context: "video",
 
+        setContext: function (contextval) {
+            /// <summary>Sets the context of the media browser and changes the view to the appropriate library.</summary>
+            /// <param name="contextval" type="String">The type of context to enter. Must be one video, music, or picture. Defaults to video.</param>
+
+            if (contextval != "video" && contextval != "music" && contextval != "picture") this._context = "video";
+            else this._context = contextval;
+
+            this.navigateToFolder(this.currentLocation());
+        },
+
         currentLocation: function () {
             /// <summary>Returns the Media Browser's location in the current context.</summary>
             /// <returns type="Ensemble.EnsembleFile">The Media Browser's current folder location.</returns>
@@ -27,19 +37,45 @@
             return returnVal;
         },
 
-        navigateToFolder: function (destination, callback) {
-            /// <summary>Navigates to the given folder in the current context.</summary>
-            /// <param name="destination" type="Ensemble.EnsembleFolder">The folder to which to navigate.</param>
-            /// <param name="callback" type="Function">The callback to perform after directory navigation is complete.</param>
+        upOneLevel: function () {
+            /// <summary>Navigates the media browser up one level in the current context, if possible.</summary>
             switch (this._context) {
                 case "video":
-                    this._breadCrumbsVideo.push(destination);
+                    if (this._breadCrumbsVideo.length > 1) {
+                        this._breadCrumbsVideo.pop();
+                        Ensemble.MediaBrowser.navigateToFolder(this._breadCrumbsVideo[this._breadCrumbsVideo.length - 1]);
+                    }
+                    else console.log("Unable to go up one level - already at the top level.");
                     break;
                 case "music":
-                    this._breadCrumbsMusic.push(destination);
+                    if (this._breadCrumbsMusic.length > 1) {
+                        this._breadCrumbsMusic.pop();
+                        Ensemble.MediaBrowser.navigateToFolder(this._breadCrumbsMusic[this._breadCrumbsMusic.length - 1]);
+                    }
+                    else console.log("Unable to go up one level - already at the top level.");
                     break;
                 case "picture":
-                    this._breadCrumbsPicture.push(destination);
+                    if (this._breadCrumbsPicture.length > 1) {
+                        this._breadCrumbsPicture.pop();
+                        Ensemble.MediaBrowser.navigateToFolder(this._breadCrumbsPicture[this._breadCrumbsPicture.length - 1]);
+                    }
+                    else console.log("Unable to go up one level - already at the top level.");
+                    break;
+            }
+        },
+
+        navigateToFolder: function (destination) {
+            /// <summary>Navigates to the given folder in the current context.</summary>
+            /// <param name="destination" type="Ensemble.EnsembleFolder">The folder to which to navigate.</param>
+            switch (this._context) {
+                case "video":
+                    if (this._breadCrumbsVideo[this._breadCrumbsVideo.length - 1] != destination) this._breadCrumbsVideo.push(destination);
+                    break;
+                case "music":
+                    if (this._breadCrumbsMusic[this._breadCrumbsMusic.length - 1] != destination) this._breadCrumbsMusic.push(destination);
+                    break;
+                case "picture":
+                    if (this._breadCrumbsPicture[this._breadCrumbsPicture.length - 1] != destination) this._breadCrumbsPicture.push(destination);
                     break;
             }
             Ensemble.FileIO.pickItemsFromFolder(destination, Ensemble.MediaBrowser._populateMediaBrowserDisplay);
@@ -90,6 +126,9 @@
                 metaData.appendChild(detailsRow);
                 mediaEntry.appendChild(iconSpace);
                 mediaEntry.appendChild(metaData);
+                mediaEntry.ensembleFileRef = folders[i];
+
+                mediaEntry.addEventListener("click", Ensemble.MediaBrowser._mediaFolderOnClick, false);
 
                 //mediaEntry.addEventListener("mousedown", Ensemble.Pages.MainMenu._projectListItemOnMouseDownListener, false);
                 //mediaEntry.addEventListener("mouseup", Ensemble.Pages.MainMenu._projectListItemOnMouseUpListener, false);
@@ -230,6 +269,22 @@
                 case "ios":
                     break;
             }
+        },
+
+
+
+
+
+
+
+
+        //Private functions
+        _mediaFolderOnClick: function (event) {
+            console.log("User clicked on media folder: " + event.currentTarget.ensembleFileRef.displayName);
+            Ensemble.MediaBrowser.navigateToFolder(event.currentTarget.ensembleFileRef);
         }
+
+
+
     });
 })();

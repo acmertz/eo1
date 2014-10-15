@@ -189,6 +189,9 @@
                         <p><label><input type="checkbox"> Camera</label></p>
                         <p><label><input type="checkbox"> Webcam</label></p>
                         <p><label><input type="checkbox"> Background</label></p>
+
+                        <h3>Danger Zone</h3>
+                        <p><input type="button" value="Delete all projects" id="mainMenuDeleteAllProjectsButton" /></p>
                     </div>
                 </div>
             </div>
@@ -203,6 +206,17 @@
                     <div class="mainMenuFilmReelButtonContainerHorizontal">
                         <h3 class="mainMenuFilmReelButton" id="mainMenuConfirmDeleteProjectButton" title="Permanently delete the project"><i class="fa fa-trash-o"></i> Delete it</h3>
                         <h3 class="mainMenuFilmReelButton" id="mainMenuCancelDeleteProjectButton" title="Cancel deleting the project"><i class="fa fa-times"></i> Cancel</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div id="deleteAllProjectsConfirmationDialog" class="mainMenuZoomDialog">
+                <div class="mainMenuZoomDialogContent">
+                    <h2><i class="fa fa-warning"></i> You want to do <em>what?!?</em></h2>
+                    <p>You're about to permanently delete all of your projects. Every last one. Are you <em>absolutely</em> sure you want to do this?</p>
+                    <div class="mainMenuFilmReelButtonContainerHorizontal">
+                        <h3 class="mainMenuFilmReelButton" id="mainMenuConfirmDeleteAllProjectsButton" title="Permanently delete all projects"><i class="fa fa-trash-o"></i> Delete all projects</h3>
+                        <h3 class="mainMenuFilmReelButton" id="mainMenuCancelDeleteAllProjectsButton" title="Don't delete any projects"><i class="fa fa-times"></i> Cancel</h3>
                     </div>
                 </div>
             </div>
@@ -486,11 +500,10 @@
                         <i class="editorMenuButtonPlaceholder fa fa-2x fa-list"></i>
                         <div class="editorMenuContentItem" id="editorMediaMenuContentLocal">
                             <div>
-                                <h2 id="editorMediaBrowserLocationButton">Videos library <i class="fa fa-angle-down"></i></h2>
+                                <h2 id="editorMediaBrowserLocationButton">Videos library &#xe228;</h2>
                                 <div id="editorMediaBrowserFolderControlContainer">
-                                    <span class="mediaBrowserFolderControl">&#xE10F;</span> <!--Home--> 
-                                    <span class="mediaBrowserFolderControl">&#xE110;</span> <!--Up one level-->
-                                    <span class="mediaBrowserFolderControl">&#xE117;</span> <!--Refresh-->
+                                    <span class="mediaBrowserFolderControl" id="editorMediaBrowserUpOneLevelButton">&#xE110;</span> <!--Up one level-->
+                                    <span class="mediaBrowserFolderControl" id="editorMediaBrowserRefreshButton">&#xE117;</span> <!--Refresh-->
                                 </div>
                             </div>
                             
@@ -541,9 +554,9 @@
         </div>
     </div>
     <div id="editorMediaBrowserLocationFlyout" data-win-control="WinJS.UI.Menu">
-        <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'alwaysSaveMenuItem',label:'Videos library'}"></button>
-        <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'replyMenuItem',label:'Music library'}"></button>
-        <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'replyAllMenuItem',label:'Pictures library'}"></button>
+        <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMediaBrowserLocationVideosLibrary',label:'Videos library'}"></button>
+        <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMediaBrowserLocationMusicLibrary',label:'Music library'}"></button>
+        <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMediaBrowserLocationPicturesLibrary',label:'Pictures library'}"></button>
         <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'separator',type:'separator'}" />
         <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'forwardMenuItem',label:'Browse...'}"></button>
     </div>
