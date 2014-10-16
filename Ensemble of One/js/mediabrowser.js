@@ -64,6 +64,22 @@
             }
         },
 
+        navigateHome: function () {
+            /// <summary>Navigates to the home directory in the current context.</summary>
+            switch (this._context) {
+                case "video":
+                    this._breadCrumbsVideo = [];
+                    break;
+                case "music":
+                    this._breadCrumbsMusic = [];
+                    break;
+                case "picture":
+                    this._breadCrumbsPicture = [];
+                    break;
+            }
+            Ensemble.MediaBrowser.navigateToFolder(Ensemble.MediaBrowser.currentLocation());
+        },
+
         navigateToFolder: function (destination) {
             /// <summary>Navigates to the given folder in the current context.</summary>
             /// <param name="destination" type="Ensemble.EnsembleFolder">The folder to which to navigate.</param>
@@ -87,6 +103,10 @@
             /// <param name="folders" type="Array">The folders to display.</param>
             console.info("Finished looking up files and retrieving their information!");
             Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.innerHTML = "";
+
+            var curDelay = 0;
+            var curDelayIter = 10;
+
             for (var i = 0; i < folders.length; i++) {
                 var mediaEntry = document.createElement("div");
                 mediaEntry.className = "mediaBrowserListItem";
@@ -129,6 +149,9 @@
                 mediaEntry.ensembleFileRef = folders[i];
 
                 mediaEntry.addEventListener("click", Ensemble.MediaBrowser._mediaFolderOnClick, false);
+
+                mediaEntry.style.animationDelay = curDelay + "ms";
+                curDelay = curDelay + curDelayIter;
 
                 //mediaEntry.addEventListener("mousedown", Ensemble.Pages.MainMenu._projectListItemOnMouseDownListener, false);
                 //mediaEntry.addEventListener("mouseup", Ensemble.Pages.MainMenu._projectListItemOnMouseUpListener, false);
@@ -176,6 +199,9 @@
                 metaData.appendChild(detailsRow);
                 mediaEntry.appendChild(iconSpace);
                 mediaEntry.appendChild(metaData);
+
+                mediaEntry.style.animationDelay = curDelay + "ms";
+                curDelay = curDelay + curDelayIter;
 
                 //mediaEntry.addEventListener("mousedown", Ensemble.Pages.MainMenu._projectListItemOnMouseDownListener, false);
                 //mediaEntry.addEventListener("mouseup", Ensemble.Pages.MainMenu._projectListItemOnMouseUpListener, false);

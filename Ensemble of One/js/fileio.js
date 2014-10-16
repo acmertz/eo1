@@ -167,7 +167,7 @@
                         console.log("Got a list of folders in the current folder.");
                         folder._src.getFilesAsync().then(function (containedFiles) {
                             for (var i = 0; i < containedFolders.length; i++) {
-                                console.log("Folder is: " + containedFolders[i].name);
+                                //console.log("Folder is: " + containedFolders[i].name);
 
                                 var newFolder = new Ensemble.EnsembleFile(containedFolders[i]);
                                 newFolder.dateCreated = containedFolders[i].dateCreated;
@@ -184,9 +184,9 @@
                                 Ensemble.FileIO._pickItemsTempFolders.push(newFolder);
                             }
                             for (var i = 0; i < containedFiles.length; i++) {
-                                console.log("File is: " + containedFiles[i].name);
-                                console.log("    (content type: " + containedFiles[i].contentType + ")");
-                                console.log("    (filetype: " + containedFiles[i].fileType + ")");
+                                //console.log("File is: " + containedFiles[i].name);
+                                //console.log("    (content type: " + containedFiles[i].contentType + ")");
+                                //console.log("    (filetype: " + containedFiles[i].fileType + ")");
 
                                 var newFile = new Ensemble.EnsembleFile(containedFiles[i]);
                                 newFile.mime = containedFiles[i].contentType;
@@ -246,7 +246,7 @@
                         break;
                     case "audio":
                         Ensemble.FileIO._pickItemsTempFiles[i]._src.properties.getMusicPropertiesAsync().done(function (success) {
-                            console.log("Retrieved music properties.");
+                            //console.log("Retrieved music properties.");
                             Ensemble.FileIO._pickItemsTempFiles[num].album = success.album;
                             Ensemble.FileIO._pickItemsTempFiles[num].albumArtist = success.albumArtist;
                             Ensemble.FileIO._pickItemsTempFiles[num].artist = success.artist;
@@ -276,7 +276,7 @@
             /// <param name="index" type="Number">The file's position in the overall list.</param>
             (function () {
                 srcfile.properties.getVideoPropertiesAsync().done(function (success) {
-                    console.log("Retrieved video properties for the item at index " + index + ".");
+                    //console.log("Retrieved video properties for the item at index " + index + ".");
                     Ensemble.FileIO._pickItemsTempFiles[index].bitrate = success.bitrate;
                     Ensemble.FileIO._pickItemsTempFiles[index].duration = success.duration;
                     Ensemble.FileIO._pickItemsTempFiles[index].height = success.height;

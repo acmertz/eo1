@@ -475,6 +475,7 @@
 #editorMenuMediaBrowserFileList {
     flex: 1;
     overflow-y: scroll;
+    overflow-x: hidden;
     padding: 10px;
     background: rgb(250,250,250);
     border-top-right-radius: 5px;
@@ -529,11 +530,29 @@
     display: flex;
     flex-direction: row;
     height: 50px;
-    border: 2px solid transparent;
+    animation: mediaBrowserListItemEnter 0.3s linear;
+    animation-fill-mode: backwards;
 }
 
 .mediaBrowserListItem:hover {
-    border: 2px solid gray;
+    background-color: rgb(240,240,240);
+}
+
+@keyframes mediaBrowserListItemEnter {
+    0% {
+        opacity: 0;
+        transform: translateX(12%);
+    }
+    50% {
+        opacity: 1;
+        transform: translateX(3%);
+    }
+    75% {
+        transform: translateX(1%);
+    }
+    100% {
+        transform: translateX(0%);
+    }
 }
 
 .mediaBrowserListItemIcon {

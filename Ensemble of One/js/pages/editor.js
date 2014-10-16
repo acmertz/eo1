@@ -355,6 +355,7 @@
             Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabLocal.addEventListener("click", this._mediaMenuTabLocalOnClickListener, false);
             Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabCamera.addEventListener("click", this._mediaMenuTabCameraOnClickListener, false);
             Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabMic.addEventListener("click", this._mediaMenuTabMicOnClickListener, false);
+            Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserHome.addEventListener("click", this._mediaBrowserHomeButtonOnClickListener, false);
             Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserUpOneLevel.addEventListener("click", this._mediaBrowserUpOneLevelButtonOnClickListener, false);
             Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserRefresh.addEventListener("click", this._mediaBrowserRefreshButtonOnClickListener, false);
             Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocationVideos.addEventListener("click", this._mediaBrowserLocationSelectedOnClickListener, false);
@@ -550,13 +551,18 @@
             Ensemble.Pages.Editor.mediaMenuShowMicTab();
         },
 
+        _mediaBrowserHomeButtonOnClickListener: function (event) {
+            console.log("Media Browser navigating home...");
+            Ensemble.MediaBrowser.navigateHome();
+        },
+
         _mediaBrowserUpOneLevelButtonOnClickListener: function (event) {
             console.log("Media browser navigating up one level (if possible)...");
             Ensemble.MediaBrowser.upOneLevel();
         },
 
         _mediaBrowserRefreshButtonOnClickListener: function (event) {
-            Ensemble.Pages.Editor.refreshMediaBrowser();
+            Ensemble.MediaBrowser.navigateToFolder(Ensemble.MediaBrowser.currentLocation());
         },
 
         _mediaBrowserLocationSelectedOnClickListener: function (event) {

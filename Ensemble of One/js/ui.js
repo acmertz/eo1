@@ -39,6 +39,7 @@
             this.UserInput.Buttons.mediaMenuTabLocal = document.getElementById("editorMenuTabMediaLocal");
             this.UserInput.Buttons.mediaMenuTabCamera = document.getElementById("editorMenuTabMediaCamera");
             this.UserInput.Buttons.mediaMenuTabMic = document.getElementById("editorMenuTabMediaMic");
+            this.UserInput.Buttons.mediaBrowserHome = document.getElementById("editorMediaBrowserHomeButton");
             this.UserInput.Buttons.mediaBrowserUpOneLevel = document.getElementById("editorMediaBrowserUpOneLevelButton");
             this.UserInput.Buttons.mediaBrowserRefresh = document.getElementById("editorMediaBrowserRefreshButton");
             this.UserInput.Buttons.mediaBrowserLocationVideos = document.getElementById("editorMediaBrowserLocationVideosLibrary");
@@ -136,6 +137,7 @@
                 mediaMenuTabLocal: null,
                 mediaMenuTabCamera: null,
                 mediaMenuTabMic: null,
+                mediaBrowserHome: null,
                 mediaBrowserUpOneLevel: null,
                 mediaBrowserRefresh: null,
                 mediaBrowserLocationVideos: null,
