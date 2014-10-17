@@ -183,11 +183,10 @@
                 var durationDiv = document.createElement("div");
                 durationDiv.className = "mediaBrowserListItemRowComponent";
                 if (files[i].eo1type == "video" || files[i].eo1type == "audio") durationDiv.innerText = Ensemble.Utilities.TimeConverter.convertTime(files[i].duration, true);
-                else durationDiv.innerText = Ensemble.Utilities.FriendlyResolutionGenerator.turnFriendly(files[i].width, files[i].height);
 
                 var qualityDiv = document.createElement("div");
                 qualityDiv.className = "mediaBrowserListItemRowComponent";
-                if (files[i].eo1type == "video") qualityDiv.innerText = Ensemble.Utilities.FriendlyResolutionGenerator.turnFriendly(files[i].width, files[i].height);
+                if (files[i].eo1type == "video" || files[i].eo1type == "picture") qualityDiv.innerText = Ensemble.Utilities.FriendlyResolutionGenerator.turnFriendly(files[i].width, files[i].height);
                 else if (files[i].eo1type == "audio") qualityDiv.innerText = files[i].albumArtist;
 
 

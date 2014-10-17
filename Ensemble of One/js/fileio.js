@@ -187,13 +187,12 @@
                                 //console.log("File is: " + containedFiles[i].name);
                                 //console.log("    (content type: " + containedFiles[i].contentType + ")");
                                 //console.log("    (filetype: " + containedFiles[i].fileType + ")");
-
                                 var newFile = new Ensemble.EnsembleFile(containedFiles[i]);
                                 newFile.mime = containedFiles[i].contentType;
                                 newFile.dateCreated = containedFiles[i].dateCreated;
                                 newFile.displayName = containedFiles[i].displayName;
                                 newFile.displayType = containedFiles[i].displayType;
-                                newFile.fileType = containedFiles[i].fileType;
+                                newFile.fileType = containedFiles[i].fileType.toLowerCase();
                                 newFile._winFolderRelativeId = containedFiles[i].folderRelativeId;
                                 newFile._winProperties = containedFiles[i].properties;
                                 newFile.fullName = containedFiles[i].name;
@@ -215,6 +214,9 @@
                                         else if (newFile.mime.indexOf("image") > -1) {
                                             newFile.icon = "&#xE114;";
                                             newFile.eo1type = "picture";
+                                        }
+                                        else {
+                                            console.log("File is of invalid MIME type.");
                                         }
                                         Ensemble.FileIO._pickItemsTempFiles.push(newFile);
                                     }
@@ -245,26 +247,10 @@
                         Ensemble.FileIO._winRetrieveVideoProperties(Ensemble.FileIO._pickItemsTempFiles[i]._src, i);
                         break;
                     case "audio":
-                        Ensemble.FileIO._pickItemsTempFiles[i]._src.properties.getMusicPropertiesAsync().done(function (success) {
-                            //console.log("Retrieved music properties.");
-                            Ensemble.FileIO._pickItemsTempFiles[num].album = success.album;
-                            Ensemble.FileIO._pickItemsTempFiles[num].albumArtist = success.albumArtist;
-                            Ensemble.FileIO._pickItemsTempFiles[num].artist = success.artist;
-                            Ensemble.FileIO._pickItemsTempFiles[num].bitrate = success.bitrate;
-                            Ensemble.FileIO._pickItemsTempFiles[num].duration = success.duration;
-                            Ensemble.FileIO._pickItemsTempFiles[num].genre = success.genre;
-                            Ensemble.FileIO._pickItemsTempFiles[num].title = success.title;
-                            Ensemble.FileIO._winCompleteMediaPropertyLookup();
-                        });
+                        Ensemble.FileIO._winRetrieveMusicProperties(Ensemble.FileIO._pickItemsTempFiles[i]._src, i);
                         break;
                     case "picture":
-                        Ensemble.FileIO._pickItemsTempFiles[i]._src.properties.getImagePropertiesAsync().done(function (success) {
-                            Ensemble.FileIO._pickItemsTempFiles[num].dateTaken = success.dateTaken;
-                            Ensemble.FileIO._pickItemsTempFiles[num].height = success.height;
-                            Ensemble.FileIO._pickItemsTempFiles[num].width = success.width;
-                            Ensemble.FileIO._pickItemsTempFiles[num].title = success.title;
-                            Ensemble.FileIO._winCompleteMediaPropertyLookup();
-                        });
+                        Ensemble.FileIO._winRetrieveImageProperties(Ensemble.FileIO._pickItemsTempFiles[i]._src, i);
                         break;
                 }
             }
@@ -279,6 +265,41 @@
                     //console.log("Retrieved video properties for the item at index " + index + ".");
                     Ensemble.FileIO._pickItemsTempFiles[index].bitrate = success.bitrate;
                     Ensemble.FileIO._pickItemsTempFiles[index].duration = success.duration;
+                    Ensemble.FileIO._pickItemsTempFiles[index].height = success.height;
+                    Ensemble.FileIO._pickItemsTempFiles[index].width = success.width;
+                    Ensemble.FileIO._pickItemsTempFiles[index].title = success.title;
+                    Ensemble.FileIO._winCompleteMediaPropertyLookup();
+                });
+            })();
+        },
+
+        _winRetrieveMusicProperties: function (srcfile, index) {
+            /// <summary>Retrieves media properties for all of the temporary media items. </summary>
+            /// <param name="srcfile" type="Windows.Storage.StorageFile">The file whose properties to look up.</param>
+            /// <param name="index" type="Number">The file's position in the overall list.</param>
+            (function () {
+                srcfile.properties.getMusicPropertiesAsync().done(function (success) {
+                    //console.log("Retrieved music properties.");
+                    Ensemble.FileIO._pickItemsTempFiles[index].album = success.album;
+                    Ensemble.FileIO._pickItemsTempFiles[index].albumArtist = success.albumArtist;
+                    Ensemble.FileIO._pickItemsTempFiles[index].artist = success.artist;
+                    Ensemble.FileIO._pickItemsTempFiles[index].bitrate = success.bitrate;
+                    Ensemble.FileIO._pickItemsTempFiles[index].duration = success.duration;
+                    Ensemble.FileIO._pickItemsTempFiles[index].genre = success.genre;
+                    Ensemble.FileIO._pickItemsTempFiles[index].title = success.title;
+                    Ensemble.FileIO._winCompleteMediaPropertyLookup();
+                });
+            })();
+        },
+
+        _winRetrieveImageProperties: function (srcfile, index) {
+            /// <summary>Retrieves media properties for all of the temporary media items. </summary>
+            /// <param name="srcfile" type="Windows.Storage.StorageFile">The file whose properties to look up.</param>
+            /// <param name="index" type="Number">The file's position in the overall list.</param>
+            (function () {
+                srcfile.properties.getImagePropertiesAsync().done(function (success) {
+                    //console.log("Retrieved image properties for file \"" + srcfile.name + ".\"");
+                    Ensemble.FileIO._pickItemsTempFiles[index].dateTaken = success.dateTaken;
                     Ensemble.FileIO._pickItemsTempFiles[index].height = success.height;
                     Ensemble.FileIO._pickItemsTempFiles[index].width = success.width;
                     Ensemble.FileIO._pickItemsTempFiles[index].title = success.title;
