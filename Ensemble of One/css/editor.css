@@ -472,6 +472,11 @@
     padding-right: 10px;
 }
 
+.mediaBrowserHeaderContainer {
+    display: flex;
+    justify-content: center;
+}
+
 #editorMenuMediaBrowserFileList {
     flex: 1;
     overflow-y: scroll;
@@ -485,14 +490,51 @@
     z-index: 2;
 }
 
-#editorMediaBrowserLocationButton {
+#editorMediaBrowserLocationButtonContainer {
     display: inline-block;
     float: left;
+    font-size: large;
+    font-weight: bold;
+}
+
+#editorMediaBrowserLocationButton {
+
     transition: transform 0.1s ease-in-out;
 }
 
 #editorMediaBrowserLocationButton:active {
     transform: scale(0.95);
+}
+
+#editorMediaBrowserCurrentPathContainer {
+    flex: 1;
+    margin-right: 20px;
+    margin-left: 20px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    font-size: large;
+}
+
+.editorMediaBrowserPathItem {
+}
+
+.editorMediaBrowserPathItemButton {
+    padding-left: 5px;
+    padding-right: 5px;
+    max-width: 200px;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.editorMediaBrowserPathItemButton:hover {
+    background-color: rgb(245,245,245);
+}
+
+.editorMediaBrowserPathItemButton:active {
+    background-color: black;
+    color: white;
 }
 
 #editorMediaBrowserFolderControlContainer {

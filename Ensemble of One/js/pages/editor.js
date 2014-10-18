@@ -569,15 +569,15 @@
             switch (event.currentTarget) {
                 case Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocationVideos:
                     Ensemble.MediaBrowser.setContext("video");
-                    Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocation.innerHTML = "Videos library &#xe228;";
+                    Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocation.innerHTML = "Videos library";
                     break;
                 case Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocationMusic:
                     Ensemble.MediaBrowser.setContext("music");
-                    Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocation.innerHTML = "Music library &#xe228;";
+                    Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocation.innerHTML = "Music library";
                     break;
                 case Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocationPictures:
                     Ensemble.MediaBrowser.setContext("picture");
-                    Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocation.innerHTML = "Pictures library &#xe228;";
+                    Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocation.innerHTML = "Pictures library";
                     break;
             }
         }

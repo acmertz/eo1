@@ -104,8 +104,8 @@
             console.info("Finished looking up files and retrieving their information!");
             Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.innerHTML = "";
 
-            var curDelay = 0;
-            var curDelayIter = 10;
+            //var curDelay = 0;
+            //var curDelayIter = 10;
 
             for (var i = 0; i < folders.length; i++) {
                 var mediaEntry = document.createElement("div");
@@ -150,8 +150,8 @@
 
                 mediaEntry.addEventListener("click", Ensemble.MediaBrowser._mediaFolderOnClick, false);
 
-                mediaEntry.style.animationDelay = curDelay + "ms";
-                curDelay = curDelay + curDelayIter;
+                //mediaEntry.style.animationDelay = curDelay + "ms";
+                //curDelay = curDelay + curDelayIter;
 
                 //mediaEntry.addEventListener("mousedown", Ensemble.Pages.MainMenu._projectListItemOnMouseDownListener, false);
                 //mediaEntry.addEventListener("mouseup", Ensemble.Pages.MainMenu._projectListItemOnMouseUpListener, false);
@@ -199,14 +199,53 @@
                 mediaEntry.appendChild(iconSpace);
                 mediaEntry.appendChild(metaData);
 
-                mediaEntry.style.animationDelay = curDelay + "ms";
-                curDelay = curDelay + curDelayIter;
+                //mediaEntry.style.animationDelay = curDelay + "ms";
+                //curDelay = curDelay + curDelayIter;
 
                 //mediaEntry.addEventListener("mousedown", Ensemble.Pages.MainMenu._projectListItemOnMouseDownListener, false);
                 //mediaEntry.addEventListener("mouseup", Ensemble.Pages.MainMenu._projectListItemOnMouseUpListener, false);
 
                 Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.appendChild(mediaEntry);
             }
+
+
+            //Rebuild the breadcrumb trail
+            Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.local.pathDisplay.innerHTML = "";
+            var listToUse = null;
+            switch (Ensemble.MediaBrowser._context) {
+                case "video":
+                    listToUse = Ensemble.MediaBrowser._breadCrumbsVideo;
+                    break;
+                case "music":
+                    listToUse = Ensemble.MediaBrowser._breadCrumbsMusic;
+                    break;
+                case "picture":
+                    listToUse = Ensemble.MediaBrowser._breadCrumbsPicture;
+                    break;
+            }
+
+            for (var i = 1; i < listToUse.length; i++) {
+                var pathItem = document.createElement("span");
+                pathItem.className = "editorMediaBrowserPathItem";
+
+                var pathItemName = document.createElement("span");
+                pathItemName.className = "editorMediaBrowserPathItemButton";
+                pathItemName.innerText = listToUse[i].displayName;
+                pathItemName.title = listToUse[i].displayName;
+
+                var pathItemArrow = document.createElement("span");
+                pathItemArrow.className = "editorMediaBrowserPathItemButton";
+                pathItemArrow.innerHTML = "&rsaquo;";
+
+                pathItem.appendChild(pathItemName);
+                pathItem.appendChild(pathItemArrow);
+                pathItem.ensembleFile = listToUse[i];
+
+                pathItem.addEventListener("click", Ensemble.MediaBrowser._breadcrumbOnClick, false);
+
+                Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.local.pathDisplay.appendChild(pathItem);
+            }
+
         },
 
         enumerateProjects: function (callback) {
@@ -309,6 +348,22 @@
         _mediaFolderOnClick: function (event) {
             console.log("User clicked on media folder: " + event.currentTarget.ensembleFileRef.displayName);
             Ensemble.MediaBrowser.navigateToFolder(event.currentTarget.ensembleFileRef);
+        },
+
+        _breadcrumbOnClick: function (event) {
+            console.log("Clicked a bread crumb.");
+            switch (Ensemble.MediaBrowser._context) {
+                case "video":
+                    while (Ensemble.MediaBrowser._breadCrumbsVideo[Ensemble.MediaBrowser._breadCrumbsVideo.length - 1] !== event.currentTarget.ensembleFile) Ensemble.MediaBrowser._breadCrumbsVideo.pop();
+                    break;
+                case "music":
+                    while (Ensemble.MediaBrowser._breadCrumbsMusic[Ensemble.MediaBrowser._breadCrumbsMusic.length - 1] !== event.currentTarget.ensembleFile) Ensemble.MediaBrowser._breadCrumbsMusic.pop();
+                    break;
+                case "picture":
+                    while (Ensemble.MediaBrowser._breadCrumbsPicture[Ensemble.MediaBrowser._breadCrumbsPicture.length - 1] !== event.currentTarget.ensembleFile) Ensemble.MediaBrowser._breadCrumbsPicture.pop();
+                    break;
+            }
+            Ensemble.MediaBrowser.navigateToFolder(Ensemble.MediaBrowser.currentLocation());
         }
 
 

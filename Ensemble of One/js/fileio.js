@@ -297,7 +297,7 @@
             /// <param name="srcfile" type="Windows.Storage.StorageFile">The file whose properties to look up.</param>
             /// <param name="index" type="Number">The file's position in the overall list.</param>
             (function () {
-                srcfile.properties.getImagePropertiesAsync().done(function (success) {
+                 srcfile.properties.getImagePropertiesAsync().done(function (success) {
                     //console.log("Retrieved image properties for file \"" + srcfile.name + ".\"");
                     Ensemble.FileIO._pickItemsTempFiles[index].dateTaken = success.dateTaken;
                     Ensemble.FileIO._pickItemsTempFiles[index].height = success.height;
