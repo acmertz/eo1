@@ -46,7 +46,7 @@
             fullName: "",
             path: "",
 
-            //One of "video", "audio", "image", "file", or "folder"
+            //One of "video", "audio", "picture", "file", or "folder"
             eo1type: "",
 
             //Media properties

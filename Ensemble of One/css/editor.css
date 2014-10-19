@@ -475,6 +475,7 @@
 .mediaBrowserHeaderContainer {
     display: flex;
     justify-content: center;
+    height: 28px;
 }
 
 #editorMenuMediaBrowserFileList {
@@ -573,7 +574,7 @@
     flex-direction: row;
     height: 50px;
     animation: mediaBrowserListItemEnter 0.3s linear;
-    animation-fill-mode: backwards;
+    animation-fill-mode: both;
 }
 
 .mediaBrowserListItem:hover {
@@ -602,6 +603,7 @@
     font-size: xx-large;
     padding-left: 5px;
     padding-right: 5px;
+    width: 50px;
     color: rgba(0,0,0,0.5);
 }
 

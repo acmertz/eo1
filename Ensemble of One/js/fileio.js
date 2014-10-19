@@ -225,7 +225,13 @@
                                 
                             }
                             //Now that all files and folders have been added up, pull media information.
+                            Ensemble.FileIO._pickItemsCallback(Ensemble.FileIO._pickItemsTempFiles, Ensemble.FileIO._pickItemsTempFolders);
+
                             Ensemble.FileIO._winRetrievePickItemsTempFilesMediaProperties();
+
+                            
+
+                            
                         });
                     });
                     break;
@@ -236,12 +242,16 @@
             }
         },
 
+        _clearTempItemsLookup: function () {
+            Ensemble.FileIO._pickItemsTempFilesCount = 0;
+            Ensemble.FileIO._pickItemsTempFiles = [];
+            Ensemble.FileIO._pickItemsTempFolders = [];
+        },
+
         _winRetrievePickItemsTempFilesMediaProperties: function () {
             /// <summary>Retrieves media properties for all of the temporary media items. </summary>
             if (Ensemble.FileIO._pickItemsTempFiles.length == 0) Ensemble.FileIO._winCompleteMediaPropertyLookup();
             for (var i = 0; i < Ensemble.FileIO._pickItemsTempFiles.length; i++) {
-                var num = i;
-                var cur = Ensemble.FileIO._pickItemsTempFiles[i];
                 switch (Ensemble.FileIO._pickItemsTempFiles[i].eo1type) {
                     case "video":
                         Ensemble.FileIO._winRetrieveVideoProperties(Ensemble.FileIO._pickItemsTempFiles[i]._src, i);
@@ -263,11 +273,15 @@
             (function () {
                 srcfile.properties.getVideoPropertiesAsync().done(function (success) {
                     //console.log("Retrieved video properties for the item at index " + index + ".");
-                    Ensemble.FileIO._pickItemsTempFiles[index].bitrate = success.bitrate;
-                    Ensemble.FileIO._pickItemsTempFiles[index].duration = success.duration;
-                    Ensemble.FileIO._pickItemsTempFiles[index].height = success.height;
-                    Ensemble.FileIO._pickItemsTempFiles[index].width = success.width;
-                    Ensemble.FileIO._pickItemsTempFiles[index].title = success.title;
+                    var returnVal = {
+                        bitrate: success.bitrate,
+                        duration: success.duration,
+                        height: success.height,
+                        width: success.width,
+                        title: success.title
+                    };
+                    
+                    Ensemble.MediaBrowser.updateMediaFileMeta(index + Ensemble.FileIO._pickItemsTempFolders.length, returnVal);
                     Ensemble.FileIO._winCompleteMediaPropertyLookup();
                 });
             })();
@@ -280,13 +294,18 @@
             (function () {
                 srcfile.properties.getMusicPropertiesAsync().done(function (success) {
                     //console.log("Retrieved music properties.");
-                    Ensemble.FileIO._pickItemsTempFiles[index].album = success.album;
-                    Ensemble.FileIO._pickItemsTempFiles[index].albumArtist = success.albumArtist;
-                    Ensemble.FileIO._pickItemsTempFiles[index].artist = success.artist;
-                    Ensemble.FileIO._pickItemsTempFiles[index].bitrate = success.bitrate;
-                    Ensemble.FileIO._pickItemsTempFiles[index].duration = success.duration;
-                    Ensemble.FileIO._pickItemsTempFiles[index].genre = success.genre;
-                    Ensemble.FileIO._pickItemsTempFiles[index].title = success.title;
+
+                    var returnVal = {
+                        album: success.album,
+                        albumArtist: success.albumArtist,
+                        artist: success.artist,
+                        bitrate: success.bitrate,
+                        duration: success.duration,
+                        genre: success.genre,
+                        title: success.title
+                    };
+
+                    Ensemble.MediaBrowser.updateMediaFileMeta(index + Ensemble.FileIO._pickItemsTempFolders.length, returnVal);
                     Ensemble.FileIO._winCompleteMediaPropertyLookup();
                 });
             })();
@@ -297,12 +316,15 @@
             /// <param name="srcfile" type="Windows.Storage.StorageFile">The file whose properties to look up.</param>
             /// <param name="index" type="Number">The file's position in the overall list.</param>
             (function () {
-                 srcfile.properties.getImagePropertiesAsync().done(function (success) {
+                srcfile.properties.getImagePropertiesAsync().done(function (success) {
                     //console.log("Retrieved image properties for file \"" + srcfile.name + ".\"");
-                    Ensemble.FileIO._pickItemsTempFiles[index].dateTaken = success.dateTaken;
-                    Ensemble.FileIO._pickItemsTempFiles[index].height = success.height;
-                    Ensemble.FileIO._pickItemsTempFiles[index].width = success.width;
-                    Ensemble.FileIO._pickItemsTempFiles[index].title = success.title;
+                    var returnVal = {
+                        dateTaken: success.dateTaken,
+                        height: success.height,
+                        width: success.width,
+                        title: success.title,
+                    };
+                    Ensemble.MediaBrowser.updateMediaFileMeta(index + Ensemble.FileIO._pickItemsTempFolders.length, returnVal);
                     Ensemble.FileIO._winCompleteMediaPropertyLookup();
                 });
             })();
@@ -312,12 +334,10 @@
             Ensemble.FileIO._pickItemsTempFilesCount++;
             if (Ensemble.FileIO._pickItemsTempFilesCount >= Ensemble.FileIO._pickItemsTempFiles.length) {
                 //Lookup complete. Execute callback.
-                Ensemble.FileIO._pickItemsCallback(Ensemble.FileIO._pickItemsTempFiles, Ensemble.FileIO._pickItemsTempFolders);
-
+                //Ensemble.FileIO._pickItemsCallback(Ensemble.FileIO._pickItemsTempFiles, Ensemble.FileIO._pickItemsTempFolders);
+                console.info("Metadata retrieval complete.");
                 //Reset the temporary file-lookup references.
-                Ensemble.FileIO._pickItemsTempFilesCount = 0;
-                Ensemble.FileIO._pickItemsTempFiles = [];
-                Ensemble.FileIO._pickItemsTempFolders = [];
+                Ensemble.FileIO._clearTempItemsLookup();
             }
         },
 

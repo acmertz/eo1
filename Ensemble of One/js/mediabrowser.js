@@ -97,11 +97,38 @@
             Ensemble.FileIO.pickItemsFromFolder(destination, Ensemble.MediaBrowser._populateMediaBrowserDisplay);
         },
 
+        updateMediaFileMeta: function (index, meta) {
+            /// <summary>Updates the media file at the given index in the Media Browser with the new metadata.</summary>
+            /// <param name="index" type="Number">The index of the media item in the Media Browser.</param>
+            /// <param name="meta" type="Object">An object containing the EnsembleFile instance variables to update.</param>
+
+            Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.children;
+            for (prop in meta) {
+                Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.childNodes[index].ensembleFileRef[prop] = meta[prop];
+            }
+
+            var element = Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.childNodes[index];
+            switch (element.ensembleFileRef.eo1type) {
+                case "video":
+                    element.getElementsByClassName("mediaBrowserListItemQuality")[0].innerText = Ensemble.Utilities.FriendlyResolutionGenerator.turnFriendly(meta["width"], meta["height"]);
+                    element.getElementsByClassName("mediaBrowserListItemDuration")[0].innerText = Ensemble.Utilities.TimeConverter.convertTime(meta["duration"]);
+                    break;
+                case "audio":
+                    element.getElementsByClassName("mediaBrowserListItemQuality")[0].innerText = meta["albumArtist"];
+                    element.getElementsByClassName("mediaBrowserListItemDuration")[0].innerText = Ensemble.Utilities.TimeConverter.convertTime(meta["duration"]);
+                    break;
+                case "picture":
+                    element.getElementsByClassName("mediaBrowserListItemQuality")[0].innerText = meta["width"] + " x " + meta["height"];
+                    break;
+            }
+            
+
+        },
+
         _populateMediaBrowserDisplay: function (files, folders) {
             /// <summary>Given a set of files and folders, fills the media browser display with representations of the data.</summary>
             /// <param name="files" type="Array">The files to display.</param>
             /// <param name="folders" type="Array">The folders to display.</param>
-            console.info("Finished looking up files and retrieving their information!");
             Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.innerHTML = "";
 
             //var curDelay = 0;
@@ -181,11 +208,11 @@
                 typeDiv.innerText = files[i].displayType;
 
                 var durationDiv = document.createElement("div");
-                durationDiv.className = "mediaBrowserListItemRowComponent";
+                durationDiv.className = "mediaBrowserListItemRowComponent mediaBrowserListItemDuration";
                 if (files[i].eo1type == "video" || files[i].eo1type == "audio") durationDiv.innerText = Ensemble.Utilities.TimeConverter.convertTime(files[i].duration, true);
 
                 var qualityDiv = document.createElement("div");
-                qualityDiv.className = "mediaBrowserListItemRowComponent";
+                qualityDiv.className = "mediaBrowserListItemRowComponent mediaBrowserListItemQuality";
                 if (files[i].eo1type == "video" || files[i].eo1type == "picture") qualityDiv.innerText = Ensemble.Utilities.FriendlyResolutionGenerator.turnFriendly(files[i].width, files[i].height);
                 else if (files[i].eo1type == "audio") qualityDiv.innerText = files[i].albumArtist;
 
@@ -198,6 +225,7 @@
                 metaData.appendChild(detailsRow);
                 mediaEntry.appendChild(iconSpace);
                 mediaEntry.appendChild(metaData);
+                mediaEntry.ensembleFileRef = files[i];
 
                 //mediaEntry.style.animationDelay = curDelay + "ms";
                 //curDelay = curDelay + curDelayIter;
