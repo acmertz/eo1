@@ -150,12 +150,6 @@
             }
         },
 
-        pickMediaFile: function (multi) {
-            /// <summary>Shows a file picker appropriate to the current platform so the user can select a file.</summary>
-            /// <param name="multi" type="Boolean">(Optionl) Show a multi-select file picker instead of the default one.</param>
-            /// <returns type="File">The selected file. Returns null if no file was selected.</returns>
-        },
-
         pickItemsFromFolder: function (folder, callback) {
             /// <summary>Picks all supported files and folders within the given directory and passes them via callback.</summary>
             /// <param name="folder" type="Ensemble.EnsembleFolder">The folder within which to look up files.</param>
@@ -166,6 +160,7 @@
                     folder._src.getFoldersAsync().then(function (containedFolders) {
                         console.log("Got a list of folders in the current folder.");
                         folder._src.getFilesAsync().then(function (containedFiles) {
+                            console.log("Got a list of media files in the current folder.");
                             for (var i = 0; i < containedFolders.length; i++) {
                                 //console.log("Folder is: " + containedFolders[i].name);
 
@@ -183,6 +178,7 @@
 
                                 Ensemble.FileIO._pickItemsTempFolders.push(newFolder);
                             }
+                            console.log("Finished adding folders to the array to display.");
                             for (var i = 0; i < containedFiles.length; i++) {
                                 //console.log("File is: " + containedFiles[i].name);
                                 //console.log("    (content type: " + containedFiles[i].contentType + ")");
@@ -224,6 +220,7 @@
                                 
                                 
                             }
+                            console.log("Finished adding media files to the array to display.");
                             //Now that all files and folders have been added up, pull media information.
                             Ensemble.FileIO._pickItemsCallback(Ensemble.FileIO._pickItemsTempFiles, Ensemble.FileIO._pickItemsTempFolders);
 
