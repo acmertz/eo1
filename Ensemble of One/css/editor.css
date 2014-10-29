@@ -554,8 +554,8 @@
     border-bottom-style: none;
     padding-left: 20px;
     padding-right: 20px;
-    padding-bottom: 10px;
-    padding-top: 7px;
+    padding-bottom: 5px;
+    padding-top: 5px;
 }
 
 .mediaBrowserFolderControl:hover {
@@ -566,6 +566,11 @@
     background-color: black;
     color: white;
     border-color: black;
+}
+
+#editorMediaBrowserLoadingProgress {
+    margin-right: 10px;
+    display: none;
 }
 
 .mediaBrowserListItem {
@@ -603,8 +608,14 @@
     font-size: xx-large;
     padding-left: 5px;
     padding-right: 5px;
+    text-align: center;
     width: 50px;
-    color: rgba(0,0,0,0.5);
+    color: rgba(0,0,0,0.2);
+}
+
+.mediaBrowserIconFilled {
+    color: rgba(255,255,255,0.8);
+    text-shadow: 0px 0px 10px black;
 }
 
 .mediaBrowserListItemMeta {

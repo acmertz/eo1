@@ -19,7 +19,7 @@
             displayName: "",
             displayType: "",
             fileType: "",
-            _winFolderRelativeId: null,
+            _uniqueId: null,
             _winProperties: null,
             fullName: "",
             path: "",

@@ -12,7 +12,7 @@
             this.displayName = "";
             this.displayType = "";
             this.fileType = "";
-            this._winFolderRelativeId = "";
+            this._uniqueId = "";
             this._winProperties = null;
             this.fullName = "";
             this.path = "";
@@ -41,7 +41,7 @@
             displayName: "",
             displayType: "",
             fileType: "",
-            _winFolderRelativeId: null,
+            _uniqueId: null,
             _winProperties: null,
             fullName: "",
             path: "",

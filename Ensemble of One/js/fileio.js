@@ -155,6 +155,7 @@
             /// <param name="folder" type="Ensemble.EnsembleFolder">The folder within which to look up files.</param>
             /// <param name="callback" type="Function">The function call to execute upon completion.</param>
             Ensemble.FileIO._pickItemsCallback = callback;
+            Ensemble.FileIO._clearTempItemsLookup();
             switch (Ensemble.Platform.currentPlatform) {
                 case "win8":
                     folder._src.getFoldersAsync().then(function (containedFolders) {
@@ -168,7 +169,7 @@
                                 newFolder.dateCreated = containedFolders[i].dateCreated;
                                 newFolder.displayName = containedFolders[i].displayName;
                                 newFolder.displayType = containedFolders[i].displayType;
-                                newFolder._winFolderRelativeId = containedFolders[i].folderRelativeId;
+                                newFolder._uniqueId = containedFolders[i].folderRelativeId;
                                 newFolder._winProperties = containedFolders[i].properties;
                                 newFolder.fullName = containedFolders[i].name;
                                 newFolder.path = containedFolders[i].path;
@@ -189,7 +190,7 @@
                                 newFile.displayName = containedFiles[i].displayName;
                                 newFile.displayType = containedFiles[i].displayType;
                                 newFile.fileType = containedFiles[i].fileType.toLowerCase();
-                                newFile._winFolderRelativeId = containedFiles[i].folderRelativeId;
+                                newFile._uniqueId = containedFiles[i].folderRelativeId;
                                 newFile._winProperties = containedFiles[i].properties;
                                 newFile.fullName = containedFiles[i].name;
                                 newFile.path = containedFiles[i].path;
@@ -223,8 +224,9 @@
                             console.log("Finished adding media files to the array to display.");
                             //Now that all files and folders have been added up, pull media information.
                             Ensemble.FileIO._pickItemsCallback(Ensemble.FileIO._pickItemsTempFiles, Ensemble.FileIO._pickItemsTempFolders);
+                            
 
-                            Ensemble.FileIO._winRetrievePickItemsTempFilesMediaProperties();
+                            //Ensemble.FileIO._winRetrievePickItemsTempFilesMediaProperties();
 
                             
 
@@ -236,6 +238,106 @@
                     break;
                 case "android":
                     break;
+            }
+        },
+
+        retrieveMediaProperties: function (ensembleFile, index, callback) {
+            /// <summary>Retrieves the metadata for the given EnsembleFile at the given index value, and then executes the callback.</summary>
+            /// <param name="ensembleFile" type="Ensemble.EnsembleFile">The file whose media properties to look up.</param>
+            /// <param name="index" type="Number">The file's original index in the Media Browser list.</param>
+            /// <param name="callback" type="Function">The callback to execute after retrieving the media properties. Will pass the index and the meta to the callback function.</param>
+            if (ensembleFile != null) {
+                switch (Ensemble.Platform.currentPlatform) {
+                    case "win8":
+                        switch (ensembleFile.eo1type) {
+                            case "video":
+                                ensembleFile._src.properties.getVideoPropertiesAsync().done(function (success) {
+                                    //console.log("Retrieved video properties for the item at index " + index + ".");
+                                    var returnVal = {
+                                        bitrate: success.bitrate,
+                                        duration: success.duration,
+                                        height: success.height,
+                                        width: success.width,
+                                        title: success.title
+                                    };
+
+                                    callback(index, returnVal, ensembleFile._uniqueId);
+                                    //Ensemble.FileIO._winCompleteMediaPropertyLookup();
+                                });
+                                break;
+                            case "audio":
+                                ensembleFile._src.properties.getMusicPropertiesAsync().done(function (success) {
+                                    //console.log("Retrieved music properties.");
+
+                                    var returnVal = {
+                                        album: success.album,
+                                        albumArtist: success.albumArtist,
+                                        artist: success.artist,
+                                        bitrate: success.bitrate,
+                                        duration: success.duration,
+                                        genre: success.genre,
+                                        title: success.title
+                                    };
+
+                                    callback(index, returnVal, ensembleFile._uniqueId);
+                                });
+                                break;
+                            case "picture":
+                                ensembleFile._src.properties.getImagePropertiesAsync().done(function (success) {
+                                    //console.log("Retrieved image properties for file \"" + srcfile.name + ".\"");
+                                    var returnVal = {
+                                        dateTaken: success.dateTaken,
+                                        height: success.height,
+                                        width: success.width,
+                                        title: success.title,
+                                    };
+                                    callback(index, returnVal, ensembleFile._uniqueId);
+                                });
+                                break;
+                            case "folder":
+                                callback(index, null, ensembleFile._uniqueId);
+                                break;
+                        }
+                        break;
+                    case "ios":
+                        break;
+                    case "android":
+                        break;
+                }
+            }
+
+            
+        },
+
+        retrieveThumbnail: function (ensembleFile, index, callback) {
+            /// <summary>Retrieves the metadata for the given EnsembleFile at the given index value, and then executes the callback.</summary>
+            /// <param name="ensembleFile" type="Ensemble.EnsembleFile">The file whose thumbnail to look up.</param>
+            /// <param name="index" type="Number">The file's original index in the Media Browser list.</param>
+            /// <param name="callback" type="Function">The callback to execute after retrieving the thumbnail. Will pass the index and the thumb to the callback function.</param>
+            if (ensembleFile != null) {
+                switch (Ensemble.Platform.currentPlatform) {
+                    case "win8":
+                        switch (ensembleFile.eo1type) {
+                            case "folder":
+                                callback(index, null, ensembleFile._uniqueId);
+                                break;
+                            default:
+                                ensembleFile._src.getScaledImageAsThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.listView, 50).done(function (success) {
+                                    //console.log("Retrieved video properties for the item at index " + index + ".");
+                                    //console.log("Retrieved a thumbnail!");
+
+                                    callback(index, 'url(' + URL.createObjectURL(success) + ')', ensembleFile._uniqueId);
+                                    //Ensemble.FileIO._winCompleteMediaPropertyLookup();
+                                });
+                                break;
+                            
+                        }
+                        break;
+                    case "ios":
+                        break;
+                    case "android":
+                        break;
+                }
             }
         },
 

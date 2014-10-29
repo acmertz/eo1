@@ -85,6 +85,7 @@
             /// <summary>Navigates to the given folder in the current context.</summary>
             /// <param name="destination" type="Ensemble.EnsembleFolder">The folder to which to navigate.</param>
             Ensemble.MediaBrowser._disableMediaFolderListeners();
+            Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.local.loadingIndicator.style.display = "inline";
             switch (this._context) {
                 case "video":
                     if (this._breadCrumbsVideo[this._breadCrumbsVideo.length - 1] != destination) this._breadCrumbsVideo.push(destination);
@@ -104,7 +105,6 @@
             /// <param name="index" type="Number">The index of the media item in the Media Browser.</param>
             /// <param name="meta" type="Object">An object containing the EnsembleFile instance variables to update.</param>
 
-            Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.children;
             for (prop in meta) {
                 Ensemble.MediaBrowser._mediaItems[index][prop] = meta[prop];
             }
@@ -127,6 +127,48 @@
 
         },
 
+        updateFileThumbnail: function (index, thumb) {
+            /// <summary>Updates the media file at the given index in the Media Browser with the new thumbnail.</summary>
+            /// <param name="index" type="Number">The index of the media item in the Media Browser.</param>
+            /// <param name="thumb" type="URI">The image to set as the thumbnail.</param>
+
+            var element = Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.childNodes[index];
+            var elementIcon = element.getElementsByClassName("mediaBrowserListItemIcon")[0];
+            elementIcon.style.backgroundImage = thumb;
+            $(elementIcon).addClass("mediaBrowserIconFilled");
+        },
+
+        _metaDataCallback: function (index, meta, id) {
+            if (Ensemble.MediaBrowser._mediaItems[index] && Ensemble.MediaBrowser._mediaItems[index]._uniqueId == id) {
+                if (Ensemble.MediaBrowser._mediaItems.length > index + 1) {
+                    Ensemble.FileIO.retrieveMediaProperties(Ensemble.MediaBrowser._mediaItems[index + 1], index + 1, Ensemble.MediaBrowser._metaDataCallback);
+                }
+                else {
+                    console.log("Done loading metadata.");
+                }
+                if (meta != null) {
+                    Ensemble.MediaBrowser.updateMediaFileMeta(index, meta);
+                }
+            }
+            else console.warn("Canceled metadata lookup.");
+        },
+
+        _thumbnailCallback: function (index, thumb, id) {
+            if (Ensemble.MediaBrowser._mediaItems[index] && Ensemble.MediaBrowser._mediaItems[index]._uniqueId == id) {
+                if (Ensemble.MediaBrowser._mediaItems.length > index + 1) {
+                    Ensemble.FileIO.retrieveThumbnail(Ensemble.MediaBrowser._mediaItems[index + 1], index + 1, Ensemble.MediaBrowser._thumbnailCallback);
+                }
+                else {
+                    console.log("Done loading thumbnails.");
+                    Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.local.loadingIndicator.style.display = "none";
+                }
+                if (thumb != null) {
+                    Ensemble.MediaBrowser.updateFileThumbnail(index, thumb);
+                }
+            }
+            else console.warn("Canceled thumbnail lookup.");
+        },
+
         _populateMediaBrowserDisplay: function (files, folders) {
             /// <summary>Given a set of files and folders, fills the media browser display with representations of the data.</summary>
             /// <param name="files" type="Array">The files to display.</param>
@@ -138,11 +180,13 @@
                 Ensemble.MediaBrowser._mediaItems.push(folders[i]);
             }
             for (var i = 0; i < files.length; i++) {
-                mediaString = mediaString + '<div class="mediaBrowserListItem" id="' + "mediaBrowserListItemIndex" + i.toString() + '"><div class="mediaBrowserListItemIcon">' + files[i].icon + '</div><div class="mediaBrowserListItemMeta"><div class="mediaBrowserListItemRow mediaBrowserListItemTitle">' + (files[i].title || files[i].displayName) + '</div><div class="mediaBrowserListItemRow"><div class="mediaBrowserListItemRowComponent">' + files[i].displayType + '</div><div class="mediaBrowserListItemRowComponent mediaBrowserListItemDuration"></div><div class="mediaBrowserListItemRowComponent mediaBrowserListItemQuality"></div></div></div></div>';
+                mediaString = mediaString + '<div class="mediaBrowserListItem" id="' + "mediaBrowserListItemIndex" + (i + folders.length).toString() + '"><div class="mediaBrowserListItemIcon">' + files[i].icon + '</div><div class="mediaBrowserListItemMeta"><div class="mediaBrowserListItemRow mediaBrowserListItemTitle">' + (files[i].title || files[i].displayName) + '</div><div class="mediaBrowserListItemRow"><div class="mediaBrowserListItemRowComponent">' + files[i].displayType + '</div><div class="mediaBrowserListItemRowComponent mediaBrowserListItemDuration"></div><div class="mediaBrowserListItemRowComponent mediaBrowserListItemQuality"></div></div></div></div>';
                 Ensemble.MediaBrowser._mediaItems.push(files[i]);
             }
             Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.innerHTML = mediaString;
             Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.addEventListener("click", Ensemble.MediaBrowser._listItemClicked, false);
+            Ensemble.FileIO.retrieveMediaProperties(Ensemble.MediaBrowser._mediaItems[0], 0, Ensemble.MediaBrowser._metaDataCallback);
+            Ensemble.FileIO.retrieveThumbnail(Ensemble.MediaBrowser._mediaItems[0], 0, Ensemble.MediaBrowser._thumbnailCallback);
 
             //Rebuild the breadcrumb trail
             Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.local.pathDisplay.innerHTML = "";
