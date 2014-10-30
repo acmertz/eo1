@@ -93,6 +93,7 @@
     <Content Include="js\ui.js" />
     <Content Include="js\util\aspectgenerator.js" />
     <Content Include="js\util\friendlyResolutionGenerator.js" />
+    <Content Include="js\util\mousetracker.js" />
     <Content Include="js\util\timeConverter.js" />
     <Content Include="lib\font-awesome-4.1.0\css\font-awesome.css" />
     <Content Include="lib\font-awesome-4.1.0\css\font-awesome.min.css" />
@@ -128,6 +129,8 @@
     <Content Include="lib\font-awesome-4.1.0\scss\_stacked.scss" />
     <Content Include="lib\font-awesome-4.1.0\scss\_variables.scss" />
     <Content Include="lib\jquery-2.1.1.min.js" />
+    <Content Include="lib\pure\buttons-min.css" />
+    <Content Include="lib\pure\pure-min.css" />
     <Content Include="lib\XMLWriter.js" />
     <None Include="Ensemble of One_TemporaryKey.pfx" />
   </ItemGroup>

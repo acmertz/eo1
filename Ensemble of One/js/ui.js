@@ -4,6 +4,8 @@
         relink: function () {
             /// <summary>Renews all UI references and makes sure they're alive.</summary>
 
+            this.Popups.mediaBrowserPreviewDrag = document.getElementById("editorDraggedPreviewContainer");
+
             this.PageSections.upperHalf.entireSection = document.getElementById("editorUpperHalf");
             this.PageSections.upperHalf.canvasAndControls = document.getElementById("editorCanvasContainer");
             this.PageSections.upperHalf.canvasContainer = document.getElementById("editorCanvasContent");
@@ -65,6 +67,7 @@
 
         Popups: {
             /// <summary>Dialogs, flyouts, and popups used to display information and get user input.</summary>
+            mediaBrowserPreviewDrag: null
         },
 
         PageSections: {

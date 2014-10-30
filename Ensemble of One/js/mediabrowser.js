@@ -6,6 +6,9 @@
         _breadCrumbsPicture: [],
         _mediaItems: [],
         _context: "video",
+        _dragging: false,
+        _dragCheck: false,
+        _dragEnsembleFile: null,
 
         setContext: function (contextval) {
             /// <summary>Sets the context of the media browser and changes the view to the appropriate library.</summary>
@@ -184,7 +187,8 @@
                 Ensemble.MediaBrowser._mediaItems.push(files[i]);
             }
             Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.innerHTML = mediaString;
-            Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.addEventListener("click", Ensemble.MediaBrowser._listItemClicked, false);
+            //Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.addEventListener("click", Ensemble.MediaBrowser._listItemClicked, false);
+            Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.addEventListener("mousedown", Ensemble.MediaBrowser._listItemMouseDown, false);
             Ensemble.FileIO.retrieveMediaProperties(Ensemble.MediaBrowser._mediaItems[0], 0, Ensemble.MediaBrowser._metaDataCallback);
             Ensemble.FileIO.retrieveThumbnail(Ensemble.MediaBrowser._mediaItems[0], 0, Ensemble.MediaBrowser._thumbnailCallback);
 
@@ -234,16 +238,78 @@
         },
 
         //Private functions
-        _listItemClicked: function (event) {
+        _listItemMouseDown: function (event) {
+            console.log("Media browser mousedown.");
             var closestListItem = $(event.srcElement).closest(".mediaBrowserListItem");
             if (closestListItem[0]) {
                 var itemIndex = parseInt(closestListItem[0].id.replace("mediaBrowserListItemIndex", ""));
                 if (!isNaN(itemIndex)) {
-                    if (Ensemble.MediaBrowser._mediaItems[itemIndex].eo1type == "folder") {
-                        Ensemble.MediaBrowser.navigateToFolder(Ensemble.MediaBrowser._mediaItems[itemIndex]);
+                    
+                    Ensemble.MediaBrowser._dragEnsembleFile = Ensemble.MediaBrowser._mediaItems[itemIndex];
+                    if (Ensemble.MediaBrowser._dragEnsembleFile.eo1type != "folder") {
+                        Ensemble.MediaBrowser._dragCheck = true;
+                        Ensemble.Utilities.MouseTracker.startTracking(event.clientX, event.clientY);
+                        window.setTimeout(function (timeoutEvent) {
+                            if (Ensemble.MediaBrowser._dragCheck) {
+                                //Still dragging - start drag operation.
+                                Ensemble.MediaBrowser._listItemBeginDrag();
+                            }
+                        }, 500);
+                        
+                    }
+                    document.addEventListener("mouseup", Ensemble.MediaBrowser._listItemMouseUp, false);
+                }
+            }
+        },
+
+        _listItemMouseUp: function (event) {
+            console.log("Media browser check mouseup.");
+            if (!Ensemble.MediaBrowser._dragging) {
+                Ensemble.MediaBrowser._dragCheck = false;
+
+                var closestListItem = $(event.srcElement).closest(".mediaBrowserListItem");
+                if (closestListItem[0]) {
+                    var itemIndex = parseInt(closestListItem[0].id.replace("mediaBrowserListItemIndex", ""));
+                    if (!isNaN(itemIndex)) {
+                        if (Ensemble.MediaBrowser._mediaItems[itemIndex] === Ensemble.MediaBrowser._dragEnsembleFile) {
+                            if (Ensemble.MediaBrowser._mediaItems[itemIndex].eo1type == "folder") {
+                                Ensemble.MediaBrowser.navigateToFolder(Ensemble.MediaBrowser._mediaItems[itemIndex]);
+                            }
+                            else {
+                                console.info("Showing media item preview...");
+                            }
+                        }
                     }
                 }
             }
+        },
+
+        _listItemBeginDrag: function () {
+            console.log("Media browser beginning drag.");
+            Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.style.overflowY = "hidden";
+            document.removeEventListener("mouseup", Ensemble.MediaBrowser._listItemMouseUp);
+            Ensemble.MediaBrowser._dragging = true;
+            Ensemble.MediaBrowser._dragCheck = false;
+            Ensemble.Pages.Editor.UI.Popups.mediaBrowserPreviewDrag.style.transform = "translate(" + Ensemble.Utilities.MouseTracker.x + "px," + Ensemble.Utilities.MouseTracker.y + "px)";
+            $(Ensemble.Pages.Editor.UI.Popups.mediaBrowserPreviewDrag).removeClass("editorDraggedPreviewHidden");
+            $(Ensemble.Pages.Editor.UI.Popups.mediaBrowserPreviewDrag).addClass("editorDraggedPreviewVisible");
+            window.requestAnimationFrame(Ensemble.MediaBrowser._listItemDragUpdate);
+            document.addEventListener("mouseup", Ensemble.MediaBrowser._listItemEndDrag, false);
+            },
+
+        _listItemDragUpdate: function (event) {
+            // Update the item's position.
+            Ensemble.Pages.Editor.UI.Popups.mediaBrowserPreviewDrag.style.transform = "translate(" + Ensemble.Utilities.MouseTracker.x + "px," + Ensemble.Utilities.MouseTracker.y + "px)";
+            if (Ensemble.MediaBrowser._dragging) window.requestAnimationFrame(Ensemble.MediaBrowser._listItemDragUpdate);
+        },
+
+        _listItemEndDrag: function (event) {
+            console.log("Media browser ending drag.");
+            Ensemble.MediaBrowser._dragging = false;
+            Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.style.overflowY = "";
+            document.removeEventListener("mouseup", Ensemble.MediaBrowser._listItemEndDrag);
+            $(Ensemble.Pages.Editor.UI.Popups.mediaBrowserPreviewDrag).removeClass("editorDraggedPreviewVisible");
+            $(Ensemble.Pages.Editor.UI.Popups.mediaBrowserPreviewDrag).addClass("editorDraggedPreviewHidden");
         },
 
         _disableMediaFolderListeners: function () {

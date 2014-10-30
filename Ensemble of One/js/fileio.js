@@ -325,8 +325,13 @@
                                 ensembleFile._src.getScaledImageAsThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.listView, 50).done(function (success) {
                                     //console.log("Retrieved video properties for the item at index " + index + ".");
                                     //console.log("Retrieved a thumbnail!");
-
-                                    callback(index, 'url(' + URL.createObjectURL(success) + ')', ensembleFile._uniqueId);
+                                    try {
+                                        callback(index, 'url(' + URL.createObjectURL(success) + ')', ensembleFile._uniqueId);
+                                    }
+                                    catch (exception) {
+                                        //Item does not have a thumbnail.
+                                        callback(index, '', ensembleFile._uniqueId);
+                                    }
                                     //Ensemble.FileIO._winCompleteMediaPropertyLookup();
                                 });
                                 break;
