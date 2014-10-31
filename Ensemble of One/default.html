@@ -230,7 +230,7 @@
         </div>
 
 
-        <div class ="pageContainer" id="editorPageContainer">
+        <div class="pageContainer" id="editorPageContainer">
             <div id="editorUpperHalf">
                 <div id="editorCustomButtonsLeft">
                     <button data-win-control="WinJS.UI.AppBarCommand"
@@ -555,6 +555,21 @@
                 <div id="editorMenuButton" class="editorMenuToggle fa fa-2x fa-list" title="Actions"></div> <br />
                 <div id="editorMediaButton" class="editorMenuToggle fa fa-fw fa-2x fa-film" title="Media"></div> <br />
                 <div id="editorEffectsButton" class="editorMenuToggle fa fa-fw fa-2x fa-star" title="Effects"></div>
+            </div>
+
+            <div id="editorMediaBrowserPreviewClickEater" class="editorClickEater editorClickEaterFaded"></div>
+            <div id="mediaBrowserPreviewDialog" class="mainMenuZoomDialog">
+                <div class="mainMenuZoomDialogContent">
+                    <div id="mediaBrowserPreviewVideo" class="mediaBrowserPreviewItem">
+                        <video controls autoplay></video><br />
+                        <div class="previewItemControls">
+                            <button class="pure-button"><i class="fa fa-plus"></i> Add to project</button>
+                            <button class="pure-button"><i class="fa fa-times"></i> Close</button>
+                        </div>
+                    </div>
+                    <div id="mediaBrowserPreviewAudio" class="mediaBrowserPreviewItem"></div>
+                    <div id="mediaBrowserPreviewPicture" class="mediaBrowserPreviewItem"></div>
+                </div>
             </div>
 
             <div id="editorDraggedPreviewContainer"><div id="editorDraggedPreviewContent">Preview content here</div></div>

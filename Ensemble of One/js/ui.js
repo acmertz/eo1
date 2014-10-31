@@ -5,6 +5,7 @@
             /// <summary>Renews all UI references and makes sure they're alive.</summary>
 
             this.Popups.mediaBrowserPreviewDrag = document.getElementById("editorDraggedPreviewContainer");
+            this.Popups.mediaBrowserPreviewDialog = document.getElementById("mediaBrowserPreviewDialog");
 
             this.PageSections.upperHalf.entireSection = document.getElementById("editorUpperHalf");
             this.PageSections.upperHalf.canvasAndControls = document.getElementById("editorCanvasContainer");
@@ -23,6 +24,10 @@
             this.PageSections.menu.mediaMenu.local.pathDisplay = document.getElementById("editorMediaBrowserCurrentPathContainer");
             this.PageSections.menu.mediaMenu.local.loadingIndicator = document.getElementById("editorMediaBrowserLoadingProgress");
             this.PageSections.menu.effectsMenu.entireSection = document.getElementById("editorEffectsMenu");
+
+            this.Graphics.mediaBrowserPreviewVideo = document.getElementById("mediaBrowserPreviewVideo");
+            this.Graphics.mediaBrowserPreviewMusic = document.getElementById("mediaBrowserPreviewAudio");
+            this.Graphics.mediaBrowserPreviewPic = document.getElementById("mediaBrowserPreviewPicture");
 
             this.RenderSurfaces.mainCanvas = document.getElementById("editorCanvas");
 
@@ -54,6 +59,7 @@
 
             this.UserInput.ClickEaters.menu = document.getElementById("editorMenuClickEater");
             this.UserInput.ClickEaters.splitpoint = document.getElementById("topBottomSplitpointClickEater");
+            this.UserInput.ClickEaters.mediaPreview = document.getElementById("editorMediaBrowserPreviewClickEater");
 
             this.UserInput.Flyouts.mediaBrowserLocation = document.getElementById("editorMediaBrowserLocationFlyout");
 
@@ -67,7 +73,8 @@
 
         Popups: {
             /// <summary>Dialogs, flyouts, and popups used to display information and get user input.</summary>
-            mediaBrowserPreviewDrag: null
+            mediaBrowserPreviewDrag: null,
+            mediaBrowserPreviewDialog: null
         },
 
         PageSections: {
@@ -114,7 +121,9 @@
         },
 
         Graphics: {
-
+            mediaBrowserPreviewVideo: null,
+            mediaBrowserPreviewMusic: null,
+            mediaBrowserPreviewPic: null
         },
 
         RenderSurfaces: {
@@ -156,7 +165,8 @@
             },
             ClickEaters: {
                 menu: null,
-                splitpoint: null
+                splitpoint: null,
+                mediaPreview: null
             },
             Flyouts: {
                 mediaBrowserLocation: null

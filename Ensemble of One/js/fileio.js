@@ -346,6 +346,23 @@
             }
         },
 
+        retrieveMediaPreview: function (ensembleFile, callback) {
+            /// <summary>Loads a preview for the given Ensemble file.</summary>
+            /// <param name="ensembleFile" type="Ensemble.EnsembleFile">The file for which to load a preview.</param>
+            /// <param name="callback" type="Function">The callback to execute after the preview loaded. The callback will be passed both the Ensemble file and a URI referencing its media.</param>
+            var returnVal = "";
+            switch (Ensemble.Platform.currentPlatform) {
+                case "win8":
+                    returnVal = URL.createObjectURL(ensembleFile._src);
+                    break;
+                case "ios":
+                    break;
+                case "android":
+                    break;
+            }
+            callback(ensembleFile, returnVal);
+        },
+
         _clearTempItemsLookup: function () {
             Ensemble.FileIO._pickItemsTempFilesCount = 0;
             Ensemble.FileIO._pickItemsTempFiles = [];
