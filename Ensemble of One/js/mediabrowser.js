@@ -242,6 +242,11 @@
             /// <param name="ensembleFile" type="Ensemble.EnsembleFile">The file for which to load a preview.</param>
             /// <param name="fileUri" type="String">The URI to the Ensemble file's source.</param>
             $(Ensemble.Pages.Editor.UI.UserInput.ClickEaters.mediaPreview).removeClass("editorClickEaterFaded");
+
+            Ensemble.Pages.Editor.UI.Graphics.mediaBrowserPreviewVideo.style.display = "none";
+            Ensemble.Pages.Editor.UI.Graphics.mediaBrowserPreviewMusic.style.display = "none";
+            Ensemble.Pages.Editor.UI.Graphics.mediaBrowserPreviewPic.style.display = "none";
+
             switch (ensembleFile.eo1type) {
                 case "video":
                     Ensemble.Pages.Editor.UI.Graphics.mediaBrowserPreviewVideo.style.display = "block";
@@ -250,8 +255,16 @@
                     vidTag.src = fileUri;
                     break;
                 case "audio":
+                    Ensemble.Pages.Editor.UI.Graphics.mediaBrowserPreviewMusic.style.display = "block";
+                    var audioTag = Ensemble.Pages.Editor.UI.Graphics.mediaBrowserPreviewMusic.getElementsByTagName("audio")[0];
+                    audioTag.addEventListener("play", Ensemble.MediaBrowser._openMediaPreviewPopup, false);
+                    audioTag.src = fileUri;
                     break;
                 case "picture":
+                    Ensemble.Pages.Editor.UI.Graphics.mediaBrowserPreviewPic.style.display = "block";
+                    var picTag = Ensemble.Pages.Editor.UI.Graphics.mediaBrowserPreviewPic.getElementsByTagName("img")[0];
+                    picTag.addEventListener("load", Ensemble.MediaBrowser._openMediaPreviewPopup, false);
+                    picTag.src = fileUri;
                     break;
             }
 
@@ -264,8 +277,18 @@
             $(Ensemble.Pages.Editor.UI.UserInput.ClickEaters.mediaPreview).addClass("editorClickEaterFaded");
             $(Ensemble.Pages.Editor.UI.Popups.mediaBrowserPreviewDialog).removeClass("mainMenuZoomDialogVisible");
             $(Ensemble.Pages.Editor.UI.Popups.mediaBrowserPreviewDialog).addClass("mainMenuZoomDialogHidden");
-            Ensemble.Pages.Editor.UI.Graphics.mediaBrowserPreviewVideo.getElementsByTagName("video")[0].pause();
-            Ensemble.Pages.Editor.UI.Graphics.mediaBrowserPreviewVideo.src = "";
+
+            var vidTag = Ensemble.Pages.Editor.UI.Graphics.mediaBrowserPreviewVideo.getElementsByTagName("video")[0];
+            var audioTag = Ensemble.Pages.Editor.UI.Graphics.mediaBrowserPreviewMusic.getElementsByTagName("audio")[0];
+            var picTag = Ensemble.Pages.Editor.UI.Graphics.mediaBrowserPreviewPic.getElementsByTagName("img")[0];
+
+            vidTag.removeEventListener("play", Ensemble.MediaBrowser._openMediaPreviewPopup);
+            audioTag.removeEventListener("play", Ensemble.MediaBrowser._openMediaPreviewPopup);
+            picTag.removeEventListener("load", Ensemble.MediaBrowser._openMediaPreviewPopup);
+
+            vidTag.pause();
+            audioTag.pause();
+            //Ensemble.Pages.Editor.UI.Graphics.mediaBrowserPreviewVideo.src = "";
         },
 
         //Private functions
@@ -273,6 +296,14 @@
         _openMediaPreviewPopup: function () {
             $(Ensemble.Pages.Editor.UI.Popups.mediaBrowserPreviewDialog).removeClass("mainMenuZoomDialogHidden");
             $(Ensemble.Pages.Editor.UI.Popups.mediaBrowserPreviewDialog).addClass("mainMenuZoomDialogVisible");
+
+            var vidTag = Ensemble.Pages.Editor.UI.Graphics.mediaBrowserPreviewVideo.getElementsByTagName("video")[0];
+            var audioTag = Ensemble.Pages.Editor.UI.Graphics.mediaBrowserPreviewMusic.getElementsByTagName("audio")[0];
+            var picTag = Ensemble.Pages.Editor.UI.Graphics.mediaBrowserPreviewPic.getElementsByTagName("img")[0];
+
+            vidTag.removeEventListener("play", Ensemble.MediaBrowser._openMediaPreviewPopup);
+            audioTag.removeEventListener("play", Ensemble.MediaBrowser._openMediaPreviewPopup);
+            picTag.removeEventListener("load", Ensemble.MediaBrowser._openMediaPreviewPopup);
         },
 
         _listItemMouseDown: function (event) {
