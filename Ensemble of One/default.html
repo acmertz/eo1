@@ -43,6 +43,7 @@
     <script src="/js/projectfile.js"></script>
     <script src="/js/session.js"></script>
     <script src="/js/settings.js"></script>
+    <script src="/js/timeline.js"></script>
     <script src="/js/ui.js"></script>
 </head>
 <body>
@@ -183,19 +184,21 @@
             <div id="settingsDialog" class="mainMenuFlipDialog">
                 <div id="settingsDialogContainer">
                     <div id="settingsDialogContent" class="mainMenuDialogContent">
-                        <h2>Settings</h2>
-                        <h3>Audio & Video</h3>
-                        <p><label><input type="checkbox">Optimize videos for editing</label></p>
-
-                        <h3>Editor & Projects</h3>
-                        <p><label><input type="checkbox"> Prevent sleep while editing</label></p>
-
-                        <h3>Permissions</h3>
-                        <p><label><input type="checkbox"> Camera</label></p>
-                        <p><label><input type="checkbox"> Microphone</label></p>
-                        <p><label><input type="checkbox"> Background</label></p>
-
-                        <h3>Danger Zone</h3>
+                        <h2>Editor &amp; Timeline</h2>
+                        <p>
+                            <label>
+                                Timeline tracks visible<br />
+                                <select id="settingsDialogTimelineTracksVisible">
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4" selected>4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                </select>
+                            </label>
+                        </p>
+                        <hr />
+                        <h2>Danger Zone</h2>
                         <p><button id="mainMenuDeleteAllProjectsButton" class="pure-button ensembleButton ensembleButtonDefault">Delete all projects</button>
 </p>
                     </div>
@@ -597,12 +600,14 @@
             
         </div>
     </div>
-    <div id="editorMediaBrowserLocationFlyout" data-win-control="WinJS.UI.Menu">
-        <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMediaBrowserLocationVideosLibrary',label:'Videos library'}"></button>
-        <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMediaBrowserLocationMusicLibrary',label:'Music library'}"></button>
-        <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMediaBrowserLocationPicturesLibrary',label:'Pictures library'}"></button>
-        <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'separator',type:'separator'}" />
-        <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'forwardMenuItem',label:'Browse...'}"></button>
+    <div>
+        <div id="editorMediaBrowserLocationFlyout" data-win-control="WinJS.UI.Menu">
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMediaBrowserLocationVideosLibrary',label:'Videos library'}"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMediaBrowserLocationMusicLibrary',label:'Music library'}"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMediaBrowserLocationPicturesLibrary',label:'Pictures library'}"></button>
+            <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'separator',type:'separator'}" />
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'forwardMenuItem',label:'Browse...'}"></button>
+        </div>
     </div>
 </body>
 </html>

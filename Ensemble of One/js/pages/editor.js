@@ -21,7 +21,10 @@
         showInitial: function () {
             /// <summary>Plays the Editor pagelaunch animation and attaches all event listeners.</summary>
             document.getElementById("editorPageContainer").style.visibility = "visible";
+
+            //Update the Editor with the current settings
             this.layoutInterfaceToSplitpoint(Ensemble.Settings.getEditorDividerPosition() * window.innerHeight);
+            Ensemble.Timeline.setRowsVisible(Ensemble.Settings.getEditorTimelineRowsVisible());
 
             $(Ensemble.Pages.Editor.UI.PageSections.upperHalf.entireSection).addClass("editorUpperHalfVisible");
 

@@ -36,6 +36,9 @@ var renderPool = {
                     mediaMGR = new Ensemble.Editor.MediaMGR();
                     renderPool.main = new Ensemble.Editor.Renderer(Ensemble.Pages.Editor.UI.RenderSurfaces.mainCanvas);
 
+                    // Start permanent listeners
+                    document.getElementById("settingsDialogTimelineTracksVisible").addEventListener("change", Ensemble.Settings._timelineTracksDropdownChanged, false);
+
                     window.setTimeout(function () {
                         //showMainMenuInitial();
                         Ensemble.Pages.MainMenu.showInitial();

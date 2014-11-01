@@ -1,6 +1,30 @@
 ﻿(function () {
     WinJS.Namespace.define("Ensemble.Settings", {
         /// <summary>Provides platform-agnostic interfaces for the storage and retrieval of application settings.</summary>
+
+        refreshSettingsDialog: function () {
+            /// <summary>Retrieves all known settings from storage and updates the settings dialog to match.</summary>
+            var settingsIds = [
+                "settingsDialogTimelineTracksVisible"
+            ];
+
+            var settingsToUpdate = [];
+
+            switch (Ensemble.Platform.currentPlatform) {
+                case "win8":
+                    settingsToUpdate.push({id: settingsIds[0], value: Windows.Storage.ApplicationData.current.roamingSettings.values["editorTimelineRowsVisible"]})
+                    break;
+                case "android":
+                    break;
+                case "ios":
+                    break;
+            }
+
+            for (var i = 0; i < settingsToUpdate.length; i++) {
+                document.getElementById(settingsToUpdate[i].id).value = settingsToUpdate[i].value;
+            }
+        },
+
         setEditorDividerPosition: function (yPercentage) {
             /// <summary>Stores the position of the Editor's UI divider in application settings.</summary>
             /// <param name="yPercentage" type="Number">A percentage value representing the divider's Y position on the screen.</param>
@@ -31,7 +55,48 @@
                     break;
             }
 
-            if ((returnVal == null) || (returnVal == undefined)) returnVal = 0.5
+            if ((returnVal == null) || (returnVal == undefined)) returnVal = 0.5;
+            return returnVal;
+        },
+
+        _timelineTracksDropdownChanged: function (event) {
+            console.log("value changed.");
+            Ensemble.Settings.setEditorTimelineRowsVisible(parseInt(event.currentTarget.value));
+        },
+
+        setEditorTimelineRowsVisible: function (rowsVisible) {
+            /// <summary>Stores the number of rows visible in the timeline application settings.</summary>
+            /// <param name="rowsVisible" type="Number">The number of rows visible in the timeline.</param>
+
+            switch (Ensemble.Platform.currentPlatform) {
+                case "win8":
+                    Windows.Storage.ApplicationData.current.roamingSettings.values["editorTimelineRowsVisible"] = rowsVisible;
+                    break;
+                case "android":
+                    break;
+                case "ios":
+                    break;
+            }
+
+            Ensemble.Timeline.setRowsVisible(rowsVisible);
+        },
+
+        getEditorTimelineRowsVisible: function () {
+            /// <summary>Retrieves the number of rows visible from the timeline application settings.</summary>
+            /// <returns type="Number">The number of rows visible in the timeline.</returns>
+
+            var returnVal = null;
+            switch (Ensemble.Platform.currentPlatform) {
+                case "win8":
+                    returnVal = Windows.Storage.ApplicationData.current.roamingSettings.values["editorTimelineRowsVisible"];
+                    break;
+                case "android":
+                    break;
+                case "ios":
+                    break;
+            }
+
+            if ((returnVal == null) || (returnVal == undefined)) returnVal = 4;
             return returnVal;
         }
     });

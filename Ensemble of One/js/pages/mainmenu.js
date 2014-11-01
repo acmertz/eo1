@@ -262,6 +262,10 @@
         showSettingsDialog: function () {
             /// <summary>Shows the settings dialog.</summary>
             console.log("Showing the settings dialog.");
+
+            //Update settings dialog to match saved settings
+            Ensemble.Settings.refreshSettingsDialog();
+
             $("#clapperTop").addClass("clapperClapping");
             window.setTimeout(function () { $("#clapperTop").removeClass("clapperClapping"); }, 100);
             $("#settingsDialog").removeClass("settingsDialogHidden");

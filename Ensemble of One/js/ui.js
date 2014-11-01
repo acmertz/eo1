@@ -15,6 +15,7 @@
             this.PageSections.upperHalf.customButtonsRight = document.getElementById("editorCustomButtonsRight");
 
             this.PageSections.lowerHalf.entireSection = document.getElementById("editorLowerHalf");
+            this.PageSections.lowerHalf.timeline = document.getElementById("editorTimelineContent");
             this.PageSections.divider = document.getElementById("editorHorizontalDivider");
             this.PageSections.menuButtons = document.getElementById("editorMenuButtons");
             this.PageSections.menu.entireSection = document.getElementById("editorMenuDialog");
@@ -90,7 +91,8 @@
             },
             lowerHalf: {
                 //The entire lower half of the page.
-                entireSection: null
+                entireSection: null,
+                timeline: null
             },
             //Horizontal divider bar that separates the top half of the page from the lower half.
             divider: null,
