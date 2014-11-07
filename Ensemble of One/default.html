@@ -29,15 +29,21 @@
     <script src="/js/editor/mediamgr.js"></script>
     <script src="/js/editor/renderer.js"></script>
     <script src="/js/editor/timelinemgr.js"></script>
+
+    <script src="/js/events/action.js"></script>
+
     <script src="/js/pages/mainmenu.js"></script>
     <script src="/js/pages/editor.js"></script>
+
     <script src="/js/util/aspectgenerator.js"></script>
     <script src="/js/util/friendlyResolutionGenerator.js"></script>
     <script src="/js/util/mousetracker.js"></script>
     <script src="/js/util/timeConverter.js"></script>
+
     <script src="/js/ensemblefile.js"></script>
     <script src="/js/ensemblefolder.js"></script>
     <script src="/js/fileio.js"></script>
+    <script src="/js/historymgr.js"></script>
     <script src="/js/mediabrowser.js"></script>
     <script src="/js/platform.js"></script>
     <script src="/js/projectfile.js"></script>
@@ -262,12 +268,12 @@
                             <span id="editorTimeDisplay">00:00.000</span>
                         </div>
                         <div class="editorPlayControlSection" id="editorPlayControlsMain">
-                            <i class="portraitHidden fa fa-2x fa-step-backward" id="editorSkipBackButton" title="Skip backward"></i>
-                            <i class="fa fa-3x fa-play" id="editorPlaypauseButton" title="Play"></i>
-                            <i class="portraitHidden fa fa-2x fa-step-forward" id="editorSkipForwardButton" title="Skip forward"></i>
+                            <i class="portraitHidden editorGeneralButton" id="editorSkipBackButton" title="Skip backward">&#xE100;</i>
+                            <i class="editorGeneralButton" id="editorPlaypauseButton" title="Play">&#xE102;</i>
+                            <i class="portraitHidden editorGeneralButton" id="editorSkipForwardButton" title="Skip forward">&#xE101;</i>
                         </div>
                         <div class="editorPlayControlSection" id="editorPlayControlsRight">
-                            <i class="fa fa-2x fa-arrows-alt" id="editorFullscreenButton" title="Full screen"></i>
+                            <i class="editorGeneralButton" id="editorFullscreenButton" title="Full screen">&#xE1D9;</i>
                         </div>
 
                         
@@ -299,15 +305,16 @@
                 <div id="editorTimelineScrollbar"></div>
                 <div id="editorTimelineContainer">
                     <div class="editorTimelineSideControls">
+                        <i class="editorGeneralButton" id="editorTimelineAddTrackButton" title="New track">&#xE109;</i>
                         <div class="spacer"></div>
-                        <i class="fa fa-2x fa-angle-up" id="editorTimelineScrollUpButton" title="Scroll up"></i>
-                        <i class="fa fa-2x fa-angle-down" id="editorTimelineScrollDownButton" title="Scroll down"></i>
                     </div>
                     <div id="editorTimelineContent"></div>
                     <div class="editorTimelineSideControls">
+                        <i class="editorGeneralButton" id="editorTimelineZoomInButton" title="Zoom in">&#xE12E;</i>
+                        <i class="editorGeneralButton" id="editorTimelineZoomOutButton" title="Zoom out">&#xE1A4;</i>
                         <div class="spacer"></div>
-                        <i class="fa fa-2x fa-search-plus" id="editorTimelineZoomInButton" title="Zoom in"></i>
-                        <i class="fa fa-2x fa-search-minus" id="editorTimelineZoomOutButton" title="Zoom out"></i>
+                        <i class="fa-rotate-270 editorGeneralButton" id="editorTimelineScrollUpButton" title="Scroll up">&#xE111;</i>
+                        <i class="fa-rotate-270 editorGeneralButton" id="editorTimelineScrollDownButton" title="Scroll down">&#xE112;</i>
                     </div>
                 </div>
             </div>

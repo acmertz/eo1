@@ -68,6 +68,7 @@
             this.UserInput.Buttons.timelineScrollDown = document.getElementById("editorTimelineScrollDownButton");
             this.UserInput.Buttons.timelineZoomIn = document.getElementById("editorTimelineZoomInButton");
             this.UserInput.Buttons.timelineZoomOut = document.getElementById("editorTimelineZoomOutButton");
+            this.UserInput.Buttons.timelineNewTrack = document.getElementById("editorTimelineAddTrackButton");
 
             console.log("Relinked all Editor UI references.");
         },
@@ -148,6 +149,7 @@
                 timelineScrollDown: null,
                 timelineZoomIn: null,
                 timelineZoomOut: null,
+                timelineNewTrack: null,
                 actionMenu: null,
                 mediaMenu: null,
                 effectsMenu: null,

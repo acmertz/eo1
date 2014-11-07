@@ -365,6 +365,10 @@
             Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocationMusic.addEventListener("click", this._mediaBrowserLocationSelectedOnClickListener, false);
             Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocationPictures.addEventListener("click", this._mediaBrowserLocationSelectedOnClickListener, false);
 
+            //Timeline
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.timelineNewTrack).click(this._timelineNewTrackButtonOnClickListener);
+
+            //Other
             Ensemble.Pages.Editor.UI.UserInput.Boundaries.topBottomSplit.addEventListener("mousedown", this._topBottomSplitMouseDown, false);
 
             window.addEventListener("resize", this.viewResized, false);
@@ -583,6 +587,12 @@
                     Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocation.innerHTML = "Pictures library";
                     break;
             }
+        },
+
+        _timelineNewTrackButtonOnClickListener: function (event) {
+            console.log("Clicked the new track button.");
+            var action = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.createTrack);
+            Ensemble.HistoryMGR.performAction(action);
         }
     });
 })();

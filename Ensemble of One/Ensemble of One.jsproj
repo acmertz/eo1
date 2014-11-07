@@ -82,7 +82,9 @@
     <Content Include="js\editor\timelinemgr.js" />
     <Content Include="js\ensemblefile.js" />
     <Content Include="js\ensemblefolder.js" />
+    <Content Include="js\events\action.js" />
     <Content Include="js\fileio.js" />
+    <Content Include="js\historymgr.js" />
     <Content Include="js\mediabrowser.js" />
     <Content Include="js\pages\editor.js" />
     <Content Include="js\pages\mainmenu.js" />
