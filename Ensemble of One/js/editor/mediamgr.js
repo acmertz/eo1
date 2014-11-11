@@ -4,7 +4,6 @@
             /// <summary>Provides tools for managing all the MediaClip objects in a project.</summary>
             //Constructor
             this._index = new Ensemble.Editor.Index();
-            this._timeline = new Ensemble.Editor.TimelineMGR();
         },
         {
             //Instance members

@@ -26,6 +26,8 @@
                 /// <summary>Performs the task associated with the Action.</summary>
                 switch (this._type) {
                     case Ensemble.Events.Action.ActionType.createTrack:
+                        console.log("Creating new track...");
+                        Ensemble.Editor.TimelineMGR.createTrack();
                         break;
                     default:
                         console.error("Unknown Action!");

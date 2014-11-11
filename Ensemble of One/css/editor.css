@@ -253,7 +253,24 @@
     background: linear-gradient(to bottom, rgb(255,255,255) 50%, rgb(240,240,240) 50%);
 	background-size: 100px 50%;
     overflow-x: scroll;
+}
+
+#editorTimelineContent .editorTimelineTrack {
+    box-sizing: border-box;
     cursor: text;
+}
+
+.editorTimelineTrack .trackHeader {
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 50px;
+    padding-left: 10px;
+    display: inline-block;
+}
+
+.editorTimelineTrack .trackContent {
+    display: inline-block;
 }
 
 #editorPageContainer #editorMenuButton, .editorMenuButtonPlaceholder {

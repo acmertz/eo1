@@ -95,6 +95,8 @@
             Ensemble.Pages.Editor.UI.PageSections.upperHalf.canvasAndControls.style.width = finalWidth + "px";
             Ensemble.Pages.Editor.UI.RenderSurfaces.mainCanvas.style.height = finalHeight + "px";
 
+            Ensemble.Editor.TimelineMGR.updateTrackSizing();
+
         },
 
         showActionMenu: function () {
