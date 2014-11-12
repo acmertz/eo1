@@ -28,16 +28,40 @@
             window.clearInterval(this._projectLoadTimer);
 
             // Hide the current page
-            $("#mainMenuPageContainer").addClass("pageContainerHidden");
-            window.setTimeout(function () {
-                WinJS.UI.Animation.exitContent(document.getElementById("imgMainLogo")).done(function () {
-                    document.getElementById("mainMenuPageContainer").style.display = "none";
-                    Ensemble.Pages.Editor.showInitial();
-                    //document.getElementById("mainMenuPageContainer").parentElement.removeChild(document.getElementById("mainMenuPageContainer")); //Remove the main menu from the DOM.
-                });
-            }, 500)
+            //$("#mainMenuPageContainer").addClass("pageContainerHidden");
+            $("#mainMenuPageContainer").css("visibility", "hidden");
+            $("#mainMenuPageContainer").css("opacity", "0");
+            $("#mainMenuPageContainer").css("pointer-events", "none");
+            $("#imgMainLogo").css("display", "none");
+            //window.setTimeout(function () {
+            //    WinJS.UI.Animation.exitContent(document.getElementById("imgMainLogo")).done(function () {
+            //        document.getElementById("mainMenuPageContainer").style.display = "none";
+            //        Ensemble.Pages.Editor.showInitial();
+            //        //document.getElementById("mainMenuPageContainer").parentElement.removeChild(document.getElementById("mainMenuPageContainer")); //Remove the main menu from the DOM.
+            //    });
+            //}, 500)
 
             this._detachListeners();
+        },
+
+        showProjectLoadingPage: function (projectName) {
+            /// <summary>Displays a loading dialog with the projects name.</summary>
+            /// <param name="projectName" type="String">The name of the project being loaded.</param>
+            $("#projectLoadingNameDisplay").text(projectName);
+            $("#projectLoadingPageContainer").removeClass("loadingPageHidden");
+            $("#projectLoadingPageContainer").addClass("loadingPageVisible");
+        },
+
+        navigateToEditor: function () {
+            /// <summary>Hides the Main Menu, dismisses the loading page, and then shows the Editor page.</summary>
+            Ensemble.Pages.MainMenu.hide();
+            window.setTimeout(function () {
+                $("#projectLoadingPageContainer").removeClass("loadingPageVisible");
+                $("#projectLoadingPageContainer").addClass("loadingPageHidden");
+                window.setTimeout(function () {
+                    Ensemble.Pages.Editor.showInitial();
+                }, 500);
+            }, 500);
         },
 
 
@@ -48,7 +72,7 @@
             $("#newProjectDialog").addClass("newProjectDialogVisible");
             $("#newProjectClickEater").addClass("mainMenuClickEaterVisible");
             $("#mainMenuPageContainer").addClass("mainMenuParallaxToRight");
-            window.setTimeout(function () { $("#mainMenuProjectNameInput").focus(); }, 500);
+            window.setTimeout(function () { $("#mainMenuProjectNameInput").focus(); }, 800);
         },
 
         hideNewProjectDialog: function () {
@@ -98,12 +122,12 @@
                 $("#newProjectDialog").removeClass("newProjectDialogVisible");
                 $("#newProjectDialog").addClass("newProjectLoading");
 
-                Ensemble.Session.projectLoading = true;
-                this._projectLoadTimer = window.setInterval(function () {
-                    if (!Ensemble.Session.projectLoading) {
-                        Ensemble.Pages.MainMenu.hide();
-                    }
-                }, 1000);
+                //Ensemble.Session.projectLoading = true;
+                //this._projectLoadTimer = window.setInterval(function () {
+                //    if (!Ensemble.Session.projectLoading) {
+                //        Ensemble.Pages.MainMenu.hide();
+                //    }
+                //}, 1000);
                 Ensemble.FileIO.createProject(projectName, projectLocation, projectAspect);
             }
             else {
@@ -521,6 +545,12 @@
 
         _projectListOpenSelectedOnClickListener: function (event) {
             console.log("Open the selected project.");
+            var text = $(".projectListItemSelected").find(".projectListItemTitle").first().text();
+            Ensemble.Pages.MainMenu.showProjectLoadingPage(text);
+            
+            window.setTimeout(function () {
+                Ensemble.FileIO.loadProject($(".projectListItemSelected").first().attr("id"));
+            }, 500);
         },
 
         _projectListRenameSelectedOnClickListener: function (event) {

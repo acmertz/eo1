@@ -9,9 +9,7 @@
         projectFilename: null,
         projectAspect: null,
         maxResolution: [2560,1440],
-        horizontalDividerPosition: null,
-        verticalDividerPosition: null,
-        projectLoading: false,
+        //projectLoading: false,
 
         setCurrentPage: function (pageName) {
             /// <summary>Sets the page currently displayed in the application.</summary>
@@ -32,6 +30,11 @@
             /// <summary>Returns the name of the page currently visible to the user.</summary>
             /// <returns type="String" />
             return this._currentPage;
+        },
+
+        loadProject: function (projectFileName) {
+            /// <summary>Loads the project with the given filename.</summary>
+            /// <param name="projectFileName" type="String">The filename of the project data file.</param>
         }
     });
 })();

@@ -52,11 +52,11 @@
                             xml.BeginNode("ProjectLength");
                             xml.WriteString("0");
                             xml.EndNode();
-                            xml.BeginNode("NumberOfClips");
+                            xml.BeginNode("NumberOfTracks");
                             xml.WriteString("0");
                             xml.EndNode();
-                            xml.BeginNode("Clips");
-                            xml.WriteString("");
+                            xml.BeginNode("NumberOfClips");
+                            xml.WriteString("0");
                             xml.EndNode();
                             xml.EndNode();
                             xml.Close();
@@ -69,14 +69,20 @@
                                 Windows.Storage.StorageFile.getFileFromApplicationUriAsync(new Windows.Foundation.Uri("ms-appx:///img/projectThumbnails/" + saveaspect + ".jpg")).then(function (defaultThumb) {
                                     defaultThumb.copyAsync(projectDir, projectFile.name + ".jpg").done(function () {
                                         //Finished creating project files. Now update session state.
-                                        Ensemble.Session.projectName = name;
-                                        Ensemble.Session.projectAspect = aspect;
-                                        Ensemble.Session.projectFilename = projectFile.name;
-                                        Ensemble.Session.horizontalDividerPosition = 0.5;
-                                        Ensemble.Session.verticalDividerPosition = 0.5;
+                                        //Ensemble.Session.projectName = name;
+                                        //Ensemble.Session.projectAspect = aspect;
+                                        //Ensemble.Session.projectFilename = projectFile.name;
 
-                                        Ensemble.Session.projectLoading = false;
+                                        //Ensemble.Session.projectLoading = false;
                                         console.log("Project finished creating.");
+
+                                        window.setTimeout(function () {
+                                            Ensemble.Pages.MainMenu.showProjectLoadingPage(name);
+
+                                            window.setTimeout(function () {
+                                                Ensemble.FileIO.loadProject(projectFile.name);
+                                            }, 500);
+                                        }, 1000);
                                     });
                                 }, function (error) {
                                     console.log("Error retrieving the thumbnail.");
@@ -95,6 +101,66 @@
         loadProject: function (filename) {
             /// <summary>Loads a previously saved project from storage.</summary>
             /// <param name="filename" type="String">The name of the project to be loaded.</param>
+            /// <param name="callback" type="Function">The callback to execute when the project is fully loaded.</param>
+
+            switch (Ensemble.Platform.currentPlatform) {
+                case "win8":
+                    var uri = new Windows.Foundation.Uri('ms-appdata:///local/Projects/' + filename);
+                    var file = Windows.Storage.StorageFile.getFileFromApplicationUriAsync(uri).then(function (projectFile) {
+                        Windows.Storage.FileIO.readTextAsync(projectFile).then(function (contents) {
+                            Ensemble.FileIO._processLoadedProjectData(filename, contents);
+                        })
+                    });
+                    break;
+                case "android":
+                    break;
+                case "ios":
+                    break;
+            }
+        },
+
+        _processLoadedProjectData: function (filename, xmlString) {
+            var parser = new DOMParser();
+            var xmlDoc = parser.parseFromString(xmlString, "text/xml");
+
+            var ensembleProject = xmlDoc.firstChild;
+
+            var projectName = xmlDoc.getElementsByTagName("ProjectName")[0].childNodes[0].nodeValue;
+            console.log("Loading project \"" + projectName + "...\"");
+
+            var dateModified = "";
+            try {
+                dateModified = new Date(parseInt(xmlDoc.getElementsByTagName("DateModified")[0].childNodes[0].nodeValue, 10));
+                dateModified = dateModified.customFormat("#MMM# #DD#, #YYYY# #h#:#mm##ampm#");
+            }
+            catch (exception) {
+                var dateModified = "Unknown";
+            }
+
+            var aspectRatio = xmlDoc.getElementsByTagName("AspectRatio")[0].childNodes[0].nodeValue;
+            var numberOfTracks = parseInt(xmlDoc.getElementsByTagName("NumberOfTracks")[0].childNodes[0].nodeValue);
+            var duration = xmlDoc.getElementsByTagName("ProjectLength")[0].childNodes[0].nodeValue;
+            var thumbnailPath = "ms-appdata:///local/Projects/" + filename + ".jpg";
+
+            Ensemble.Session.projectAspect = aspectRatio;
+            Ensemble.Session.projectFilename = filename;
+
+            if (numberOfTracks > 0) {
+                //Create empty tracks
+                for (var i = 0; i < numberOfTracks; i++) {
+                    Ensemble.Editor.TimelineMGR.createTrack();
+                }
+
+                //For each track, look up clips and generate URIs.
+
+                /* Not currently saving media clip information. */
+                //Todo: clip loading
+            }
+            else {
+                //Fire callback.
+                //Ensemble.FileIO._loadedProjectCallback();
+                Ensemble.Pages.MainMenu.navigateToEditor();
+            }
         },
 
         enumerateProjects: function (callback) {
