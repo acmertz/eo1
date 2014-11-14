@@ -53,17 +53,17 @@
 
         hide: function () {
             /// <summary>Plays the Editor page hide animation and detaches all event listeners.</summary>
-            console.log("Hiding the Main Menu.");
-            window.clearInterval(this._projectLoadTimer);
 
             // Hide the current page
-            $("#mainMenuPageContainer").addClass("pageContainerHidden");
-            window.setTimeout(function () {
-                WinJS.UI.Animation.exitContent(document.getElementById("imgMainLogo")).done(function () {
-                    document.getElementById("mainMenuPageContainer").style.display = "none";
-                    Ensemble.Pages.Editor.showInitial();
-                });
-            }, 500)
+            $("#editorPageContainer").css("visibility", "hidden");
+            $("#editorPageContainer").css("opacity", "0");
+            $("#editorPageContainer").css("pointer-events", "none");
+            
+
+            $("#mainMenuPageContainer").css("visibility", "visible");
+            $("#mainMenuPageContainer").css("opacity", "1");
+            $("#mainMenuPageContainer").css("pointer-events", "all");
+            $("#imgMainLogo").css("display", "inline");
 
             this._detachListeners();
         },
@@ -316,6 +316,10 @@
             Ensemble.MediaBrowser.navigateToFolder(Ensemble.MediaBrowser.currentLocation());
         },
 
+        unloadProject: function () {
+            //Unloads the current project.
+        },
+
 
 
 
@@ -331,54 +335,99 @@
 
         _attachListeners: function () {
             var editorButtons = Ensemble.Pages.Editor.UI.UserInput.Buttons;
-            editorButtons.actionMenu.addEventListener("click", this._menuButtonOnClickListener, false);
-            editorButtons.mediaMenu.addEventListener("click", this._mediaMenuButtonOnClickListener, false);
-            editorButtons.effectsMenu.addEventListener("click", this._effectsMenuButtonOnClickListener, false);
+            $(editorButtons.actionMenu).click(this._menuButtonOnClickListener);
+            $(editorButtons.mediaMenu).click(this._mediaMenuButtonOnClickListener);
+            $(editorButtons.effectsMenu).click(this._effectsMenuButtonOnClickListener);
 
-            Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocation.addEventListener("click", this._mediaBrowserButtonOnClickListener, false);
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocation).click(this._mediaBrowserButtonOnClickListener);
 
-            var menuHeaderProject = document.getElementById("editorMenuTabProject");
-            menuHeaderProject.addEventListener("click", this._menuHeaderProjectOnClick, false);
+            //Action Menu tabs
+            $("#editorMenuTabProject").click(this._menuHeaderProjectOnClick);
+            $("#editorMenuTabEdit").click(this._menuHeaderEditOnClick);
+            $("#editorMenuTabClip").click(this._menuHeaderClipOnClick);
+            $("#editorMenuTabTrack").click(this._menuHeaderTrackOnClick);
+            $("#editorMenuTabExport").click(this._menuHeaderExportOnClick);
+            $("#editorMenuClickEater").click(this._menuClickEaterOnClickListener);
 
-            var menuHeaderEdit = document.getElementById("editorMenuTabEdit");
-            menuHeaderEdit.addEventListener("click", this._menuHeaderEditOnClick, false);
+            //Action menu "Project" tab commands
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.exit).click(this._editorExitButtonOnClickListener);
 
-            var menuHeaderClip = document.getElementById("editorMenuTabClip");
-            menuHeaderClip.addEventListener("click", this._menuHeaderClipOnClick, false);
+            //Media menu tabs
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabLocal).click(this._mediaMenuTabLocalOnClickListener);
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabCamera).click(this._mediaMenuTabCameraOnClickListener);
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabMic).click(this._mediaMenuTabMicOnClickListener);
 
-            var menuHeaderTrack = document.getElementById("editorMenuTabTrack");
-            menuHeaderTrack.addEventListener("click", this._menuHeaderTrackOnClick, false);
-
-            var menuHeaderExport = document.getElementById("editorMenuTabExport");
-            menuHeaderExport.addEventListener("click", this._menuHeaderExportOnClick, false);
-
-            var menuClickEater = document.getElementById("editorMenuClickEater");
-            menuClickEater.addEventListener("click", this._menuClickEaterOnClickListener, false);
-
-
-            //Media menu
-            Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabLocal.addEventListener("click", this._mediaMenuTabLocalOnClickListener, false);
-            Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabCamera.addEventListener("click", this._mediaMenuTabCameraOnClickListener, false);
-            Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabMic.addEventListener("click", this._mediaMenuTabMicOnClickListener, false);
-            Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserHome.addEventListener("click", this._mediaBrowserHomeButtonOnClickListener, false);
-            Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserUpOneLevel.addEventListener("click", this._mediaBrowserUpOneLevelButtonOnClickListener, false);
-            Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserRefresh.addEventListener("click", this._mediaBrowserRefreshButtonOnClickListener, false);
-            Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocationVideos.addEventListener("click", this._mediaBrowserLocationSelectedOnClickListener, false);
-            Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocationMusic.addEventListener("click", this._mediaBrowserLocationSelectedOnClickListener, false);
-            Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocationPictures.addEventListener("click", this._mediaBrowserLocationSelectedOnClickListener, false);
+            //Media menu "Local" tab commands
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserHome).click(this._mediaBrowserHomeButtonOnClickListener);
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserUpOneLevel).click(this._mediaBrowserUpOneLevelButtonOnClickListener);
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserRefresh).click(this._mediaBrowserRefreshButtonOnClickListener);
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocationVideos).click(this._mediaBrowserLocationSelectedOnClickListener);
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocationMusic).click(this._mediaBrowserLocationSelectedOnClickListener);
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocationPictures).click(this._mediaBrowserLocationSelectedOnClickListener);
 
             //Timeline
             $(Ensemble.Pages.Editor.UI.UserInput.Buttons.timelineNewTrack).click(this._timelineNewTrackButtonOnClickListener);
 
             //Other
-            Ensemble.Pages.Editor.UI.UserInput.Boundaries.topBottomSplit.addEventListener("mousedown", this._topBottomSplitMouseDown, false);
+            $(Ensemble.Pages.Editor.UI.UserInput.Boundaries.topBottomSplit).click(this._topBottomSplitMouseDown);
 
             window.addEventListener("resize", this.viewResized, false);
         },
 
         _detachListeners: function () {
             var editorButtons = Ensemble.Pages.Editor.UI.UserInput.Buttons;
-            editorButtons.actionMenu.removeEventListener("click", this._menuButtonOnClickListener, false);
+            $(editorButtons.actionMenu).unbind("click");
+            $(editorButtons.mediaMenu).unbind("click");
+            $(editorButtons.effectsMenu).unbind("click");
+
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocation).unbind("click");
+
+            //Action Menu tabs
+            $("#editorMenuTabProject").unbind("click");
+            $("#editorMenuTabEdit").unbind("click");
+            $("#editorMenuTabClip").unbind("click");
+            $("#editorMenuTabTrack").unbind("click");
+            $("#editorMenuTabExport").unbind("click");
+            $("#editorMenuClickEater").unbind("click");
+
+            //Action menu "Project" tab commands
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.exit).unbind("click");
+
+            //Media menu tabs
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabLocal).unbind("click");
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabCamera).unbind("click");
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabMic).unbind("click");
+
+            //Media menu "Local" tab commands
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserHome).unbind("click");
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserUpOneLevel).unbind("click");
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserRefresh).unbind("click");
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocationVideos).unbind("click");
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocationMusic).unbind("click");
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaBrowserLocationPictures).unbind("click");
+
+            //Timeline
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.timelineNewTrack).unbind("click");
+
+            //Other
+            $(Ensemble.Pages.Editor.UI.UserInput.Boundaries.topBottomSplit).unbind("click");
+
+            window.addEventListener("resize", this.viewResized, false);
+        },
+
+        _editorExitButtonOnClickListener: function () {
+            console.log("Clicked the exit button.");
+            $("#projectClosingPageContainer").removeClass("loadingPageHidden");
+            $("#projectClosingPageContainer").addClass("loadingPageVisible");
+            window.setTimeout(function () {
+                Ensemble.Pages.Editor.hide();
+                window.setTimeout(function () {
+                    $("#imgMainLogo").css("display", "initial");
+                    $("#projectClosingPageContainer").removeClass("loadingPageVisible");
+                    $("#projectClosingPageContainer").addClass("loadingPageHidden");
+                    Ensemble.Pages.MainMenu.showInitial();
+                }, 500);
+            }, 500);
         },
 
         _menuButtonOnClickListener: function () {

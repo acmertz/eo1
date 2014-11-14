@@ -368,7 +368,7 @@
                                 <div class="editorMenuCommandListItem">
                                     <span class="editorMenuCommandListItemName"><i class="fa fa-folder-open-o"></i> Open</span>
                                 </div>
-                                <div class="editorMenuCommandListItem">
+                                <div class="editorMenuCommandListItem" id="editorExitButton">
                                     <span class="editorMenuCommandListItemName"><i class="fa fa-arrow-left"></i> Exit</span>
                                 </div>
                             </div>
@@ -610,6 +610,10 @@
 
         <div class="pageContainer loadingPage" id="projectLoadingPageContainer">
             <h2 class="loadingPageMessage">Loading project "<span id="projectLoadingNameDisplay">[Project Name Here]</span>..."</h2>
+            <progress class="win-ring win-large"></progress>
+        </div>
+        <div class="pageContainer loadingPage" id="projectClosingPageContainer">
+            <h2 class="loadingPageMessage">Closing your project...</h2>
             <progress class="win-ring win-large"></progress>
         </div>
     </div>

@@ -55,6 +55,7 @@
             this.UserInput.Buttons.mediaBrowserLocationVideos = document.getElementById("editorMediaBrowserLocationVideosLibrary");
             this.UserInput.Buttons.mediaBrowserLocationMusic = document.getElementById("editorMediaBrowserLocationMusicLibrary");
             this.UserInput.Buttons.mediaBrowserLocationPictures = document.getElementById("editorMediaBrowserLocationPicturesLibrary");
+            this.UserInput.Buttons.exit = document.getElementById("editorExitButton");
 
             this.UserInput.Boundaries.topBottomSplit = document.getElementById("editorHorizontalDivider");
 
@@ -162,7 +163,8 @@
                 mediaBrowserRefresh: null,
                 mediaBrowserLocationVideos: null,
                 mediaBrowserLocationMusic: null,
-                mediaBrowserLocationPictures: null
+                mediaBrowserLocationPictures: null,
+                exit: null
             },
             Boundaries: {
                 topBottomSplit: null

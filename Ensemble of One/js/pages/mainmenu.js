@@ -58,6 +58,8 @@
             window.setTimeout(function () {
                 $("#projectLoadingPageContainer").removeClass("loadingPageVisible");
                 $("#projectLoadingPageContainer").addClass("loadingPageHidden");
+                Ensemble.Pages.MainMenu.hideOpenProjectDialog();
+                Ensemble.Pages.MainMenu.hideNewProjectDialog();
                 window.setTimeout(function () {
                     Ensemble.Pages.Editor.showInitial();
                 }, 500);
