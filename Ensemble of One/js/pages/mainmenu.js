@@ -9,6 +9,26 @@
 
         showInitial: function () {
             /// <summary>Plays the Main Menu launch animation and attaches all event listeners.</summary>
+            //Hide main menu items
+
+            $("#imgMainLogo").css("display", "none");
+
+            $(".mainMenuClickEater").removeClass("mainMenuClickEaterVisible");
+            $("#newProjectDialog").removeClass("newProjectLoading");
+            $("#mainMenuPageContainer").removeClass("mainMenuParallaxToRight");
+            $("#mainMenuPageContainer").removeClass("mainMenuParallaxToLeft");
+
+            $("#newProjectButton").removeClass("mainMenuPhotoButtonVisible");
+            $("#openProjectButton").removeClass("mainMenuPhotoButtonVisible");
+            $("#settingsButton").removeClass("settingsButtonVisible");
+            $("#tickerTicket").removeClass("tickerButtonVisible");
+            $("#newProjectDialog").addClass("newProjectDialogHidden");
+            $("#openProjectDialog").addClass("openProjectDialogHidden");
+
+
+            $("#mainMenuPageContainer").removeClass("pageContainerHidden");
+
+            $("#imgMainLogo").css("display", "inline");
             $("#newProjectButton").addClass("mainMenuPhotoButtonVisible");
             window.setTimeout(function () { $("#openProjectButton").addClass("mainMenuPhotoButtonVisible"); }, 200);
 
@@ -28,10 +48,7 @@
             window.clearInterval(this._projectLoadTimer);
 
             // Hide the current page
-            //$("#mainMenuPageContainer").addClass("pageContainerHidden");
-            $("#mainMenuPageContainer").css("visibility", "hidden");
-            $("#mainMenuPageContainer").css("opacity", "0");
-            $("#mainMenuPageContainer").css("pointer-events", "none");
+            $("#mainMenuPageContainer").addClass("pageContainerHidden");
             $("#imgMainLogo").css("display", "none");
             //window.setTimeout(function () {
             //    WinJS.UI.Animation.exitContent(document.getElementById("imgMainLogo")).done(function () {

@@ -52,8 +52,8 @@
                             xml.BeginNode("ProjectLength");
                             xml.WriteString("0");
                             xml.EndNode();
-                            xml.BeginNode("NumberOfTracks");
-                            xml.WriteString("0");
+                            xml.BeginNode("Tracks");
+                            xml.WriteString("");
                             xml.EndNode();
                             xml.BeginNode("NumberOfClips");
                             xml.WriteString("0");
@@ -138,12 +138,19 @@
             }
 
             var aspectRatio = xmlDoc.getElementsByTagName("AspectRatio")[0].childNodes[0].nodeValue;
-            var numberOfTracks = parseInt(xmlDoc.getElementsByTagName("NumberOfTracks")[0].childNodes[0].nodeValue);
             var duration = xmlDoc.getElementsByTagName("ProjectLength")[0].childNodes[0].nodeValue;
             var thumbnailPath = "ms-appdata:///local/Projects/" + filename + ".jpg";
 
+            var numberOfTracks = xmlDoc.getElementsByTagName("Tracks")[0].childNodes.length;
+
             Ensemble.Session.projectAspect = aspectRatio;
             Ensemble.Session.projectFilename = filename;
+            Ensemble.Session.projectName = projectName;
+            Ensemble.Session.projectDuration = duration;
+
+            //May be overridden during the rest of the load process due to missing or invalid clip references.
+            Ensemble.Session.projectClipCount = 0;
+            Ensemble.Session.projectTrackCount = numberOfTracks;
 
             if (numberOfTracks > 0) {
                 //Create empty tracks

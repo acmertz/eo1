@@ -8,6 +8,9 @@
         projectName: null,
         projectFilename: null,
         projectAspect: null,
+        projectDuration: null,
+        projectClipCount: null,
+        projectTrackCount: null,
         maxResolution: [2560,1440],
         //projectLoading: false,
 

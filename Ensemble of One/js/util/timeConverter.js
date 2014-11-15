@@ -22,6 +22,66 @@
             var returnStr = min + ":" + sec + "." + ms;
             if (shortForm == undefined || (hour != "00" && !shortForm)) returnStr = hour + ":" + returnStr;
             return returnStr;
+        },
+
+        verboseTime: function (milliseconds) {
+            /// <summary>Returns a user-readable time string of the form "X minutes, X seconds."</summary>
+            /// <param name="milliseconds" type="Number">A value in milliseconds, to be converted.</param>
+            
+            //Break the time up into the individual parts.
+            var ms = Math.floor(milliseconds % 1000);
+            var sec = Math.floor((milliseconds / 1000) % 60);
+            var min = Math.floor(((milliseconds / 1000) / 60) % 60);
+            var hour = Math.floor((((milliseconds / 1000) / 60) / 60) % 60);
+            var day = Math.floor(((((milliseconds / 1000) / 60) / 60) / 60) % 24);
+
+            var timeStr = "";
+
+            var dayStr = "";
+            if (day > 0) dayStr = day.toString() + " day";
+            if (day > 1) dayStr = dayStr + "s";
+
+            var hrStr = "";
+            if (hour > 0) hrStr = hour.toString() + " hour";
+            if (hour > 1) hrStr = hrStr + "s";
+
+            var minStr = "";
+            if (min > 0) minStr = min.toString() + " minute";
+            if (min > 1) minStr = minStr + "s"
+
+            var secStr = "";
+            if (sec > 0) secStr = sec.toString() + " second";
+            if (sec > 1) secStr = secStr + "s";
+
+            var msStr = "";
+            if (ms > 0) msStr = ms.toString() + " millisecond";
+            if (ms > 1) msStr = msStr + "s";
+
+
+            //Generate the return value
+            if (1 > sec) {
+                if (msStr.length > 0) return msStr;
+                return "0 seconds";
+            }
+
+            var returnVal = dayStr + " " + hrStr + " " + minStr + " " + secStr;
+            if (hour > 0 | min > 0 | sec > 0) {
+                if (day > 1) returnVal = returnVal.replace("days", "days,");
+                else returnVal = returnVal.replace("day", "day,");
+            }
+            if (min > 0 | sec > 0) {
+                if (hour > 1) returnVal = returnVal.replace("hours", "hours,");
+                else returnVal = returnVal.replace("hour", "hour,");
+            }
+            if (sec > 0) {
+                if (min > 1) returnVal = returnVal.replace("minutes", "minutes,");
+                else returnVal = returnVal.replace("minute", "minute,");
+            }
+
+            //Trim leading spaces
+            returnVal = returnVal.trim();
+
+            return returnVal;
         }
     });
 })();

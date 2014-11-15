@@ -1,8 +1,8 @@
 ﻿#editorPageContainer {
     display: flex;
-    visibility: hidden;
+    /*visibility: hidden;*/
     flex-direction: column;
-
+    /*display: none;*/
 }
 
 #editorPageContainer #editorUpperHalf {
@@ -432,10 +432,13 @@ editorDraggedPreviewHidden {
     /*visibility: hidden;*/
     /*opacity: 0;*/
     overflow-x: hidden;
-
+    width: 662px;
+    height: 100%;
+    max-width: 100%;
 
     box-shadow: 1px 1px 10px 5px rgba(0,0,0,0.1);
     background-color: rgba(255,255,255,1);
+    border-right: 2px solid gray;
 
     display: flex;
     flex-direction: column;
@@ -498,24 +501,27 @@ editorDraggedPreviewHidden {
     background-color: white;
     display: flex;
     flex-direction: row;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-start;
+    align-items: flex-start;
 }
 
 .editorMenuDialogTabs .editorMenuTabHeader {
-    flex: 1;
     text-align: center;
     height: 100%;
     padding: 20px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    margin-left: 10px;
 }
 
 .editorMenuDialogTabs .editorMenuTabFocused {
-    background-color: white;
+    background-color: rgb(240,240,240);
     pointer-events: none;
+    border: 1px solid lightgray;
 }
 
 .editorMenuDialogTabs .editorMenuTabBlurred {
-    background-color: rgb(230,230,230);
+    background-color: white;
 }
 
 .editorMenuDialogTabs .editorMenuTabBlurred:hover {
@@ -528,11 +534,11 @@ editorDraggedPreviewHidden {
 }
 
 .editorMenuDialogTabs .editorMenuLeftAdjacentTab {
-    border-bottom-right-radius: 10px;
+    /*border-bottom-right-radius: 10px;*/
 }
 
 .editorMenuDialogTabs .editorMenuRightAdjacentTab {
-    border-bottom-left-radius: 10px;
+    /*border-bottom-left-radius: 10px;*/
 }
 
 #editorMenuDialog .editorMenuDialogContent {
@@ -553,6 +559,10 @@ editorDraggedPreviewHidden {
     display: none;
     flex-direction: column;
     overflow-y: auto;
+    background-color: rgb(250,250,250);
+    border-top-left-radius: 5px;
+    border-left: 1px solid lightgray;
+    border-top: 1px solid lightgray;
 }
 
 .editorMenuThumbnailSection {
@@ -572,16 +582,23 @@ editorDraggedPreviewHidden {
 }
 
 .editorMenuCommandList {
-    font-size: xx-large;
-    background: linear-gradient(to bottom, rgb(245,245,245) 50%, rgb(255,255,255) 50%);
-    background-size: 100px 150px;
+    font-size: x-large;
+    /*background: linear-gradient(to bottom, rgb(245,245,245) 50%, rgb(255,255,255) 50%);
+    background-size: 100px 150px;*/
+    padding-top: 10px;
+    padding-right: 10px;
+    flex: 1;
 }
 
 .editorMenuCommandListItem {
     display: flex;
     flex-direction: row;
     align-items: center;
-    line-height: 75px;
+    line-height: 50px;
+    margin-bottom: 10px;
+    background-color: white;
+    border: 1px solid lightgray;
+    border-left: 10px solid lightgray;
 }
 
 .editorMenuCommandListItemName {
@@ -800,22 +817,9 @@ editorDraggedPreviewHidden {
 }
 
 @media screen and (orientation:landscape) {
-     #editorPageContainer #editorMenuDialog {
-        width: 60%;
-        min-width: 1000px;
-        height: 100%;
-        border-right: 2px solid gray;
-        border-bottom: 2px solid gray;
-        border-bottom-right-radius: 10px;
-    }
 }
 
 @media screen and (orientation:portrait) {
-    #editorPageContainer #editorMenuDialog {
-        width: 100%;
-        height: 100%;
-    }
-
     .portraitHidden {
         display: none !important;
     }

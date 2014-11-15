@@ -20,7 +20,24 @@
 
         showInitial: function () {
             /// <summary>Plays the Editor pagelaunch animation and attaches all event listeners.</summary>
-            document.getElementById("editorPageContainer").style.visibility = "visible";
+
+            //Hide UI items so they can play their entrance animation
+            $(Ensemble.Pages.Editor.UI.PageSections.upperHalf.entireSection).removeClass("editorUpperHalfVisible");
+            $(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.entireSection).removeClass("editorLowerHalfVisible");
+            $(Ensemble.Pages.Editor.UI.UserInput.Boundaries.topBottomSplit).addClass("editorHorizontalDividerHidden");
+            $("#editorMenuDialog").css("animation", "none");
+            $("#editorMenuDialog").removeClass("editorMenuDialogHidden");
+            $("#editorMenuDialog").css("animation", "");
+            
+            //Perform UI setup operations (project name, thumbnail, etc.)
+            var projectSubmenu = Ensemble.Pages.Editor.UI.PageSections.menu.actionMenu.project;
+            projectSubmenu.nameDisplay.innerText = Ensemble.Session.projectName;
+            projectSubmenu.durationDisplay.innerText = Ensemble.Utilities.TimeConverter.verboseTime(Ensemble.Session.projectDuration);
+            projectSubmenu.numberOfTracksDisplay.innerText = Ensemble.Session.projectTrackCount.toString();
+            projectSubmenu.numberOfClipsDisplay.innerText = Ensemble.Session.projectClipCount.toString();
+            projectSubmenu.aspectRatioDisplay.innerText = Ensemble.Session.projectAspect;
+
+            $("#editorPageContainer").removeClass("pageContainerHidden");
 
             //Update the Editor with the current settings
             this.layoutInterfaceToSplitpoint(Ensemble.Settings.getEditorDividerPosition() * window.innerHeight);
@@ -55,15 +72,10 @@
             /// <summary>Plays the Editor page hide animation and detaches all event listeners.</summary>
 
             // Hide the current page
-            $("#editorPageContainer").css("visibility", "hidden");
-            $("#editorPageContainer").css("opacity", "0");
-            $("#editorPageContainer").css("pointer-events", "none");
+            $("#editorPageContainer").addClass("pageContainerHidden");
             
-
-            $("#mainMenuPageContainer").css("visibility", "visible");
-            $("#mainMenuPageContainer").css("opacity", "1");
-            $("#mainMenuPageContainer").css("pointer-events", "all");
-            $("#imgMainLogo").css("display", "inline");
+            this.hideActionMenu();
+            
 
             this._detachListeners();
         },
@@ -201,7 +213,11 @@
             WinJS.UI.Animation.exitContent(submenu1).then(function () {
                 submenu1.style.display = "none";
                 submenu2.style.display = "flex";
-                if (submenu2 === Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.entireSection) Ensemble.Pages.Editor.refreshMediaBrowser();
+                if (submenu2 === Ensemble.Pages.Editor.UI.PageSections.menu.mediaMenu.entireSection) {
+                    setTimeout(function () {
+                        Ensemble.Pages.Editor.refreshMediaBrowser();
+                    }, 500);
+                }
                 WinJS.UI.Animation.enterContent(submenu2);
                 Ensemble.Pages.Editor.currentSubmenu = submenu2;
             });
@@ -368,6 +384,10 @@
             //Timeline
             $(Ensemble.Pages.Editor.UI.UserInput.Buttons.timelineNewTrack).click(this._timelineNewTrackButtonOnClickListener);
 
+            //WinJS general animation listeners
+            $(".editorMenuCommandListItem").mousedown(Ensemble.Pages.MainMenu._projectListItemOnMouseDownListener);
+            $(".editorMenuCommandListItem").mouseup(Ensemble.Pages.MainMenu._projectListItemOnMouseUpListener);
+
             //Other
             $(Ensemble.Pages.Editor.UI.UserInput.Boundaries.topBottomSplit).click(this._topBottomSplitMouseDown);
 
@@ -408,6 +428,10 @@
 
             //Timeline
             $(Ensemble.Pages.Editor.UI.UserInput.Buttons.timelineNewTrack).unbind("click");
+
+            //WinJS general animation listeners
+            $(".editorMenuCommandListItem").unbind("mousedown");
+            $(".editorMenuCommandListItem").unbind("mouseup");
 
             //Other
             $(Ensemble.Pages.Editor.UI.UserInput.Boundaries.topBottomSplit).unbind("click");
@@ -567,7 +591,7 @@
             WinJS.UI.Animation.exitContent(Ensemble.Pages.Editor.currentActionMenuItem).done(function () {
                 Ensemble.Pages.Editor.currentActionMenuItem.style.display = "none";
                 Ensemble.Pages.Editor.currentActionMenuItem = itemToShow;
-                Ensemble.Pages.Editor.currentActionMenuItem.style.display = "inline";
+                Ensemble.Pages.Editor.currentActionMenuItem.style.display = "flex"; //changed from inline
                 WinJS.UI.Animation.enterContent(Ensemble.Pages.Editor.currentActionMenuItem);
             });
         },

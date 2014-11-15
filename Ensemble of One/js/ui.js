@@ -19,7 +19,15 @@
             this.PageSections.divider = document.getElementById("editorHorizontalDivider");
             this.PageSections.menuButtons = document.getElementById("editorMenuButtons");
             this.PageSections.menu.entireSection = document.getElementById("editorMenuDialog");
+
             this.PageSections.menu.actionMenu.entireSection = document.getElementById("editorActionMenu");
+            this.PageSections.menu.actionMenu.project.entireSection = document.getElementById("editorMenuContentProject");
+            this.PageSections.menu.actionMenu.project.nameDisplay = document.getElementById("editorProjectNameDisplay");
+            this.PageSections.menu.actionMenu.project.durationDisplay = document.getElementById("editorMenuDurationDisplay");
+            this.PageSections.menu.actionMenu.project.numberOfTracksDisplay = document.getElementById("editorMenuNumberOfTracksDisplay");
+            this.PageSections.menu.actionMenu.project.numberOfClipsDisplay = document.getElementById("editorMenuNumberOfClipsDisplay");
+            this.PageSections.menu.actionMenu.project.aspectRatioDisplay = document.getElementById("editorMenuAspectRatioDisplay");
+
             this.PageSections.menu.mediaMenu.entireSection = document.getElementById("editorMediaMenu");
             this.PageSections.menu.mediaMenu.local.mediaList = document.getElementById("editorMenuMediaBrowserFileList");
             this.PageSections.menu.mediaMenu.local.pathDisplay = document.getElementById("editorMediaBrowserCurrentPathContainer");
@@ -104,7 +112,15 @@
             menu: {
                 entireSection: null,
                 actionMenu: {
-                    entireSection: null
+                    entireSection: null,
+                    project: {
+                        entireSection: null,
+                        nameDisplay: null,
+                        durationDisplay: null,
+                        numberOfTracksDisplay: null,
+                        numberOfClipsDisplay: null,
+                        aspectRatioDisplay: null
+                    }
                 },
                 mediaMenu: {
                     entireSection: null,
