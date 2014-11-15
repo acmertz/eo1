@@ -12,6 +12,48 @@
         _pickItemsTempFolders: [],
         _pickItemsTempFoldersCount: 0,
 
+        saveProject: function () {
+            /// <summary>Saves the open project in its current state.</summary>
+
+            //Generate XML string
+            var savetime = Date.now().toString(10);
+
+            var xml = new XMLWriter();
+            xml.BeginNode("EnsembleOfOneProject");
+            xml.BeginNode("ProjectName");
+            xml.WriteString(name);
+            xml.EndNode();
+            xml.BeginNode("DateCreated");
+            xml.WriteString(savetime);
+            xml.EndNode();
+            xml.BeginNode("DateModified");
+            xml.WriteString(savetime);
+            xml.EndNode();
+            xml.BeginNode("AspectRatio");
+            xml.WriteString(aspect);
+            xml.EndNode();
+            xml.BeginNode("MaxResolution");
+            xml.BeginNode("Width");
+            xml.WriteString(Ensemble.Session.maxResolution[0].toString());
+            xml.EndNode();
+            xml.BeginNode("Height");
+            xml.WriteString(Ensemble.Session.maxResolution[1].toString());
+            xml.EndNode();
+            xml.EndNode();
+            xml.BeginNode("ProjectLength");
+            xml.WriteString("0");
+            xml.EndNode();
+            xml.BeginNode("Tracks");
+            xml.WriteString("");
+            xml.EndNode();
+            xml.BeginNode("NumberOfClips");
+            xml.WriteString("0");
+            xml.EndNode();
+            xml.EndNode();
+            xml.Close();
+            
+        },
+
         createProject: function (name, location, aspect) {
             /// <summary>Creates save files for a new project.</summary>
             /// <param name="name" type="String">The name of the project.</param>
