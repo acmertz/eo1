@@ -13,25 +13,28 @@
         _pickItemsTempFoldersCount: 0,
 
         saveProject: function () {
-            /// <summary>Saves the open project in its current state.</summary>
+            /// <summary>Saves the currently loaded project to disc.</summary>
 
             //Generate XML string
-            var savetime = Date.now().toString(10);
-
             var xml = new XMLWriter();
             xml.BeginNode("EnsembleOfOneProject");
+
             xml.BeginNode("ProjectName");
-            xml.WriteString(name);
+            xml.WriteString(Ensemble.Session.projectName);
             xml.EndNode();
+
             xml.BeginNode("DateCreated");
-            xml.WriteString(savetime);
+            xml.WriteString(Ensemble.Session.projectDateCreated.getTime().toString());
             xml.EndNode();
+
             xml.BeginNode("DateModified");
-            xml.WriteString(savetime);
+            xml.WriteString(Date.now().toString(10));
             xml.EndNode();
+
             xml.BeginNode("AspectRatio");
-            xml.WriteString(aspect);
+            xml.WriteString(Ensemble.Session.projectAspect);
             xml.EndNode();
+
             xml.BeginNode("MaxResolution");
             xml.BeginNode("Width");
             xml.WriteString(Ensemble.Session.maxResolution[0].toString());
@@ -40,18 +43,70 @@
             xml.WriteString(Ensemble.Session.maxResolution[1].toString());
             xml.EndNode();
             xml.EndNode();
+
             xml.BeginNode("ProjectLength");
-            xml.WriteString("0");
+            xml.WriteString(Ensemble.Session.projectDuration.toString());
             xml.EndNode();
+
             xml.BeginNode("Tracks");
-            xml.WriteString("");
+            //Write track data
+            if (Ensemble.Session.projectTrackCount == 0) xml.WriteString("");
+            else {
+                for (var i = 0; i < Ensemble.Session.projectTrackCount; i++) {
+                    xml.BeginNode("Track");
+                    xml.Attrib("trackID", Ensemble.Editor.TimelineMGR.tracks[i].id.toString());
+
+                    //Write clip data
+                    if (Ensemble.Editor.TimelineMGR.tracks[i].clips.length == 0) xml.WriteString("");
+                    else {
+                        for (var k = 0; k < Ensemble.Editor.TimelineMGR.tracks[i].clips.length; k++) {
+                            xml.BeginNode("Clip");
+                            xml.WriteString("");
+                            xml.EndNode();
+                        }
+                    }
+                    xml.EndNode();
+                }
+            }
             xml.EndNode();
-            xml.BeginNode("NumberOfClips");
-            xml.WriteString("0");
+
+            xml.BeginNode("History");
+            xml.BeginNode("Undo");
+            if (Ensemble.HistoryMGR.canUndo()) {
+                xml.WriteString(""); //TODO: save history management
+            }
+            else xml.WriteString("");
             xml.EndNode();
+
+            xml.BeginNode("Redo");
+            if (Ensemble.HistoryMGR.canRedo()) {
+                xml.WriteString(""); //TODO: save history management
+            }
+            else xml.WriteString("");
+            xml.EndNode();
+            xml.EndNode();
+
             xml.EndNode();
             xml.Close();
+
+            xml = xml.ToString();
             
+            switch (Ensemble.Platform.currentPlatform) {
+                case "win8":
+                    var uri = new Windows.Foundation.Uri('ms-appdata:///local/Projects/' + Ensemble.Session.projectFilename);
+                    Windows.Storage.StorageFile.getFileFromApplicationUriAsync(uri).then(function (outputFile) {
+                        Windows.Storage.FileIO.writeTextAsync(outputFile, xml).done(function (complete) {
+                            console.info("Saved " + Ensemble.Session.projectName + ".");
+                        });
+                    }, function (error) {
+                        console.error("Unable to save project: " + error);
+                    });
+                    break;
+                case "android":
+                    break;
+                case "ios":
+                    break;
+            }
         },
 
         createProject: function (name, location, aspect) {
@@ -97,8 +152,13 @@
                             xml.BeginNode("Tracks");
                             xml.WriteString("");
                             xml.EndNode();
-                            xml.BeginNode("NumberOfClips");
-                            xml.WriteString("0");
+                            xml.BeginNode("History");
+                            xml.BeginNode("Undo");
+                            xml.WriteString("");
+                            xml.EndNode();
+                            xml.BeginNode("Redo");
+                            xml.WriteString("");
+                            xml.EndNode();
                             xml.EndNode();
                             xml.EndNode();
                             xml.Close();
@@ -170,29 +230,37 @@
             var projectName = xmlDoc.getElementsByTagName("ProjectName")[0].childNodes[0].nodeValue;
             console.log("Loading project \"" + projectName + "...\"");
 
-            var dateModified = "";
-            try {
-                dateModified = new Date(parseInt(xmlDoc.getElementsByTagName("DateModified")[0].childNodes[0].nodeValue, 10));
-                dateModified = dateModified.customFormat("#MMM# #DD#, #YYYY# #h#:#mm##ampm#");
-            }
-            catch (exception) {
-                var dateModified = "Unknown";
-            }
-
+            var dateModified = new Date(parseInt(xmlDoc.getElementsByTagName("DateModified")[0].childNodes[0].nodeValue, 10));
+            var dateCreated = new Date(parseInt(xmlDoc.getElementsByTagName("DateCreated")[0].childNodes[0].nodeValue, 10));
             var aspectRatio = xmlDoc.getElementsByTagName("AspectRatio")[0].childNodes[0].nodeValue;
-            var duration = xmlDoc.getElementsByTagName("ProjectLength")[0].childNodes[0].nodeValue;
+            var duration = parseInt(xmlDoc.getElementsByTagName("ProjectLength")[0].childNodes[0].nodeValue, 10);
             var thumbnailPath = "ms-appdata:///local/Projects/" + filename + ".jpg";
 
             var numberOfTracks = xmlDoc.getElementsByTagName("Tracks")[0].childNodes.length;
+            var numberOfClips = xmlDoc.getElementsByTagName("MediaClip").length;
+
+            var historyParent = xmlDoc.getElementsByTagName("History")[0];
+            var undoParent = historyParent.getElementsByTagName("Undo")[0];
+            var redoParent = historyParent.getElementsByTagName("Redo")[0];
 
             Ensemble.Session.projectAspect = aspectRatio;
             Ensemble.Session.projectFilename = filename;
             Ensemble.Session.projectName = projectName;
             Ensemble.Session.projectDuration = duration;
+            Ensemble.Session.projectDateModified = dateModified;
+            Ensemble.Session.projectDateCreated = dateCreated;
 
             //May be overridden during the rest of the load process due to missing or invalid clip references.
-            Ensemble.Session.projectClipCount = 0;
+            Ensemble.Session.projectClipCount = numberOfClips;
             Ensemble.Session.projectTrackCount = numberOfTracks;
+
+            if (undoParent.childNodes.length > 0) {
+                //TODO: load project history
+            }
+
+            if (redoParent.childNodes.length > 0) {
+                //TODO: load project history
+            }
 
             if (numberOfTracks > 0) {
                 //Create empty tracks
@@ -226,6 +294,7 @@
                             if (projectFiles.length == 0) callback([]);
                             else {
                                 for (var i = 0; i < projectFiles.length; i++) {
+                                    var loadedFilename = projectFiles[i].name;
                                     Windows.Storage.FileIO.readTextAsync(projectFiles[i]).then(function (contents) {
                                         var parser = new DOMParser();
                                         var xmlDoc = parser.parseFromString(contents, "text/xml");
@@ -236,14 +305,14 @@
                                         console.log("Found project \"" + loadedProjectName + "\" in the Projects directory!");
                                         try {
                                             var loadedDateModified = new Date(parseInt(xmlDoc.getElementsByTagName("DateModified")[0].childNodes[0].nodeValue, 10));
-                                            loadedDateModified = loadedDateModified.customFormat("#MMM# #DD#, #YYYY# #h#:#mm##ampm#");
+                                            //loadedDateModified = loadedDateModified.customFormat("#MMM# #DD#, #YYYY# #h#:#mm##ampm#");
                                         }
                                         catch (exception) {
                                             var loadedDateModified = "Unknown";
                                         }
                                         var loadedAspectRatio = xmlDoc.getElementsByTagName("AspectRatio")[0].childNodes[0].nodeValue;
-                                        var loadedNumberOfClips = parseInt(xmlDoc.getElementsByTagName("NumberOfClips")[0].childNodes[0].nodeValue);
-                                        var loadedFilename = xmlDoc.getElementsByTagName("ProjectFilename")[0].childNodes[0].nodeValue;
+                                        var loadedNumberOfClips = xmlDoc.getElementsByTagName("MediaClip").length;
+                                        //var loadedFilename = xmlDoc.getElementsByTagName("ProjectFilename")[0].childNodes[0].nodeValue;
                                         var loadedProjectLength = xmlDoc.getElementsByTagName("ProjectLength")[0].childNodes[0].nodeValue;
                                         var loadedThumbnailPath = "ms-appdata:///local/Projects/" + loadedFilename + ".jpg";
 
@@ -618,10 +687,6 @@
                     break;
             }
             return returnVal;
-        },
-
-        saveProject: function () {
-            /// <summary>Saves the currently loaded project to disk.</summary>
         },
 
         deleteProject: function (filename) {

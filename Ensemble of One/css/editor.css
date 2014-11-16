@@ -386,12 +386,12 @@ editorDraggedPreviewHidden {
 
 #editorPageContainer #editorMenuButton {
     border-bottom-right-radius: 10px;
-    border-bottom: 2px solid lightgray;
+    border-bottom: 1px solid lightgray;
 }
 
 #editorPageContainer .editorMenuToggle {
     background-color: rgba(240,240,240, 1);
-    border-right: 2px solid lightgray;
+    border-right: 1px solid lightgray;
     padding: 10px;
 
     transition: background-color 0.4s ease-in-out;
@@ -420,8 +420,8 @@ editorDraggedPreviewHidden {
 }
 
 #editorEffectsButton {
-    border-top: 2px solid lightgray;
-    border-bottom: 2px solid lightgray;
+    border-top: 1px solid lightgray;
+    border-bottom: 1px solid lightgray;
     border-bottom-right-radius: 10px;
 }
 
@@ -512,12 +512,15 @@ editorDraggedPreviewHidden {
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
     margin-left: 10px;
+    border: 1px solid transparent;
+    color: darkgray;
 }
 
 .editorMenuDialogTabs .editorMenuTabFocused {
     background-color: rgb(240,240,240);
     pointer-events: none;
     border: 1px solid lightgray;
+    color: black;
 }
 
 .editorMenuDialogTabs .editorMenuTabBlurred {
@@ -526,6 +529,7 @@ editorDraggedPreviewHidden {
 
 .editorMenuDialogTabs .editorMenuTabBlurred:hover {
     background-color: rgb(240,240,240);
+    color: black;
 }
 
 .editorMenuDialogTabs .editorMenuTabBlurred:active {

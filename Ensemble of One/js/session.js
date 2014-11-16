@@ -11,6 +11,8 @@
         projectDuration: null,
         projectClipCount: null,
         projectTrackCount: null,
+        projectDateCreated: null,
+        projectDateModified: null,
         maxResolution: [2560,1440],
         //projectLoading: false,
 

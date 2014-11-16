@@ -1,9 +1,12 @@
 ﻿(function () {
     var Track = WinJS.Class.define(
-        function () {
+        function (idVal) {
             /// <summary>Manages a single media track within a project.</summary>
+            /// <param name="idVal" type="Number">Optional. An ID to assign the Track. If no value is given, a new ID will be generated automatically.</param>
+
             //Constructor
-            this._clips = [];
+            this.clips = [];
+            this.id = idVal || Ensemble.Editor.TimelineMGR.generateNewTrackId();
             this._empty = [
                 {
                     start: Number.NEGATIVE_INFINITY,
@@ -13,7 +16,7 @@
         },
         {
             //Instance members
-            _clips: null,
+            clips: null,
             _empty: null
 
         },

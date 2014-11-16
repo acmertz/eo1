@@ -28,7 +28,9 @@
             $("#editorMenuDialog").css("animation", "none");
             $("#editorMenuDialog").removeClass("editorMenuDialogHidden");
             $("#editorMenuDialog").css("animation", "");
-            
+            $(Ensemble.Pages.Editor.UI.UserInput.Boundaries.topBottomSplit).removeClass();
+            $(Ensemble.Pages.Editor.UI.UserInput.Boundaries.topBottomSplit).addClass("editorHorizontalDividerHidden");
+
             //Perform UI setup operations (project name, thumbnail, etc.)
             var projectSubmenu = Ensemble.Pages.Editor.UI.PageSections.menu.actionMenu.project;
             projectSubmenu.nameDisplay.innerText = Ensemble.Session.projectName;

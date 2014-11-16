@@ -32,10 +32,28 @@
                     default:
                         console.error("Unknown Action!");
                 }
+                
+                //Save project.
+                setTimeout(function () {
+                    Ensemble.FileIO.saveProject();
+                }, 0);
             },
 
             undo: function () {
                 /// <summary>Reverts the changes caused by this Action.</summary>
+                switch (this._type) {
+                    case Ensemble.Events.Action.ActionType.createTrack:
+                        console.log("Undoing new track creation...");
+                        //Track undo code here.
+                        break;
+                    default:
+                        console.error("Unknown Action!");
+                }
+
+                //Save project.
+                setTimeout(function () {
+                    Ensemble.FileIO.saveProject();
+                }, 0);
             }
         },
         {

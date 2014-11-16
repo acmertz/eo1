@@ -2,15 +2,17 @@
     WinJS.Namespace.define("Ensemble.Editor.TimelineMGR", {
         /// <summary>Manages the history state of the current project.</summary>
 
-        _tracks: [],
+        tracks: [],
+        _uniqueTrackID: 0,
 
-        createTrack: function () {
+        createTrack: function (clipsToAdd) {
             /// <summary>Creates a new track in the timeline.</summary>
+            /// <param name="clipsToAdd" type="Array">Optional. An array of Ensemble.EnsembleFile objects with which to prepopulate the track.</param>
+
             var newTrack = new Ensemble.Editor.Track();
-            this._tracks.push(newTrack);
-            window.setTimeout(function () {
-                Ensemble.Editor.TimelineMGR._buildTrackDisplay(newTrack);
-            }, 0);
+            this.tracks.push(newTrack);
+            Ensemble.Session.projectTrackCount = this.tracks.length;
+            Ensemble.Editor.TimelineMGR._buildTrackDisplay(newTrack);
         },
 
         updateTrackSizing: function () {
@@ -21,6 +23,13 @@
                 tracks[i].style.height = trackHeight;
                 tracks[i].style.lineHeight = trackHeight;
             }
+        },
+
+        generateNewTrackId: function () {
+            /// <summary>Generates a new, unique ID for a Track.</summary>
+            /// <returns type="Number">A number to represent a Track ID.</returns>
+            this._uniqueTrackID++;
+            return this._uniqueTrackID - 1;
         },
 
         _buildTrackDisplay: function (track) {

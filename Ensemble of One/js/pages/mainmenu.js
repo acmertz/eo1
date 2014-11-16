@@ -18,6 +18,10 @@
             $("#mainMenuPageContainer").removeClass("mainMenuParallaxToRight");
             $("#mainMenuPageContainer").removeClass("mainMenuParallaxToLeft");
 
+            $("#settingsDialog").removeClass("settingsDialogHidden");
+            $("#tickerDialog").removeClass("tickerDialogHidden");
+            $("#tickerTicket").removeClass();
+
             $("#newProjectButton").removeClass("mainMenuPhotoButtonVisible");
             $("#openProjectButton").removeClass("mainMenuPhotoButtonVisible");
             $("#settingsButton").removeClass("settingsButtonVisible");
