@@ -336,6 +336,7 @@
 
         unloadProject: function () {
             //Unloads the current project.
+            Ensemble.Editor.TimelineMGR.unload();
         },
 
 
@@ -369,6 +370,8 @@
 
             //Action menu "Project" tab commands
             $(Ensemble.Pages.Editor.UI.UserInput.Buttons.exit).click(this._editorExitButtonOnClickListener);
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.undo).click(this._editorUndoButtonOnClickListener);
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.redo).click(this._editorRedoButtonOnClickListener);
 
             //Media menu tabs
             $(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabLocal).click(this._mediaMenuTabLocalOnClickListener);
@@ -414,6 +417,8 @@
 
             //Action menu "Project" tab commands
             $(Ensemble.Pages.Editor.UI.UserInput.Buttons.exit).unbind("click");
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.undo).unbind("click");
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.redo).unbind("click");
 
             //Media menu tabs
             $(Ensemble.Pages.Editor.UI.UserInput.Buttons.mediaMenuTabLocal).unbind("click");
@@ -447,6 +452,7 @@
             $("#projectClosingPageContainer").addClass("loadingPageVisible");
             window.setTimeout(function () {
                 Ensemble.Pages.Editor.hide();
+                Ensemble.Pages.Editor.unloadProject();
                 window.setTimeout(function () {
                     $("#imgMainLogo").css("display", "initial");
                     $("#projectClosingPageContainer").removeClass("loadingPageVisible");
@@ -454,6 +460,16 @@
                     Ensemble.Pages.MainMenu.showInitial();
                 }, 500);
             }, 500);
+        },
+
+        _editorUndoButtonOnClickListener: function () {
+            if (Ensemble.HistoryMGR.canUndo()) Ensemble.HistoryMGR.undoLast();
+            else console.log("Can't undo right now.");
+        },
+
+        _editorRedoButtonOnClickListener: function () {
+            if (Ensemble.HistoryMGR.canRedo()) Ensemble.HistoryMGR.redoNext();
+            else console.log("Can't undo right now.");
         },
 
         _menuButtonOnClickListener: function () {

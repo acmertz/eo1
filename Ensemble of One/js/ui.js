@@ -64,6 +64,8 @@
             this.UserInput.Buttons.mediaBrowserLocationMusic = document.getElementById("editorMediaBrowserLocationMusicLibrary");
             this.UserInput.Buttons.mediaBrowserLocationPictures = document.getElementById("editorMediaBrowserLocationPicturesLibrary");
             this.UserInput.Buttons.exit = document.getElementById("editorExitButton");
+            this.UserInput.Buttons.undo = document.getElementById("editorMenuCommandUndo");
+            this.UserInput.Buttons.redo = document.getElementById("editorMenuCommandRedo");
 
             this.UserInput.Boundaries.topBottomSplit = document.getElementById("editorHorizontalDivider");
 
@@ -180,7 +182,9 @@
                 mediaBrowserLocationVideos: null,
                 mediaBrowserLocationMusic: null,
                 mediaBrowserLocationPictures: null,
-                exit: null
+                exit: null,
+                undo: null,
+                redo: null
             },
             Boundaries: {
                 topBottomSplit: null

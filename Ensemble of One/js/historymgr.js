@@ -13,15 +13,26 @@
             Ensemble.HistoryMGR._forwardStack = [];
         },
 
+        createActionFromXML: function (historyType, xml) {
+            /// <summary>Creates and saves (but does not execute) an Action based on the given XML object.</summary>
+            /// <param name="historyType" type="String">The type of history Action. Must be one of "undo" or "redo".</param>
+            /// <param name="xml">An XML object representing the root node of the Action as it is represented in the .eo1 file format.</param>
+        },
+
         undoLast: function () {
             if (Ensemble.HistoryMGR._backStack.length > 0) {
                 var actionToUndo = Ensemble.HistoryMGR._backStack.pop();
                 actionToUndo.undo();
+                this._forwardStack.push(actionToUndo);
             }
         },
 
         redoNext: function () {
-
+            if (Ensemble.HistoryMGR._forwardStack.length > 0) {
+                var actionToRedo = Ensemble.HistoryMGR._forwardStack.pop();
+                actionToRedo.performAction();
+                this._backStack.push(actionToRedo);
+            }
         },
 
         canUndo: function () {

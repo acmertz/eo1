@@ -6,7 +6,8 @@
 
             //Constructor
             this.clips = [];
-            this.id = idVal || Ensemble.Editor.TimelineMGR.generateNewTrackId();
+            if (idVal != null) this.id = idVal;
+            else this.id = Ensemble.Editor.TimelineMGR.generateNewTrackId();
             this._empty = [
                 {
                     start: Number.NEGATIVE_INFINITY,
@@ -17,6 +18,7 @@
         {
             //Instance members
             clips: null,
+            id: null,
             _empty: null
 
         },

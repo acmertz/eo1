@@ -27,7 +27,15 @@
                 switch (this._type) {
                     case Ensemble.Events.Action.ActionType.createTrack:
                         console.log("Creating new track...");
-                        Ensemble.Editor.TimelineMGR.createTrack();
+                        if (this._payload) {
+                            Ensemble.Editor.TimelineMGR.createTrack(null, this._payload.trackId);
+                        }
+                        else {
+                            var affectedId = Ensemble.Editor.TimelineMGR.createTrack();
+                            this._payload = {
+                                trackId: affectedId
+                            };
+                        }
                         break;
                     default:
                         console.error("Unknown Action!");
@@ -44,7 +52,7 @@
                 switch (this._type) {
                     case Ensemble.Events.Action.ActionType.createTrack:
                         console.log("Undoing new track creation...");
-                        //Track undo code here.
+                        Ensemble.Editor.TimelineMGR.removeTrack(this._payload.trackId);
                         break;
                     default:
                         console.error("Unknown Action!");

@@ -49,18 +49,19 @@
             xml.EndNode();
 
             xml.BeginNode("Tracks");
+            xml.Attrib("FreeId", Ensemble.Editor.TimelineMGR._uniqueTrackID.toString());
             //Write track data
             if (Ensemble.Session.projectTrackCount == 0) xml.WriteString("");
             else {
                 for (var i = 0; i < Ensemble.Session.projectTrackCount; i++) {
                     xml.BeginNode("Track");
-                    xml.Attrib("trackID", Ensemble.Editor.TimelineMGR.tracks[i].id.toString());
+                    xml.Attrib("trackId", Ensemble.Editor.TimelineMGR.tracks[i].id.toString());
 
                     //Write clip data
                     if (Ensemble.Editor.TimelineMGR.tracks[i].clips.length == 0) xml.WriteString("");
                     else {
                         for (var k = 0; k < Ensemble.Editor.TimelineMGR.tracks[i].clips.length; k++) {
-                            xml.BeginNode("Clip");
+                            xml.BeginNode("MediaClip");
                             xml.WriteString("");
                             xml.EndNode();
                         }
@@ -73,14 +74,36 @@
             xml.BeginNode("History");
             xml.BeginNode("Undo");
             if (Ensemble.HistoryMGR.canUndo()) {
-                xml.WriteString(""); //TODO: save history management
+                for (var i = 0; i < Ensemble.HistoryMGR._backStack.length; i++) {
+                    xml.BeginNode("HistoryAction");
+                    switch (Ensemble.HistoryMGR._backStack[i]._type) {
+                        case Ensemble.Events.Action.ActionType.createTrack:
+                            xml.Attrib("trackId", Ensemble.HistoryMGR._backStack[i]._payload.trackId.toString());
+                            xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
+                            break;
+                        default:
+                            console.error("Unable to save History Action to disk - unknown type.");
+                    }
+                    xml.EndNode();
+                }
             }
             else xml.WriteString("");
             xml.EndNode();
 
             xml.BeginNode("Redo");
             if (Ensemble.HistoryMGR.canRedo()) {
-                xml.WriteString(""); //TODO: save history management
+                for (var i = 0; i < Ensemble.HistoryMGR._forwardStack.length; i++) {
+                    xml.BeginNode("HistoryAction");
+                    switch (Ensemble.HistoryMGR._forwardStack[i]._type) {
+                        case Ensemble.Events.Action.ActionType.createTrack:
+                            xml.Attrib("trackId", Ensemble.HistoryMGR._forwardStack[i]._payload.trackId.toString());
+                            xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
+                            break;
+                        default:
+                            console.error("Unable to save History Action to disk - unknown type.");
+                    }
+                    xml.EndNode();
+                }
             }
             else xml.WriteString("");
             xml.EndNode();
@@ -150,6 +173,7 @@
                             xml.WriteString("0");
                             xml.EndNode();
                             xml.BeginNode("Tracks");
+                            xml.Attrib("FreeId", "0");
                             xml.WriteString("");
                             xml.EndNode();
                             xml.BeginNode("History");
@@ -236,7 +260,8 @@
             var duration = parseInt(xmlDoc.getElementsByTagName("ProjectLength")[0].childNodes[0].nodeValue, 10);
             var thumbnailPath = "ms-appdata:///local/Projects/" + filename + ".jpg";
 
-            var numberOfTracks = xmlDoc.getElementsByTagName("Tracks")[0].childNodes.length;
+            var tracks = xmlDoc.getElementsByTagName("Tracks")[0].getElementsByTagName("Track");
+            var freeTrackId = parseInt(xmlDoc.getElementsByTagName("Tracks")[0].getAttribute("FreeId"));
             var numberOfClips = xmlDoc.getElementsByTagName("MediaClip").length;
 
             var historyParent = xmlDoc.getElementsByTagName("History")[0];
@@ -252,26 +277,54 @@
 
             //May be overridden during the rest of the load process due to missing or invalid clip references.
             Ensemble.Session.projectClipCount = numberOfClips;
-            Ensemble.Session.projectTrackCount = numberOfTracks;
+            Ensemble.Session.projectTrackCount = tracks.length;
+            Ensemble.Editor.TimelineMGR._uniqueTrackID = freeTrackId;
 
-            if (undoParent.childNodes.length > 0) {
-                //TODO: load project history
+            var undoActions = undoParent.getElementsByTagName("HistoryAction");
+            if (undoActions.length > 0) {
+                console.log("Loading " + undoActions.length + " back history items.");
+                for (var i = 0; i < undoActions.length; i++) {
+                    var actionType = undoActions[i].getAttribute("type");
+                    switch (actionType) {
+                        case Ensemble.Events.Action.ActionType.createTrack:
+                            Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.createTrack, { trackId: undoActions[i].getAttribute("trackId") }));
+                            break;
+                        default:
+                            console.error("Unable to load History Action from disk - unknown type.");
+                            break;
+                    }
+                }
             }
 
-            if (redoParent.childNodes.length > 0) {
-                //TODO: load project history
+            var redoActions = redoParent.getElementsByTagName("HistoryAction");
+            if (redoActions.length > 0) {
+                console.log("Loading " + redoActions.length + " forward history items.");
+                for (var i = 0; i < redoActions.length; i++) {
+                    var actionType = redoActions[i].getAttribute("type");
+                    switch (actionType) {
+                        case Ensemble.Events.Action.ActionType.createTrack:
+                            Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.createTrack, { trackId: redoActions[i].getAttribute("trackId") }));
+                            break;
+                        default:
+                            console.error("Unable to load History Action from disk - unknown type.");
+                            break;
+                    }
+                }
             }
 
-            if (numberOfTracks > 0) {
+            if (tracks.length > 0) {
                 //Create empty tracks
-                for (var i = 0; i < numberOfTracks; i++) {
-                    Ensemble.Editor.TimelineMGR.createTrack();
+                for (var i = 0; i < tracks.length; i++) {
+                    Ensemble.Editor.TimelineMGR.createTrack(null, parseInt(tracks[i].getAttribute("trackId")));
                 }
 
                 //For each track, look up clips and generate URIs.
 
                 /* Not currently saving media clip information. */
                 //Todo: clip loading
+
+                //For now, navigate to the Editor after generating the tracks.
+                Ensemble.Pages.MainMenu.navigateToEditor();
             }
             else {
                 //Fire callback.

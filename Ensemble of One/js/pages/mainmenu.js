@@ -552,12 +552,12 @@
         },
 
         _projectListItemOnMouseDownListener: function (event) {
-            console.log("Detected mousedown on a list item.");
+            //console.log("Detected mousedown on a list item.");
             WinJS.UI.Animation.pointerDown(event.currentTarget);
         },
 
         _projectListItemOnMouseUpListener: function (event) {
-            console.log("Detected mouseup on a list item.");
+            //console.log("Detected mouseup on a list item.");
             WinJS.UI.Animation.pointerUp(event.currentTarget);
         },
 
