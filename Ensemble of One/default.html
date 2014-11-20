@@ -45,6 +45,7 @@
     <script src="/js/ensemblefolder.js"></script>
     <script src="/js/fileio.js"></script>
     <script src="/js/historymgr.js"></script>
+    <script src="/js/keyboardmgr.js"></script>
     <script src="/js/mediabrowser.js"></script>
     <script src="/js/platform.js"></script>
     <script src="/js/projectfile.js"></script>
@@ -242,24 +243,7 @@
 
         <div class="pageContainer pageContainerHidden" id="editorPageContainer">
             <div id="editorUpperHalf">
-                <div id="editorCustomButtonsLeft">
-                    <button data-win-control="WinJS.UI.AppBarCommand"
-                            data-win-options="{id:'editorCustomButton1',
-                            type:'button',
-                            label:'Undo',
-                            icon: 'undo'}"></button><br />
-                    <button data-win-control="WinJS.UI.AppBarCommand"
-                            data-win-options="{id:'editorCustomButton2',
-                            type:'button',
-                            label:'Empty',
-                            icon: 'pin'}" disabled></button><br />
-                    <button data-win-control="WinJS.UI.AppBarCommand"
-                            data-win-options="{id:'editorCustomButton3',
-                            type:'button',
-                            label:'Empty',
-                            icon: 'pin'}" disabled></button><br />
-                </div>
-
+                
                 <div id="editorCanvasContainer">
                     <div id="editorCanvasContent">
                         <canvas id="editorCanvas" class="videoPlaybackSurface"></canvas>
@@ -281,23 +265,6 @@
                     </div>
                 </div>
 
-                <div id="editorCustomButtonsRight">
-                    <button data-win-control="WinJS.UI.AppBarCommand"
-                            data-win-options="{id:'editorCustomButton4',
-                            type:'button',
-                            label:'Empty',
-                            icon: 'pin'}" disabled></button><br />
-                    <button data-win-control="WinJS.UI.AppBarCommand"
-                            data-win-options="{id:'editorCustomButton5',
-                            type:'button',
-                            label:'Empty',
-                            icon: 'pin'}" disabled></button><br />
-                    <button data-win-control="WinJS.UI.AppBarCommand"
-                            data-win-options="{id:'editorCustomButton6',
-                            type:'button',
-                            label:'Empty',
-                            icon: 'pin'}" disabled></button><br />
-                </div>
             </div>
 
             <div id="editorHorizontalDivider" class="editorHorizontalDividerHidden"></div>

@@ -11,8 +11,6 @@
             this.PageSections.upperHalf.canvasAndControls = document.getElementById("editorCanvasContainer");
             this.PageSections.upperHalf.canvasContainer = document.getElementById("editorCanvasContent");
             this.PageSections.upperHalf.controlContainer = document.getElementById("editorPlayControls");
-            this.PageSections.upperHalf.customButtonsLeft = document.getElementById("editorCustomButtonsLeft");
-            this.PageSections.upperHalf.customButtonsRight = document.getElementById("editorCustomButtonsRight");
 
             this.PageSections.lowerHalf.entireSection = document.getElementById("editorLowerHalf");
             this.PageSections.lowerHalf.timeline = document.getElementById("editorTimelineContent");
@@ -40,12 +38,6 @@
 
             this.RenderSurfaces.mainCanvas = document.getElementById("editorCanvas");
 
-            this.UserInput.Buttons.customButton1 = document.getElementById("editorCustomButton1");
-            this.UserInput.Buttons.customButton2 = document.getElementById("editorCustomButton2");
-            this.UserInput.Buttons.customButton3 = document.getElementById("editorCustomButton3");
-            this.UserInput.Buttons.customButton4 = document.getElementById("editorCustomButton4");
-            this.UserInput.Buttons.customButton5 = document.getElementById("editorCustomButton5");
-            this.UserInput.Buttons.customButton6 = document.getElementById("editorCustomButton6");
             this.UserInput.Buttons.playPause = document.getElementById("editorPlaypauseButton");
             this.UserInput.Buttons.skipBack = document.getElementById("editorSkipBackButton");
             this.UserInput.Buttons.skipForward = document.getElementById("editorSkipForwardButton");
@@ -97,9 +89,7 @@
                 entireSection: null,
                 canvasAndControls: null,
                 canvasContainer: null,
-                controlContainer: null,
-                customButtonsLeft: null,
-                customButtonsRight: null,
+                controlContainer: null
             },
             lowerHalf: {
                 //The entire lower half of the page.
@@ -154,12 +144,6 @@
 
         UserInput: {
             Buttons: {
-                customButton1: null,
-                customButton2: null,
-                customButton3: null,
-                customButton4: null,
-                customButton5: null,
-                customButton6: null,
                 playPause: null,
                 skipBack: null,
                 skipForward: null,

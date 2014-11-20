@@ -95,6 +95,7 @@
             $("#newProjectDialog").addClass("newProjectDialogVisible");
             $("#newProjectClickEater").addClass("mainMenuClickEaterVisible");
             $("#mainMenuPageContainer").addClass("mainMenuParallaxToRight");
+            Ensemble.KeyboardMGR.mainMenuNewProjectDialog();
             window.setTimeout(function () { $("#mainMenuProjectNameInput").focus(); }, 800);
         },
 
@@ -102,9 +103,11 @@
             /// <summary>Hides the New Project dialog.</summary>
             if ($("#newProjectDialog").hasClass("newProjectDialogVisible")) {
                 console.log("Hiding the new project dialog.");
+                $("#mainMenuProjectNameInput").blur();
                 $("#newProjectDialog").removeClass("newProjectDialogVisible");
                 $("#newProjectClickEater").removeClass("mainMenuClickEaterVisible");
                 $("#mainMenuPageContainer").removeClass("mainMenuParallaxToRight");
+                Ensemble.KeyboardMGR.mainMenuDefault();
             }
             else {
             }
@@ -142,6 +145,7 @@
 
             if (projectName.length > 0) {
                 console.log("Creating new project...");
+                $("#mainMenuProjectNameInput").blur();
                 $("#newProjectDialog").removeClass("newProjectDialogVisible");
                 $("#newProjectDialog").addClass("newProjectLoading");
 
@@ -244,6 +248,7 @@
             $("#openProjectDialog").addClass("openProjectDialogVisible");
             $("#openProjectClickEater").addClass("mainMenuClickEaterVisible");
             $("#mainMenuPageContainer").addClass("mainMenuParallaxToLeft");
+            Ensemble.KeyboardMGR.mainMenuOpenProjectDialog();
         },
 
         hideOpenProjectDialog: function () {
@@ -251,6 +256,7 @@
             $("#openProjectDialog").removeClass("openProjectDialogVisible");
             $("#openProjectClickEater").removeClass("mainMenuClickEaterVisible");
             $("#mainMenuPageContainer").removeClass("mainMenuParallaxToLeft");
+            Ensemble.KeyboardMGR.mainMenuDefault();
         },
 
         projectListSelectItem: function (item) {
@@ -430,6 +436,8 @@
             document.getElementById("mainMenuDeleteAllProjectsButton").addEventListener("click", this._deleteAllProjectsButtonOnClickListener, false);
             document.getElementById("mainMenuConfirmDeleteAllProjectsButton").addEventListener("click", this._confirmDeleteAllProjectsButtonOnClickListener, false);
             document.getElementById("mainMenuCancelDeleteAllProjectsButton").addEventListener("click", this._cancelDeleteAllProjectsButtonOnClickListener, false);
+
+            Ensemble.KeyboardMGR.mainMenuDefault();
         },
 
         _detachListeners: function () {
@@ -474,6 +482,8 @@
 
             document.getElementById("mainMenuConfirmDeleteProjectButton").removeEventListener("click", this._confirmDeleteProjectButtonOnClickListener, false);
             document.getElementById("mainMenuCancelDeleteProjectButton").removeEventListener("click", this._cancelDeleteProjectButtonOnClickListener, false);
+
+            Ensemble.KeyboardMGR.off();
         },
 
         _tickerOnClickListener: function (event) {

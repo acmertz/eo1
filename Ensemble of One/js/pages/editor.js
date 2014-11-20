@@ -86,7 +86,7 @@
             /// <summary>Adjusts the size of all display surfaces to match the change in window dimensions.</summary>
 
             //Main display canvas
-            var leftClearance = Ensemble.Pages.Editor.UI.PageSections.menuButtons.clientWidth + Ensemble.Pages.Editor.UI.PageSections.upperHalf.customButtonsLeft.clientWidth;
+            var leftClearance = Ensemble.Pages.Editor.UI.PageSections.menuButtons.clientWidth;
             var maxWidth = window.innerWidth - (2 * leftClearance);
             var maxHeight = Ensemble.Pages.Editor.UI.PageSections.upperHalf.canvasContainer.clientHeight;
 
@@ -130,6 +130,8 @@
             $(menuDialog).removeClass("editorMenuDialogHidden");
             $(menuDialog).addClass("editorMenuDialogVisible");
 
+            Ensemble.KeyboardMGR.editorActionMenu();
+
             this.menuOpen = true;
             this.currentSubmenu = Ensemble.Pages.Editor.UI.PageSections.menu.actionMenu.entireSection;
         },
@@ -141,6 +143,9 @@
             var menuDialog = Ensemble.Pages.Editor.UI.PageSections.menu.entireSection;
             $(menuDialog).removeClass("editorMenuDialogVisible");
             $(menuDialog).addClass("editorMenuDialogHidden");
+
+            Ensemble.KeyboardMGR.editorDefault();
+
             window.setTimeout(function (event) {
                 var menuItems = document.getElementsByClassName("editorMenuContentItem");
                 for (var i = 0; i < menuItems.length; i++) {
@@ -171,6 +176,9 @@
             //WinJS.UI.Animation.enterContent(menuDialog);
             $(menuDialog).removeClass("editorMenuDialogHidden");
             $(menuDialog).addClass("editorMenuDialogVisible");
+
+            Ensemble.KeyboardMGR.editorActionMenu();
+
             Ensemble.Pages.Editor.refreshMediaBrowser();
 
             this.menuOpen = true;
@@ -196,6 +204,8 @@
             //WinJS.UI.Animation.enterContent(menuDialog);
             $(menuDialog).removeClass("editorMenuDialogHidden");
             $(menuDialog).addClass("editorMenuDialogVisible");
+
+            Ensemble.KeyboardMGR.editorActionMenu();
 
             this.menuOpen = true;
             this.currentSubmenu = Ensemble.Pages.Editor.UI.PageSections.menu.effectsMenu.entireSection;
@@ -394,9 +404,11 @@
             $(".editorMenuCommandListItem").mouseup(Ensemble.Pages.MainMenu._projectListItemOnMouseUpListener);
 
             //Other
-            $(Ensemble.Pages.Editor.UI.UserInput.Boundaries.topBottomSplit).click(this._topBottomSplitMouseDown);
+            $(Ensemble.Pages.Editor.UI.UserInput.Boundaries.topBottomSplit).mousedown(this._topBottomSplitMouseDown);
 
             window.addEventListener("resize", this.viewResized, false);
+
+            Ensemble.KeyboardMGR.editorDefault();
         },
 
         _detachListeners: function () {
@@ -441,9 +453,11 @@
             $(".editorMenuCommandListItem").unbind("mouseup");
 
             //Other
-            $(Ensemble.Pages.Editor.UI.UserInput.Boundaries.topBottomSplit).unbind("click");
+            $(Ensemble.Pages.Editor.UI.UserInput.Boundaries.topBottomSplit).unbind("mousedown");
 
             window.addEventListener("resize", this.viewResized, false);
+
+            Ensemble.KeyboardMGR.off();
         },
 
         _editorExitButtonOnClickListener: function () {
@@ -541,8 +555,8 @@
         },
 
         _topBottomSplitMouseDown: function (event) {
-            console.log("Mouse down on UI splitpoint at screen Y coordinate of " + event.clientY + " and top offset of " + event.offsetY);
-            Ensemble.Pages.Editor.uiSplitpointDragBegin(event.clientY, event.offsetY);
+            //console.log("Mouse down on UI splitpoint at screen Y coordinate of " + event.clientY + " and top offset of " + event.offsetY);
+            Ensemble.Pages.Editor.uiSplitpointDragBegin(event.clientY, 0); //replaced event.offsetY with 0
         },
 
         _topBottomSplitDragMove: function (event) {

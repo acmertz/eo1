@@ -86,6 +86,7 @@
     <Content Include="js\events\action.js" />
     <Content Include="js\fileio.js" />
     <Content Include="js\historymgr.js" />
+    <Content Include="js\keyboardmgr.js" />
     <Content Include="js\mediabrowser.js" />
     <Content Include="js\pages\editor.js" />
     <Content Include="js\pages\mainmenu.js" />
