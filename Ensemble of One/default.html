@@ -51,7 +51,6 @@
     <script src="/js/projectfile.js"></script>
     <script src="/js/session.js"></script>
     <script src="/js/settings.js"></script>
-    <script src="/js/timeline.js"></script>
     <script src="/js/ui.js"></script>
 </head>
 <body>
@@ -276,7 +275,11 @@
                         <i class="editorGeneralButton" id="editorTimelineAddTrackButton" title="New track">&#xE109;</i>
                         <div class="spacer"></div>
                     </div>
-                    <div id="editorTimelineContent"></div>
+                    <div id="editorTimelineContent">
+                        <div id="editorTimelineHeaders"></div>
+                        <div id="editorTimelineDetails"></div>
+                        <div id="editorTimelineTracks"></div>
+                    </div>
                     <div class="editorTimelineSideControls">
                         <i class="editorGeneralButton" id="editorTimelineZoomInButton" title="Zoom in">&#xE12E;</i>
                         <i class="editorGeneralButton" id="editorTimelineZoomOutButton" title="Zoom out">&#xE1A4;</i>

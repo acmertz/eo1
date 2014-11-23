@@ -43,7 +43,7 @@
 
             //Update the Editor with the current settings
             this.layoutInterfaceToSplitpoint(Ensemble.Settings.getEditorDividerPosition() * window.innerHeight);
-            Ensemble.Timeline.setRowsVisible(Ensemble.Settings.getEditorTimelineRowsVisible());
+            Ensemble.Editor.TimelineMGR.setRowsVisible(Ensemble.Settings.getEditorTimelineRowsVisible());
 
             $(Ensemble.Pages.Editor.UI.PageSections.upperHalf.entireSection).addClass("editorUpperHalfVisible");
 

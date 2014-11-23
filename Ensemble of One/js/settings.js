@@ -78,7 +78,7 @@
                     break;
             }
 
-            Ensemble.Timeline.setRowsVisible(rowsVisible);
+            Ensemble.Editor.TimelineMGR.setRowsVisible(rowsVisible);
         },
 
         getEditorTimelineRowsVisible: function () {

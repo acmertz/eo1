@@ -94,7 +94,6 @@
     <Content Include="js\projectfile.js" />
     <Content Include="js\session.js" />
     <Content Include="js\settings.js" />
-    <Content Include="js\timeline.js" />
     <Content Include="js\ui.js" />
     <Content Include="js\util\aspectgenerator.js" />
     <Content Include="js\util\friendlyResolutionGenerator.js" />

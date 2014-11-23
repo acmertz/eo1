@@ -252,25 +252,108 @@
     border-radius: 2px;
     background: linear-gradient(to bottom, rgb(255,255,255) 50%, rgb(240,240,240) 50%);
 	background-size: 100px 50%;
+    overflow: hidden;
+
+    display: flex;
+}
+
+#editorTimelineHeaders {
+    width: 50px;
+}
+
+.editorTimelineHeader, .editorTimelineDetail, .editorTimelineTrack {
+    box-sizing: border-box;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.editorTimelineHeader {
+    display: flex;
+    flex-direction: column;
+}
+
+.editorTimelineHeader .trackNum, .editorTimelineHeader .trackEditButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    box-sizing: border-box;
+    border: 1px solid lightgray;
+    border-left: none;
+    font-weight: bold;
+    font-size: 1.25em;
+}
+
+.editorTimelineHeader .trackNum {
+}
+
+.editorTimelineHeader .trackEditButton {
+    border-top: none;
+}
+
+.editorTimelineHeader .trackEditButton:active {
+    color: white;
+    background-color: black;
+}
+
+#editorTimelineDetails {
+    width: 0px;
+    white-space: nowrap;
+    overflow: hidden;
+    transition: width 0.4s ease;
+}
+
+#editorTimelineDetails.detailsExpanded {
+    width: 150px;
+}
+
+.editorTimelineDetail {
+    display: flex;
+    flex-direction: column;
+}
+
+.editorTimelineDetail .timelineDetailRow {
+    flex: 1;
+    align-items: center;
+    box-sizing: border-box;
+    border: 1px solid lightgray;
+    border-left: none;
+}
+
+.timelineDetailRow.timelineDetailName {
+    font-weight: bold;
+    border-bottom: none;
+}
+
+.timelineDetailRow.timelineDetailControls {
+    justify-content: center;
+    border-top: none;
+    display: flex;
+}
+
+.timelineControl {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.timelineControl:active {
+    color: white;
+    background-color: black;
+}
+
+#editorTimelineTracks {
+    flex: 1;
     overflow-x: scroll;
+    overflow-y: hidden;
 }
 
 #editorTimelineContent .editorTimelineTrack {
     box-sizing: border-box;
     cursor: text;
-}
-
-.editorTimelineTrack .trackHeader {
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    width: 50px;
-    padding-left: 10px;
-    display: inline-block;
-}
-
-.editorTimelineTrack .trackContent {
-    display: inline-block;
+    white-space: nowrap;
 }
 
 #editorPageContainer #editorMenuButton, .editorMenuButtonPlaceholder {
