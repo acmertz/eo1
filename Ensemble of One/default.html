@@ -21,13 +21,6 @@
     <script src="lib/XMLWriter.js"></script>
 
     <!-- Classes, functions, and global variables -->
-    <script src="/js/editor/clockmgr.js"></script>
-    <script src="/js/editor/encoder.js"></script>
-    <script src="/js/editor/index.js"></script>
-    <script src="/js/editor/indexsegment.js"></script>
-    <script src="/js/editor/mediaclip.js"></script>
-    <script src="/js/editor/mediamgr.js"></script>
-    <script src="/js/editor/renderer.js"></script>
     <script src="/js/editor/timelinemgr.js"></script>
     <script src="js/editor/track.js"></script>
 
@@ -576,6 +569,12 @@
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMediaBrowserLocationPicturesLibrary',label:'Pictures library'}"></button>
             <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'separator',type:'separator'}" />
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'forwardMenuItem',label:'Browse...'}"></button>
+        </div>
+        <div id="editorMoveTrackFlyout" data-win-control="WinJS.UI.Menu">
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMoveTrackTop',label:'Move to top'}"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMoveTrackUp',label:'Move up'}"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMoveTrackDown',label:'Move down'}"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMoveTrackBottom',label:'Move to bottom'}"></button>
         </div>
     </div>
 </body>

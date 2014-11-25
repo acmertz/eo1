@@ -72,13 +72,6 @@
     <Content Include="img\stripes_reverse.png" />
     <Content Include="js\default.js" />
     <Content Include="css\default.css" />
-    <Content Include="js\editor\clockmgr.js" />
-    <Content Include="js\editor\encoder.js" />
-    <Content Include="js\editor\index.js" />
-    <Content Include="js\editor\indexsegment.js" />
-    <Content Include="js\editor\mediaclip.js" />
-    <Content Include="js\editor\mediamgr.js" />
-    <Content Include="js\editor\renderer.js" />
     <Content Include="js\editor\timelinemgr.js" />
     <Content Include="js\editor\track.js" />
     <Content Include="js\ensemblefile.js" />

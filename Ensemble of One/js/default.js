@@ -32,9 +32,6 @@ var renderPool = {
 
                     // Load all needed resources here
                     Ensemble.Pages.Editor.UI.relink();
-                    clockMGR = new Ensemble.Editor.ClockMGR();
-                    mediaMGR = new Ensemble.Editor.MediaMGR();
-                    renderPool.main = new Ensemble.Editor.Renderer(Ensemble.Pages.Editor.UI.RenderSurfaces.mainCanvas);
 
                     // Start permanent listeners
                     document.getElementById("settingsDialogTimelineTracksVisible").addEventListener("change", Ensemble.Settings._timelineTracksDropdownChanged, false);
