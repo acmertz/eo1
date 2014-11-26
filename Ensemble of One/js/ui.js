@@ -17,6 +17,7 @@
             this.PageSections.lowerHalf.timelineHeaders = document.getElementById("editorTimelineHeaders");
             this.PageSections.lowerHalf.timelineDetails = document.getElementById("editorTimelineDetails");
             this.PageSections.lowerHalf.timelineTracks = document.getElementById("editorTimelineTracks");
+            this.PageSections.lowerHalf.timelineHeaderDetailPlaceholder = document.getElementById("editorTimelineDetailsPlaceholder");
             this.PageSections.divider = document.getElementById("editorHorizontalDivider");
             this.PageSections.menuButtons = document.getElementById("editorMenuButtons");
             this.PageSections.menu.entireSection = document.getElementById("editorMenuDialog");
@@ -101,7 +102,8 @@
                 timeline: null,
                 timelineHeaders: null,
                 timelineDetails: null,
-                timelineTracks: null
+                timelineTracks: null,
+                timelineHeaderDetailPlaceholder: null
             },
             //Horizontal divider bar that separates the top half of the page from the lower half.
             divider: null,

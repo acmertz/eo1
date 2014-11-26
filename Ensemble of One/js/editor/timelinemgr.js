@@ -4,6 +4,7 @@
 
         tracks: [],
         _uniqueTrackID: 0,
+        _displayScale: 10, //milliseconds per pixel
 
         createTrack: function (clipsToAdd, idToUse) {
             /// <summary>Creates a new track in the timeline.</summary>
@@ -77,10 +78,12 @@
         toggleTrackDetails: function () {
             if ($(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineDetails).hasClass("detailsExpanded")) {
                 $(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineDetails).removeClass("detailsExpanded")
+                $(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineHeaderDetailPlaceholder).removeClass("detailsExpanded");
                 $(".trackEditButton").html("&#xE126;");
             }
             else {
                 $(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineDetails).addClass("detailsExpanded")
+                $(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineHeaderDetailPlaceholder).addClass("detailsExpanded");
                 $(".trackEditButton").html("&#xE127;");
             }
         },
