@@ -14,6 +14,7 @@
 
             this.PageSections.lowerHalf.entireSection = document.getElementById("editorLowerHalf");
             this.PageSections.lowerHalf.timeline = document.getElementById("editorTimelineContent");
+            this.PageSections.lowerHalf.timelineRuler = document.getElementById("editorTimelineRulerContent");
             this.PageSections.lowerHalf.timelineHeaders = document.getElementById("editorTimelineHeaders");
             this.PageSections.lowerHalf.timelineDetails = document.getElementById("editorTimelineDetails");
             this.PageSections.lowerHalf.timelineTracks = document.getElementById("editorTimelineTracks");
@@ -100,6 +101,7 @@
                 //The entire lower half of the page.
                 entireSection: null,
                 timeline: null,
+                timelineRuler: null,
                 timelineHeaders: null,
                 timelineDetails: null,
                 timelineTracks: null,

@@ -59,6 +59,37 @@
             return returnVal;
         },
 
+        setEditorRulerScale: function (scaleValue) {
+            /// <summary>Sets the number of milliseconds per pixel to use for the timeline layout and ruler.</summary>
+            /// <param name="scaleValue" type="Number">A value representing the number of milliseconds per pixel. May be fractional. A value of 0 may cause errors.</param>
+            switch (Ensemble.Platform.currentPlatform) {
+                case "win8":
+                    Windows.Storage.ApplicationData.current.roamingSettings.values["editorRulerScale"] = scaleValue;
+                    break;
+                case "android":
+                    break;
+                case "ios":
+                    break;
+            }
+        },
+
+        getEditorRulerScale: function () {
+            /// <summary>Returns the number of milliseconds per pixel to use for the timeline layout and ruler.</summary>
+            var returnVal = null;
+            switch (Ensemble.Platform.currentPlatform) {
+                case "win8":
+                    returnVal = Windows.Storage.ApplicationData.current.roamingSettings.values["editorRulerScale"];
+                    break;
+                case "android":
+                    break;
+                case "ios":
+                    break;
+            }
+
+            if ((returnVal == null) || (returnVal == undefined)) returnVal = 0.0625;
+            return returnVal;
+        },
+
         _timelineTracksDropdownChanged: function (event) {
             console.log("value changed.");
             Ensemble.Settings.setEditorTimelineRowsVisible(parseInt(event.currentTarget.value));

@@ -207,6 +207,9 @@
 
 #editorPageContainer #editorLowerHalf #editorTimelineRulerContainer {
     width: 100%;
+    height: 50px;
+    display: flex;
+    flex-direction: row;
 }
 
 #editorPageContainer #editorLowerHalf #editorTimelineContainer {
@@ -214,13 +217,7 @@
     width: 100%;
     display: flex;
     flex-direction: row;
-}
-
-#editorTimelineRulerContainer {
-    width: 100%;
-    height: 50px;
-    display: flex;
-    flex-direction: row;
+    z-index: 10;
 }
 
 #editorTimelineRulerContent {
@@ -230,6 +227,28 @@
     flex: 1;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
+    background-color: white;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#editorTimelineRulerContent .timeChunk {
+    display: inline-block;
+    box-sizing: border-box;
+}
+
+.timeChunk.timeChunkLarge {
+    height: 25px;
+    margin-top: 25px;
+    line-height: 25px;
+    border-right: 2px solid black;
+}
+
+.timeChunk.timeChunkSmall {
+    height: 12px;
+    margin-top: 12px;
+    line-height: 12px;
+    border-right: 1px solid gray;
 }
 
 #editorPageContainer #editorLowerHalf #editorTimelineContainer .editorTimelineSideControls, .editorTimelineRulerButtonPlaceholder {

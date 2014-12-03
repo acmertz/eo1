@@ -75,6 +75,61 @@
             Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timeline.style.backgroundSize = "100px " + valueToSet + ";"
         },
 
+        setRulerScale: function (rulerScale) {
+            /// <summary>Sets the scale used to display the timeline, its tracks and clips, and the timing ruler.</summary>
+            /// <param name="rulerScale" type="Number">A number representing the number of milliseconds per pixel to use in the timeline display.</param>
+            console.log("Set timeline scale to " + rulerScale);
+            Ensemble.Settings.setEditorRulerScale(rulerScale);
+
+            var displayWidthTime = Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineRuler.clientWidth / rulerScale;
+            if (Ensemble.Session.projectDuration > displayWidthTime) displayWidthTime = Ensemble.Session.projectDuration;
+
+            var timeSec = Math.ceil(displayWidthTime / 1000);
+
+            console.log("Generating timeline ruler with length " + timeSec + " seconds...");
+
+            var chunkSize = 0;
+            var subChunkSize = 0;
+            var subChunkCount = 0;
+            if (displayWidthTime < 60000) {
+                //1-second chunks, 0.5-second subchunks
+                chunkSize = Math.floor(rulerScale * 1000);
+                subChunkSize = Math.floor(0.5 * chunkSize);
+                subChunkCount = 1;
+            }
+
+
+            var widthPerSecond = Math.floor(rulerScale * 1000);
+            var htmlStr = "";
+
+            for (var i = 0; i < timeSec; i++) {
+                htmlStr = htmlStr + "<div class='timeChunk timeChunkLarge' style='width:" + widthPerSecond + "px;'>" + i + "</div>";
+            }
+
+
+
+            Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineRuler.style.transition = "0.1s transform ease";
+            Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineRuler.style.transform = "translateY(100%)";
+            setTimeout(function () {
+                Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineRuler.innerHTML = htmlStr;
+                Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineRuler.style.transform = "";
+                setTimeout(function () {
+                    Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineRuler.style.transition = "none";
+                }, 200);
+            }, 200);
+            
+        },
+
+        zoomIn: function () {
+            /// <summary>Increases the zoom on the timeline display by one level.</summary>
+            Ensemble.Editor.TimelineMGR.setRulerScale(Ensemble.Settings.getEditorRulerScale() * 2);
+        },
+
+        zoomOut: function () {
+            /// <summary>Decreases the zoom on the timeline display by one level.</summary>
+            Ensemble.Editor.TimelineMGR.setRulerScale(Ensemble.Settings.getEditorRulerScale() * 0.5);
+        },
+
         toggleTrackDetails: function () {
             if ($(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineDetails).hasClass("detailsExpanded")) {
                 $(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineDetails).removeClass("detailsExpanded")

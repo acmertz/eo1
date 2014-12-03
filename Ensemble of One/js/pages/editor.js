@@ -44,6 +44,7 @@
             //Update the Editor with the current settings
             this.layoutInterfaceToSplitpoint(Ensemble.Settings.getEditorDividerPosition() * window.innerHeight);
             Ensemble.Editor.TimelineMGR.setRowsVisible(Ensemble.Settings.getEditorTimelineRowsVisible());
+            Ensemble.Editor.TimelineMGR.setRulerScale(Ensemble.Settings.getEditorRulerScale());
 
             $(Ensemble.Pages.Editor.UI.PageSections.upperHalf.entireSection).addClass("editorUpperHalfVisible");
 
@@ -398,6 +399,8 @@
 
             //Timeline
             $(Ensemble.Pages.Editor.UI.UserInput.Buttons.timelineNewTrack).click(this._timelineNewTrackButtonOnClickListener);
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.timelineZoomIn).click(Ensemble.Editor.TimelineMGR.zoomIn);
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.timelineZoomOut).click(Ensemble.Editor.TimelineMGR.zoomOut);
 
             //WinJS general animation listeners
             $(".editorMenuCommandListItem").mousedown(Ensemble.Pages.MainMenu._projectListItemOnMouseDownListener);
@@ -447,6 +450,8 @@
 
             //Timeline
             $(Ensemble.Pages.Editor.UI.UserInput.Buttons.timelineNewTrack).unbind("click");
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.timelineZoomIn).unbind("click");
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.timelineZoomOut).unbind("click");
 
             //WinJS general animation listeners
             $(".editorMenuCommandListItem").unbind("mousedown");
