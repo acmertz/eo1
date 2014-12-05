@@ -248,7 +248,13 @@
     height: 12px;
     margin-top: 12px;
     line-height: 12px;
-    border-right: 1px solid gray;
+    border-right: 2px solid gray;
+}
+
+#editorTimelineRulerContent .timeLabel {
+    position: absolute;
+    top: 0px;
+    transform: translateX(-50%);
 }
 
 #editorPageContainer #editorLowerHalf #editorTimelineContainer .editorTimelineSideControls, .editorTimelineRulerButtonPlaceholder {

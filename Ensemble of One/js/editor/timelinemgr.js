@@ -97,14 +97,68 @@
                 subChunkSize = Math.floor(0.5 * chunkSize);
                 subChunkCount = 1;
             }
+            else if (displayWidthTime < 180000) {
+                //5-second chunks, 1-second subchunks
+                chunkSize = Math.floor(rulerScale * 5000);
+                subChunkSize = Math.floor(0.2 * chunkSize);
+                subChunkCount = 4;
+            }
+            else if (displayWidthTime < 600000) {
+                //15-second chunks, 5-second subchunks
+                chunkSize = Math.floor(rulerScale * 15000);
+                subChunkSize = Math.floor((1 / 3) * chunkSize);
+                subChunkCount = 2;
+            }
+            else if (displayWidthTime < 900000) {
+                //30-second chunks, 10-second subchunks
+                chunkSize = Math.floor(rulerScale * 30000);
+                subChunkSize = Math.floor((1 / 3) * chunkSize);
+                subChunkCount = 2;
+            }
+            else if (displayWidthTime < 1800000) {
+                //1-minute chunks, 30-second subchunks
+                chunkSize = Math.floor(rulerScale * 60000)
+                subChunkSize = Math.floor(0.5 * chunkSize);
+                subChunkCount = 1;
+            }
+            else if (displayWidthTime < 3600000) {
+                //5-minute chunks, 1-minute subchunks
+                chunkSize = Math.floor(rulerScale * 300000);
+                subChunkSize = Math.floor(0.2 * chunkSize);
+                subChunkCount = 4;
+            }
+            else if (displayWidthTime < 7200000) {
+                //15-minute chunks, 5-minute subchunks
+                chunkSize = Math.floor(rulerScale * 900000);
+                subChunkSize = Math.floor((1 / 3) * chunkSize);
+                subChunkCount = 2;
+            }
 
+
+            else {
+                //1-hour chunks, no subchunks
+                chunkSize = Math.floor(rulerScale * 3600000);
+                subChunkSize = 0;
+                subChunkCount = 0;
+            }
 
             var widthPerSecond = Math.floor(rulerScale * 1000);
             var htmlStr = "";
 
-            for (var i = 0; i < timeSec; i++) {
-                htmlStr = htmlStr + "<div class='timeChunk timeChunkLarge' style='width:" + widthPerSecond + "px;'>" + i + "</div>";
+            var chunkCount = Math.ceil(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineRuler.clientWidth / chunkSize);
+
+            for (var i = 0; i < chunkCount; i++) {
+                htmlStr = htmlStr + "<div class='timeChunk timeChunkLarge' style='width:" + chunkSize + "px;'>";
+                for (var k = 0; k < subChunkCount; k++) {
+                    htmlStr = htmlStr + "<div class='timeChunk timeChunkSmall' style='width:" + subChunkSize + "px;'></div>";
+                }
+                htmlStr = htmlStr + "</div>";
+                htmlStr = htmlStr + "<div class='timeLabel' style='left: " + (chunkSize * (i + 1)) + "px;'>Label</div>";
             }
+
+            //for (var i = 0; i < timeSec; i++) {
+            //    htmlStr = htmlStr + "<div class='timeChunk timeChunkLarge' style='width:" + widthPerSecond + "px;'>" + i + "</div>";
+            //}
 
 
 
