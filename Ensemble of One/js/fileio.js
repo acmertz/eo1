@@ -56,6 +56,7 @@
                 for (var i = 0; i < Ensemble.Session.projectTrackCount; i++) {
                     xml.BeginNode("Track");
                     xml.Attrib("trackId", Ensemble.Editor.TimelineMGR.tracks[i].id.toString());
+                    xml.Attrib("trackName", Ensemble.Editor.TimelineMGR.tracks[i].name);
 
                     //Write clip data
                     if (Ensemble.Editor.TimelineMGR.tracks[i].clips.length == 0) xml.WriteString("");
@@ -81,6 +82,12 @@
                             xml.Attrib("trackId", Ensemble.HistoryMGR._backStack[i]._payload.trackId.toString());
                             xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
                             break;
+                        case Ensemble.Events.Action.ActionType.renameTrack:
+                            xml.Attrib("trackId", Ensemble.HistoryMGR._backStack[i]._payload.trackId.toString());
+                            xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
+                            xml.Attrib("oldName", Ensemble.HistoryMGR._backStack[i]._payload.oldName);
+                            xml.Attrib("newName", Ensemble.HistoryMGR._backStack[i]._payload.newName);
+                            break;
                         default:
                             console.error("Unable to save History Action to disk - unknown type.");
                     }
@@ -98,6 +105,12 @@
                         case Ensemble.Events.Action.ActionType.createTrack:
                             xml.Attrib("trackId", Ensemble.HistoryMGR._forwardStack[i]._payload.trackId.toString());
                             xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
+                            break;
+                        case Ensemble.Events.Action.ActionType.renameTrack:
+                            xml.Attrib("trackId", Ensemble.HistoryMGR._forwardStack[i]._payload.trackId.toString());
+                            xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
+                            xml.Attrib("oldName", Ensemble.HistoryMGR._forwardStack[i]._payload.oldName);
+                            xml.Attrib("newName", Ensemble.HistoryMGR._forwardStack[i]._payload.newName);
                             break;
                         default:
                             console.error("Unable to save History Action to disk - unknown type.");
@@ -289,6 +302,15 @@
                         case Ensemble.Events.Action.ActionType.createTrack:
                             Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.createTrack, { trackId: undoActions[i].getAttribute("trackId") }));
                             break;
+                        case Ensemble.Events.Action.ActionType.renameTrack:
+                            Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.renameTrack,
+                                {
+                                    trackId: undoActions[i].getAttribute("trackId"),
+                                    oldName: undoActions[i].getAttribute("oldName"),
+                                    newName: undoActions[i].getAttribute("newName")
+                                }
+                            ));
+                            break;
                         default:
                             console.error("Unable to load History Action from disk - unknown type.");
                             break;
@@ -305,6 +327,15 @@
                         case Ensemble.Events.Action.ActionType.createTrack:
                             Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.createTrack, { trackId: redoActions[i].getAttribute("trackId") }));
                             break;
+                        case Ensemble.Events.Action.ActionType.renameTrack:
+                            Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.renameTrack,
+                                {
+                                    trackId: undoActions[i].getAttribute("trackId"),
+                                    oldName: undoActions[i].getAttribute("oldName"),
+                                    newName: undoActions[i].getAttribute("newName")
+                                }
+                            ));
+                            break;
                         default:
                             console.error("Unable to load History Action from disk - unknown type.");
                             break;
@@ -315,7 +346,7 @@
             if (tracks.length > 0) {
                 //Create empty tracks
                 for (var i = 0; i < tracks.length; i++) {
-                    Ensemble.Editor.TimelineMGR.createTrack(null, parseInt(tracks[i].getAttribute("trackId")));
+                    Ensemble.Editor.TimelineMGR.createTrack(null, parseInt(tracks[i].getAttribute("trackId")), tracks[i].getAttribute("trackName"));
                 }
 
                 //For each track, look up clips and generate URIs.

@@ -37,6 +37,10 @@
                             };
                         }
                         break;
+                    case Ensemble.Events.Action.ActionType.renameTrack:
+                        Ensemble.Editor.TimelineMGR.renameTrack(this._payload.trackId, this._payload.newName);
+                        //Ensemble.Editor.TimelineMGR.getTrackById(this._payload.affectedId).name = this._payload.newName;
+                        break;
                     default:
                         console.error("Unknown Action!");
                 }
@@ -54,6 +58,10 @@
                         console.log("Undoing new track creation...");
                         Ensemble.Editor.TimelineMGR.removeTrack(this._payload.trackId);
                         break;
+                    case Ensemble.Events.Action.ActionType.renameTrack:
+                        console.log("Undoing new track rename...");
+                        Ensemble.Editor.TimelineMGR.renameTrack(this._payload.trackId, this._payload.oldName);
+                        break;
                     default:
                         console.error("Unknown Action!");
                 }
@@ -67,7 +75,8 @@
         {
             //Static members
             ActionType: {
-                createTrack: "createTrack"
+                createTrack: "createTrack",
+                renameTrack: "renameTrack"
             }
         }
     );

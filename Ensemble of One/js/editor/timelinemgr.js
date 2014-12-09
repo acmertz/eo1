@@ -6,12 +6,13 @@
         _uniqueTrackID: 0,
         _displayScale: 10, //milliseconds per pixel
 
-        createTrack: function (clipsToAdd, idToUse) {
+        createTrack: function (clipsToAdd, idToUse, nameToUse) {
             /// <summary>Creates a new track in the timeline.</summary>
             /// <param name="clipsToAdd" type="Array">Optional. An array of Ensemble.EnsembleFile objects with which to prepopulate the track.</param>
             /// <param name="idToUse" type="Number">Optional. An ID to give the newly-created track, for use in project loading.</param>
+            /// <param name="nameToUse" type="String">Optional. A name to give the track.</param>
 
-            var newTrack = new Ensemble.Editor.Track(idToUse);
+            var newTrack = new Ensemble.Editor.Track(idToUse, nameToUse);
             this.tracks.push(newTrack);
             Ensemble.Session.projectTrackCount = this.tracks.length;
             Ensemble.Editor.TimelineMGR._buildTrackDisplay(newTrack);
@@ -28,6 +29,15 @@
                 if (this.tracks[i].id == trackId) this.tracks.splice(i, 1);
             }
             Ensemble.Session.projectTrackCount = this.tracks.length;
+        },
+
+        getTrackById: function (idval) {
+            /// <summary>Returns the Track object with the given ID, provided it exists.</summary>
+            /// <returns type="Ensemble.Editor.Track">The matching track.</returns>
+            for (var i=0; i<this.tracks.length; i++) {
+                if (this.tracks[i].id == idval) return this.tracks[i];
+            }
+            return null;
         },
 
         updateTrackSizing: function () {
@@ -197,6 +207,14 @@
             }
         },
 
+        renameTrack: function (trackId, newName) {
+            /// <summary>Renames the track with the given ID.</summary>
+            /// <param name="trackId" type="Number">The ID of the track to rename.</param>
+            /// <param name="newName" type="String">The name to give the track.</param>
+            this.getTrackById(trackId).name = newName;
+            $("#" + this._buildTrackDetailId(trackId)).find(".timelineDetailName").text(newName);
+        },
+
         unload: function () {
             /// <summary>Clears the timeline, unloads all the clips stored within it, and resets all values back to their defaults.</summary>
             Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineHeaders.innerHTML = "";
@@ -258,6 +276,8 @@
             deleteControl.className = "timelineControl deleteTrack";
             deleteControl.innerHTML = "&#xE107;";
 
+            $(renameControl).click(this._trackRenameButtonClicked);
+
             trackDetailControls.appendChild(renameControl);
             trackDetailControls.appendChild(volumeControl);
             trackDetailControls.appendChild(moveControl);
@@ -287,6 +307,58 @@
 
         _buildTrackDetailId: function (idval) {
             return "editorTimelineDetail" + idval;
+        },
+
+        _trackRenameButtonClicked: function (event) {
+            console.log("clicked.");
+            var trackDetail = $(event.currentTarget).closest(".editorTimelineDetail");
+            var trackTitleSpace = $(trackDetail).find(".timelineDetailName");
+            $(trackTitleSpace).attr("contenteditable", true);
+            trackTitleSpace.focus();
+            var range = document.body.createTextRange();
+            range.moveToElementText(trackTitleSpace[0]);
+            range.select();
+            
+            $(trackTitleSpace).blur(Ensemble.Editor.TimelineMGR._trackRenameFinish);
+            $(trackTitleSpace).keydown(Ensemble.Editor.TimelineMGR._trackRenameKeydown);
+        },
+
+        _trackRenameFinish: function (event) {
+            console.log("Finish rename.");
+            var parentTrack = $(event.currentTarget).closest(".editorTimelineDetail");
+            var curId = parseInt($(parentTrack).attr("id").match(/\d+$/)[0]);
+            var trackObj = this.getTrackById(curId);
+            var renameAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.renameTrack, 
+                {
+                    trackId: curId,
+                    oldName: trackObj.name,
+                    newName: event.currentTarget.innerText
+                }
+            )
+            Ensemble.HistoryMGR.performAction(renameAction);
+            $(event.currentTarget).unbind("blur");
+            $(event.currentTarget).unbind("keydown");
+            $(event.currentTarget).blur();
+            $(event.currentTarget).removeAttr("contenteditable");
+        },
+
+        _trackRenameKeydown: function (event) {
+            switch (event.keyCode) {
+                case 13:
+                    Ensemble.Editor.TimelineMGR._trackRenameFinish(event);
+                    return false;
+                case 27:
+                    console.log("Cancel rename.");
+                    var parentTrack = $(event.currentTarget).closest(".editorTimelineDetail");
+                    var trackId = parseInt($(parentTrack).attr("id").match(/\d+$/)[0]);
+                    var trackObj = Ensemble.Editor.TimelineMGR.getTrackById(trackId);
+                    event.currentTarget.innerText = trackObj.name;
+                    $(event.currentTarget).unbind("blur");
+                    $(event.currentTarget).unbind("keydown");
+                    $(event.currentTarget).blur();
+                    $(event.currentTarget).removeAttr("contenteditable");
+                    return false;
+            }
         }
     });
 })();
