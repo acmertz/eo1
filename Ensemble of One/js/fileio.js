@@ -57,6 +57,7 @@
                     xml.BeginNode("Track");
                     xml.Attrib("trackId", Ensemble.Editor.TimelineMGR.tracks[i].id.toString());
                     xml.Attrib("trackName", Ensemble.Editor.TimelineMGR.tracks[i].name);
+                    xml.Attrib("trackVolume", Ensemble.Editor.TimelineMGR.tracks[i].volume.toString());
 
                     //Write clip data
                     if (Ensemble.Editor.TimelineMGR.tracks[i].clips.length == 0) xml.WriteString("");
@@ -88,6 +89,12 @@
                             xml.Attrib("oldName", Ensemble.HistoryMGR._backStack[i]._payload.oldName);
                             xml.Attrib("newName", Ensemble.HistoryMGR._backStack[i]._payload.newName);
                             break;
+                        case Ensemble.Events.Action.ActionType.trackVolumeChanged:
+                            xml.Attrib("trackId", Ensemble.HistoryMGR._backStack[i]._payload.trackId.toString());
+                            xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
+                            xml.Attrib("oldVolume", Ensemble.HistoryMGR._backStack[i]._payload.oldVolume.toString());
+                            xml.Attrib("newVolume", Ensemble.HistoryMGR._backStack[i]._payload.newVolume.toString());
+                            break;
                         default:
                             console.error("Unable to save History Action to disk - unknown type.");
                     }
@@ -111,6 +118,12 @@
                             xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
                             xml.Attrib("oldName", Ensemble.HistoryMGR._forwardStack[i]._payload.oldName);
                             xml.Attrib("newName", Ensemble.HistoryMGR._forwardStack[i]._payload.newName);
+                            break;
+                        case Ensemble.Events.Action.ActionType.trackVolumeChanged:
+                            xml.Attrib("trackId", Ensemble.HistoryMGR._forwardStack[i]._payload.trackId.toString());
+                            xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
+                            xml.Attrib("oldVolume", Ensemble.HistoryMGR._forwardStack[i]._payload.oldVolume.toString());
+                            xml.Attrib("newVolume", Ensemble.HistoryMGR._forwardStack[i]._payload.newVolume.toString());
                             break;
                         default:
                             console.error("Unable to save History Action to disk - unknown type.");
@@ -311,6 +324,15 @@
                                 }
                             ));
                             break;
+                        case Ensemble.Events.Action.ActionType.trackVolumeChanged:
+                            Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.trackVolumeChanged,
+                                {
+                                    trackId: undoActions[i].getAttribute("trackId"),
+                                    oldVolume: undoActions[i].getAttribute("oldVolume"),
+                                    newVolume: undoActions[i].getAttribute("newVolume")
+                                }
+                            ));
+                            break;
                         default:
                             console.error("Unable to load History Action from disk - unknown type.");
                             break;
@@ -325,14 +347,27 @@
                     var actionType = redoActions[i].getAttribute("type");
                     switch (actionType) {
                         case Ensemble.Events.Action.ActionType.createTrack:
-                            Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.createTrack, { trackId: redoActions[i].getAttribute("trackId") }));
+                            Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.createTrack,
+                                {
+                                    trackId: redoActions[i].getAttribute("trackId")
+                                }
+                            ));
                             break;
                         case Ensemble.Events.Action.ActionType.renameTrack:
                             Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.renameTrack,
                                 {
-                                    trackId: undoActions[i].getAttribute("trackId"),
-                                    oldName: undoActions[i].getAttribute("oldName"),
-                                    newName: undoActions[i].getAttribute("newName")
+                                    trackId: redoActions[i].getAttribute("trackId"),
+                                    oldName: redoActions[i].getAttribute("oldName"),
+                                    newName: redoActions[i].getAttribute("newName")
+                                }
+                            ));
+                            break;
+                        case Ensemble.Events.Action.ActionType.trackVolumeChanged:
+                            Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.trackVolumeChanged,
+                                {
+                                    trackId: redoActions[i].getAttribute("trackId"),
+                                    oldVolume: redoActions[i].getAttribute("oldVolume"),
+                                    newVolume: redoActions[i].getAttribute("newVolume")
                                 }
                             ));
                             break;
@@ -346,7 +381,7 @@
             if (tracks.length > 0) {
                 //Create empty tracks
                 for (var i = 0; i < tracks.length; i++) {
-                    Ensemble.Editor.TimelineMGR.createTrack(null, parseInt(tracks[i].getAttribute("trackId")), tracks[i].getAttribute("trackName"));
+                    Ensemble.Editor.TimelineMGR.createTrack(null, parseInt(tracks[i].getAttribute("trackId")), tracks[i].getAttribute("trackName"), parseFloat(tracks[i].getAttribute("trackVolume")));
                 }
 
                 //For each track, look up clips and generate URIs.
@@ -378,34 +413,36 @@
                             if (projectFiles.length == 0) callback([]);
                             else {
                                 for (var i = 0; i < projectFiles.length; i++) {
-                                    var loadedFilename = projectFiles[i].name;
-                                    Windows.Storage.FileIO.readTextAsync(projectFiles[i]).then(function (contents) {
-                                        var parser = new DOMParser();
-                                        var xmlDoc = parser.parseFromString(contents, "text/xml");
+                                    (function () { 
+                                        var loadedFilename = projectFiles[i].name;
+                                        Windows.Storage.FileIO.readTextAsync(projectFiles[i]).then(function (contents) {
+                                            var parser = new DOMParser();
+                                            var xmlDoc = parser.parseFromString(contents, "text/xml");
 
-                                        var ensembleProject = xmlDoc.firstChild;
+                                            var ensembleProject = xmlDoc.firstChild;
 
-                                        var loadedProjectName = xmlDoc.getElementsByTagName("ProjectName")[0].childNodes[0].nodeValue;
-                                        console.log("Found project \"" + loadedProjectName + "\" in the Projects directory!");
-                                        try {
-                                            var loadedDateModified = new Date(parseInt(xmlDoc.getElementsByTagName("DateModified")[0].childNodes[0].nodeValue, 10));
-                                            //loadedDateModified = loadedDateModified.customFormat("#MMM# #DD#, #YYYY# #h#:#mm##ampm#");
-                                        }
-                                        catch (exception) {
-                                            var loadedDateModified = "Unknown";
-                                        }
-                                        var loadedAspectRatio = xmlDoc.getElementsByTagName("AspectRatio")[0].childNodes[0].nodeValue;
-                                        var loadedNumberOfClips = xmlDoc.getElementsByTagName("MediaClip").length;
-                                        //var loadedFilename = xmlDoc.getElementsByTagName("ProjectFilename")[0].childNodes[0].nodeValue;
-                                        var loadedProjectLength = xmlDoc.getElementsByTagName("ProjectLength")[0].childNodes[0].nodeValue;
-                                        var loadedThumbnailPath = "ms-appdata:///local/Projects/" + loadedFilename + ".jpg";
+                                            var loadedProjectName = xmlDoc.getElementsByTagName("ProjectName")[0].childNodes[0].nodeValue;
+                                            console.log("Found project \"" + loadedProjectName + "\" in the Projects directory!");
+                                            try {
+                                                var loadedDateModified = new Date(parseInt(xmlDoc.getElementsByTagName("DateModified")[0].childNodes[0].nodeValue, 10));
+                                                //loadedDateModified = loadedDateModified.customFormat("#MMM# #DD#, #YYYY# #h#:#mm##ampm#");
+                                            }
+                                            catch (exception) {
+                                                var loadedDateModified = "Unknown";
+                                            }
+                                            var loadedAspectRatio = xmlDoc.getElementsByTagName("AspectRatio")[0].childNodes[0].nodeValue;
+                                            var loadedNumberOfClips = xmlDoc.getElementsByTagName("MediaClip").length;
+                                            //var loadedFilename = xmlDoc.getElementsByTagName("ProjectFilename")[0].childNodes[0].nodeValue;
+                                            var loadedProjectLength = xmlDoc.getElementsByTagName("ProjectLength")[0].childNodes[0].nodeValue;
+                                            var loadedThumbnailPath = "ms-appdata:///local/Projects/" + loadedFilename + ".jpg";
 
-                                        dataArray.push(new Ensemble.Editor.ProjectFile(loadedProjectName, loadedFilename, loadedDateModified, loadedNumberOfClips, loadedAspectRatio, loadedProjectLength, loadedThumbnailPath));
+                                            dataArray.push(new Ensemble.Editor.ProjectFile(loadedProjectName, loadedFilename, loadedDateModified, loadedNumberOfClips, loadedAspectRatio, loadedProjectLength, loadedThumbnailPath));
 
-                                        if (dataArray.length == projectFiles.length) {
-                                            callback(dataArray);
-                                        }
-                                    });
+                                            if (dataArray.length == projectFiles.length) {
+                                                callback(dataArray);
+                                            }
+                                        });
+                                    })();
                                 }
                             }
                         });

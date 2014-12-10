@@ -72,6 +72,7 @@
 
             this.UserInput.Flyouts.mediaBrowserLocation = document.getElementById("editorMediaBrowserLocationFlyout");
             this.UserInput.Flyouts.moveTrack = document.getElementById("editorMoveTrackFlyout");
+            this.UserInput.Flyouts.trackVolume = document.getElementById("editorTrackVolumeFlyout");
 
             this.UserInput.Buttons.timelineScrollUp = document.getElementById("editorTimelineScrollUpButton");
             this.UserInput.Buttons.timelineScrollDown = document.getElementById("editorTimelineScrollDownButton");
@@ -191,7 +192,8 @@
             },
             Flyouts: {
                 mediaBrowserLocation: null,
-                moveTrack: null
+                moveTrack: null,
+                trackVolume: null
             }
         }
     });

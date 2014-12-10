@@ -41,6 +41,9 @@
                         Ensemble.Editor.TimelineMGR.renameTrack(this._payload.trackId, this._payload.newName);
                         //Ensemble.Editor.TimelineMGR.getTrackById(this._payload.affectedId).name = this._payload.newName;
                         break;
+                    case Ensemble.Events.Action.ActionType.trackVolumeChanged:
+                        Ensemble.Editor.TimelineMGR.changeTrackVolume(this._payload.trackId, this._payload.newVolume);
+                        break;
                     default:
                         console.error("Unknown Action!");
                 }
@@ -62,6 +65,10 @@
                         console.log("Undoing new track rename...");
                         Ensemble.Editor.TimelineMGR.renameTrack(this._payload.trackId, this._payload.oldName);
                         break;
+                    case Ensemble.Events.Action.ActionType.trackVolumeChanged:
+                        console.log("Undoing track volume change...");
+                        Ensemble.Editor.TimelineMGR.changeTrackVolume(this._payload.trackId, this._payload.oldVolume);
+                        break;
                     default:
                         console.error("Unknown Action!");
                 }
@@ -76,7 +83,8 @@
             //Static members
             ActionType: {
                 createTrack: "createTrack",
-                renameTrack: "renameTrack"
+                renameTrack: "renameTrack",
+                trackVolumeChanged: "trackVolumeChanged"
             }
         }
     );

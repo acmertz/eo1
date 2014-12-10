@@ -5,14 +5,17 @@
         tracks: [],
         _uniqueTrackID: 0,
         _displayScale: 10, //milliseconds per pixel
+        _trackVolumeRollback: 0, //original value for the volume flyout
+        _trackVolumeId: 0,
 
-        createTrack: function (clipsToAdd, idToUse, nameToUse) {
+        createTrack: function (clipsToAdd, idToUse, nameToUse, volumeToUse) {
             /// <summary>Creates a new track in the timeline.</summary>
             /// <param name="clipsToAdd" type="Array">Optional. An array of Ensemble.EnsembleFile objects with which to prepopulate the track.</param>
             /// <param name="idToUse" type="Number">Optional. An ID to give the newly-created track, for use in project loading.</param>
             /// <param name="nameToUse" type="String">Optional. A name to give the track.</param>
+            /// <param name="volumeToUse" type="Number">Optional. A volume level to assign the track.</param>
 
-            var newTrack = new Ensemble.Editor.Track(idToUse, nameToUse);
+            var newTrack = new Ensemble.Editor.Track(idToUse, nameToUse, volumeToUse);
             this.tracks.push(newTrack);
             Ensemble.Session.projectTrackCount = this.tracks.length;
             Ensemble.Editor.TimelineMGR._buildTrackDisplay(newTrack);
@@ -215,6 +218,13 @@
             $("#" + this._buildTrackDetailId(trackId)).find(".timelineDetailName").text(newName);
         },
 
+        changeTrackVolume: function (trackId, newVolume) {
+            /// <summary>Changes the volume of the track with the given ID.</summary>
+            /// <param name="trackId" type="Number">The ID of the track.</param>
+            /// <param name="newVolume" type="Number">The volume to assign the track.</param>
+            Ensemble.Editor.TimelineMGR.getTrackById(trackId).setVolume(newVolume);
+        },
+
         unload: function () {
             /// <summary>Clears the timeline, unloads all the clips stored within it, and resets all values back to their defaults.</summary>
             Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineHeaders.innerHTML = "";
@@ -277,6 +287,7 @@
             deleteControl.innerHTML = "&#xE107;";
 
             $(renameControl).click(this._trackRenameButtonClicked);
+            $(volumeControl).click(this._trackVolumeButtonClicked);
 
             trackDetailControls.appendChild(renameControl);
             trackDetailControls.appendChild(volumeControl);
@@ -327,7 +338,7 @@
             console.log("Finish rename.");
             var parentTrack = $(event.currentTarget).closest(".editorTimelineDetail");
             var curId = parseInt($(parentTrack).attr("id").match(/\d+$/)[0]);
-            var trackObj = this.getTrackById(curId);
+            var trackObj = Ensemble.Editor.TimelineMGR.getTrackById(curId);
             var renameAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.renameTrack, 
                 {
                     trackId: curId,
@@ -358,6 +369,38 @@
                     $(event.currentTarget).blur();
                     $(event.currentTarget).removeAttr("contenteditable");
                     return false;
+            }
+        },
+
+        _trackVolumeButtonClicked: function (event) {
+            var parentTrack = $(event.currentTarget).closest(".editorTimelineDetail");
+            var trackId = parseInt($(parentTrack).attr("id").match(/\d+$/)[0]);
+            Ensemble.Editor.TimelineMGR._trackVolumeId = trackId;
+            $(Ensemble.Pages.Editor.UI.UserInput.Flyouts.trackVolume).find("input").val(Ensemble.Editor.TimelineMGR.getTrackById(trackId).volume * 100);
+            $(Ensemble.Pages.Editor.UI.UserInput.Flyouts.trackVolume).find("input").change(Ensemble.Editor.TimelineMGR._trackVolumeSliderChanged);
+            $(Ensemble.Pages.Editor.UI.UserInput.Flyouts.trackVolume).bind("beforehide", Ensemble.Editor.TimelineMGR._trackVolumeChangeFinish);
+            Ensemble.Editor.TimelineMGR._trackVolumeRollback = $(Ensemble.Pages.Editor.UI.UserInput.Flyouts.trackVolume).find("input").val() / 100;
+            Ensemble.Pages.Editor.UI.UserInput.Flyouts.trackVolume.winControl.show(event.currentTarget);
+        },
+
+        _trackVolumeSliderChanged: function (event) {
+            console.log("Volume slider slid.");
+            // TODO: additional logic to facilitate live volume adjustment
+        },
+
+        _trackVolumeChangeFinish: function (event) {
+            // commit volume change on flyout hide.
+            $(Ensemble.Pages.Editor.UI.UserInput.Flyouts.trackVolume).unbind("beforehide", Ensemble.Editor.TimelineMGR._trackVolumeChangeFinish);
+            $(Ensemble.Pages.Editor.UI.UserInput.Flyouts.trackVolume).find("input").unbind("change", Ensemble.Editor.TimelineMGR._trackVolumeSliderChanged);
+            if (($(Ensemble.Pages.Editor.UI.UserInput.Flyouts.trackVolume).find("input").val() / 100) != Ensemble.Editor.TimelineMGR._trackVolumeRollback) {
+                var volumeChangeAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.trackVolumeChanged,
+                    {
+                        trackId: Ensemble.Editor.TimelineMGR._trackVolumeId,
+                        oldVolume: Ensemble.Editor.TimelineMGR._trackVolumeRollback,
+                        newVolume: $(Ensemble.Pages.Editor.UI.UserInput.Flyouts.trackVolume).find("input").val() / 100
+                    }
+                );
+                Ensemble.HistoryMGR.performAction(volumeChangeAction);
             }
         }
     });

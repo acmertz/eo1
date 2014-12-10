@@ -31,8 +31,13 @@
             id: null,
             name: null,
             volume: null,
-            _empty: null
+            _empty: null,
 
+            setVolume: function (volumeToSet) {
+                /// <summary>Sets the volume modifier of the track.</summary>
+                /// <param name="volumeToSet" type="Number">The volume to assign the track.</param>
+                this.volume = volumeToSet;
+            }
         },
         {
             //Static members
