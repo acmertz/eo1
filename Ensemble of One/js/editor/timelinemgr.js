@@ -43,6 +43,12 @@
             return null;
         },
 
+        getTrackPosition: function (idval) {
+            /// <summary>Returns the index of the track. Lower values indicate higher stack locations (0 meaning the track is on top).</summary>
+            /// <returns type="Number">The position of the track in the array.</returns>
+            return this.tracks.indexOf(Ensemble.Editor.TimelineMGR.getTrackById(idval));
+        },
+
         updateTrackSizing: function () {
             /// <summary>Updates the timeline tracks to match the recently resized view.</summary>
             var tracks = document.getElementsByClassName("editorTimelineTrack");
@@ -288,6 +294,7 @@
 
             $(renameControl).click(this._trackRenameButtonClicked);
             $(volumeControl).click(this._trackVolumeButtonClicked);
+            $(moveControl).click(this._trackMoveButtonClicked);
 
             trackDetailControls.appendChild(renameControl);
             trackDetailControls.appendChild(volumeControl);
@@ -402,6 +409,33 @@
                 );
                 Ensemble.HistoryMGR.performAction(volumeChangeAction);
             }
+        },
+
+        _trackMoveButtonClicked: function (event) {
+            //Determine which track's button has been pressed and enable/disable the appropriate move targets.
+            var parentTrack = $(event.currentTarget).closest(".editorTimelineDetail");
+            var trackId = parseInt($(parentTrack).attr("id").match(/\d+$/)[0]);
+            var top = true,
+                up = true,
+                down = true,
+                bottom = true;
+            var indexOfTrack = Ensemble.Editor.TimelineMGR.getTrackPosition(trackId);
+
+            if (indexOfTrack == 0) {
+                top = false;
+                up = false;
+            }
+            if (indexOfTrack == Ensemble.Editor.TimelineMGR.tracks.length - 1) {
+                down = false;
+                bottom = false;
+            }
+
+            Ensemble.Pages.Editor.UI.UserInput.Buttons.moveTrackToTop.winControl.disabled = !(top);
+            Ensemble.Pages.Editor.UI.UserInput.Buttons.moveTrackUp.winControl.disabled = !(up);
+            Ensemble.Pages.Editor.UI.UserInput.Buttons.moveTrackDown.winControl.disabled = !(down);
+            Ensemble.Pages.Editor.UI.UserInput.Buttons.moveTrackToBottom.winControl.disabled = !(bottom);
+
+            Ensemble.Pages.Editor.UI.UserInput.Flyouts.moveTrack.winControl.show(event.currentTarget);
         }
     });
 })();

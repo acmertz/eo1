@@ -63,6 +63,10 @@
             this.UserInput.Buttons.exit = document.getElementById("editorExitButton");
             this.UserInput.Buttons.undo = document.getElementById("editorMenuCommandUndo");
             this.UserInput.Buttons.redo = document.getElementById("editorMenuCommandRedo");
+            this.UserInput.Buttons.moveTrackToTop = document.getElementById("editorMoveTrackTop");
+            this.UserInput.Buttons.moveTrackUp = document.getElementById("editorMoveTrackUp");
+            this.UserInput.Buttons.moveTrackDown = document.getElementById("editorMoveTrackDown");
+            this.UserInput.Buttons.moveTrackToBottom = document.getElementById("editorMoveTrackBottom");
 
             this.UserInput.Boundaries.topBottomSplit = document.getElementById("editorHorizontalDivider");
 
@@ -180,7 +184,11 @@
                 mediaBrowserLocationPictures: null,
                 exit: null,
                 undo: null,
-                redo: null
+                redo: null,
+                moveTrackToTop: null,
+                moveTrackUp: null,
+                moveTrackDown: null,
+                moveTrackToBottom: null
             },
             Boundaries: {
                 topBottomSplit: null
