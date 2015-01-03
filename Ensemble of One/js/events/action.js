@@ -44,6 +44,9 @@
                     case Ensemble.Events.Action.ActionType.trackVolumeChanged:
                         Ensemble.Editor.TimelineMGR.changeTrackVolume(this._payload.trackId, this._payload.newVolume);
                         break;
+                    case Ensemble.Events.Action.ActionType.moveTrack:
+                        Ensemble.Editor.TimelineMGR.moveTrackWithId(this._payload.trackId, this._payload.destination);
+                        break;
                     default:
                         console.error("Unknown Action!");
                 }
@@ -69,6 +72,10 @@
                         console.log("Undoing track volume change...");
                         Ensemble.Editor.TimelineMGR.changeTrackVolume(this._payload.trackId, this._payload.oldVolume);
                         break;
+                    case Ensemble.Events.Action.ActionType.trackVolumeChanged:
+                        console.log("Undoing track move...");
+                        Ensemble.Editor.TimelineMGR.moveTrackWithId(this._payload.trackId, this._payload.origin);
+                        break;
                     default:
                         console.error("Unknown Action!");
                 }
@@ -84,7 +91,8 @@
             ActionType: {
                 createTrack: "createTrack",
                 renameTrack: "renameTrack",
-                trackVolumeChanged: "trackVolumeChanged"
+                trackVolumeChanged: "trackVolumeChanged",
+                moveTrack: "moveTrack"
             }
         }
     );

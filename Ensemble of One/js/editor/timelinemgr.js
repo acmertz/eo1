@@ -6,7 +6,7 @@
         _uniqueTrackID: 0,
         _displayScale: 10, //milliseconds per pixel
         _trackVolumeRollback: 0, //original value for the volume flyout
-        _trackVolumeId: 0,
+        _trackEditId: 0,
 
         createTrack: function (clipsToAdd, idToUse, nameToUse, volumeToUse) {
             /// <summary>Creates a new track in the timeline.</summary>
@@ -32,6 +32,53 @@
                 if (this.tracks[i].id == trackId) this.tracks.splice(i, 1);
             }
             Ensemble.Session.projectTrackCount = this.tracks.length;
+        },
+
+        moveTrackWithId: function (trackId, destination) {
+            /// <summary>Moves the track with the given ID to the specified position in the track array.</summary>
+            /// <param name="trackId" type="Number">The ID of the track to move.</param>
+            /// <param name="destination" type="Number">The index of the position where the track should end up after the move.</param>
+            var detailsDOM = document.getElementById(this._buildTrackDetailId(trackId));
+            var allDetails = document.getElementsByClassName("editorTimelineDetail");
+            var affectedDetails = [];
+            var found = false;
+            for (let i = 0; i < allDetails.length; i++) {
+                if (found) affectedDetails.push(allDetails[i]);
+                else if (allDetails[i] == detailsDOM) found = true;
+            }
+            var detailsAnim = WinJS.UI.Animation.createDeleteFromListAnimation(detailsDOM, affectedDetails)
+
+
+            var headerDOM = document.getElementById(this._buildTrackHeaderId(trackId));
+            var allHeaders = document.getElementsByClassName("editorTimelineHeader");
+            var affectedHeaders = [];
+            found = false;
+            for (let i = 0; i < allHeaders.length; i++) {
+                if (found) affectedHeaders.push(allHeaders[i]);
+                else if (allHeaders[i] == headerDOM) found = true;
+            }
+            var headerAnim = WinJS.UI.Animation.createDeleteFromListAnimation(headerDOM, affectedHeaders)
+
+
+            var trackDOM = document.getElementById(this._buildTrackDOMId(trackId));
+            var allTracks = document.getElementsByClassName("editorTimelineTrack");
+            var affectedTracks = [];
+            found = false;
+            for (let i = 0; i < allTracks.length; i++) {
+                if (found) affectedTracks.push(allTracks[i]);
+                else if (allTracks[i] == trackDOM) found = true;
+            }
+            var trackAnim = WinJS.UI.Animation.createDeleteFromListAnimation(trackDOM, affectedTracks)
+
+            headerAnim.execute().then(function () {
+                headerDOM.parentNode.removeChild(headerDOM);
+            });
+            detailsAnim.execute().then(function () {
+                detailsDOM.parentNode.removeChild(detailsDOM);
+            });
+            trackAnim.execute().then(function () {
+                trackDOM.parentNode.removeChild(trackDOM);
+            });
         },
 
         getTrackById: function (idval) {
@@ -382,7 +429,7 @@
         _trackVolumeButtonClicked: function (event) {
             var parentTrack = $(event.currentTarget).closest(".editorTimelineDetail");
             var trackId = parseInt($(parentTrack).attr("id").match(/\d+$/)[0]);
-            Ensemble.Editor.TimelineMGR._trackVolumeId = trackId;
+            Ensemble.Editor.TimelineMGR._trackEditId = trackId;
             $(Ensemble.Pages.Editor.UI.UserInput.Flyouts.trackVolume).find("input").val(Ensemble.Editor.TimelineMGR.getTrackById(trackId).volume * 100);
             $(Ensemble.Pages.Editor.UI.UserInput.Flyouts.trackVolume).find("input").change(Ensemble.Editor.TimelineMGR._trackVolumeSliderChanged);
             $(Ensemble.Pages.Editor.UI.UserInput.Flyouts.trackVolume).bind("beforehide", Ensemble.Editor.TimelineMGR._trackVolumeChangeFinish);
@@ -402,7 +449,7 @@
             if (($(Ensemble.Pages.Editor.UI.UserInput.Flyouts.trackVolume).find("input").val() / 100) != Ensemble.Editor.TimelineMGR._trackVolumeRollback) {
                 var volumeChangeAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.trackVolumeChanged,
                     {
-                        trackId: Ensemble.Editor.TimelineMGR._trackVolumeId,
+                        trackId: Ensemble.Editor.TimelineMGR._trackEditId,
                         oldVolume: Ensemble.Editor.TimelineMGR._trackVolumeRollback,
                         newVolume: $(Ensemble.Pages.Editor.UI.UserInput.Flyouts.trackVolume).find("input").val() / 100
                     }
@@ -414,12 +461,12 @@
         _trackMoveButtonClicked: function (event) {
             //Determine which track's button has been pressed and enable/disable the appropriate move targets.
             var parentTrack = $(event.currentTarget).closest(".editorTimelineDetail");
-            var trackId = parseInt($(parentTrack).attr("id").match(/\d+$/)[0]);
+            Ensemble.Editor.TimelineMGR._trackEditId = parseInt($(parentTrack).attr("id").match(/\d+$/)[0]);
             var top = true,
                 up = true,
                 down = true,
                 bottom = true;
-            var indexOfTrack = Ensemble.Editor.TimelineMGR.getTrackPosition(trackId);
+            var indexOfTrack = Ensemble.Editor.TimelineMGR.getTrackPosition(Ensemble.Editor.TimelineMGR._trackEditId);
 
             if (indexOfTrack == 0) {
                 top = false;
@@ -435,7 +482,45 @@
             Ensemble.Pages.Editor.UI.UserInput.Buttons.moveTrackDown.winControl.disabled = !(down);
             Ensemble.Pages.Editor.UI.UserInput.Buttons.moveTrackToBottom.winControl.disabled = !(bottom);
 
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.moveTrackToTop).click(Ensemble.Editor.TimelineMGR._moveCurrentTrackToTop);
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.moveTrackUp).click(Ensemble.Editor.TimelineMGR._moveCurrentTrackUp);
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.moveTrackDown).click(Ensemble.Editor.TimelineMGR._moveCurrentTrackDown);
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.moveTrackToBottom).click(Ensemble.Editor.TimelineMGR._moveCurrentTrackToBottom);
+
             Ensemble.Pages.Editor.UI.UserInput.Flyouts.moveTrack.winControl.show(event.currentTarget);
+        },
+
+        _moveCurrentTrackToTop: function (event) {
+            console.log("Moving track " + Ensemble.Editor.TimelineMGR.getTrackById(Ensemble.Editor.TimelineMGR._trackEditId).id + " to the top.");
+            Ensemble.Editor.TimelineMGR._finishTrackMove(0);
+        },
+
+        _moveCurrentTrackUp: function (event) {
+            console.log("Moving track " + Ensemble.Editor.TimelineMGR.getTrackById(Ensemble.Editor.TimelineMGR._trackEditId).id + " up one level.");
+        },
+
+        _moveCurrentTrackDown: function (event) {
+            console.log("Moving track " + Ensemble.Editor.TimelineMGR.getTrackById(Ensemble.Editor.TimelineMGR._trackEditId).id + " down one level.");
+        },
+
+        _moveCurrentTrackToBottom: function (event) {
+            console.log("Moving track " + Ensemble.Editor.TimelineMGR.getTrackById(Ensemble.Editor.TimelineMGR._trackEditId).id + " to the bottom.");
+            Ensemble.Editor.TimelineMGR._finishTrackMove(Ensemble.Editor.TimelineMGR.tracks.length - 1);
+        },
+
+        _finishTrackMove: function (destinationIndex) {
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.moveTrackToTop).unbind("click");
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.moveTrackUp).unbind("click");
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.moveTrackDown).unbind("click");
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.moveTrackToBottom).unbind("click");
+            var trackMoveOption = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.moveTrack,
+                {
+                    trackId: Ensemble.Editor.TimelineMGR._trackEditId,
+                    origin: Ensemble.Editor.TimelineMGR.tracks.indexOf(Ensemble.Editor.TimelineMGR.getTrackById(Ensemble.Editor.TimelineMGR._trackEditId)),
+                    destination: destinationIndex
+                }
+            );
+            Ensemble.HistoryMGR.performAction(trackMoveOption);
         }
     });
 })();

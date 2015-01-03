@@ -95,6 +95,12 @@
                             xml.Attrib("oldVolume", Ensemble.HistoryMGR._backStack[i]._payload.oldVolume.toString());
                             xml.Attrib("newVolume", Ensemble.HistoryMGR._backStack[i]._payload.newVolume.toString());
                             break;
+                        case Ensemble.Events.Action.ActionType.moveTrack:
+                            xml.Attrib("trackId", Ensemble.HistoryMGR._backStack[i]._payload.trackId.toString());
+                            xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
+                            xml.Attrib("origin", Ensemble.HistoryMGR._backStack[i]._payload.origin.toString());
+                            xml.Attrib("destination", Ensemble.HistoryMGR._backStack[i]._payload.destination.toString());
+                            break;
                         default:
                             console.error("Unable to save History Action to disk - unknown type.");
                     }
@@ -124,6 +130,12 @@
                             xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
                             xml.Attrib("oldVolume", Ensemble.HistoryMGR._forwardStack[i]._payload.oldVolume.toString());
                             xml.Attrib("newVolume", Ensemble.HistoryMGR._forwardStack[i]._payload.newVolume.toString());
+                            break;
+                        case Ensemble.Events.Action.ActionType.moveTrack:
+                            xml.Attrib("trackId", Ensemble.HistoryMGR._forwardStack[i]._payload.trackId.toString());
+                            xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
+                            xml.Attrib("origin", Ensemble.HistoryMGR._forwardStack[i]._payload.origin.toString());
+                            xml.Attrib("destination", Ensemble.HistoryMGR._forwardStack[i]._payload.destination.toString());
                             break;
                         default:
                             console.error("Unable to save History Action to disk - unknown type.");
@@ -333,6 +345,15 @@
                                 }
                             ));
                             break;
+                        case Ensemble.Events.Action.ActionType.moveTrack:
+                            Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.moveTrack,
+                                {
+                                    trackId: undoActions[i].getAttribute("trackId"),
+                                    origin: undoActions[i].getAttribute("origin"),
+                                    destination: undoActions[i].getAttribute("destination")
+                                }
+                            ));
+                            break;
                         default:
                             console.error("Unable to load History Action from disk - unknown type.");
                             break;
@@ -363,11 +384,20 @@
                             ));
                             break;
                         case Ensemble.Events.Action.ActionType.trackVolumeChanged:
-                            Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.trackVolumeChanged,
+                            Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.trackVolumeChanged,
                                 {
                                     trackId: redoActions[i].getAttribute("trackId"),
                                     oldVolume: redoActions[i].getAttribute("oldVolume"),
                                     newVolume: redoActions[i].getAttribute("newVolume")
+                                }
+                            ));
+                            break;
+                        case Ensemble.Events.Action.ActionType.moveTrack:
+                            Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.moveTrack,
+                                {
+                                    trackId: undoActions[i].getAttribute("trackId"),
+                                    origin: undoActions[i].getAttribute("origin"),
+                                    destination: undoActions[i].getAttribute("destination")
                                 }
                             ));
                             break;
@@ -393,7 +423,7 @@
                 Ensemble.Pages.MainMenu.navigateToEditor();
             }
             else {
-                //Fire callback.
+                //Fire callback. Project is empty (no tracks or media).
                 //Ensemble.FileIO._loadedProjectCallback();
                 Ensemble.Pages.MainMenu.navigateToEditor();
             }
