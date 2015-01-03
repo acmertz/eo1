@@ -286,35 +286,41 @@
     color: white;
 }
 
-#editorPageContainer #editorLowerHalf #editorTimelineContainer #editorTimelineContent {
+#timeline-track-container {
     flex: 1;
     height: 100%;
     border: 2px solid gray;
     border-radius: 2px;
     border-top-right-radius: 0px;
-    background: linear-gradient(to bottom, rgb(255,255,255) 50%, rgb(240,240,240) 50%);
-	background-size: 100px 50%;
+    /*background: linear-gradient(to bottom, rgb(255,255,255) 50%, rgb(240,240,240) 50%);*/
+	/*background-size: 100px 50%;*/
     overflow: hidden;
-
     display: flex;
+    background-position: 0px 0px, 8px 8px, 0px 1px, 8px 9px;
+    background-image: radial-gradient(black 15%, transparent 16%), radial-gradient(black 15%, transparent 16%), radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%), radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%);
+    background-attachment: scroll, scroll, scroll, scroll;
+    background-repeat: repeat, repeat, repeat, repeat;
+    background-size: 16px 16px;
+    background-origin: padding-box, padding-box, padding-box, padding-box;
+    background-clip: border-box, border-box, border-box, border-box;
+    background-color: rgb(40, 40, 40);
 }
 
 #editorTimelineHeaders, #editorTimelineHeaderPlaceholder {
     width: 50px;
 }
 
-.editorTimelineHeader, .editorTimelineDetail, .editorTimelineTrack {
+.timeline-track--header, .timeline-track--controls, .timeline-track--content {
     box-sizing: border-box;
-    padding-top: 10px;
-    padding-bottom: 10px;
 }
 
-.editorTimelineHeader {
+.timeline-track--header {
     display: flex;
     flex-direction: column;
+    cursor: default;
 }
 
-.editorTimelineHeader .trackNum, .editorTimelineHeader .trackEditButton {
+.timeline-track--header .trackNum, .timeline-track--header .trackEditButton {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -326,14 +332,14 @@
     font-size: 1.25em;
 }
 
-.editorTimelineHeader .trackNum {
+.timeline-track--header .trackNum {
 }
 
-.editorTimelineHeader .trackEditButton {
+.timeline-track--header .trackEditButton {
     border-top: none;
 }
 
-.editorTimelineHeader .trackEditButton:active {
+.timeline-track--header .trackEditButton:active {
     color: white;
     background-color: black;
 }
@@ -349,12 +355,12 @@
     width: 150px;
 }
 
-.editorTimelineDetail {
+.timeline-track--controls {
     display: flex;
     flex-direction: column;
 }
 
-.editorTimelineDetail .timelineDetailRow {
+.timeline-track--controls .timelineDetailRow {
     flex: 1;
     align-items: center;
     box-sizing: border-box;
@@ -393,9 +399,16 @@
     overflow-y: hidden;
 }
 
-#editorTimelineContent .editorTimelineTrack {
+.timeline-track {
+    background-color: #FFFFFF;
+}
+
+.timeline-track:nth-child(even) {
+    background-color: #F0F0F0;
+}
+
+#timeline-track-container .timeline-track--content {
     box-sizing: border-box;
-    cursor: text;
     white-space: nowrap;
 }
 

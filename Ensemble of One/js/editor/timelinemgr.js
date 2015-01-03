@@ -34,51 +34,67 @@
             Ensemble.Session.projectTrackCount = this.tracks.length;
         },
 
-        moveTrackWithId: function (trackId, destination) {
+        moveTrackWithId: function (trackId, origin, destination) {
             /// <summary>Moves the track with the given ID to the specified position in the track array.</summary>
             /// <param name="trackId" type="Number">The ID of the track to move.</param>
+            /// <param name="origin" type="Number">The index of the position where the track begins its move.</param>
             /// <param name="destination" type="Number">The index of the position where the track should end up after the move.</param>
-            var detailsDOM = document.getElementById(this._buildTrackDetailId(trackId));
-            var allDetails = document.getElementsByClassName("editorTimelineDetail");
-            var affectedDetails = [];
-            var found = false;
-            for (let i = 0; i < allDetails.length; i++) {
-                if (found) affectedDetails.push(allDetails[i]);
-                else if (allDetails[i] == detailsDOM) found = true;
+
+            let trackTransformPercentage = (destination - origin) * 100;
+            let affectedTransformPercentage = -100;
+            let affectedDif = -1;
+            if (trackTransformPercentage < 0) {
+                affectedTransformPercentage = 100;
+                affectedDif = 1;
             }
-            var detailsAnim = WinJS.UI.Animation.createDeleteFromListAnimation(detailsDOM, affectedDetails)
 
+            let trackHeader = $("#" + this._buildTrackHeaderId(trackId));
+            let trackControl = $("#" + this._buildTrackDetailId(trackId));
+            let trackItself = $("#" + this._buildTrackDOMId(trackId));
 
-            var headerDOM = document.getElementById(this._buildTrackHeaderId(trackId));
-            var allHeaders = document.getElementsByClassName("editorTimelineHeader");
-            var affectedHeaders = [];
-            found = false;
-            for (let i = 0; i < allHeaders.length; i++) {
-                if (found) affectedHeaders.push(allHeaders[i]);
-                else if (allHeaders[i] == headerDOM) found = true;
+            let trackNum = $(trackHeader).find(".trackNum");
+            $(trackNum).text(destination + 1);
+
+            $(trackHeader).css("transition", "transform 0.4s ease");
+            $(trackHeader).css("transform", "translateY(" + trackTransformPercentage + "%)");
+            $(trackControl).css("transition", "transform 0.4s ease");
+            $(trackControl).css("transform", "translateY(" + trackTransformPercentage + "%)");
+            $(trackItself).css("transition", "transform 0.4s ease");
+            $(trackItself).css("transform", "translateY(" + trackTransformPercentage + "%)");
+
+            var start = null,
+                end = null;
+            if (destination > origin) {
+                start = origin + 1;
+                end = destination + 1;
             }
-            var headerAnim = WinJS.UI.Animation.createDeleteFromListAnimation(headerDOM, affectedHeaders)
-
-
-            var trackDOM = document.getElementById(this._buildTrackDOMId(trackId));
-            var allTracks = document.getElementsByClassName("editorTimelineTrack");
-            var affectedTracks = [];
-            found = false;
-            for (let i = 0; i < allTracks.length; i++) {
-                if (found) affectedTracks.push(allTracks[i]);
-                else if (allTracks[i] == trackDOM) found = true;
+            else {
+                start = destination;
+                end = origin;
             }
-            var trackAnim = WinJS.UI.Animation.createDeleteFromListAnimation(trackDOM, affectedTracks)
+            for (let i = start; i < end; i++) {
+                let affectedHeader = $(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineHeaders).children().get(i);
+                let affectedControl = $(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineDetails).children().get(i);
+                let affectedTrack = $(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineTracks).children().get(i);
+                
+                let trackNum = $(affectedHeader).find(".trackNum");
+                $(trackNum).text(parseInt($(trackNum).text(), 10) + affectedDif);
 
-            headerAnim.execute().then(function () {
-                headerDOM.parentNode.removeChild(headerDOM);
-            });
-            detailsAnim.execute().then(function () {
-                detailsDOM.parentNode.removeChild(detailsDOM);
-            });
-            trackAnim.execute().then(function () {
-                trackDOM.parentNode.removeChild(trackDOM);
-            });
+                $(affectedHeader).css("transition", "transform 0.4s ease");
+                $(affectedHeader).css("transform", "translateY(" + affectedTransformPercentage + "%)");
+                $(affectedControl).css("transition", "transform 0.4s ease");
+                $(affectedControl).css("transform", "translateY(" + affectedTransformPercentage + "%)");
+                $(affectedTrack).css("transition", "transform 0.4s ease");
+                $(affectedTrack).css("transform", "translateY(" + affectedTransformPercentage + "%)");
+            }
+
+            setTimeout(function (event) {
+                console.log("Move animation finished. Update DOM order.");
+            }, 400);
+
+            //Update model
+            var movingItem = this.tracks.splice(origin, 1)[0];
+            this.tracks.splice(destination, 0, movingItem);
         },
 
         getTrackById: function (idval) {
@@ -90,7 +106,7 @@
             return null;
         },
 
-        getTrackPosition: function (idval) {
+        getTrackIndex: function (idval) {
             /// <summary>Returns the index of the track. Lower values indicate higher stack locations (0 meaning the track is on top).</summary>
             /// <returns type="Number">The position of the track in the array.</returns>
             return this.tracks.indexOf(Ensemble.Editor.TimelineMGR.getTrackById(idval));
@@ -98,10 +114,11 @@
 
         updateTrackSizing: function () {
             /// <summary>Updates the timeline tracks to match the recently resized view.</summary>
-            var tracks = document.getElementsByClassName("editorTimelineTrack");
-            var details = document.getElementsByClassName("editorTimelineDetail");
-            var headers = document.getElementsByClassName("editorTimelineHeader");
-            var trackHeight = Math.floor(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timeline.clientHeight / Ensemble.Settings.getEditorTimelineRowsVisible()) + "px";
+            var tracks = document.getElementsByClassName("timeline-track--content");
+            var details = document.getElementsByClassName("timeline-track--controls");
+            var headers = document.getElementsByClassName("timeline-track--header");
+            //var trackHeight = Math.floor(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timeline.clientHeight / Ensemble.Settings.getEditorTimelineRowsVisible()) + "px";
+            var trackHeight = "100px";
             for (var i = 0; i < tracks.length; i++) {
                 tracks[i].style.height = trackHeight;
                 details[i].style.height = trackHeight;
@@ -138,7 +155,7 @@
                     break;
             }
 
-            Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timeline.style.backgroundSize = "100px " + valueToSet + ";"
+            //Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timeline.style.backgroundSize = "100px " + valueToSet + ";"
         },
 
         setRulerScale: function (rulerScale) {
@@ -283,6 +300,7 @@
             Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineHeaders.innerHTML = "";
             Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineDetails.innerHTML = "";
             Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineTracks.innerHTML = "";
+            //Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timeline.innerHTML = "";
             this.tracks = [];
             this._uniqueTrackID = 0;
         },
@@ -290,10 +308,11 @@
         _buildTrackDisplay: function (track) {
             /// <param name="track" type="Ensemble.Editor.Track">The track to represent on the timeline.</param>
             var trackNumber = Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineHeaders.childNodes.length + 1;
-            var trackHeight = Math.floor(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timeline.clientHeight / Ensemble.Settings.getEditorTimelineRowsVisible()) + "px";
+            //var trackHeight = Math.floor(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timeline.clientHeight / Ensemble.Settings.getEditorTimelineRowsVisible()) + "px";
+            var trackHeight = "100px";
 
             var trackHeader = document.createElement("div");
-            trackHeader.className = "editorTimelineHeader";
+            trackHeader.className = "timeline-track timeline-track--header";
 
             var trackNumEl = document.createElement("div");
             trackNumEl.className = "trackNum";
@@ -305,6 +324,7 @@
             //$(trackEditButtonEl).mousedown(Ensemble.Pages.MainMenu._projectListItemOnMouseDownListener);
             //$(trackEditButtonEl).mouseup(Ensemble.Pages.MainMenu._projectListItemOnMouseUpListener);
             $(trackEditButtonEl).click(Ensemble.Editor.TimelineMGR.toggleTrackDetails);
+            //$(trackEditButtonEl).click(Ensemble.Editor.TimelineMGR._showTrackControls);
 
             trackHeader.appendChild(trackNumEl);
             trackHeader.appendChild(trackEditButtonEl);
@@ -312,7 +332,7 @@
             trackHeader.id = this._buildTrackHeaderId(track.id);
 
             var trackDetail = document.createElement("div");
-            trackDetail.className = "editorTimelineDetail";
+            trackDetail.className = "timeline-track timeline-track--controls";
             trackDetail.id = this._buildTrackDetailId(track.id);
             trackDetail.style.height = trackHeight;
 
@@ -351,32 +371,47 @@
             trackDetail.appendChild(trackDetailName);
             trackDetail.appendChild(trackDetailControls);
 
-            var trackElement = document.createElement("div");
-            trackElement.className = "editorTimelineTrack";
-            trackElement.style.height = trackHeight;
-            trackElement.innerText = "Track content here.";
-            trackElement.id = this._buildTrackDOMId(track.id);
+            var trackContent = document.createElement("div");
+            trackContent.className = "timeline-track timeline-track--content";
+            trackContent.style.height = trackHeight;
+            trackContent.innerText = "Track content here.";
+            trackContent.id = this._buildTrackDOMId(track.id);
+
+            var trackContainer = document.createElement("div");
+            trackContainer.className = "timeline-track";
+            trackContainer.style.height = trackHeight;
+
+            //trackContainer.appendChild(trackHeader);
+            //trackContainer.appendChild(trackDetail);
+            //trackContainer.appendChild(trackContent);
+
+            //Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timeline.appendChild(trackContainer);
 
             Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineHeaders.appendChild(trackHeader);
             Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineDetails.appendChild(trackDetail);
-            Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineTracks.appendChild(trackElement);
+            Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineTracks.appendChild(trackContent);
         },
 
         _buildTrackDOMId: function (idval) {
-            return "editorTimelineTrack" + idval;
+            return "timeline-track--content" + idval;
         },
         
         _buildTrackHeaderId: function (idval) {
-            return "editorTimelineHeader" + idval;
+            return "timeline-track--header" + idval;
         },
 
         _buildTrackDetailId: function (idval) {
-            return "editorTimelineDetail" + idval;
+            return "timeline-track--controls" + idval;
+        },
+
+        _showTrackControls: function (event) {
+            console.log("Show the track controls flyout.");
+            document.getElementById("timeline-track_controls-flyout").winControl.show(event.currentTarget, "right");
         },
 
         _trackRenameButtonClicked: function (event) {
             console.log("clicked.");
-            var trackDetail = $(event.currentTarget).closest(".editorTimelineDetail");
+            var trackDetail = $(event.currentTarget).closest(".timeline-track--controls");
             var trackTitleSpace = $(trackDetail).find(".timelineDetailName");
             $(trackTitleSpace).attr("contenteditable", true);
             trackTitleSpace.focus();
@@ -390,7 +425,7 @@
 
         _trackRenameFinish: function (event) {
             console.log("Finish rename.");
-            var parentTrack = $(event.currentTarget).closest(".editorTimelineDetail");
+            var parentTrack = $(event.currentTarget).closest(".timeline-track--controls");
             var curId = parseInt($(parentTrack).attr("id").match(/\d+$/)[0]);
             var trackObj = Ensemble.Editor.TimelineMGR.getTrackById(curId);
             var renameAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.renameTrack, 
@@ -414,7 +449,7 @@
                     return false;
                 case 27:
                     console.log("Cancel rename.");
-                    var parentTrack = $(event.currentTarget).closest(".editorTimelineDetail");
+                    var parentTrack = $(event.currentTarget).closest(".timeline-track--controls");
                     var trackId = parseInt($(parentTrack).attr("id").match(/\d+$/)[0]);
                     var trackObj = Ensemble.Editor.TimelineMGR.getTrackById(trackId);
                     event.currentTarget.innerText = trackObj.name;
@@ -427,7 +462,7 @@
         },
 
         _trackVolumeButtonClicked: function (event) {
-            var parentTrack = $(event.currentTarget).closest(".editorTimelineDetail");
+            var parentTrack = $(event.currentTarget).closest(".timeline-track--controls");
             var trackId = parseInt($(parentTrack).attr("id").match(/\d+$/)[0]);
             Ensemble.Editor.TimelineMGR._trackEditId = trackId;
             $(Ensemble.Pages.Editor.UI.UserInput.Flyouts.trackVolume).find("input").val(Ensemble.Editor.TimelineMGR.getTrackById(trackId).volume * 100);
@@ -460,13 +495,13 @@
 
         _trackMoveButtonClicked: function (event) {
             //Determine which track's button has been pressed and enable/disable the appropriate move targets.
-            var parentTrack = $(event.currentTarget).closest(".editorTimelineDetail");
+            var parentTrack = $(event.currentTarget).closest(".timeline-track--controls");
             Ensemble.Editor.TimelineMGR._trackEditId = parseInt($(parentTrack).attr("id").match(/\d+$/)[0]);
             var top = true,
                 up = true,
                 down = true,
                 bottom = true;
-            var indexOfTrack = Ensemble.Editor.TimelineMGR.getTrackPosition(Ensemble.Editor.TimelineMGR._trackEditId);
+            var indexOfTrack = Ensemble.Editor.TimelineMGR.getTrackIndex(Ensemble.Editor.TimelineMGR._trackEditId);
 
             if (indexOfTrack == 0) {
                 top = false;
@@ -497,10 +532,14 @@
 
         _moveCurrentTrackUp: function (event) {
             console.log("Moving track " + Ensemble.Editor.TimelineMGR.getTrackById(Ensemble.Editor.TimelineMGR._trackEditId).id + " up one level.");
+            var destination = Ensemble.Editor.TimelineMGR.getTrackIndex(Ensemble.Editor.TimelineMGR._trackEditId) - 1;
+            Ensemble.Editor.TimelineMGR._finishTrackMove(destination);
         },
 
         _moveCurrentTrackDown: function (event) {
             console.log("Moving track " + Ensemble.Editor.TimelineMGR.getTrackById(Ensemble.Editor.TimelineMGR._trackEditId).id + " down one level.");
+            var destination = Ensemble.Editor.TimelineMGR.getTrackIndex(Ensemble.Editor.TimelineMGR._trackEditId) + 1;
+            Ensemble.Editor.TimelineMGR._finishTrackMove(destination);
         },
 
         _moveCurrentTrackToBottom: function (event) {

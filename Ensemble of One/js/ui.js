@@ -13,7 +13,7 @@
             this.PageSections.upperHalf.controlContainer = document.getElementById("editorPlayControls");
 
             this.PageSections.lowerHalf.entireSection = document.getElementById("editorLowerHalf");
-            this.PageSections.lowerHalf.timeline = document.getElementById("editorTimelineContent");
+            this.PageSections.lowerHalf.timeline = document.getElementById("timeline-track-container");
             this.PageSections.lowerHalf.timelineRuler = document.getElementById("editorTimelineRulerContent");
             this.PageSections.lowerHalf.timelineHeaders = document.getElementById("editorTimelineHeaders");
             this.PageSections.lowerHalf.timelineDetails = document.getElementById("editorTimelineDetails");
