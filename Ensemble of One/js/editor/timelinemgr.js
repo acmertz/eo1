@@ -90,6 +90,26 @@
 
             setTimeout(function (event) {
                 console.log("Move animation finished. Update DOM order.");
+                let trackHeader = $("#" + Ensemble.Editor.TimelineMGR._buildTrackHeaderId(Ensemble.Editor.TimelineMGR._trackEditId));
+                let trackControl = $("#" + Ensemble.Editor.TimelineMGR._buildTrackDetailId(Ensemble.Editor.TimelineMGR._trackEditId));
+                let trackItself = $("#" + Ensemble.Editor.TimelineMGR._buildTrackDOMId(Ensemble.Editor.TimelineMGR._trackEditId));
+
+                let headerDestEl = $(".timeline-track--header")[destination]
+                let controlDestEl = $(".timeline-track--controls")[destination];
+                let trackDestEl = $(".timeline-track--content")[destination];
+
+                $(".timeline-track").css("transition", "");
+                $(".timeline-track").css("transform", "");
+                if (destination != Ensemble.Editor.TimelineMGR.tracks.length) {
+                    $(trackHeader).insertBefore($(headerDestEl));
+                    $(trackControl).insertBefore($(controlDestEl));
+                    $(trackItself).insertBefore($(trackDestEl));
+                }
+                else {
+                    $(trackHeader).insertAfter($(headerDestEl));
+                    $(trackControl).insertAfter($(controlDestEl));
+                    $(trackItself).insertAfter($(trackDestEl));
+                }
             }, 400);
 
             //Update model
