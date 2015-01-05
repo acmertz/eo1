@@ -40,11 +40,13 @@
             /// <param name="origin" type="Number">The index of the position where the track begins its move.</param>
             /// <param name="destination" type="Number">The index of the position where the track should end up after the move.</param>
 
-            let trackTransformPercentage = (destination - origin) * 100;
-            let affectedTransformPercentage = -100;
+            let animationDur = 400;
+
+            let trackTransformPercentage = (destination - origin) * -100;
+            let affectedTransformPercentage = 100;
             let affectedDif = -1;
-            if (trackTransformPercentage < 0) {
-                affectedTransformPercentage = 100;
+            if (trackTransformPercentage > 0) {
+                affectedTransformPercentage = -100;
                 affectedDif = 1;
             }
 
@@ -52,16 +54,7 @@
             let trackControl = $("#" + this._buildTrackDetailId(trackId));
             let trackItself = $("#" + this._buildTrackDOMId(trackId));
 
-            let trackNum = $(trackHeader).find(".trackNum");
-            $(trackNum).text(destination + 1);
-
-            $(trackHeader).css("transition", "transform 0.4s ease");
-            $(trackHeader).css("transform", "translateY(" + trackTransformPercentage + "%)");
-            $(trackControl).css("transition", "transform 0.4s ease");
-            $(trackControl).css("transform", "translateY(" + trackTransformPercentage + "%)");
-            $(trackItself).css("transition", "transform 0.4s ease");
-            $(trackItself).css("transform", "translateY(" + trackTransformPercentage + "%)");
-
+            let affected = [];
             var start = null,
                 end = null;
             if (destination > origin) {
@@ -73,48 +66,99 @@
                 end = origin;
             }
             for (let i = start; i < end; i++) {
-                let affectedHeader = $(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineHeaders).children().get(i);
-                let affectedControl = $(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineDetails).children().get(i);
-                let affectedTrack = $(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineTracks).children().get(i);
-                
-                let trackNum = $(affectedHeader).find(".trackNum");
-                $(trackNum).text(parseInt($(trackNum).text(), 10) + affectedDif);
-
-                $(affectedHeader).css("transition", "transform 0.4s ease");
-                $(affectedHeader).css("transform", "translateY(" + affectedTransformPercentage + "%)");
-                $(affectedControl).css("transition", "transform 0.4s ease");
-                $(affectedControl).css("transform", "translateY(" + affectedTransformPercentage + "%)");
-                $(affectedTrack).css("transition", "transform 0.4s ease");
-                $(affectedTrack).css("transform", "translateY(" + affectedTransformPercentage + "%)");
+                affected.push("#" + this._buildTrackHeaderId(this.tracks[i].id));
+                affected.push("#" + this._buildTrackDetailId(this.tracks[i].id));
+                affected.push("#" + this._buildTrackDOMId(this.tracks[i].id));
             }
 
-            setTimeout(function (event) {
-                console.log("Move animation finished. Update DOM order.");
-                let trackHeader = $("#" + Ensemble.Editor.TimelineMGR._buildTrackHeaderId(Ensemble.Editor.TimelineMGR._trackEditId));
-                let trackControl = $("#" + Ensemble.Editor.TimelineMGR._buildTrackDetailId(Ensemble.Editor.TimelineMGR._trackEditId));
-                let trackItself = $("#" + Ensemble.Editor.TimelineMGR._buildTrackDOMId(Ensemble.Editor.TimelineMGR._trackEditId));
 
-                let headerDestEl = $(".timeline-track--header")[destination]
-                let controlDestEl = $(".timeline-track--controls")[destination];
-                let trackDestEl = $(".timeline-track--content")[destination];
+            if (destination > origin) {
+                // Insert the moving track after the last track
+                $(trackHeader).insertAfter($("#" + this._buildTrackHeaderId(this.tracks[destination].id)));
+                $(trackControl).insertAfter($("#" + this._buildTrackDetailId(this.tracks[destination].id)));
+                $(trackItself).insertAfter($("#" + this._buildTrackDOMId(this.tracks[destination].id)));
+            }
+            else {
+                // Insert the moving track before the track currently in that location
+                $(trackHeader).insertBefore($("#" + this._buildTrackHeaderId(this.tracks[destination].id)));
+                $(trackControl).insertBefore($("#" + this._buildTrackDetailId(this.tracks[destination].id)));
+                $(trackItself).insertBefore($("#" + this._buildTrackDOMId(this.tracks[destination].id)));
+            }
 
-                $(".timeline-track").css("transition", "");
-                $(".timeline-track").css("transform", "");
-                if (destination != Ensemble.Editor.TimelineMGR.tracks.length) {
-                    $(trackHeader).insertBefore($(headerDestEl));
-                    $(trackControl).insertBefore($(controlDestEl));
-                    $(trackItself).insertBefore($(trackDestEl));
-                }
-                else {
-                    $(trackHeader).insertAfter($(headerDestEl));
-                    $(trackControl).insertAfter($(controlDestEl));
-                    $(trackItself).insertAfter($(trackDestEl));
-                }
-            }, 400);
-
-            //Update model
+            let trackNum = $(trackHeader).find(".trackNum");
+            $(trackNum).text(destination + 1);
             var movingItem = this.tracks.splice(origin, 1)[0];
             this.tracks.splice(destination, 0, movingItem);
+
+            // Animate the affected tracks
+            for (let i = 0; i < affected.length; i++) {
+                let trackNum = $(affected[i]).find(".trackNum");
+                $(trackNum).text(parseInt($(trackNum).text(), 10) + affectedDif);
+                $(affected[i]).css("transition", "");
+                $(affected[i]).css("transform", "translateY(" + affectedTransformPercentage + "%)");
+                $(affected[i]).width();
+                $(affected[i]).css("transition", "transform " + animationDur + "ms ease");
+                $(affected[i]).css("transform", "translateY(0px)");
+            }
+            
+            // Animate the track that moved.
+            $(trackHeader).css("transition", "");
+            $(trackHeader).css("transform", "translateY(" + trackTransformPercentage + "%)");
+            $(trackControl).css("transition", "");
+            $(trackControl).css("transform", "translateY(" + trackTransformPercentage + "%)");
+            $(trackItself).css("transform", "");
+            $(trackItself).css("transform", "translateY(" + trackTransformPercentage + "%)");
+
+            $(trackHeader).width(); // force the layout to be recomputed between track transform changes.
+
+            $(trackHeader).css("transition", "transform " + animationDur + "ms ease");
+            $(trackHeader).css("transform", "translateY(0px)");
+            $(trackControl).css("transition", "transform " + animationDur + "ms ease");
+            $(trackControl).css("transform", "translateY(0px)");
+            $(trackItself).css("transition", "transform " + animationDur + "ms ease");
+            $(trackItself).css("transform", "translateY(0px)");
+            
+
+            
+            //for (let i = start; i < end; i++) {
+            //    let affectedHeader = $(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineHeaders).children().get(i);
+            //    let affectedControl = $(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineDetails).children().get(i);
+            //    let affectedTrack = $(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineTracks).children().get(i);
+                
+            //    let trackNum = $(affectedHeader).find(".trackNum");
+            //    $(trackNum).text(parseInt($(trackNum).text(), 10) + affectedDif);
+
+            //    $(affectedHeader).css("transition", "transform 0.4s ease");
+            //    $(affectedHeader).css("transform", "translateY(" + affectedTransformPercentage + "%)");
+            //    $(affectedControl).css("transition", "transform 0.4s ease");
+            //    $(affectedControl).css("transform", "translateY(" + affectedTransformPercentage + "%)");
+            //    $(affectedTrack).css("transition", "transform 0.4s ease");
+            //    $(affectedTrack).css("transform", "translateY(" + affectedTransformPercentage + "%)");
+            //}
+
+            //setTimeout(function (event) {
+            //    console.log("Move animation finished. Update DOM order.");
+            //    let trackHeader = $("#" + Ensemble.Editor.TimelineMGR._buildTrackHeaderId(Ensemble.Editor.TimelineMGR._trackEditId));
+            //    let trackControl = $("#" + Ensemble.Editor.TimelineMGR._buildTrackDetailId(Ensemble.Editor.TimelineMGR._trackEditId));
+            //    let trackItself = $("#" + Ensemble.Editor.TimelineMGR._buildTrackDOMId(Ensemble.Editor.TimelineMGR._trackEditId));
+
+            //    let headerDestEl = $(".timeline-track--header")[destination]
+            //    let controlDestEl = $(".timeline-track--controls")[destination];
+            //    let trackDestEl = $(".timeline-track--content")[destination];
+
+            //    $(".timeline-track").css("transition", "");
+            //    $(".timeline-track").css("transform", "");
+            //    if (destination != Ensemble.Editor.TimelineMGR.tracks.length) {
+            //        $(trackHeader).insertBefore($(headerDestEl));
+            //        $(trackControl).insertBefore($(controlDestEl));
+            //        $(trackItself).insertBefore($(trackDestEl));
+            //    }
+            //    else {
+            //        $(trackHeader).insertAfter($(headerDestEl));
+            //        $(trackControl).insertAfter($(controlDestEl));
+            //        $(trackItself).insertAfter($(trackDestEl));
+            //    }
+            //}, 400);
         },
 
         getTrackById: function (idval) {
@@ -542,6 +586,7 @@
             $(Ensemble.Pages.Editor.UI.UserInput.Buttons.moveTrackDown).click(Ensemble.Editor.TimelineMGR._moveCurrentTrackDown);
             $(Ensemble.Pages.Editor.UI.UserInput.Buttons.moveTrackToBottom).click(Ensemble.Editor.TimelineMGR._moveCurrentTrackToBottom);
 
+            $(Ensemble.Pages.Editor.UI.UserInput.Flyouts.moveTrack.winControl).bind("afterhide", Ensemble.Editor.TimelineMGR._unbindTrackMoveListeners);
             Ensemble.Pages.Editor.UI.UserInput.Flyouts.moveTrack.winControl.show(event.currentTarget);
         },
 
@@ -567,11 +612,16 @@
             Ensemble.Editor.TimelineMGR._finishTrackMove(Ensemble.Editor.TimelineMGR.tracks.length - 1);
         },
 
-        _finishTrackMove: function (destinationIndex) {
+        _unbindTrackMoveListeners: function (event) {
             $(Ensemble.Pages.Editor.UI.UserInput.Buttons.moveTrackToTop).unbind("click");
             $(Ensemble.Pages.Editor.UI.UserInput.Buttons.moveTrackUp).unbind("click");
             $(Ensemble.Pages.Editor.UI.UserInput.Buttons.moveTrackDown).unbind("click");
             $(Ensemble.Pages.Editor.UI.UserInput.Buttons.moveTrackToBottom).unbind("click");
+            $(Ensemble.Pages.Editor.UI.UserInput.Flyouts.moveTrack.winControl).unbind("afterhide");
+        },
+
+        _finishTrackMove: function (destinationIndex) {
+            Ensemble.Editor.TimelineMGR._unbindTrackMoveListeners();
             var trackMoveOption = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.moveTrack,
                 {
                     trackId: Ensemble.Editor.TimelineMGR._trackEditId,
