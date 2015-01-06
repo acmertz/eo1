@@ -585,14 +585,13 @@
         <div id="editorTrackVolumeFlyout" data-win-control="WinJS.UI.Flyout">
             <input type="range" class="win-vertical" min="0" max="100" title="Track volume" />
         </div>
-        <!--<div id="timeline-track_controls-flyout" data-win-control="WinJS.UI.Flyout">
-            <h3>Flyout content</h3>
-            <p>
-                <button>Buttons</button>
-                <button>More buttons</button>
-            </p>
-            <div>That was cool.</div>
-        </div>-->
+        <div id="editorTrackDeleteFlyout" data-win-control="WinJS.UI.Flyout">
+            <h2>
+                <span>Remove &quot;</span><span id="remove-track-confirmation__name">Untitled Track</span><span>?&quot;</span>
+            </h2>
+            <p>This will also remove all the clips inside it.</p>
+            <button id="remove-track-confirmation__button">Remove</button>
+        </div>
     </div>
 </body>
 </html>

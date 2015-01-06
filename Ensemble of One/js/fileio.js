@@ -54,21 +54,7 @@
             if (Ensemble.Session.projectTrackCount == 0) xml.WriteString("");
             else {
                 for (var i = 0; i < Ensemble.Session.projectTrackCount; i++) {
-                    xml.BeginNode("Track");
-                    xml.Attrib("trackId", Ensemble.Editor.TimelineMGR.tracks[i].id.toString());
-                    xml.Attrib("trackName", Ensemble.Editor.TimelineMGR.tracks[i].name);
-                    xml.Attrib("trackVolume", Ensemble.Editor.TimelineMGR.tracks[i].volume.toString());
-
-                    //Write clip data
-                    if (Ensemble.Editor.TimelineMGR.tracks[i].clips.length == 0) xml.WriteString("");
-                    else {
-                        for (var k = 0; k < Ensemble.Editor.TimelineMGR.tracks[i].clips.length; k++) {
-                            xml.BeginNode("MediaClip");
-                            xml.WriteString("");
-                            xml.EndNode();
-                        }
-                    }
-                    xml.EndNode();
+                    xml = Ensemble.FileIO._writeTrackToXML(xml, Ensemble.Editor.TimelineMGR.tracks[i]);
                 }
             }
             xml.EndNode();
@@ -100,6 +86,12 @@
                             xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
                             xml.Attrib("origin", Ensemble.HistoryMGR._backStack[i]._payload.origin.toString());
                             xml.Attrib("destination", Ensemble.HistoryMGR._backStack[i]._payload.destination.toString());
+                            break;
+                        case Ensemble.Events.Action.ActionType.removeTrack:
+                            xml.Attrib("trackId", Ensemble.HistoryMGR._backStack[i]._payload.trackId.toString());
+                            xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
+                            xml.Attrib("originalLocation", Ensemble.HistoryMGR._backStack[i]._payload.originalLocation.toString())
+                            xml = Ensemble.FileIO._writeTrackToXML(xml, Ensemble.HistoryMGR._backStack[i]._payload.trackObj);
                             break;
                         default:
                             console.error("Unable to save History Action to disk - unknown type.");
@@ -137,6 +129,12 @@
                             xml.Attrib("origin", Ensemble.HistoryMGR._forwardStack[i]._payload.origin.toString());
                             xml.Attrib("destination", Ensemble.HistoryMGR._forwardStack[i]._payload.destination.toString());
                             break;
+                        case Ensemble.Events.Action.ActionType.removeTrack:
+                            xml.Attrib("trackId", Ensemble.HistoryMGR._forwardStack[i]._payload.trackId.toString());
+                            xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
+                            xml.Attrib("originalLocation", Ensemble.HistoryMGR._forwardStack[i]._payload.originalLocation.toString())
+                            xml = Ensemble.FileIO._writeTrackToXML(xml, Ensemble.HistoryMGR._forwardStack[i]._payload.trackObj);
+                            break;
                         default:
                             console.error("Unable to save History Action to disk - unknown type.");
                     }
@@ -168,6 +166,30 @@
                 case "ios":
                     break;
             }
+        },
+
+        _writeTrackToXML: function (xml, track) {
+            /// <summary>Writes XML data for the given track to the XML file.</summary>
+            /// <param name="xml" type="XMLWriter">The XML writer.</param>
+            /// <param name="track" type="Ensemble.Editor.Track">The Track to save.</param>
+            /// <returns type="XMLWriter">The updated XML writer, including the new track.</returns>
+            xml.BeginNode("Track");
+            xml.Attrib("trackId", track.id.toString());
+            xml.Attrib("trackName", track.name);
+            xml.Attrib("trackVolume", track.volume.toString());
+
+            //Write clip data
+            if (track.clips.length == 0) xml.WriteString("");
+            else {
+                for (var k = 0; k < track.clips.length; k++) {
+                    xml.BeginNode("MediaClip");
+                    xml.WriteString("");
+                    xml.EndNode();
+                }
+            }
+            xml.EndNode();
+
+            return xml;
         },
 
         createProject: function (name, location, aspect) {
@@ -330,7 +352,7 @@
                         case Ensemble.Events.Action.ActionType.renameTrack:
                             Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.renameTrack,
                                 {
-                                    trackId: undoActions[i].getAttribute("trackId"),
+                                    trackId:parseInt( undoActions[i].getAttribute("trackId"), 10),
                                     oldName: undoActions[i].getAttribute("oldName"),
                                     newName: undoActions[i].getAttribute("newName")
                                 }
@@ -339,20 +361,22 @@
                         case Ensemble.Events.Action.ActionType.trackVolumeChanged:
                             Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.trackVolumeChanged,
                                 {
-                                    trackId: undoActions[i].getAttribute("trackId"),
-                                    oldVolume: undoActions[i].getAttribute("oldVolume"),
-                                    newVolume: undoActions[i].getAttribute("newVolume")
+                                    trackId: parseInt(undoActions[i].getAttribute("trackId"), 10),
+                                    oldVolume: parseInt(undoActions[i].getAttribute("oldVolume"), 10),
+                                    newVolume: parseInt(undoActions[i].getAttribute("newVolume"), 10)
                                 }
                             ));
                             break;
                         case Ensemble.Events.Action.ActionType.moveTrack:
                             Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.moveTrack,
                                 {
-                                    trackId: undoActions[i].getAttribute("trackId"),
-                                    origin: undoActions[i].getAttribute("origin"),
-                                    destination: undoActions[i].getAttribute("destination")
+                                    trackId: parseInt(undoActions[i].getAttribute("trackId"), 10),
+                                    origin: parseInt(undoActions[i].getAttribute("origin"), 10),
+                                    destination: parseInt(undoActions[i].getAttribute("destination"), 10)
                                 }
                             ));
+                            break;
+                        case Ensemble.Events.Action.ActionType.removeTrack:
                             break;
                         default:
                             console.error("Unable to load History Action from disk - unknown type.");
@@ -401,6 +425,8 @@
                                 }
                             ));
                             break;
+                        case Ensemble.Events.Action.ActionType.removeTrack:
+                            break;
                         default:
                             console.error("Unable to load History Action from disk - unknown type.");
                             break;
@@ -410,14 +436,14 @@
 
             if (tracks.length > 0) {
                 //Create empty tracks
-                for (var i = 0; i < tracks.length; i++) {
-                    Ensemble.Editor.TimelineMGR.createTrack(null, parseInt(tracks[i].getAttribute("trackId")), tracks[i].getAttribute("trackName"), parseFloat(tracks[i].getAttribute("trackVolume")));
+                for (let i = 0; i < tracks.length; i++) {
+                    let loadedTrack = Ensemble.FileIO._loadTrack(tracks[i]);
+
+                    // todo: load clips
+
+                    Ensemble.Editor.TimelineMGR.addTrackAtIndex(loadedTrack, i);
+                    //Ensemble.Editor.TimelineMGR.createTrack(null, parseInt(tracks[i].getAttribute("trackId")), tracks[i].getAttribute("trackName"), parseFloat(tracks[i].getAttribute("trackVolume")));
                 }
-
-                //For each track, look up clips and generate URIs.
-
-                /* Not currently saving media clip information. */
-                //Todo: clip loading
 
                 //For now, navigate to the Editor after generating the tracks.
                 Ensemble.Pages.MainMenu.navigateToEditor();
@@ -427,6 +453,17 @@
                 //Ensemble.FileIO._loadedProjectCallback();
                 Ensemble.Pages.MainMenu.navigateToEditor();
             }
+        },
+
+        _loadTrack: function (xmlTrack) {
+            /// <summary>Generates a Track object from the given XML track root.</summary>
+            /// <param name="xmlTrack" type="XMLDoc">The root of the Track in the XML file.</param>
+            /// <returns type="Ensemble.Editor.Track">A finished track object.</returns>
+            let createdTrack = new Ensemble.Editor.Track(parseInt(xmlTrack.getAttribute("trackId")), xmlTrack.getAttribute("trackName"), parseFloat(xmlTrack.getAttribute("trackVolume")));
+
+            // todo: create media clip objects
+
+            return createdTrack;
         },
 
         enumerateProjects: function (callback) {

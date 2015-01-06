@@ -37,6 +37,8 @@
             this.PageSections.menu.mediaMenu.local.loadingIndicator = document.getElementById("editorMediaBrowserLoadingProgress");
             this.PageSections.menu.effectsMenu.entireSection = document.getElementById("editorEffectsMenu");
 
+            this.TextFields.removeTrackConfirmationName = document.getElementById("remove-track-confirmation__name");
+
             this.Graphics.mediaBrowserPreviewVideo = document.getElementById("mediaBrowserPreviewVideo");
             this.Graphics.mediaBrowserPreviewMusic = document.getElementById("mediaBrowserPreviewAudio");
             this.Graphics.mediaBrowserPreviewPic = document.getElementById("mediaBrowserPreviewPicture");
@@ -67,6 +69,7 @@
             this.UserInput.Buttons.moveTrackUp = document.getElementById("editorMoveTrackUp");
             this.UserInput.Buttons.moveTrackDown = document.getElementById("editorMoveTrackDown");
             this.UserInput.Buttons.moveTrackToBottom = document.getElementById("editorMoveTrackBottom");
+            this.UserInput.Buttons.confirmRemoveTrack = document.getElementById("remove-track-confirmation__button");
 
             this.UserInput.Boundaries.topBottomSplit = document.getElementById("editorHorizontalDivider");
 
@@ -77,6 +80,7 @@
             this.UserInput.Flyouts.mediaBrowserLocation = document.getElementById("editorMediaBrowserLocationFlyout");
             this.UserInput.Flyouts.moveTrack = document.getElementById("editorMoveTrackFlyout");
             this.UserInput.Flyouts.trackVolume = document.getElementById("editorTrackVolumeFlyout");
+            this.UserInput.Flyouts.trackRemove = document.getElementById("editorTrackDeleteFlyout");
 
             this.UserInput.Buttons.timelineScrollUp = document.getElementById("editorTimelineScrollUpButton");
             this.UserInput.Buttons.timelineScrollDown = document.getElementById("editorTimelineScrollDownButton");
@@ -145,7 +149,7 @@
         },
 
         TextFields: {
-
+            removeTrackConfirmationName: null
         },
 
         Graphics: {
@@ -188,7 +192,8 @@
                 moveTrackToTop: null,
                 moveTrackUp: null,
                 moveTrackDown: null,
-                moveTrackToBottom: null
+                moveTrackToBottom: null,
+                confirmRemoveTrack: null
             },
             Boundaries: {
                 topBottomSplit: null
@@ -201,7 +206,8 @@
             Flyouts: {
                 mediaBrowserLocation: null,
                 moveTrack: null,
-                trackVolume: null
+                trackVolume: null,
+                trackRemove: null
             }
         }
     });

@@ -1,1 +1,3 @@
-CSS3 patterns: Lea Verou http://lea.verou.me/css3patterns/
+CSS3 patterns: Lea Verou http://lea.verou.me/css3patterns/ "Carbon"
+brickwall.png main menu texture: Benjamin Ward, subtlepatterns.com
+carbon_fibre_v2_@2x.png timeline texture: Alte Mo, subtlepatterns.com, atlemo.com/

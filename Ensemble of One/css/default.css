@@ -13,7 +13,8 @@
             rgb(220,220,220) 5px, transparent, transparent 10px),
         repeating-linear-gradient(45deg, transparent, rgb(240,240,240) 5px,
             rgb(220,220,220) 5px, transparent, transparent 10px);*/
-    background-image: radial-gradient(circle farthest-corner at center bottom, #FFFFFF 0%, #D8D8D8 100%);
+    /*background-image: radial-gradient(circle farthest-corner at center bottom, #FFFFFF 0%, #D8D8D8 100%);*/
+    background-image: url('../img/brickwall.png');
 }
 
 .pageContainer {
