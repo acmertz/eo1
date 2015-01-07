@@ -401,6 +401,8 @@
             $(Ensemble.Pages.Editor.UI.UserInput.Buttons.timelineNewTrack).click(this._timelineNewTrackButtonOnClickListener);
             $(Ensemble.Pages.Editor.UI.UserInput.Buttons.timelineZoomIn).click(Ensemble.Editor.TimelineMGR.zoomIn);
             $(Ensemble.Pages.Editor.UI.UserInput.Buttons.timelineZoomOut).click(Ensemble.Editor.TimelineMGR.zoomOut);
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.timelineScrollUp).click(Ensemble.Editor.TimelineMGR.scrollUp);
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.timelineScrollDown).click(Ensemble.Editor.TimelineMGR.scrollDown);
 
             //WinJS general animation listeners
             $(".editorMenuCommandListItem").mousedown(Ensemble.Pages.MainMenu._projectListItemOnMouseDownListener);
@@ -452,6 +454,8 @@
             $(Ensemble.Pages.Editor.UI.UserInput.Buttons.timelineNewTrack).unbind("click");
             $(Ensemble.Pages.Editor.UI.UserInput.Buttons.timelineZoomIn).unbind("click");
             $(Ensemble.Pages.Editor.UI.UserInput.Buttons.timelineZoomOut).unbind("click");
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.timelineScrollUp).unbind("click");
+            $(Ensemble.Pages.Editor.UI.UserInput.Buttons.timelineScrollDown).unbind("click");
 
             //WinJS general animation listeners
             $(".editorMenuCommandListItem").unbind("mousedown");

@@ -7,6 +7,8 @@
         _displayScale: 10, //milliseconds per pixel
         _trackVolumeRollback: 0, //original value for the volume flyout
         _trackEditId: 0,
+        _currentTrackHeight: 0,
+        _currentScrollIndex: 0,
 
         createTrack: function (clipsToAdd, idToUse, nameToUse, volumeToUse) {
             /// <summary>Creates a new track in the timeline.</summary>
@@ -46,6 +48,7 @@
                 }
             }
             Ensemble.Session.projectTrackCount = this.tracks.length;
+            this.refreshTrackNumbers();
             return {
                 track: trackRemoved,
                 index: i
@@ -154,16 +157,26 @@
 
         updateTrackSizing: function () {
             /// <summary>Updates the timeline tracks to match the recently resized view.</summary>
-            var tracks = document.getElementsByClassName("timeline-track--content");
-            var details = document.getElementsByClassName("timeline-track--controls");
-            var headers = document.getElementsByClassName("timeline-track--header");
-            //var trackHeight = Math.floor(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timeline.clientHeight / Ensemble.Settings.getEditorTimelineRowsVisible()) + "px";
-            var trackHeight = "100px";
-            for (var i = 0; i < tracks.length; i++) {
-                tracks[i].style.height = trackHeight;
-                details[i].style.height = trackHeight;
-                headers[i].style.height = trackHeight;
+            let maxTrackHeight = 100;
+            let increment = maxTrackHeight;
+            let sizeReached = false;
+            let timelineHeight = $(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timeline).innerHeight();
+
+            let numberOfTracksVisible = 1;
+            while (!sizeReached) {
+                if (timelineHeight > increment) {
+                    numberOfTracksVisible++;
+                    increment = increment + maxTrackHeight;
+                }
+                else {
+                    sizeReached = true;
+                    numberOfTracksVisible--;
+                }
             }
+
+            this._currentTrackHeight = timelineHeight / numberOfTracksVisible;
+            $(".timeline-track").height(this._currentTrackHeight);
+            this._snapScrollToNearestTrack();
         },
 
         generateNewTrackId: function () {
@@ -307,6 +320,36 @@
             Ensemble.Editor.TimelineMGR.setRulerScale(Ensemble.Settings.getEditorRulerScale() * 0.5);
         },
 
+        scrollUp: function () {
+            /// <summary>Scrolls the timeline up by one track.</summary>
+            let currentTop = parseFloat($(".timeline-scrollable-container").css("margin-top"));
+            if (currentTop < 0) {
+                $(".timeline-scrollable-container").css("margin-top", (currentTop + Ensemble.Editor.TimelineMGR._currentTrackHeight) + "px");
+                $(".timeline-scrollable-container").css("transition", "");
+                $(".timeline-scrollable-container").css("transform", "translate3d(0px, -" + Ensemble.Editor.TimelineMGR._currentTrackHeight + "px, 0px)");
+                $(".timeline-scrollable-container").height();
+                $(".timeline-scrollable-container").css("transition", "transform 0.2s ease");
+                $(".timeline-scrollable-container").css("transform", "translate3d(0px, 0px, 0px)");
+                Ensemble.Editor.TimelineMGR._currentScrollIndex = parseFloat($(".timeline-scrollable-container").css("margin-top")) / Ensemble.Editor.TimelineMGR._currentTrackHeight;
+            }
+        },
+
+        scrollDown: function () {
+            /// <summary>Scrolls the timeline down by one track.</summary>
+            let currentTop = parseFloat($(".timeline-scrollable-container").css("margin-top"));
+            $(".timeline-scrollable-container").css("margin-top", (currentTop - Ensemble.Editor.TimelineMGR._currentTrackHeight) + "px");
+            $(".timeline-scrollable-container").css("transition", "");
+            $(".timeline-scrollable-container").css("transform", "translateY(" + Ensemble.Editor.TimelineMGR._currentTrackHeight + "px)");
+            $(".timeline-scrollable-container").height();
+            $(".timeline-scrollable-container").css("transition", "transform 0.2s ease");
+            $(".timeline-scrollable-container").css("transform", "translateY(0px)");
+            Ensemble.Editor.TimelineMGR._currentScrollIndex = parseFloat($(".timeline-scrollable-container").css("margin-top")) / Ensemble.Editor.TimelineMGR._currentTrackHeight;
+        },
+
+        _snapScrollToNearestTrack: function () {
+            $(".timeline-scrollable-container").css("margin-top", this._currentScrollIndex * this._currentTrackHeight);
+        },
+
         toggleTrackDetails: function () {
             if ($(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineDetails).hasClass("detailsExpanded")) {
                 $(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineDetails).removeClass("detailsExpanded")
@@ -360,7 +403,7 @@
             if (index != null) trackNumber = index + 1;
 
             //var trackHeight = Math.floor(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timeline.clientHeight / Ensemble.Settings.getEditorTimelineRowsVisible()) + "px";
-            var trackHeight = "100px";
+            var trackHeight = this._currentTrackHeight + "px";
 
             var trackHeader = document.createElement("div");
             trackHeader.className = "timeline-track timeline-track--header";
@@ -657,7 +700,6 @@
                 }
             );
             Ensemble.HistoryMGR.performAction(trackDeleteAction);
-            //Ensemble.Editor.TimelineMGR.removeTrack(Ensemble.Editor.TimelineMGR._trackEditId);
         }
     });
 })();

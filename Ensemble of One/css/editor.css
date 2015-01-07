@@ -286,6 +286,11 @@
     color: white;
 }
 
+.timeline-scrollable-container {
+    position: relative;
+    top: 0px;
+}
+
 #timeline-track-container {
     flex: 1;
     height: 100%;
@@ -394,11 +399,16 @@
     background-color: black;
 }
 
-#editorTimelineTracks {
+.timeline-track-container-wrap {
     flex: 1;
     overflow-x: scroll;
     overflow-y: hidden;
 }
+
+/*#editorTimelineTracks {
+    overflow-x: scroll;
+    overflow-y: hidden;
+}*/
 
 .timeline-track {
     background-color: #FFFFFF;

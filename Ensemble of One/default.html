@@ -275,9 +275,9 @@
                         <div class="spacer"></div>
                     </div>
                     <div id="timeline-track-container">
-                        <div id="editorTimelineHeaders"></div>
-                        <div id="editorTimelineDetails"></div>
-                        <div id="editorTimelineTracks"></div>
+                        <div id="editorTimelineHeaders" class="timeline-scrollable-container"></div>
+                        <div id="editorTimelineDetails" class="timeline-scrollable-container"></div>
+                        <div class="timeline-track-container-wrap"><div id="editorTimelineTracks" class="timeline-scrollable-container"></div></div>
                     </div>
                     <div class="editorTimelineSideControls">
                         <i class="editorGeneralButton" id="editorTimelineZoomInButton" title="Zoom in">&#xE12E;</i>
@@ -586,9 +586,9 @@
             <input type="range" class="win-vertical" min="0" max="100" title="Track volume" />
         </div>
         <div id="editorTrackDeleteFlyout" data-win-control="WinJS.UI.Flyout">
-            <h2>
+            <h3>
                 <span>Remove &quot;</span><span id="remove-track-confirmation__name">Untitled Track</span><span>?&quot;</span>
-            </h2>
+            </h3>
             <p>This will also remove all the clips inside it.</p>
             <button id="remove-track-confirmation__button">Remove</button>
         </div>
