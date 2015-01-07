@@ -377,6 +377,15 @@
                             ));
                             break;
                         case Ensemble.Events.Action.ActionType.removeTrack:
+                            let trackParent = undoActions[i].getElementsByTagName("Track")[0];
+                            let generatedTrack = Ensemble.FileIO._loadTrack(trackParent);
+                            Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.removeTrack,
+                                {
+                                    trackId: parseInt(undoActions[i].getAttribute("trackId"), 10),
+                                    trackObj: generatedTrack,
+                                    originalLocation: parseInt(undoActions[i].getAttribute("originalLocation"), 10)
+                                }
+                            ));
                             break;
                         default:
                             console.error("Unable to load History Action from disk - unknown type.");
@@ -419,13 +428,22 @@
                         case Ensemble.Events.Action.ActionType.moveTrack:
                             Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.moveTrack,
                                 {
-                                    trackId: undoActions[i].getAttribute("trackId"),
-                                    origin: undoActions[i].getAttribute("origin"),
-                                    destination: undoActions[i].getAttribute("destination")
+                                    trackId: redoActions[i].getAttribute("trackId"),
+                                    origin: redoActions[i].getAttribute("origin"),
+                                    destination: redoActions[i].getAttribute("destination")
                                 }
                             ));
                             break;
                         case Ensemble.Events.Action.ActionType.removeTrack:
+                            let trackParent = redoActions[i].getElementsByTagName("Track")[0];
+                            let generatedTrack = Ensemble.FileIO._loadTrack(trackParent);
+                            Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.removeTrack,
+                                {
+                                    trackId: parseInt(redoActions[i].getAttribute("trackId"), 10),
+                                    trackObj: generatedTrack,
+                                    originalLocation: parseInt(redoActions[i].getAttribute("originalLocation"), 10)
+                                }
+                            ));
                             break;
                         default:
                             console.error("Unable to load History Action from disk - unknown type.");

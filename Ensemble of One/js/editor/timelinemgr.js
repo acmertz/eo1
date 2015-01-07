@@ -345,6 +345,13 @@
             this._uniqueTrackID = 0;
         },
 
+        refreshTrackNumbers: function () {
+            /// <summary>Refreshes the list of track header numbers to ensure they properly match their order.</summary>
+            for (let i = 0; i < this.tracks.length; i++) {
+                $("#" + this._buildTrackHeaderId(this.tracks[i].id)).find(".trackNum").text(i + 1);
+            }
+        },
+
         _buildTrackDisplay: function (track, index) {
             /// <param name="track" type="Ensemble.Editor.Track">The track to represent on the timeline.</param>
             /// <param name="index" type="Ensemble.Editor.Track">Optional. The position to insert the track in the array.</param>
@@ -435,8 +442,8 @@
             else {
                 // Insert the track before the item at the given index.
                 $(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineHeaders).find(".timeline-track--header").eq(index).before(trackHeader);
-                $(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineHeaders).find(".timeline-track--controls").eq(index).before(trackDetail);
-                $(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineHeaders).find(".timeline-track--content").eq(index).before(trackContent);
+                $(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineDetails).find(".timeline-track--controls").eq(index).before(trackDetail);
+                $(Ensemble.Pages.Editor.UI.PageSections.lowerHalf.timelineTracks).find(".timeline-track--content").eq(index).before(trackContent);
             }
         },
 

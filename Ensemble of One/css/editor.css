@@ -402,6 +402,7 @@
 
 .timeline-track {
     background-color: #FFFFFF;
+    transition: background-color 0.4s ease;
 }
 
 .timeline-track:nth-child(even) {

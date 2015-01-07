@@ -49,7 +49,7 @@
                         break;
                     case Ensemble.Events.Action.ActionType.removeTrack:
                         var removalObj = Ensemble.Editor.TimelineMGR.removeTrack(this._payload.trackId);
-                        this._payload.trackObj = removalObj.track;
+                        this._payload.trackObj = removalObj.track[0];
                         this._payload.originalLocation = removalObj.index;
                         break;
                     default:
@@ -82,6 +82,8 @@
                         Ensemble.Editor.TimelineMGR.moveTrackWithId(this._payload.trackId, this._payload.destination, this._payload.origin);
                         break;
                     case Ensemble.Events.Action.ActionType.removeTrack:
+                        console.log("Undoing track removal...");
+                        Ensemble.Editor.TimelineMGR.addTrackAtIndex(this._payload.trackObj, this._payload.originalLocation);
                         break;
                     default:
                         console.error("Unknown Action!");
