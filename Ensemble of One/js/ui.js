@@ -1,5 +1,5 @@
 ﻿(function () {
-    WinJS.Namespace.define("Ensemble.Pages.Editor.UI", {
+    WinJS.Namespace.define("Ensemble.Editor.UI", {
         /// <summary>Tracks and maintains all the UI elements found on the Editor page.</summary>
         relink: function () {
             /// <summary>Renews all UI references and makes sure they're alive.</summary>
@@ -45,10 +45,6 @@
 
             this.RenderSurfaces.mainCanvas = document.getElementById("editorCanvas");
 
-            this.UserInput.Buttons.playPause = document.getElementById("editorPlaypauseButton");
-            this.UserInput.Buttons.skipBack = document.getElementById("editorSkipBackButton");
-            this.UserInput.Buttons.skipForward = document.getElementById("editorSkipForwardButton");
-            this.UserInput.Buttons.fullscreen = document.getElementById("editorFullscreenButton");
             this.UserInput.Buttons.actionMenu = document.getElementById("editorMenuButton");
             this.UserInput.Buttons.mediaMenu = document.getElementById("editorMediaButton");
             this.UserInput.Buttons.effectsMenu = document.getElementById("editorEffectsButton");
@@ -81,12 +77,7 @@
             this.UserInput.Flyouts.moveTrack = document.getElementById("editorMoveTrackFlyout");
             this.UserInput.Flyouts.trackVolume = document.getElementById("editorTrackVolumeFlyout");
             this.UserInput.Flyouts.trackRemove = document.getElementById("editorTrackDeleteFlyout");
-
-            this.UserInput.Buttons.timelineScrollUp = document.getElementById("editorTimelineScrollUpButton");
-            this.UserInput.Buttons.timelineScrollDown = document.getElementById("editorTimelineScrollDownButton");
-            this.UserInput.Buttons.timelineZoomIn = document.getElementById("editorTimelineZoomInButton");
-            this.UserInput.Buttons.timelineZoomOut = document.getElementById("editorTimelineZoomOutButton");
-            this.UserInput.Buttons.timelineNewTrack = document.getElementById("editorTimelineAddTrackButton");
+            this.UserInput.Flyouts.mediaBrowserAddToProject = document.getElementById("mediaBrowserAddToProjectFlyout");
 
             console.log("Relinked all Editor UI references.");
         },
@@ -164,15 +155,6 @@
 
         UserInput: {
             Buttons: {
-                playPause: null,
-                skipBack: null,
-                skipForward: null,
-                fullscreen: null,
-                timelineScrollUp: null,
-                timelineScrollDown: null,
-                timelineZoomIn: null,
-                timelineZoomOut: null,
-                timelineNewTrack: null,
                 actionMenu: null,
                 mediaMenu: null,
                 effectsMenu: null,
@@ -207,7 +189,8 @@
                 mediaBrowserLocation: null,
                 moveTrack: null,
                 trackVolume: null,
-                trackRemove: null
+                trackRemove: null,
+                mediaBrowserAddToProject: null
             }
         }
     });

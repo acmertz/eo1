@@ -31,11 +31,8 @@ var renderPool = {
 
 
                     // Load all needed resources here
-                    Ensemble.Pages.Editor.UI.relink();
-
-                    // Start permanent listeners
-                    document.getElementById("settingsDialogTimelineTracksVisible").addEventListener("change", Ensemble.Settings._timelineTracksDropdownChanged, false);
-
+                    Ensemble.Editor.UI.relink();
+                    
                     window.setTimeout(function () {
                         //showMainMenuInitial();
                         Ensemble.Pages.MainMenu.showInitial();

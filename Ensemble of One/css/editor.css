@@ -354,7 +354,6 @@
     width: 0px;
     white-space: nowrap;
     overflow: hidden;
-    transition: width 0.4s ease;
 }
 
 #editorTimelineDetails.detailsExpanded, #editorTimelineDetailsPlaceholder.detailsExpanded, .timelineDetailRow.timelineDetailControls {

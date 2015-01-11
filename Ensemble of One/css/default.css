@@ -7,13 +7,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    /*background-color: #FFFDD0;*/
-    /*background-image:
-        repeating-linear-gradient(-45deg, transparent, rgb(240,240,240) 5px,
-            rgb(220,220,220) 5px, transparent, transparent 10px),
-        repeating-linear-gradient(45deg, transparent, rgb(240,240,240) 5px,
-            rgb(220,220,220) 5px, transparent, transparent 10px);*/
-    /*background-image: radial-gradient(circle farthest-corner at center bottom, #FFFFFF 0%, #D8D8D8 100%);*/
     background-image: url('../img/brickwall.png');
 }
 
@@ -83,35 +76,9 @@
 	flex: 4;
 }
 
-#imgMainLogo {
-	/*max-width: 75%;*/
-	/*background: radial-gradient(rgba(255,255,255,0.5), rgba(211,211,211,0) 75%);*/
-}
-
 .pageContainerHidden {
 	display: none !important;
 }
-
-/*
-@keyframes pageContainerExitScale {
-	0% {
-		transform: scale(1);
-		opacity: 1;
-	}
-	100% {
-		transform: scale(0.75);
-		opacity: 0;
-	}
-}
-
-@-webkit-keyframes pageContainerExitScale {
-	0% {
-		-webkit-transform: scale(1);
-	}
-	100% {
-		-webkit-transform: scale(0.75);
-	}
-}*/
 
 #menuPageMain {
 	display: flex;
@@ -125,8 +92,6 @@
 	text-align: center;
 	display: flex;
 	flex-direction: column;
-	/*background-color: rgb(245,245,245);
-	background-image: linear-gradient(to bottom, rgb(255,255,255) 0%, rgb(225,225,225) 100%);*/
 }
 
 #mainMenuControls {
@@ -565,25 +530,6 @@
 .mainMenuFilmReelButton:active {
 	background-color: black;
 	color: white;
-}
-
-.ensembleButton, .ensembleButtonDanger {
-    color: white !important;
-    border-radius: 4px !important;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2) !important;
-}
-
-.ensembleButtonDefault {
-    background: rgb(66, 184, 221) !important; 
-}
-
-.ensembleButtonClear {
-    background: lightgray !important;
-    color: black !important
-}
-
-.ensembleButtonDanger {
-    background: rgb(202, 60, 60) !important; 
 }
 
 .openProjectDialogContent {
@@ -1050,17 +996,16 @@
 
 #tickerDialogContainer, #settingsDialogContainer {
 	max-width: 50%;
-	border: 2px solid gray;
+	border: 1px solid gray;
 	border-radius: 5px;
 	box-shadow: 1px 1px 4px 4px rgba(0,0,0,0.25);
 	background-color: rgba(255,255,255,0.85);
 	font-family: sans-serif;
 	font-size: x-large;
-	padding: 10px;
+	padding: 20px;
 	overflow-y: visible;
 	pointer-events: all;
 	max-height: 75%;
-	padding: 50px;
 }
 
 .settingsDialogVisible #settingsDialogContainer {
@@ -1120,7 +1065,7 @@
 }
 
 .pageContainer.loadingPage {
-    background-image: radial-gradient(circle farthest-corner at center, #FFFFFF 0%, #C0C0C0 100%);
+    background-image: url('/img/tiny_grid.png');
     display: none;
     justify-content: center;
     align-items: center;

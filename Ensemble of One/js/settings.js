@@ -4,15 +4,12 @@
 
         refreshSettingsDialog: function () {
             /// <summary>Retrieves all known settings from storage and updates the settings dialog to match.</summary>
-            var settingsIds = [
-                "settingsDialogTimelineTracksVisible"
-            ];
 
             var settingsToUpdate = [];
 
             switch (Ensemble.Platform.currentPlatform) {
                 case "win8":
-                    settingsToUpdate.push({id: settingsIds[0], value: Windows.Storage.ApplicationData.current.roamingSettings.values["editorTimelineRowsVisible"]})
+                    //settingsToUpdate.push({id: settingsIds[0], value: Windows.Storage.ApplicationData.current.roamingSettings.values["editorTimelineRowsVisible"]})
                     break;
                 case "android":
                     break;
@@ -89,46 +86,5 @@
             if ((returnVal == null) || (returnVal == undefined)) returnVal = 0.0625;
             return returnVal;
         },
-
-        _timelineTracksDropdownChanged: function (event) {
-            console.log("value changed.");
-            Ensemble.Settings.setEditorTimelineRowsVisible(parseInt(event.currentTarget.value));
-        },
-
-        setEditorTimelineRowsVisible: function (rowsVisible) {
-            /// <summary>Stores the number of rows visible in the timeline application settings.</summary>
-            /// <param name="rowsVisible" type="Number">The number of rows visible in the timeline.</param>
-
-            switch (Ensemble.Platform.currentPlatform) {
-                case "win8":
-                    Windows.Storage.ApplicationData.current.roamingSettings.values["editorTimelineRowsVisible"] = rowsVisible;
-                    break;
-                case "android":
-                    break;
-                case "ios":
-                    break;
-            }
-
-            Ensemble.Editor.TimelineMGR.setRowsVisible(rowsVisible);
-        },
-
-        getEditorTimelineRowsVisible: function () {
-            /// <summary>Retrieves the number of rows visible from the timeline application settings.</summary>
-            /// <returns type="Number">The number of rows visible in the timeline.</returns>
-
-            var returnVal = null;
-            switch (Ensemble.Platform.currentPlatform) {
-                case "win8":
-                    returnVal = Windows.Storage.ApplicationData.current.roamingSettings.values["editorTimelineRowsVisible"];
-                    break;
-                case "android":
-                    break;
-                case "ios":
-                    break;
-            }
-
-            if ((returnVal == null) || (returnVal == undefined)) returnVal = 4;
-            return returnVal;
-        }
     });
 })();

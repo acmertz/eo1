@@ -6,6 +6,8 @@
         _win8_supportedAudioTypes: [".m4a", ".wma", ".aac", ".adt", ".adts", ".mp3", ".wav", ".ac3", ".ec3"],
         _win8_supportedImageTypes: [".jpg", ".jpeg", ".png", ".gif", ".bmp"],
 
+        _clipLoadBuffer: {},
+
         _pickItemsCallback: null,
         _pickItemsTempFiles: [],
         _pickItemsTempFilesCount: 0,
@@ -482,6 +484,89 @@
             // todo: create media clip objects
 
             return createdTrack;
+        },
+
+        loadClip: function (ensembleFile, payload, complete, progress, error) {
+            /// <summary>Loads the media represented by the given EnsembleFile and passes the resulting Ensemble.Editor.Clip object and payload to the given callback.</summary>
+            /// <param name="ensembleFile" type="Ensemble.EnsembleFile">The EnsembleFile to load.</param>
+            /// <param name="payload" type="Object">A set of arbitrary data that will be passed to the specified callback upon loading completion.</param>
+            /// <param name="complete" type="Function">The callback to execute after loading is complete.</param>
+            /// <param name="progress" type="Function">The callback to execute on loading progress.</param>
+            /// <param name="error" type="Function">The callback to execute if an error is encountered while loading the clip.</param>
+            
+            (function () {
+                var file = ensembleFile;
+                var data = payload;
+                var callback = complete;
+
+                var fileURI = null;
+                switch (Ensemble.Platform.currentPlatform) {
+                    case "win8":
+                        console.log("Loaded ensembleFile.");
+                        fileURI = URL.createObjectURL(file._src);
+                        break;
+                    case "android":
+                        break;
+                    case "ios":
+                        break;
+                }
+
+                var srcElement = null;
+                switch (file.eo1type) {
+                    case "video":
+                        srcElement = document.createElement("video");
+                        //srcElement.oncanplaythrough = function () { console.log("Video clip finished loading!"); };
+                        srcElement.oncanplaythrough = Ensemble.FileIO._clipFinishedLoading;
+                        break;
+                    case "audio":
+                        srcElement = document.createElement("audio");
+                        //srcElement.oncanplaythrough = function () { console.log("Audio clip finished loading!"); };
+                        srcElement.oncanplaythrough = Ensemble.FileIO._clipFinishedLoading;
+                        break;
+                    case "picture":
+                        srcElement = document.createElement("img");
+                        //srcElement.onload = function () { console.log("Image loaded!"); };
+                        srcElement.onload = Ensemble.FileIO._clipFinishedLoading;
+                        break;
+                }
+                Ensemble.FileIO._clipLoadBuffer[file._uniqueId] = {
+                    file: file,
+                    payload: payload,
+                    complete: complete,
+                    progress: progress,
+                    error: error
+                };
+                srcElement.setAttribute("data-eo1-uniqueid", file._uniqueId);
+                srcElement.src = fileURI;
+            })();
+        },
+
+        _clipFinishedLoading: function (event) {
+            var clipUniqueId = event.currentTarget.getAttribute("data-eo1-uniqueid");
+            var bufferItem = Ensemble.FileIO._clipLoadBuffer[clipUniqueId];
+
+            var ensembleFile = bufferItem.file;
+            var payload = bufferItem.payload;
+            var callback = bufferItem.complete;
+
+            delete Ensemble.FileIO._clipLoadBuffer[clipUniqueId];
+
+            console.log("Loaded media: " + ensembleFile.displayName);
+
+            // todo: initialize a Clip object, then pass both it and the payload to the callback function.
+        },
+
+        _clipLoadError: function (event) {
+            var clipUniqueId = event.currentTarget.getAttribute("data-eo1-uniqueid");
+            var bufferItem = Ensemble.FileIO._clipLoadBuffer[clipUniqueId];
+
+            var ensembleFile = bufferItem.file;
+            var payload = bufferItem.payload;
+            var callback = bufferItem.error;
+
+            delete Ensemble.FileIO._clipLoadBuffer[clipUniqueId];
+
+            console.error("Error loading clip: " + ensembleFile.displayName);
         },
 
         enumerateProjects: function (callback) {

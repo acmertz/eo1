@@ -21,6 +21,10 @@
     <script src="lib/XMLWriter.js"></script>
 
     <!-- Classes, functions, and global variables -->
+
+    <!-- Editor -->
+    <script src="/js/editor/clip.js"></script>
+    <script src="/js/editor/playbackmgr.js"></script>
     <script src="/js/editor/timelinemgr.js"></script>
     <script src="js/editor/track.js"></script>
 
@@ -67,7 +71,7 @@
                         </div>
                     </div>
 
-                    <div class="imgMainLogoContainer parallaxCapable"><!--<img src="img/Eo1LogoShad.png" alt="Main logo" draggable="false" id="imgMainLogo" />--></div>
+                    <div class="imgMainLogoContainer parallaxCapable"></div>
 
                     <div class="mainMenuPhotoButtonContainer parallaxCapable">
                         <div id="openProjectButton" class="mainMenuPhotoButton">
@@ -127,7 +131,6 @@
                                 </select></td>
                             </tr>
                         </table>
-                        <!--<h3 class="mainMenuFilmReelButton" id="mainMenuValidateProjectButton"><i class="fa fa-check"></i> Create!</h3>-->
                         <button class="pure-button ensembleButton ensembleButtonDefault" id="mainMenuValidateProjectButton">
                             <i class="fa fa-check"></i>
                             Create!
@@ -137,7 +140,6 @@
                     <div class="filmReelFrame"></div>
                     <div class="filmReelFrame">
                         <h2>Creating your project...</h2> <br />
-                        <!--<i class="fa fa-3x fa-spin fa-spinner"></i>-->
                         <progress class="win-ring win-medium"></progress>
                     </div>
                     <div class="filmReelFrame"></div>
@@ -184,23 +186,9 @@
             <div id="settingsDialog" class="mainMenuFlipDialog">
                 <div id="settingsDialogContainer">
                     <div id="settingsDialogContent" class="mainMenuDialogContent">
-                        <h2>Editor &amp; Timeline</h2>
-                        <p>
-                            <label>
-                                Timeline tracks visible<br />
-                                <select id="settingsDialogTimelineTracksVisible">
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4" selected>4</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
-                                </select>
-                            </label>
-                        </p>
-                        <hr />
-                        <h2>Danger Zone</h2>
-                        <p><button id="mainMenuDeleteAllProjectsButton" class="pure-button ensembleButton ensembleButtonDefault">Delete all projects</button>
-</p>
+                        <h2>Settings</h2>
+                        <h3>Danger Zone</h3>
+                        <button id="mainMenuDeleteAllProjectsButton">Delete all projects</button>
                     </div>
                 </div>
             </div>
@@ -526,8 +514,8 @@
                         <video controls autoplay></video><br />
                         <div class="previewItemControls">
                             <div class="previewItemControlsInnerCenter">
-                                <button class="pure-button pure-button-primary previewItemControlButton"><i class="fa fa-plus"></i> Add to project</button>
-                                <button class="pure-button previewItemControlButton"><i class="fa fa-times"></i> Close</button>
+                                <button class="pure-button pure-button-primary media-browser-preview__btn media-browser-preview__btn--add-to-project"><i class="fa fa-plus"></i> Add to project</button>
+                                <button class="pure-button media-browser-preview__btn media-browser-preview__btn--close-preview"><i class="fa fa-times"></i> Close</button>
                             </div>
                         </div>
                     </div>
@@ -535,8 +523,8 @@
                         <audio controls autoplay></audio><br />
                         <div class="previewItemControls">
                             <div class="previewItemControlsInnerCenter">
-                                <button class="pure-button pure-button-primary previewItemControlButton"><i class="fa fa-plus"></i> Add to project</button>
-                                <button class="pure-button previewItemControlButton"><i class="fa fa-times"></i> Close</button>
+                                <button class="pure-button pure-button-primary media-browser-preview__btn media-browser-preview__btn--add-to-project"><i class="fa fa-plus"></i> Add to project</button>
+                                <button class="pure-button media-browser-preview__btn media-browser-preview__btn--close-preview"><i class="fa fa-times"></i> Close</button>
                             </div>
                         </div>
                     </div>
@@ -544,8 +532,8 @@
                         <img /><br />
                         <div class="previewItemControls">
                             <div class="previewItemControlsInnerCenter">
-                                <button class="pure-button pure-button-primary previewItemControlButton"><i class="fa fa-plus"></i> Add to project</button>
-                                <button class="pure-button previewItemControlButton"><i class="fa fa-times"></i> Close</button>
+                                <button class="pure-button pure-button-primary media-browser-preview__btn media-browser-preview__btn--add-to-project"><i class="fa fa-plus"></i> Add to project</button>
+                                <button class="pure-button media-browser-preview__btn media-browser-preview__btn--close-preview"><i class="fa fa-times"></i> Close</button>
                             </div>
                         </div>
                     </div>
@@ -592,6 +580,7 @@
             <p>This will also remove all the clips inside it.</p>
             <button id="remove-track-confirmation__button">Remove</button>
         </div>
+        <div id="mediaBrowserAddToProjectFlyout" data-win-control="WinJS.UI.Menu"></div>
     </div>
 </body>
 </html>
