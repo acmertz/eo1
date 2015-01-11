@@ -51,7 +51,8 @@
             xml.EndNode();
 
             xml.BeginNode("Tracks");
-            xml.Attrib("FreeId", Ensemble.Editor.TimelineMGR._uniqueTrackID.toString());
+            xml.Attrib("FreeTrackId", Ensemble.Editor.TimelineMGR._uniqueTrackID.toString());
+            xml.Attrib("FreeClipId", Ensemble.Editor.TimelineMGR._uniqueClipID.toString());
             //Write track data
             if (Ensemble.Session.projectTrackCount == 0) xml.WriteString("");
             else {
@@ -235,7 +236,8 @@
                             xml.WriteString("0");
                             xml.EndNode();
                             xml.BeginNode("Tracks");
-                            xml.Attrib("FreeId", "0");
+                            xml.Attrib("FreeTrackId", "0");
+                            xml.Attrib("FreeClipId", "0");
                             xml.WriteString("");
                             xml.EndNode();
                             xml.BeginNode("History");
@@ -323,7 +325,8 @@
             var thumbnailPath = "ms-appdata:///local/Projects/" + filename + ".jpg";
 
             var tracks = xmlDoc.getElementsByTagName("Tracks")[0].getElementsByTagName("Track");
-            var freeTrackId = parseInt(xmlDoc.getElementsByTagName("Tracks")[0].getAttribute("FreeId"));
+            var freeTrackId = parseInt(xmlDoc.getElementsByTagName("Tracks")[0].getAttribute("FreeTrackId"));
+            var freeClipId = parseInt(xmlDoc.getElementsByTagName("Tracks")[0].getAttribute("FreeClipId"));
             var numberOfClips = xmlDoc.getElementsByTagName("MediaClip").length;
 
             var historyParent = xmlDoc.getElementsByTagName("History")[0];
@@ -341,6 +344,7 @@
             Ensemble.Session.projectClipCount = numberOfClips;
             Ensemble.Session.projectTrackCount = tracks.length;
             Ensemble.Editor.TimelineMGR._uniqueTrackID = freeTrackId;
+            Ensemble.Editor.TimelineMGR._uniqueClipID = freeClipId;
 
             var undoActions = undoParent.getElementsByTagName("HistoryAction");
             if (undoActions.length > 0) {
@@ -548,12 +552,15 @@
             var ensembleFile = bufferItem.file;
             var payload = bufferItem.payload;
             var callback = bufferItem.complete;
+            var srcPlayer = event.currentTarget;
 
             delete Ensemble.FileIO._clipLoadBuffer[clipUniqueId];
 
-            console.log("Loaded media: " + ensembleFile.displayName);
-
-            // todo: initialize a Clip object, then pass both it and the payload to the callback function.
+            callback({
+                file: ensembleFile,
+                payload: payload,
+                player: srcPlayer
+            });
         },
 
         _clipLoadError: function (event) {

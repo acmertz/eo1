@@ -307,8 +307,8 @@
                 //Create a new menu item for each track.
                 var menuItem = new WinJS.UI.MenuCommand();
                 menuItem.label = (i + 1) + ".) " + Ensemble.Editor.TimelineMGR.tracks[i].name;
-                menuItem.extraClass = "mediaBrowserImportMediaToTrack" + i;
-                menuItem.onclick = Ensemble.MediaBrowser._addPreviewToLayer;
+                menuItem.extraClass = "mediaBrowserImportMediaToTrack" + Ensemble.Editor.TimelineMGR.tracks[i].id;
+                menuItem.onclick = Ensemble.MediaBrowser._addPreviewToTrack;
                 allCommands.push(menuItem);
                
             }
@@ -316,14 +316,38 @@
             document.getElementById("mediaBrowserAddToProjectFlyout").winControl.show(event.currentTarget, "auto");
         },
 
-        _addPreviewToLayer: function (event) {
-            var trackIndex = parseInt(event.currentTarget.className.match(/\d+$/));
-            Ensemble.FileIO.loadClip(Ensemble.MediaBrowser._currentPreview, trackIndex, Ensemble.MediaBrowser._addPreviewToLayerLoadFinished);
+        _addPreviewToTrack: function (event) {
+            var trackId = parseInt(event.currentTarget.className.match(/\d+$/));
+            Ensemble.FileIO.loadClip(Ensemble.MediaBrowser._currentPreview, { trackId: trackId, projectTime: Ensemble.Editor.PlaybackMGR.currentTime}, Ensemble.MediaBrowser._addPreviewToLayerLoadFinished);
         },
 
-        _addPreviewToLayerLoadFinished: function (clipObj, destinationLayer) {
-            /// <param name="clipObj" type="Ensemble.Editor.Clip">The loaded Clip, ready for playback and rendering.</param>
+        _addPreviewToLayerLoadFinished: function (clipObj) {
+            /// <param name="clipObj" type="Object">The loaded Clip, ready for playback and rendering.</param>
             console.log("Media browser received the loaded preview clip.");
+
+            var eFile = clipObj.file;
+            var destinationTrack = clipObj.payload.trackId;
+            var destinationTime = clipObj.payload.projectTime;
+            var player = clipObj.player;
+
+            var newClip = new Ensemble.Editor.Clip(null);
+            newClip.duration = eFile.duration;
+            newClip.name = eFile.title || eFile.displayName;
+            newClip.file = eFile;
+            switch (eFile.eo1type) {
+                case "video":
+                    newClip.type = Ensemble.Editor.Clip.ClipType.video;
+                    break;
+                case "audio":
+                    newClip.type = Ensemble.Editor.Clip.ClipType.audio;
+                    break;
+                case "picture":
+                    newClip.type = Ensemble.Editor.Clip.ClipType.picture;
+                    break;
+            }
+
+            newClip.setPlayer(player);
+            Ensemble.Editor.TimelineMGR.addClipToTrack(newClip, destinationTrack, destinationTime);
         },
 
         _openMediaPreviewPopup: function () {

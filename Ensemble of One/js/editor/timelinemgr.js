@@ -73,6 +73,13 @@
             };
         },
 
+        addClipToTrack: function (clipObj, trackId, destinationTime) {
+            /// <summary>Adds the given Clip to the track with the given ID.</summary>
+            /// <param name="clipObj" type="Ensemble.Editor.Clip">The clip to add.</param>
+            /// <param name="trackId" type="Number">The ID of the track in which to place the clip. In case of a collission, the TimelineMGR searches forward from the requested time for the first available empty slot large enough to contain the clip.</param>
+            /// <param name="destinationTime" type="Number">The project time at which to insert the clip.</param>
+        },
+
         moveTrackWithId: function (trackId, origin, destination) {
             /// <summary>Moves the track with the given ID to the specified position in the track array.</summary>
             /// <param name="trackId" type="Number">The ID of the track to move.</param>
