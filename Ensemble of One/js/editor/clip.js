@@ -10,6 +10,7 @@
 
             this.name = "Untitled clip";
             this.duration = 0;
+            this.startTime = 0;
             this.volume = 1;
         },
         {
@@ -18,6 +19,7 @@
             file: null,
             name: null,
             duration: null,
+            startTime: null,
             volume: null,
             type: null,
 
@@ -48,6 +50,12 @@
                 audio: "audio",
                 picture: "picture",
                 unknown: "unknown"
+            },
+
+            CollisionType: {
+                clipEnd: "clipEnd",
+                clipBeginning: "clipBeginning",
+                clipContains: "clipContains"
             }
         }
     );

@@ -76,8 +76,14 @@
         addClipToTrack: function (clipObj, trackId, destinationTime) {
             /// <summary>Adds the given Clip to the track with the given ID.</summary>
             /// <param name="clipObj" type="Ensemble.Editor.Clip">The clip to add.</param>
-            /// <param name="trackId" type="Number">The ID of the track in which to place the clip. In case of a collission, the TimelineMGR searches forward from the requested time for the first available empty slot large enough to contain the clip.</param>
+            /// <param name="trackId" type="Number">The ID of the track in which to place the clip. In case of a collision, the TimelineMGR searches forward from the requested time for the first available empty slot large enough to contain the clip.</param>
             /// <param name="destinationTime" type="Number">The project time at which to insert the clip.</param>
+            var targetTrack = this.getTrackById(trackId);
+            var fits = targetTrack.clipCollisionAt(destinationTime, clipObj.duration);
+            if (fits.collision) {
+                var offendingClip = targetTrack.getClipById(fits.offending);
+                clipObj.startTime = targetTrack.firstFreeSlot(offendingClip.startTime + offendingClip.duration, clipObj.duration);
+            }
         },
 
         moveTrackWithId: function (trackId, origin, destination) {
