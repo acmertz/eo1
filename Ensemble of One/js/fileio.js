@@ -69,32 +69,37 @@
                     xml.BeginNode("HistoryAction");
                     switch (Ensemble.HistoryMGR._backStack[i]._type) {
                         case Ensemble.Events.Action.ActionType.createTrack:
-                            xml.Attrib("trackId", Ensemble.HistoryMGR._backStack[i]._payload.trackId.toString());
                             xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
+                            xml.Attrib("trackId", Ensemble.HistoryMGR._backStack[i]._payload.trackId.toString());                            
                             break;
                         case Ensemble.Events.Action.ActionType.renameTrack:
-                            xml.Attrib("trackId", Ensemble.HistoryMGR._backStack[i]._payload.trackId.toString());
                             xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
+                            xml.Attrib("trackId", Ensemble.HistoryMGR._backStack[i]._payload.trackId.toString());                            
                             xml.Attrib("oldName", Ensemble.HistoryMGR._backStack[i]._payload.oldName);
                             xml.Attrib("newName", Ensemble.HistoryMGR._backStack[i]._payload.newName);
                             break;
                         case Ensemble.Events.Action.ActionType.trackVolumeChanged:
-                            xml.Attrib("trackId", Ensemble.HistoryMGR._backStack[i]._payload.trackId.toString());
                             xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
+                            xml.Attrib("trackId", Ensemble.HistoryMGR._backStack[i]._payload.trackId.toString());                            
                             xml.Attrib("oldVolume", Ensemble.HistoryMGR._backStack[i]._payload.oldVolume.toString());
                             xml.Attrib("newVolume", Ensemble.HistoryMGR._backStack[i]._payload.newVolume.toString());
                             break;
                         case Ensemble.Events.Action.ActionType.moveTrack:
-                            xml.Attrib("trackId", Ensemble.HistoryMGR._backStack[i]._payload.trackId.toString());
                             xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
+                            xml.Attrib("trackId", Ensemble.HistoryMGR._backStack[i]._payload.trackId.toString());                            
                             xml.Attrib("origin", Ensemble.HistoryMGR._backStack[i]._payload.origin.toString());
                             xml.Attrib("destination", Ensemble.HistoryMGR._backStack[i]._payload.destination.toString());
                             break;
                         case Ensemble.Events.Action.ActionType.removeTrack:
-                            xml.Attrib("trackId", Ensemble.HistoryMGR._backStack[i]._payload.trackId.toString());
                             xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
+                            xml.Attrib("trackId", Ensemble.HistoryMGR._backStack[i]._payload.trackId.toString());                            
                             xml.Attrib("originalLocation", Ensemble.HistoryMGR._backStack[i]._payload.originalLocation.toString())
                             xml = Ensemble.FileIO._writeTrackToXML(xml, Ensemble.HistoryMGR._backStack[i]._payload.trackObj);
+                            break;
+                        case Ensemble.Events.Action.ActionType.importClip:
+                            xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
+                            xml.Attrib("destinationTrack", Ensemble.HistoryMGR._backStack[i]._payload.destinationTrack.toString());
+                            xml.Attrib("clipId", Ensemble.HistoryMGR._backStack[i]._payload.clipObj.id.toString());
                             break;
                         default:
                             console.error("Unable to save History Action to disk - unknown type.");
@@ -111,32 +116,37 @@
                     xml.BeginNode("HistoryAction");
                     switch (Ensemble.HistoryMGR._forwardStack[i]._type) {
                         case Ensemble.Events.Action.ActionType.createTrack:
-                            xml.Attrib("trackId", Ensemble.HistoryMGR._forwardStack[i]._payload.trackId.toString());
                             xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
+                            xml.Attrib("trackId", Ensemble.HistoryMGR._forwardStack[i]._payload.trackId.toString());                            
                             break;
                         case Ensemble.Events.Action.ActionType.renameTrack:
-                            xml.Attrib("trackId", Ensemble.HistoryMGR._forwardStack[i]._payload.trackId.toString());
                             xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
+                            xml.Attrib("trackId", Ensemble.HistoryMGR._forwardStack[i]._payload.trackId.toString());                            
                             xml.Attrib("oldName", Ensemble.HistoryMGR._forwardStack[i]._payload.oldName);
                             xml.Attrib("newName", Ensemble.HistoryMGR._forwardStack[i]._payload.newName);
                             break;
                         case Ensemble.Events.Action.ActionType.trackVolumeChanged:
-                            xml.Attrib("trackId", Ensemble.HistoryMGR._forwardStack[i]._payload.trackId.toString());
                             xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
+                            xml.Attrib("trackId", Ensemble.HistoryMGR._forwardStack[i]._payload.trackId.toString());                            
                             xml.Attrib("oldVolume", Ensemble.HistoryMGR._forwardStack[i]._payload.oldVolume.toString());
                             xml.Attrib("newVolume", Ensemble.HistoryMGR._forwardStack[i]._payload.newVolume.toString());
                             break;
                         case Ensemble.Events.Action.ActionType.moveTrack:
-                            xml.Attrib("trackId", Ensemble.HistoryMGR._forwardStack[i]._payload.trackId.toString());
                             xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
+                            xml.Attrib("trackId", Ensemble.HistoryMGR._forwardStack[i]._payload.trackId.toString());                            
                             xml.Attrib("origin", Ensemble.HistoryMGR._forwardStack[i]._payload.origin.toString());
                             xml.Attrib("destination", Ensemble.HistoryMGR._forwardStack[i]._payload.destination.toString());
                             break;
                         case Ensemble.Events.Action.ActionType.removeTrack:
-                            xml.Attrib("trackId", Ensemble.HistoryMGR._forwardStack[i]._payload.trackId.toString());
                             xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
+                            xml.Attrib("trackId", Ensemble.HistoryMGR._forwardStack[i]._payload.trackId.toString());                            
                             xml.Attrib("originalLocation", Ensemble.HistoryMGR._forwardStack[i]._payload.originalLocation.toString())
                             xml = Ensemble.FileIO._writeTrackToXML(xml, Ensemble.HistoryMGR._forwardStack[i]._payload.trackObj);
+                            break;
+                        case Ensemble.Events.Action.ActionType.importClip:
+                            xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
+                            xml.Attrib("destinationTrack", Ensemble.HistoryMGR._forwardStack[i]._payload.destinationTrack.toString());
+                            xml.Attrib("clipId", Ensemble.HistoryMGR._forwardStack[i]._payload.clipObj.id.toString());
                             break;
                         default:
                             console.error("Unable to save History Action to disk - unknown type.");
@@ -175,7 +185,7 @@
             /// <summary>Writes XML data for the given track to the XML file.</summary>
             /// <param name="xml" type="XMLWriter">The XML writer.</param>
             /// <param name="track" type="Ensemble.Editor.Track">The Track to save.</param>
-            /// <returns type="XMLWriter">The updated XML writer, including the new track.</returns>
+            /// <returns type="XMLWriter">The updated XML writer, including the new Track.</returns>
             xml.BeginNode("Track");
             xml.Attrib("trackId", track.id.toString());
             xml.Attrib("trackName", track.name);
@@ -185,13 +195,28 @@
             if (track.clips.length == 0) xml.WriteString("");
             else {
                 for (var k = 0; k < track.clips.length; k++) {
-                    xml.BeginNode("MediaClip");
-                    xml.WriteString("");
-                    xml.EndNode();
+                    xml = this._writeClipToXML(xml, track.clips[k])
                 }
             }
             xml.EndNode();
 
+            return xml;
+        },
+
+        _writeClipToXML: function (xml, clip) {
+            /// <summary>Writes XML data for the given track to the XML file.</summary>
+            /// <param name="xml" type="XMLWriter">The XML writer.</param>
+            /// <param name="clip" type="Ensemble.Editor.Clip">The Clip to save.</param>
+            /// <returns type="XMLWriter">The updated XML writer, including the new Clip.</returns>
+            xml.BeginNode("Clip");
+            xml.Attrib("id", clip.id.toString());
+            xml.Attrib("name", clip.name);
+            xml.Attrib("volume", clip.volume.toString());
+            xml.Attrib("start", clip.startTime.toString());
+            xml.Attrib("duration", clip.duration.toString());
+            xml.Attrib("type", clip.type);
+            xml.Attrib("path", clip.file.path);
+            xml.EndNode();
             return xml;
         },
 

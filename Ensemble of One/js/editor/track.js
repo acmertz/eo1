@@ -32,6 +32,25 @@
                 this.volume = volumeToSet;
             },
 
+            insertClip: function (clipObj) {
+                /// <summary>Adds the given Clip to the Track. Assumes that an appropriate time has already been assigned to the Track by the TimelineMGR.</summary>
+                /// <param name="clipObj" type="Ensemble.Editor.Clip">The Clip to add.</param>
+                if (this.clips.length > 0) {
+                    if (this.clips[0].startTime > clipObj.startTime) {
+                        this.clips.splice(0, 0, clipObj);
+                    }
+                    else {
+                        for (let i = 0; i < this.clips.length; i++) {
+                            if (clipObj.startTime > this.clips[i].startTime) {
+                                this.clips.splice(i + 1, 0, clipObj);
+                            }
+                        }
+                    }
+                    return;
+                }
+                this.clips.push(clipObj);
+            },
+
             getClipById: function (idval) {
                 /// <summary>Returns the clip with the given ID, provided it exists.</summary>
                 /// <param name="idval" type="Number">The ID of the clip for which to search.</param>

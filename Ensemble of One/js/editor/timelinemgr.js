@@ -3,6 +3,8 @@
         /// <summary>Manages the history state of the current project.</summary>
 
         tracks: [],
+        _clipIndex: [],
+        _clipIndexPosition: 0,
         _uniqueTrackID: 0,
         _uniqueClipID: 0,
         _displayScale: 10, //milliseconds per pixel
@@ -84,6 +86,8 @@
                 var offendingClip = targetTrack.getClipById(fits.offending);
                 clipObj.startTime = targetTrack.firstFreeSlot(offendingClip.startTime + offendingClip.duration, clipObj.duration);
             }
+            targetTrack.insertClip(clipObj);
+            this._rebuildIndex();
         },
 
         moveTrackWithId: function (trackId, origin, destination) {
@@ -741,6 +745,40 @@
             this.ui.buttonZoomIn = null;
             this.ui.buttonZoomOut = null;
             this.ui.buttonNewTrack = null;
+        },
+
+        _rebuildIndex: function () {
+            /// <summary>Rebuilds the index used as a target by the Renderer and the PlaybackMGR. WARNING: not safe to call during playback.</summary>
+            let timeList = [];
+            for (let i = 0; i < this.tracks.length; i++) {
+                for (let k = 0; k < this.tracks[i].clips.length; k++) {
+                    let start = this.tracks[i].clips[k].startTime;
+                    let end = this.tracks[i].clips[k].startTime + this.tracks[i].clips[k].duration;
+                    if (timeList.indexOf(start) === -1) timeList.push(start);
+                    if (timeList.indexOf(end) === -1) timeList.push(end);
+                }
+            }
+            timeList.sort();
+
+            if (timeList.length > 0 && timeList[0] != 0) timeList.unshift(0);
+
+            for (let i = 0; i < timeList.length; i++) {
+                timeList[i] = {
+                    time: timeList[i],
+                    starting: [],
+                    stopping: [],
+                    renderList: []
+                };
+                for (let k = 0; k < this.tracks.length; k++) {
+                    for (let g = 0; g < this.tracks[k].clips.length; g++) {
+                        let tempClip = this.tracks[k].clips[g];
+                        if (tempClip.startTime === timeList[i].time) timeList[i].starting.push(tempClip);
+                        if (tempClip.startTime + tempClip.duration === timeList[i].time) timeList[i].stopping.push(tempClip);
+                        if ((tempClip.startTime <= timeList[i].time) && (timeList[i].time <= tempClip.startTime + tempClip.duration)) timeList[i].renderList.push(tempClip);
+                    }
+                }
+            }
+            this._clipIndex = timeList;
         },
 
         _listeners: {

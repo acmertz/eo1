@@ -11,6 +11,7 @@
             action.performAction();
             Ensemble.HistoryMGR._backStack.push(action);
             Ensemble.HistoryMGR._forwardStack = [];
+            setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
         },
 
         createActionFromXML: function (historyType, xml) {
@@ -24,6 +25,7 @@
                 var actionToUndo = Ensemble.HistoryMGR._backStack.pop();
                 actionToUndo.undo();
                 this._forwardStack.push(actionToUndo);
+                setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
             }
         },
 
@@ -32,6 +34,7 @@
                 var actionToRedo = Ensemble.HistoryMGR._forwardStack.pop();
                 actionToRedo.performAction();
                 this._backStack.push(actionToRedo);
+                setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
             }
         },
 

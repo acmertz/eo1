@@ -134,6 +134,7 @@
     <Content Include="lib\jquery-2.1.1.min.js" />
     <Content Include="lib\pure\buttons-min.css" />
     <Content Include="lib\pure\pure-min.css" />
+    <Content Include="lib\underscore-min.js" />
     <Content Include="lib\XMLWriter.js" />
   </ItemGroup>
   <ItemGroup>

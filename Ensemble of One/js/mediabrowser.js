@@ -347,7 +347,16 @@
             }
 
             newClip.setPlayer(player);
-            Ensemble.Editor.TimelineMGR.addClipToTrack(newClip, destinationTrack, destinationTime);
+
+            let clipImportAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.importClip,
+                {
+                    clipId: newClip.id,
+                    clipObj: newClip,
+                    destinationTrack: destinationTrack,
+                    destinationTime: destinationTime
+                }
+            );
+            Ensemble.HistoryMGR.performAction(clipImportAction);
         },
 
         _openMediaPreviewPopup: function () {

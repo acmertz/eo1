@@ -52,14 +52,12 @@
                         this._payload.trackObj = removalObj.track[0];
                         this._payload.originalLocation = removalObj.index;
                         break;
+                    case Ensemble.Events.Action.ActionType.importClip:
+                        Ensemble.Editor.TimelineMGR.addClipToTrack(this._payload.clipObj, this._payload.destinationTrack, this._payload.destinationTime);
+                        break;
                     default:
                         console.error("Unknown Action!");
                 }
-                
-                //Save project.
-                setTimeout(function () {
-                    Ensemble.FileIO.saveProject();
-                }, 0);
             },
 
             undo: function () {
@@ -85,14 +83,11 @@
                         console.log("Undoing track removal...");
                         Ensemble.Editor.TimelineMGR.addTrackAtIndex(this._payload.trackObj, this._payload.originalLocation);
                         break;
+                    case Ensemble.Events.Action.ActionType.importClip:
+                        break;
                     default:
                         console.error("Unknown Action!");
                 }
-
-                //Save project.
-                setTimeout(function () {
-                    Ensemble.FileIO.saveProject();
-                }, 0);
             }
         },
         {
@@ -102,7 +97,8 @@
                 renameTrack: "renameTrack",
                 trackVolumeChanged: "trackVolumeChanged",
                 moveTrack: "moveTrack",
-                removeTrack: "removeTrack"
+                removeTrack: "removeTrack",
+                importClip: "importClip"
             }
         }
     );
