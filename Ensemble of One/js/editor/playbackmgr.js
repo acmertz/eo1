@@ -3,15 +3,20 @@
         /// <summary>Manages the history state of the current project.</summary>
 
         canPlay: false,
+        playing: false,
         currentTime: 0,
         _index: [],
+        _timer: null,
 
         init: function () {
-
+            this._refreshUI();
+            this._timer = new Worker("/js/editor/timer.js");
+            this._timer.addEventListener("message", this._listeners.timerUpdate);
         },
 
         unload: function () {
-
+            this._cleanUI();
+            this._timer.terminate();
         },
 
         reset: function () {
@@ -21,9 +26,34 @@
             this._index = [];
         },
 
+        primeTimer: function () {
+            /// <summary>Primes the timing system for playback.</summary>
+            this._timer.postMessage({
+                type: "setBreakpoints",
+                contents: Ensemble.Editor.TimelineMGR._timeIndex
+            });
+        },
 
+        play: function () {
+            /// <summary>Begins playback from the current position in the project.</summary>
+            this.playing = true;
+            this._timer.postMessage({ type: "startTimer" });
+            Ensemble.Editor.Renderer.start();
+            this.ui.buttonPlayPause.innerHTML = "&#xE103;";
+        },
 
-
+        pause: function () {
+            /// <summary>Pauses playback at the current position in the project.</summary>
+            this._timer.postMessage({ type: "stopTimer" });
+            for (let i = 0; i < Ensemble.Editor.TimelineMGR.tracks.length; i++) {
+                for (let k = 0; k < Ensemble.Editor.TimelineMGR.tracks[i].clips.length; k++) {
+                    Ensemble.Editor.TimelineMGR.tracks[i].clips[k].pause();
+                }
+            }
+            this.playing = false;
+            Ensemble.Editor.Renderer.stop();
+            this.ui.buttonPlayPause.innerHTML = "&#xE102;";
+        },
 
         ui: {
             buttonPlayPause: null,
@@ -57,16 +87,43 @@
         },
 
         _listeners: {
-            buttonPlayPause: function(event) {
+            buttonPlayPause: function (event) {
+                if (Ensemble.Editor.PlaybackMGR.playing) {
+                    console.info("Pausing playback.");
+                    Ensemble.Editor.PlaybackMGR.pause();
+                }
+                else {
+                    console.info("Beginning playback.");
+                    Ensemble.Editor.PlaybackMGR.play();
+                }
             },
 
-            buttonSkipBack: function(event) {
+            buttonSkipBack: function (event) {
             },
 
-            buttonSkipForward: function(event) {
+            buttonSkipForward: function (event) {
             },
 
-            buttonFullScreen: function(event) {
+            buttonFullScreen: function (event) {
+            },
+
+            timerUpdate: function (message) {
+                switch (message.data.type) {
+                    case "time":
+                        break;
+                    case "endOfPlayback":
+                        Ensemble.Editor.PlaybackMGR.pause();
+                        break;
+                    case "newIndexPosition":
+                        for (let i = 0; i < Ensemble.Editor.TimelineMGR._clipIndex[message.data.contents].starting.length; i++) {
+                            Ensemble.Editor.TimelineMGR._clipIndex[message.data.contents].starting[i].play();
+                        }
+                        for (let i = 0; i < Ensemble.Editor.TimelineMGR._clipIndex[message.data.contents].stopping.length; i++) {
+                            Ensemble.Editor.TimelineMGR._clipIndex[message.data.contents].stopping[i].pause();
+                        }
+                        Ensemble.Editor.TimelineMGR._clipIndexPosition = message.data.contents;
+                        break;
+                }
             }
         }
     });

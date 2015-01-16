@@ -72,6 +72,7 @@
 
             Ensemble.Editor.TimelineMGR.init();
             Ensemble.Editor.PlaybackMGR.init();
+            Ensemble.Editor.Renderer.init();
         },
 
         hide: function () {
@@ -112,7 +113,8 @@
 
             Ensemble.Editor.UI.PageSections.upperHalf.canvasAndControls.style.width = finalWidth + "px";
             Ensemble.Editor.UI.RenderSurfaces.mainCanvas.style.height = finalHeight + "px";
-
+            try { Ensemble.Editor.Renderer.canvasResized(); }
+            catch (exception) { }
             Ensemble.Editor.TimelineMGR.updateTrackSizing();
 
         },
@@ -352,6 +354,7 @@
             //Unloads the current project.
             Ensemble.Editor.TimelineMGR.unload();
             Ensemble.Editor.PlaybackMGR.unload();
+            Ensemble.Editor.Renderer.unload();
         },
 
 
@@ -555,15 +558,15 @@
 
         _topBottomSplitMouseDown: function (event) {
             //console.log("Mouse down on UI splitpoint at screen Y coordinate of " + event.clientY + " and top offset of " + event.offsetY);
-            Ensemble.Editor.UISplitpointDragBegin(event.clientY, 0); //replaced event.offsetY with 0
+            Ensemble.Pages.Editor.uiSplitpointDragBegin(event.clientY, 0); //replaced event.offsetY with 0
         },
 
         _topBottomSplitDragMove: function (event) {
-            Ensemble.Editor.UISplitpointDraggedTo(event.clientY);
+            Ensemble.Pages.Editor.uiSplitpointDraggedTo(event.clientY);
         },
 
         _topBottomSplitDragEnd: function (event) {
-            Ensemble.Editor.UISplitpointDragEnd(event.clientY);
+            Ensemble.Pages.Editor.uiSplitpointDragEnd(event.clientY);
         },
 
         _menuHeaderProjectOnClick: function () {

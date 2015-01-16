@@ -5,6 +5,7 @@
         tracks: [],
         _clipIndex: [],
         _clipIndexPosition: 0,
+        _timeIndex: [],
         _uniqueTrackID: 0,
         _uniqueClipID: 0,
         _displayScale: 10, //milliseconds per pixel
@@ -25,6 +26,9 @@
             Ensemble.Editor.UI.PageSections.lowerHalf.timelineTracks.innerHTML = "";
             //Ensemble.Editor.UI.PageSections.lowerHalf.timeline.innerHTML = "";
             this.tracks = [];
+            this._clipIndex = [];
+            this._clipIndexPosition = 0;
+            this._timeIndex = [];
             this._uniqueTrackID = 0;
             this._uniqueClipID = 0;
             this._cleanUI();
@@ -88,6 +92,9 @@
             }
             targetTrack.insertClip(clipObj);
             this._rebuildIndex();
+            setTimeout(function () {
+                Ensemble.Editor.Renderer.renderSingleFrame();
+            }, 0);
         },
 
         moveTrackWithId: function (trackId, origin, destination) {
@@ -761,6 +768,7 @@
             timeList.sort();
 
             if (timeList.length > 0 && timeList[0] != 0) timeList.unshift(0);
+            this._timeIndex = _.clone(timeList);
 
             for (let i = 0; i < timeList.length; i++) {
                 timeList[i] = {
@@ -779,6 +787,8 @@
                 }
             }
             this._clipIndex = timeList;
+            Ensemble.Session.projectDuration = this._clipIndex[this._clipIndex.length - 1].time;
+            Ensemble.Editor.PlaybackMGR.primeTimer();
         },
 
         _listeners: {

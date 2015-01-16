@@ -146,7 +146,7 @@
                         case Ensemble.Events.Action.ActionType.importClip:
                             xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
                             xml.Attrib("destinationTrack", Ensemble.HistoryMGR._forwardStack[i]._payload.destinationTrack.toString());
-                            xml.Attrib("clipId", Ensemble.HistoryMGR._forwardStack[i]._payload.clipObj.id.toString());
+                            xml = Ensemble.FileIO._writeClipToXML(xml, Ensemble.HistoryMGR._forwardStack[i]._payload.clipObj);
                             break;
                         default:
                             console.error("Unable to save History Action to disk - unknown type.");

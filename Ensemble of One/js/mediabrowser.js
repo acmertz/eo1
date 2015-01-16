@@ -347,6 +347,14 @@
             }
 
             newClip.setPlayer(player);
+            let dimensions = Ensemble.Editor.Renderer.generateClipInitialPosition(player.videoWidth, player.videoHeight);
+            newClip.width = player.width = dimensions.width;
+            newClip.height = player.height = dimensions.height;
+            newClip.xcoord = dimensions.xcoord;
+            newClip.ycoord = dimensions.ycoord;
+
+            Ensemble.MediaBrowser.closeMediaPreview();
+            Ensemble.Pages.Editor.hideActionMenu();
 
             let clipImportAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.importClip,
                 {
