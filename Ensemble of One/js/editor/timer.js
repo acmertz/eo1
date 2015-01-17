@@ -1,6 +1,7 @@
 ﻿let breakpoints = [];
 let position = 0;
 
+let lastTime = 0;
 let offsetTime = 0;
 let startTime = 0;
 
@@ -14,37 +15,55 @@ function startTimer () {
 
 function stopTimer () {
     clearInterval(interval);
+    offsetTime = lastTime;
 }
 
 function processTime () {
-    let thisTime = Date.now() - startTime;
+    lastTime = (Date.now() - startTime) + offsetTime;
 
-    if (thisTime > breakpoints[breakpoints.length - 1]) {
+    if (lastTime > breakpoints[breakpoints.length - 1]) {
         postMessage({
             type: "time",
-            contents: breakpoints[breakpoints.length - 1]
+            contents: msToTime(breakpoints[breakpoints.length - 1])
         });
         postMessage({ type: "endOfPlayback" });
     }
     else {
         postMessage({
             type: "time",
-            contents: thisTime
+            contents: msToTime(lastTime)
         });
         for (let i = breakpoints.length - 1; i > -1; i--) {
-            if (thisTime > breakpoints[i]) {
+            if (lastTime > breakpoints[i]) {
                 // i is the current position in the index
                 if (i != position) {
                     // switching to a new position.
                     position = i;
-                    console.log("New position: " + position);
+                    console.log("New position: " + position + ", time: " + lastTime);
                     postMessage({ type: "newIndexPosition", contents: position });
                 }
+                break;
             }
         }
     }
 
     
+}
+
+function msToTime(s) {
+
+    function addZ(n) {
+        return (n < 10 ? '0' : '') + n;
+    }
+
+    var ms = s % 1000;
+    s = (s - ms) / 1000;
+    var secs = s % 60;
+    s = (s - secs) / 60;
+    var mins = s % 60;
+    var hrs = (s - mins) / 60;
+
+    return addZ(hrs) + ':' + addZ(mins) + ':' + addZ(secs) + '.' + ms;
 }
 
 

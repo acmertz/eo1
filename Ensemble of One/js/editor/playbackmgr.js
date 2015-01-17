@@ -59,7 +59,8 @@
             buttonPlayPause: null,
             buttonSkipBack: null,
             buttonSkipForward: null,
-            buttonFullScreen: null
+            buttonFullScreen: null,
+            timerDisplay: null
         },
 
         _refreshUI: function () {
@@ -67,6 +68,7 @@
             this.ui.buttonSkipBack = document.getElementById("editorSkipBackButton");
             this.ui.buttonSkipForward = document.getElementById("editorSkipForwardButton");
             this.ui.buttonFullScreen = document.getElementById("editorFullscreenButton");
+            this.ui.timerDisplay = document.getElementById("editorTimeDisplay");
 
             this.ui.buttonPlayPause.addEventListener("click", this._listeners.buttonPlayPause);
             this.ui.buttonSkipBack.addEventListener("click", this._listeners.buttonSkipBack);
@@ -84,6 +86,7 @@
             this.ui.buttonSkipBack = null;
             this.ui.buttonSkipForward = null;
             this.ui.buttonFullScreen = null;
+            this.ui.timerDisplay = null;
         },
 
         _listeners: {
@@ -110,19 +113,25 @@
             timerUpdate: function (message) {
                 switch (message.data.type) {
                     case "time":
+                        Ensemble.Editor.PlaybackMGR.ui.timerDisplay.innerText = message.data.contents;
                         break;
                     case "endOfPlayback":
                         Ensemble.Editor.PlaybackMGR.pause();
                         break;
                     case "newIndexPosition":
-                        for (let i = 0; i < Ensemble.Editor.TimelineMGR._clipIndex[message.data.contents].starting.length; i++) {
-                            Ensemble.Editor.TimelineMGR._clipIndex[message.data.contents].starting[i].play();
-                        }
-                        for (let i = 0; i < Ensemble.Editor.TimelineMGR._clipIndex[message.data.contents].stopping.length; i++) {
-                            Ensemble.Editor.TimelineMGR._clipIndex[message.data.contents].stopping[i].pause();
-                        }
                         Ensemble.Editor.TimelineMGR._clipIndexPosition = message.data.contents;
-                        break;
+                        if (Ensemble.Editor.PlaybackMGR.playing) {
+                            for (let i = 0; i < Ensemble.Editor.TimelineMGR._clipIndex[message.data.contents].starting.length; i++) {
+                                Ensemble.Editor.TimelineMGR._clipIndex[message.data.contents].starting[i].play();
+                            }
+                            for (let i = 0; i < Ensemble.Editor.TimelineMGR._clipIndex[message.data.contents].stopping.length; i++) {
+                                Ensemble.Editor.TimelineMGR._clipIndex[message.data.contents].stopping[i].pause();
+                            }
+                            break;
+                        }
+                        else {
+                            Ensemble.Editor.Renderer.renderSingleFrame();
+                        }
                 }
             }
         }

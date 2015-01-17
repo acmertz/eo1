@@ -765,7 +765,7 @@
                     if (timeList.indexOf(end) === -1) timeList.push(end);
                 }
             }
-            timeList.sort();
+            timeList.sort(function (a, b) { return a - b });
 
             if (timeList.length > 0 && timeList[0] != 0) timeList.unshift(0);
             this._timeIndex = _.clone(timeList);
@@ -782,7 +782,7 @@
                         let tempClip = this.tracks[k].clips[g];
                         if (tempClip.startTime === timeList[i].time) timeList[i].starting.push(tempClip);
                         if (tempClip.startTime + tempClip.duration === timeList[i].time) timeList[i].stopping.push(tempClip);
-                        if ((tempClip.startTime <= timeList[i].time) && (timeList[i].time <= tempClip.startTime + tempClip.duration)) timeList[i].renderList.push(tempClip);
+                        if ((tempClip.startTime <= timeList[i].time) && (timeList[i].time < tempClip.startTime + tempClip.duration)) timeList[i].renderList.push(tempClip);
                     }
                 }
             }
