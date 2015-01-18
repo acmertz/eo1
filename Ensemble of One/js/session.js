@@ -13,7 +13,8 @@
         projectTrackCount: null,
         projectDateCreated: null,
         projectDateModified: null,
-        maxResolution: [2560,1440],
+        maxResolution: [2560, 1440],
+        refreshRate: 0,
         //projectLoading: false,
 
         setCurrentPage: function (pageName) {

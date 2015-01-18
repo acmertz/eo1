@@ -4,7 +4,8 @@
 
         canPlay: false,
         playing: false,
-        currentTime: 0,
+        lastTime: 0,
+        lastTimeFriendly: "00:00:00.000",
         _index: [],
         _timer: null,
 
@@ -17,13 +18,9 @@
         unload: function () {
             this._cleanUI();
             this._timer.terminate();
-        },
-
-        reset: function () {
-            /// <summary>Resets the PlaybackMGR to its default state.</summary>
             this.canPlay = false;
-            this.currentTime = 0,
-            this._index = [];
+            this.lastTime = 0;
+            this.lastTimeFriendly = "00:00:00.000";
         },
 
         primeTimer: function () {
@@ -53,6 +50,11 @@
             this.playing = false;
             Ensemble.Editor.Renderer.stop();
             this.ui.buttonPlayPause.innerHTML = "&#xE102;";
+        },
+
+        seek: function (time) {
+            /// <summary>Seeks playback to the given time.</summary>
+            /// <param name="time" type="Number">The time in milliseconds.</param>
         },
 
         ui: {
@@ -113,7 +115,8 @@
             timerUpdate: function (message) {
                 switch (message.data.type) {
                     case "time":
-                        Ensemble.Editor.PlaybackMGR.ui.timerDisplay.innerText = message.data.contents;
+                        Ensemble.Editor.PlaybackMGR.lastTime = message.data.contents.ms;
+                        Ensemble.Editor.PlaybackMGR.lastTimeFriendly = message.data.contents.friendly;
                         break;
                     case "endOfPlayback":
                         Ensemble.Editor.PlaybackMGR.pause();

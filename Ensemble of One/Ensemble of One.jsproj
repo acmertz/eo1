@@ -99,6 +99,7 @@
     <Content Include="js\util\aspectgenerator.js" />
     <Content Include="js\util\friendlyResolutionGenerator.js" />
     <Content Include="js\util\mousetracker.js" />
+    <Content Include="js\util\screen.js" />
     <Content Include="js\util\timeConverter.js" />
     <Content Include="lib\font-awesome-4.1.0\css\font-awesome.css" />
     <Content Include="lib\font-awesome-4.1.0\css\font-awesome.min.css" />

@@ -24,14 +24,20 @@ function processTime () {
     if (lastTime > breakpoints[breakpoints.length - 1]) {
         postMessage({
             type: "time",
-            contents: msToTime(breakpoints[breakpoints.length - 1])
+            contents: {
+                friendly: msToTime(breakpoints[breakpoints.length - 1]),
+                ms: breakpoints[breakpoints.length - 1]
+            }
         });
         postMessage({ type: "endOfPlayback" });
     }
     else {
         postMessage({
             type: "time",
-            contents: msToTime(lastTime)
+            contents: {
+                friendly: msToTime(lastTime),
+                ms: lastTime
+            }
         });
         for (let i = breakpoints.length - 1; i > -1; i--) {
             if (lastTime > breakpoints[i]) {

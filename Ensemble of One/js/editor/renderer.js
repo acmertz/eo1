@@ -31,6 +31,7 @@
             for (let k = Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList.length - 1; k > -1; k--) {
                 Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList[k].drawToCanvas(this._playbackCanvasContext, this._scale);
             }
+            this.ui.timerDisplay.innerText = Ensemble.Editor.PlaybackMGR.lastTimeFriendly;
         },
 
 
@@ -39,6 +40,10 @@
             this.ui.playbackCanvas.setAttribute("width", this.ui.playbackCanvas.clientWidth);
             this.ui.playbackCanvas.setAttribute("height", this.ui.playbackCanvas.clientHeight);
             this._playbackCanvasContext = this.ui.playbackCanvas.getContext("2d");
+            try {
+                this.renderSingleFrame();
+            }
+            catch (exception) { }
         },
 
         generateClipInitialPosition: function (width, height) {
@@ -72,15 +77,18 @@
         },
 
         ui: {
-            playbackCanvas: null
+            playbackCanvas: null,
+            timerDisplay: null
         },
 
         _refreshUI: function () {
             this.ui.playbackCanvas = document.getElementById("editorCanvas");
+            this.ui.timerDisplay = document.getElementById("editorTimeDisplay");
         },
 
         _cleanUI: function () {
             this.ui.playbackCanvas = null;
+            this.ui.timerDisplay = null;
         },
 
         _listeners: {
