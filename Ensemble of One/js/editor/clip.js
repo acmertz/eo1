@@ -20,6 +20,7 @@
         {
             //Instance members
             id: null,
+            /// <summary>The file.</summary>
             file: null,
             name: null,
             duration: null,
@@ -36,11 +37,22 @@
 
 
             play: function () {
+                /// <summary>Begins playback of the Clip.</summary>
                 this._player.play();
             },
 
             pause: function () {
+                /// <summary>Pauses playback of the Clip.</summary>
                 this._player.pause();
+            },
+
+            seek: function (ms) {
+                /// <summary>Seeks the Clip to the given time in milliseconds.</summary>
+                /// <param name="ms" type="Number">The time in milliseconds.</param>
+                let seekTime = ms;
+                if (this.startTime > seekTime) seekTime = this.startTime;
+                else if (seekTime > this.startTime + this.duration) seekTime = this.startTime + this.duration;
+                this._player.currentTime = seekTime / 1000;
             },
 
             setPlayer: function (playerObj) {
@@ -50,6 +62,7 @@
                 this._player.controls = false;
                 this._player.msRealTime = true;
                 // todo: set relevant listeners on the player.
+                this._player.addEventListener("seeked", Ensemble.Editor.PlaybackMGR._listeners.clipSeeked);
             },
 
             drawToCanvas: function (context, scale) {

@@ -7,6 +7,9 @@
         _win8_supportedImageTypes: [".jpg", ".jpeg", ".png", ".gif", ".bmp"],
 
         _clipLoadBuffer: {},
+        _clipLoadTotal: 0,
+
+        _projectLoadBuffer: {},
 
         _pickItemsCallback: null,
         _pickItemsTempFiles: [],
@@ -31,6 +34,10 @@
 
             xml.BeginNode("DateModified");
             xml.WriteString(Date.now().toString(10));
+            xml.EndNode();
+
+            xml.BeginNode("NumberOfClips");
+            xml.WriteString(Ensemble.Session.projectClipCount.toString());
             xml.EndNode();
 
             xml.BeginNode("AspectRatio");
@@ -210,11 +217,15 @@
             /// <returns type="XMLWriter">The updated XML writer, including the new Clip.</returns>
             xml.BeginNode("Clip");
             xml.Attrib("id", clip.id.toString());
+            xml.Attrib("type", clip.type);
             xml.Attrib("name", clip.name);
             xml.Attrib("volume", clip.volume.toString());
             xml.Attrib("start", clip.startTime.toString());
             xml.Attrib("duration", clip.duration.toString());
-            xml.Attrib("type", clip.type);
+            xml.Attrib("xcoord", clip.xcoord.toString());
+            xml.Attrib("ycoord", clip.ycoord.toString());
+            xml.Attrib("width", clip.width.toString());
+            xml.Attrib("height", clip.height.toString());
             xml.Attrib("path", clip.file.path);
             xml.EndNode();
             return xml;
@@ -345,6 +356,7 @@
 
             var dateModified = new Date(parseInt(xmlDoc.getElementsByTagName("DateModified")[0].childNodes[0].nodeValue, 10));
             var dateCreated = new Date(parseInt(xmlDoc.getElementsByTagName("DateCreated")[0].childNodes[0].nodeValue, 10));
+            var numberOfClips = parseInt(xmlDoc.getElementsByTagName("NumberOfClips")[0].childNodes[0].nodeValue, 10);
             var aspectRatio = xmlDoc.getElementsByTagName("AspectRatio")[0].childNodes[0].nodeValue;
             var duration = parseInt(xmlDoc.getElementsByTagName("ProjectLength")[0].childNodes[0].nodeValue, 10);
             var thumbnailPath = "ms-appdata:///local/Projects/" + filename + ".jpg";
@@ -352,7 +364,6 @@
             var tracks = xmlDoc.getElementsByTagName("Tracks")[0].getElementsByTagName("Track");
             var freeTrackId = parseInt(xmlDoc.getElementsByTagName("Tracks")[0].getAttribute("FreeTrackId"));
             var freeClipId = parseInt(xmlDoc.getElementsByTagName("Tracks")[0].getAttribute("FreeClipId"));
-            var numberOfClips = xmlDoc.getElementsByTagName("MediaClip").length;
 
             var historyParent = xmlDoc.getElementsByTagName("History")[0];
             var undoParent = historyParent.getElementsByTagName("Undo")[0];
@@ -364,9 +375,9 @@
             Ensemble.Session.projectDuration = duration;
             Ensemble.Session.projectDateModified = dateModified;
             Ensemble.Session.projectDateCreated = dateCreated;
+            Ensemble.Session.projectClipCount = numberOfClips;
 
             //May be overridden during the rest of the load process due to missing or invalid clip references.
-            Ensemble.Session.projectClipCount = numberOfClips;
             Ensemble.Session.projectTrackCount = tracks.length;
             Ensemble.Editor.TimelineMGR._uniqueTrackID = freeTrackId;
             Ensemble.Editor.TimelineMGR._uniqueClipID = freeClipId;
@@ -409,7 +420,7 @@
                             break;
                         case Ensemble.Events.Action.ActionType.removeTrack:
                             let trackParent = undoActions[i].getElementsByTagName("Track")[0];
-                            let generatedTrack = Ensemble.FileIO._loadTrack(trackParent);
+                            let generatedTrack = Ensemble.FileIO._loadTrackFromXML(trackParent);
                             Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.removeTrack,
                                 {
                                     trackId: parseInt(undoActions[i].getAttribute("trackId"), 10),
@@ -467,7 +478,7 @@
                             break;
                         case Ensemble.Events.Action.ActionType.removeTrack:
                             let trackParent = redoActions[i].getElementsByTagName("Track")[0];
-                            let generatedTrack = Ensemble.FileIO._loadTrack(trackParent);
+                            let generatedTrack = Ensemble.FileIO._loadTrackFromXML(trackParent);
                             Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.removeTrack,
                                 {
                                     trackId: parseInt(redoActions[i].getAttribute("trackId"), 10),
@@ -486,33 +497,131 @@
             if (tracks.length > 0) {
                 //Create empty tracks
                 for (let i = 0; i < tracks.length; i++) {
-                    let loadedTrack = Ensemble.FileIO._loadTrack(tracks[i]);
-
-                    // todo: load clips
-
-                    Ensemble.Editor.TimelineMGR.addTrackAtIndex(loadedTrack, i);
-                    //Ensemble.Editor.TimelineMGR.createTrack(null, parseInt(tracks[i].getAttribute("trackId")), tracks[i].getAttribute("trackName"), parseFloat(tracks[i].getAttribute("trackVolume")));
+                    let loadedTrack = Ensemble.FileIO._loadTrackFromXML(tracks[i]);
+                    //Ensemble.Editor.TimelineMGR.addTrackAtIndex(loadedTrack, i);
+                    Ensemble.Editor.TimelineMGR.tracks.push(loadedTrack);
                 }
-
-                //For now, navigate to the Editor after generating the tracks.
-                Ensemble.Pages.MainMenu.navigateToEditor();
+                for (let i = 0; i < Ensemble.Editor.TimelineMGR.tracks.length; i++) {
+                    for (let k = 0; k < Ensemble.Editor.TimelineMGR.tracks[i].clips.length; k++) {
+                        Ensemble.FileIO._loadFileFromStub(Ensemble.Editor.TimelineMGR.tracks[i].clips[k], i, Ensemble.FileIO._projectFileStubLoaded);
+                    }
+                }
             }
-            else {
+            if (Ensemble.Session.projectClipCount == 0) {
                 //Fire callback. Project is empty (no tracks or media).
-                //Ensemble.FileIO._loadedProjectCallback();
                 Ensemble.Pages.MainMenu.navigateToEditor();
             }
         },
 
-        _loadTrack: function (xmlTrack) {
+        _loadFileFromStub: function (clip, payload, callback) {
+            /// <summary>Loads an EnsembleFile from disk for the given clip stub.</summary>
+            /// <param name="clip" type="Ensemble.Editor.Clip">The clip whose stub to load.</param>
+            /// <param name="payload" type="Object">A value to be passed to the callback upon load completion.</param>
+            /// <param name="callback" type="Function">A function to execute when the file has been loaded.</param>
+            (function () {
+                let clipObj = clip;
+                let payloadObj = payload;
+                let cb = callback;
+                switch (Ensemble.Platform.currentPlatform) {
+                    case "win8":
+                        Windows.Storage.StorageFile.getFileFromPathAsync(clipObj.file.path).done(function (loadedFile) {
+                            console.log("Loading file stub for clip with ID " + payloadObj + "...");
+                            let newFile = new Ensemble.EnsembleFile(loadedFile);
+                            newFile.mime = loadedFile.contentType;
+                            newFile.dateCreated = loadedFile.dateCreated;
+                            newFile.displayName = loadedFile.displayName;
+                            newFile.displayType = loadedFile.displayType;
+                            newFile.fileType = loadedFile.fileType.toLowerCase();
+                            newFile._uniqueId = loadedFile.folderRelativeId;
+                            newFile._winProperties = loadedFile.properties;
+                            newFile.fullName = loadedFile.name;
+                            newFile.path = loadedFile.path;
+                            if (newFile.mime.indexOf("audio") > -1) {
+                                newFile.icon = "&#xE189;";
+                                newFile.eo1type = "audio";
+                            }
+                            else if (newFile.mime.indexOf("video") > -1) {
+                                newFile.icon = "&#xE116;";
+                                newFile.eo1type = "video";
+                            }
+                            else if (newFile.mime.indexOf("image") > -1) {
+                                newFile.icon = "&#xE114;";
+                                newFile.eo1type = "picture";
+                            }
+                            else {
+                                console.log("File is of invalid MIME type.");
+                            }
+                            clipObj.file = newFile;
+                            cb(clipObj, payloadObj);
+                        });
+                        break;
+                    case "android":
+                        break;
+                    case "ios":
+                        break;
+                }
+            })();            
+        },
+
+        _projectFileStubLoaded: function (clip, payload) {
+            (function () {
+                let clipObj = clip;
+                let payloadObj = payload;
+                Ensemble.FileIO._projectLoadBuffer[clipObj.id] = clip;
+                console.log("File stub for clip with ID " + clipObj.id + " loaded!");
+                console.log("Loading file properties for clip with ID " + clipObj.id + "...");
+                // load media properties
+                Ensemble.FileIO.retrieveMediaProperties(clipObj.file, clipObj.id, Ensemble.FileIO._projectFilePropertiesLoaded);
+            })();
+        },
+
+        _projectFilePropertiesLoaded: function (id, properties) {
+            /// <param name="id" type="Number">The ID of the clip whose properties were just loaded.</param>
+            /// <param name="properties" type="Object">An object containing the clip's media properties.</param>
+            let clip = Ensemble.FileIO._projectLoadBuffer[id];
+            clip.file._winProperties = properties;
+            console.log("Loaded file properties for clip with ID " + id + "!");
+            console.log("Loading player for clip with ID " + id + "...");
+            Ensemble.FileIO.loadClip(clip.file, clip.id, Ensemble.FileIO._projectFilePlayerLoaded);
+        },
+
+        _projectFilePlayerLoaded: function (payload) {
+            let file = payload.file;
+            let id = payload.payload;
+            let player = payload.player;
+            Ensemble.FileIO._projectLoadBuffer[id].setPlayer(player);
+            console.log("Finished loading clip with ID " + id + ".");
+        },
+
+        _loadTrackFromXML: function (xmlTrack) {
             /// <summary>Generates a Track object from the given XML track root.</summary>
             /// <param name="xmlTrack" type="XMLDoc">The root of the Track in the XML file.</param>
             /// <returns type="Ensemble.Editor.Track">A finished track object.</returns>
             let createdTrack = new Ensemble.Editor.Track(parseInt(xmlTrack.getAttribute("trackId")), xmlTrack.getAttribute("trackName"), parseFloat(xmlTrack.getAttribute("trackVolume")));
-
-            // todo: create media clip objects
-
+            let clipParents = xmlTrack.getElementsByTagName("Clip");
+            for (let i = 0; i < clipParents.length; i++) {
+                createdTrack.clips.push(Ensemble.FileIO._loadClipFromXML(clipParents[i]));
+                this._clipLoadTotal++;
+            }
             return createdTrack;
+        },
+
+        _loadClipFromXML: function (xmlClip) {
+            /// <summary>Generates a Clip object from the given XML clip root.</summary>
+            /// <param name="xmlClip" type="XMLDoc">The root of the Clip in the XML file.</param>
+            /// <returns type="Ensemble.Editor.Clip">A finished Clip object, but without its media loaded.</returns>
+            let createdClip = new Ensemble.Editor.Clip(parseInt(xmlClip.getAttribute("id"), 10));
+            createdClip.type = xmlClip.getAttribute("type");
+            createdClip.name = xmlClip.getAttribute("name");
+            createdClip.volume = parseFloat(xmlClip.getAttribute("volume"), 10);
+            createdClip.startTime = parseInt(xmlClip.getAttribute("start"), 10);
+            createdClip.duration = parseInt(xmlClip.getAttribute("duration"), 10);
+            createdClip.xcoord = parseInt(xmlClip.getAttribute("xcoord"), 10);
+            createdClip.ycoord = parseInt(xmlClip.getAttribute("ycoord"), 10);
+            createdClip.width = parseInt(xmlClip.getAttribute("width"), 10);
+            createdClip.height = parseInt(xmlClip.getAttribute("height"), 10);
+            createdClip.file = { path: xmlClip.getAttribute("path") };
+            return createdClip;
         },
 
         loadClip: function (ensembleFile, payload, complete, progress, error) {
@@ -532,7 +641,7 @@
                 switch (Ensemble.Platform.currentPlatform) {
                     case "win8":
                         console.log("Loaded ensembleFile.");
-                        fileURI = URL.createObjectURL(file._src);
+                        fileURI = URL.createObjectURL(file._src, { oneTimeOnly: true });
                         break;
                     case "android":
                         break;
@@ -566,6 +675,7 @@
                     error: error
                 };
                 srcElement.setAttribute("data-eo1-uniqueid", file._uniqueId);
+                console.log("Setting src for EnsembleFile with uniqueId " + file._uniqueId + "...");
                 srcElement.src = fileURI;
             })();
         },
@@ -833,7 +943,7 @@
                                     //console.log("Retrieved video properties for the item at index " + index + ".");
                                     //console.log("Retrieved a thumbnail!");
                                     try {
-                                        callback(index, 'url(' + URL.createObjectURL(success) + ')', ensembleFile._uniqueId);
+                                        callback(index, 'url(' + URL.createObjectURL(success, { oneTimeOnly: true }) + ')', ensembleFile._uniqueId);
                                     }
                                     catch (exception) {
                                         //Item does not have a thumbnail.
@@ -860,7 +970,7 @@
             var returnVal = "";
             switch (Ensemble.Platform.currentPlatform) {
                 case "win8":
-                    returnVal = URL.createObjectURL(ensembleFile._src);
+                    returnVal = URL.createObjectURL(ensembleFile._src, { oneTimeOnly: true });
                     break;
                 case "ios":
                     break;

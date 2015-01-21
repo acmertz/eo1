@@ -757,14 +757,17 @@
         _rebuildIndex: function () {
             /// <summary>Rebuilds the index used as a target by the Renderer and the PlaybackMGR. WARNING: not safe to call during playback.</summary>
             let timeList = [];
+            let totalClipCount = 0;
             for (let i = 0; i < this.tracks.length; i++) {
                 for (let k = 0; k < this.tracks[i].clips.length; k++) {
                     let start = this.tracks[i].clips[k].startTime;
                     let end = this.tracks[i].clips[k].startTime + this.tracks[i].clips[k].duration;
                     if (timeList.indexOf(start) === -1) timeList.push(start);
                     if (timeList.indexOf(end) === -1) timeList.push(end);
+                    totalClipCount++;
                 }
             }
+            Ensemble.Session.projectClipCount = totalClipCount;
             timeList.sort(function (a, b) { return a - b });
 
             if (timeList.length > 0 && timeList[0] != 0) timeList.unshift(0);
