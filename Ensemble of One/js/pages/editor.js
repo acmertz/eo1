@@ -21,6 +21,12 @@
         showInitial: function () {
             /// <summary>Plays the Editor pagelaunch animation and attaches all event listeners.</summary>
 
+            Ensemble.Editor.TimelineMGR.init();
+            Ensemble.Editor.PlaybackMGR.init();
+            Ensemble.Editor.Renderer.init();
+            Ensemble.Editor.TimelineMGR._rebuildIndex();
+            Ensemble.Editor.Renderer.renderSingleFrame();
+
             //Hide UI items so they can play their entrance animation
             $(Ensemble.Editor.UI.PageSections.upperHalf.entireSection).removeClass("editorUpperHalfVisible");
             $(Ensemble.Editor.UI.PageSections.lowerHalf.entireSection).removeClass("editorLowerHalfVisible");
@@ -43,7 +49,6 @@
 
             //Update the Editor with the current settings
             this.layoutInterfaceToSplitpoint(Ensemble.Settings.getEditorDividerPosition() * window.innerHeight);
-            //Ensemble.Editor.TimelineMGR.setRowsVisible(Ensemble.Settings.getEditorTimelineRowsVisible());
             Ensemble.Editor.TimelineMGR.setRulerScale(Ensemble.Settings.getEditorRulerScale());
 
             $(Ensemble.Editor.UI.PageSections.upperHalf.entireSection).addClass("editorUpperHalfVisible");
@@ -51,10 +56,6 @@
             window.setTimeout(function () {
                 $(Ensemble.Editor.UI.PageSections.lowerHalf.entireSection).addClass("editorLowerHalfVisible");
             }, 100);
-            
-
-            //WinJS.UI.Animation.enterPage([upperHalf, lowerHalf], null).then(function () {
-            //});
 
             window.setTimeout(function () {
                 $(Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit).removeClass("editorHorizontalDividerHidden");
@@ -70,9 +71,7 @@
             this.currentEffectsMenuTab = null;
             this._attachListeners();
 
-            Ensemble.Editor.TimelineMGR.init();
-            Ensemble.Editor.PlaybackMGR.init();
-            Ensemble.Editor.Renderer.init();
+            
         },
 
         hide: function () {

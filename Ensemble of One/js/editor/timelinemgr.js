@@ -17,6 +17,8 @@
         init: function () {
             /// <summary>Links all UI references.</summary>
             this._refreshUI();
+
+            // todo: iterate through all tracks in the list and build their display.
         },
         
         unload: function () {

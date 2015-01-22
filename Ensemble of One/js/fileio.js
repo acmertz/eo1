@@ -7,9 +7,9 @@
         _win8_supportedImageTypes: [".jpg", ".jpeg", ".png", ".gif", ".bmp"],
 
         _clipLoadBuffer: {},
-        _clipLoadTotal: 0,
 
         _projectLoadBuffer: {},
+        _projectClipsFullyLoaded: 0,
 
         _pickItemsCallback: null,
         _pickItemsTempFiles: [],
@@ -501,6 +501,7 @@
                     //Ensemble.Editor.TimelineMGR.addTrackAtIndex(loadedTrack, i);
                     Ensemble.Editor.TimelineMGR.tracks.push(loadedTrack);
                 }
+                Ensemble.FileIO._projectClipsFullyLoaded = 0;
                 for (let i = 0; i < Ensemble.Editor.TimelineMGR.tracks.length; i++) {
                     for (let k = 0; k < Ensemble.Editor.TimelineMGR.tracks[i].clips.length; k++) {
                         Ensemble.FileIO._loadFileFromStub(Ensemble.Editor.TimelineMGR.tracks[i].clips[k], i, Ensemble.FileIO._projectFileStubLoaded);
@@ -591,6 +592,13 @@
             let player = payload.player;
             Ensemble.FileIO._projectLoadBuffer[id].setPlayer(player);
             console.log("Finished loading clip with ID " + id + ".");
+            Ensemble.FileIO._projectClipsFullyLoaded++;
+            if (Ensemble.FileIO._projectClipsFullyLoaded === Ensemble.Session.projectClipCount) {
+                console.info("Finished loading all clips!");
+                requestAnimationFrame(function () {
+                    Ensemble.Pages.MainMenu.navigateToEditor();
+                });
+            }
         },
 
         _loadTrackFromXML: function (xmlTrack) {
@@ -601,7 +609,6 @@
             let clipParents = xmlTrack.getElementsByTagName("Clip");
             for (let i = 0; i < clipParents.length; i++) {
                 createdTrack.clips.push(Ensemble.FileIO._loadClipFromXML(clipParents[i]));
-                this._clipLoadTotal++;
             }
             return createdTrack;
         },
