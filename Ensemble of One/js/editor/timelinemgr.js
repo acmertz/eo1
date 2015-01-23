@@ -10,9 +10,9 @@
         _uniqueClipID: 0,
         _displayScale: 10, //milliseconds per pixel
         _trackVolumeRollback: 0, //original value for the volume flyout
-        _trackEditId: 0,
-        _currentTrackHeight: 0,
-        _currentScrollIndex: 0,
+        _trackEditId: 0, //ID of the track being edited
+        _currentTrackHeight: 0, //current height of a single Track in the Timeline display
+        _currentScrollIndex: 0, //current scroll position. should usually be in the negatives.
 
         init: function () {
             /// <summary>Links all UI references.</summary>
@@ -154,34 +154,6 @@
             $(trackNum).text(destination + 1);
             var movingItem = this.tracks.splice(origin, 1)[0];
             this.tracks.splice(destination, 0, movingItem);
-
-            // Animate the affected tracks
-            //for (let i = 0; i < affected.length; i++) {
-            //    let trackNum = $(affected[i]).find(".trackNum");
-            //    $(trackNum).text(parseInt($(trackNum).text(), 10) + affectedDif);
-            //    $(affected[i]).css("transition", "");
-            //    $(affected[i]).css("transform", "translateY(" + affectedTransformPercentage + "%)");
-            //    $(affected[i]).width();
-            //    $(affected[i]).css("transition", "transform " + animationDur + "ms ease");
-            //    $(affected[i]).css("transform", "translateY(0px)");
-            //}
-            
-            //// Animate the track that moved.
-            //$(trackHeader).css("transition", "");
-            //$(trackHeader).css("transform", "translateY(" + trackTransformPercentage + "%)");
-            //$(trackControl).css("transition", "");
-            //$(trackControl).css("transform", "translateY(" + trackTransformPercentage + "%)");
-            //$(trackItself).css("transform", "");
-            //$(trackItself).css("transform", "translateY(" + trackTransformPercentage + "%)");
-
-            //$(trackHeader).width(); // force the layout to be recomputed between track transform changes.
-
-            //$(trackHeader).css("transition", "transform " + animationDur + "ms ease");
-            //$(trackHeader).css("transform", "translateY(0px)");
-            //$(trackControl).css("transition", "transform " + animationDur + "ms ease");
-            //$(trackControl).css("transform", "translateY(0px)");
-            //$(trackItself).css("transition", "transform " + animationDur + "ms ease");
-            //$(trackItself).css("transform", "translateY(0px)");
         },
 
         getTrackById: function (idval) {
@@ -318,22 +290,11 @@
                 htmlStr = htmlStr + "<div class='timeLabel' style='left: " + (chunkSize * (i + 1)) + "px;'>Label</div>";
             }
 
-            //for (var i = 0; i < timeSec; i++) {
-            //    htmlStr = htmlStr + "<div class='timeChunk timeChunkLarge' style='width:" + widthPerSecond + "px;'>" + i + "</div>";
-            //}
+            for (var i = 0; i < timeSec; i++) {
+                htmlStr = htmlStr + "<div class='timeChunk timeChunkLarge' style='width:" + widthPerSecond + "px;'>" + i + "</div>";
+            }
 
-            Ensemble.Editor.UI.PageSections.lowerHalf.timelineRuler.innerHTML = htmlStr;
-
-            //Ensemble.Editor.UI.PageSections.lowerHalf.timelineRuler.style.transition = "0.1s transform ease";
-            //Ensemble.Editor.UI.PageSections.lowerHalf.timelineRuler.style.transform = "translateY(100%)";
-            //setTimeout(function () {
-            //    Ensemble.Editor.UI.PageSections.lowerHalf.timelineRuler.innerHTML = htmlStr;
-            //    Ensemble.Editor.UI.PageSections.lowerHalf.timelineRuler.style.transform = "";
-            //    setTimeout(function () {
-            //        Ensemble.Editor.UI.PageSections.lowerHalf.timelineRuler.style.transition = "none";
-            //    }, 200);
-            //}, 200);
-            
+            Ensemble.Editor.UI.PageSections.lowerHalf.timelineRuler.innerHTML = htmlStr;            
         },
 
         zoomIn: function () {

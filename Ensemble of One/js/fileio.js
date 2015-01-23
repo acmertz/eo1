@@ -581,24 +581,26 @@
             /// <param name="properties" type="Object">An object containing the clip's media properties.</param>
             let clip = Ensemble.FileIO._projectLoadBuffer[id];
             clip.file._winProperties = properties;
-            console.log("Loaded file properties for clip with ID " + id + "!");
             console.log("Loading player for clip with ID " + id + "...");
             Ensemble.FileIO.loadClip(clip.file, clip.id, Ensemble.FileIO._projectFilePlayerLoaded);
         },
 
-        _projectFilePlayerLoaded: function (payload) {
-            let file = payload.file;
-            let id = payload.payload;
-            let player = payload.player;
-            Ensemble.FileIO._projectLoadBuffer[id].setPlayer(player);
-            console.log("Finished loading clip with ID " + id + ".");
-            Ensemble.FileIO._projectClipsFullyLoaded++;
-            if (Ensemble.FileIO._projectClipsFullyLoaded === Ensemble.Session.projectClipCount) {
-                console.info("Finished loading all clips!");
-                requestAnimationFrame(function () {
-                    Ensemble.Pages.MainMenu.navigateToEditor();
-                });
-            }
+        _projectFilePlayerLoaded: function (payloadObj) {
+            (function () {
+                let payload = payloadObj;
+                let file = payload.file;
+                let id = payload.payload;
+                let player = payload.player;
+                Ensemble.FileIO._projectLoadBuffer[id].setPlayer(player);
+                console.log("Finished loading clip with ID " + id + ".");
+                Ensemble.FileIO._projectClipsFullyLoaded++;
+                if (Ensemble.FileIO._projectClipsFullyLoaded === Ensemble.Session.projectClipCount) {
+                    console.info("Finished loading all clips!");
+                    requestAnimationFrame(function () {
+                        Ensemble.Pages.MainMenu.navigateToEditor();
+                    });
+                }
+            })();
         },
 
         _loadTrackFromXML: function (xmlTrack) {
@@ -647,7 +649,6 @@
                 var fileURI = null;
                 switch (Ensemble.Platform.currentPlatform) {
                     case "win8":
-                        console.log("Loaded ensembleFile.");
                         fileURI = URL.createObjectURL(file._src, { oneTimeOnly: true });
                         break;
                     case "android":
@@ -662,20 +663,24 @@
                         srcElement = document.createElement("video");
                         //srcElement.oncanplaythrough = function () { console.log("Video clip finished loading!"); };
                         srcElement.oncanplaythrough = Ensemble.FileIO._clipFinishedLoading;
+                        srcElement.onerror = Ensemble.FileIO._clipLoadError;
                         break;
                     case "audio":
                         srcElement = document.createElement("audio");
                         //srcElement.oncanplaythrough = function () { console.log("Audio clip finished loading!"); };
                         srcElement.oncanplaythrough = Ensemble.FileIO._clipFinishedLoading;
+                        srcElement.onerror = Ensemble.FileIO._clipLoadError;
                         break;
                     case "picture":
                         srcElement = document.createElement("img");
                         //srcElement.onload = function () { console.log("Image loaded!"); };
                         srcElement.onload = Ensemble.FileIO._clipFinishedLoading;
+                        srcElement.onerror = Ensemble.FileIO._clipLoadError;
                         break;
                 }
                 Ensemble.FileIO._clipLoadBuffer[file._uniqueId] = {
                     file: file,
+                    player: srcElement,
                     payload: payload,
                     complete: complete,
                     progress: progress,
@@ -687,22 +692,25 @@
             })();
         },
 
-        _clipFinishedLoading: function (event) {
-            var clipUniqueId = event.currentTarget.getAttribute("data-eo1-uniqueid");
-            var bufferItem = Ensemble.FileIO._clipLoadBuffer[clipUniqueId];
+        _clipFinishedLoading: function (eventObj) {
+            (function () {
+                let event = eventObj;
+                let clipUniqueId = event.currentTarget.getAttribute("data-eo1-uniqueid");
+                let bufferItem = Ensemble.FileIO._clipLoadBuffer[clipUniqueId];
 
-            var ensembleFile = bufferItem.file;
-            var payload = bufferItem.payload;
-            var callback = bufferItem.complete;
-            var srcPlayer = event.currentTarget;
+                let ensembleFile = bufferItem.file;
+                let payload = bufferItem.payload;
+                let callback = bufferItem.complete;
+                let srcPlayer = event.currentTarget;
 
-            delete Ensemble.FileIO._clipLoadBuffer[clipUniqueId];
+                delete Ensemble.FileIO._clipLoadBuffer[clipUniqueId];
 
-            callback({
-                file: ensembleFile,
-                payload: payload,
-                player: srcPlayer
-            });
+                callback({
+                    file: ensembleFile,
+                    payload: payload,
+                    player: srcPlayer
+                });
+            })();
         },
 
         _clipLoadError: function (event) {
