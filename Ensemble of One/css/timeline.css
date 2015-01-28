@@ -1,0 +1,29 @@
+﻿.timeline-clip {
+    box-sizing: border-box;
+    padding: 10px 10px 10px 0;
+    border: 1px solid #ECECEC;
+    height: 100%;
+    background-image: url("/img/crossword.png");
+    position: absolute;
+    top: 0px;
+    overflow: hidden;
+    /*background-image: url("/img/clip-film-reel-edge.png");
+    background-repeat: repeat-x;
+    background-size: 20px 100%;*/
+}
+
+.timeline-clip__thumb {
+    background-color: #808080;
+    height: calc(100% + 20px);
+    width: 100px;
+    float: left;
+    margin: -10px 10px 0 0;
+}
+
+.timeline-clip__icon {
+
+}
+
+.timeline-clip__title {
+
+}

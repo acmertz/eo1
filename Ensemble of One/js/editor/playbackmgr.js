@@ -6,7 +6,9 @@
         playing: false,
         lastTime: 0,
         lastTimeFriendly: "00:00:00.000",
-        _index: [],
+        _clipSeekCount: 0,
+        _seekDestination: 0,
+        _renderNextTimeUpdate: false,
         _timer: null,
 
         init: function () {
@@ -35,6 +37,9 @@
             /// <summary>Begins playback from the current position in the project.</summary>
             this.playing = true;
             this._timer.postMessage({ type: "startTimer" });
+            for (let i = 0; i < Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList.length; i++) {
+                Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList[i].play();
+            }
             Ensemble.Editor.Renderer.start();
             this.ui.buttonPlayPause.innerHTML = "&#xE103;";
         },
@@ -55,6 +60,15 @@
         seek: function (time) {
             /// <summary>Seeks playback to the given time.</summary>
             /// <param name="time" type="Number">The time in milliseconds.</param>
+            this._clipSeekCount = 0;
+            this._seekDestination = time;
+            if (this._seekDestination > Ensemble.Session.projectDuration) this._seekDestination = Ensemble.Session.projectDuration;
+            else if (0 > this._seekDestination) this._seekDestination = 0;
+            for (let i = 0; i < Ensemble.Editor.TimelineMGR.tracks.length; i++) {
+                for (let k = 0; k < Ensemble.Editor.TimelineMGR.tracks[i].clips.length; k++) {
+                    Ensemble.Editor.TimelineMGR.tracks[i].clips[k].seek(this._seekDestination);
+                }
+            }
         },
 
         ui: {
@@ -117,6 +131,10 @@
                     case "time":
                         Ensemble.Editor.PlaybackMGR.lastTime = message.data.contents.ms;
                         Ensemble.Editor.PlaybackMGR.lastTimeFriendly = message.data.contents.friendly;
+                        if (Ensemble.Editor.PlaybackMGR._renderNextTimeUpdate) {
+                            Ensemble.Editor.PlaybackMGR._renderNextTimeUpdate = false;
+                            requestAnimationFrame(function () { Ensemble.Editor.Renderer.renderSingleFrame(); });
+                        }
                         break;
                     case "endOfPlayback":
                         Ensemble.Editor.PlaybackMGR.pause();
@@ -133,8 +151,19 @@
                             break;
                         }
                         else {
-                            Ensemble.Editor.Renderer.renderSingleFrame();
+                            //Ensemble.Editor.Renderer.renderSingleFrame();
                         }
+                }
+            },
+
+            clipSeeked: function (event) {
+                /// <summary>Fires when a clip finishes seeking. After all clips in the project have finished seeking, render a single frame.</summary>
+                Ensemble.Editor.PlaybackMGR._clipSeekCount++;
+                if (Ensemble.Editor.PlaybackMGR._clipSeekCount == Ensemble.Session.projectClipCount) {
+                    console.log("Finished seeking.");
+                    //setTimeout(function () { Ensemble.Editor.Renderer.renderSingleFrame(); }, 0);
+                    Ensemble.Editor.PlaybackMGR._renderNextTimeUpdate = true;
+                    Ensemble.Editor.PlaybackMGR._timer.postMessage({ type: "seeked", contents: Ensemble.Editor.PlaybackMGR._seekDestination });
                 }
             }
         }

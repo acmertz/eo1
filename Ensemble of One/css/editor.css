@@ -421,6 +421,7 @@
 #timeline-track-container .timeline-track--content {
     box-sizing: border-box;
     white-space: nowrap;
+    position: relative;
 }
 
 #editorPageContainer #editorMenuButton, .editorMenuButtonPlaceholder {

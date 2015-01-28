@@ -10,7 +10,7 @@ let interval = null;
 function startTimer () {
     startTime = Date.now();
     interval = setInterval(processTime, 16);
-    postMessage({ type: "newIndexPosition", contents: position });
+    //postMessage({ type: "newIndexPosition", contents: position });
 }
 
 function stopTimer () {
@@ -39,24 +39,33 @@ function processTime () {
                 ms: lastTime
             }
         });
-        for (let i = breakpoints.length - 1; i > -1; i--) {
-            if (lastTime > breakpoints[i]) {
-                // i is the current position in the index
-                if (i != position) {
-                    // switching to a new position.
-                    position = i;
-                    console.log("New position: " + position + ", time: " + lastTime);
-                    postMessage({ type: "newIndexPosition", contents: position });
-                }
-                break;
+        checkBreakpoints();
+    }
+}
+
+function checkBreakpoints() {
+    /// <summary>Checks to see if the rendering/playback breakpoint has changed.</summary>
+    for (let i = breakpoints.length - 1; i > -1; i--) {
+        if (lastTime > breakpoints[i]) {
+            // i is the current position in the index
+            if (i != position) {
+                // switching to a new position.
+                position = i;
+                console.log("New position: " + position + ", time: " + lastTime);
+                postMessage({ type: "newIndexPosition", contents: position });
             }
+            break;
         }
     }
-
-    
 }
 
 function msToTime(s) {
+
+    function addZms(n) {
+        if (n < 10) return "00" + n;
+        else if (n < 100) return "0" + n;
+        else return n;
+    }
 
     function addZ(n) {
         return (n < 10 ? '0' : '') + n;
@@ -69,7 +78,7 @@ function msToTime(s) {
     var mins = s % 60;
     var hrs = (s - mins) / 60;
 
-    return addZ(hrs) + ':' + addZ(mins) + ':' + addZ(secs) + '.' + ms;
+    return addZ(hrs) + ':' + addZ(mins) + ':' + addZ(secs) + '.' + addZ(ms);
 }
 
 
@@ -83,6 +92,18 @@ this.addEventListener("message", function (message) {
             break;
         case "stopTimer":
             stopTimer();
+            break;
+        case "seeked":
+            offsetTime = message.data.contents;
+            lastTime = message.data.contents;
+            checkBreakpoints();
+            postMessage({
+                type: "time",
+                contents: {
+                    friendly: msToTime(offsetTime),
+                    ms: offsetTime
+                }
+            });
             break;
         default:
             console.log("Timer received a message: " + message.data.contents);
