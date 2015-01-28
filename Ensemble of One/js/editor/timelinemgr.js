@@ -19,6 +19,15 @@
             this._refreshUI();
 
             // todo: iterate through all tracks in the list and build their display.
+            for (let i = 0; i < this.tracks.length; i++) {
+                let entireTrack = this._buildTrackDisplay(this.tracks[i]);
+                for (let k = 0; k < this.tracks[i].clips.length; k++) {
+                    entireTrack.content.appendChild(this._buildClipDisplay(this.tracks[i].clips[k]));
+                }
+                Ensemble.Editor.UI.PageSections.lowerHalf.timelineHeaders.appendChild(entireTrack.header);
+                Ensemble.Editor.UI.PageSections.lowerHalf.timelineDetails.appendChild(entireTrack.detail);
+                Ensemble.Editor.UI.PageSections.lowerHalf.timelineTracks.appendChild(entireTrack.content);
+            }
         },
         
         unload: function () {
@@ -46,7 +55,15 @@
             var newTrack = new Ensemble.Editor.Track(idToUse, nameToUse, volumeToUse);
             this.tracks.push(newTrack);
             Ensemble.Session.projectTrackCount = this.tracks.length;
-            Ensemble.Editor.TimelineMGR._buildTrackDisplay(newTrack);
+            let trackDisplayObj = Ensemble.Editor.TimelineMGR._buildTrackDisplay(newTrack);
+            
+            // Append the track to the end.
+            Ensemble.Editor.UI.PageSections.lowerHalf.timelineHeaders.appendChild(trackDisplayObj.header);
+            Ensemble.Editor.UI.PageSections.lowerHalf.timelineDetails.appendChild(trackDisplayObj.detail);
+            Ensemble.Editor.UI.PageSections.lowerHalf.timelineTracks.appendChild(trackDisplayObj.content);
+
+            this.refreshTrackNumbers();
+
             return newTrack.id;
         },
 
@@ -56,7 +73,14 @@
             /// <param name="index" type="Number">The position where the track should be added.</param>
             this.tracks.splice(index, 0, track);
             Ensemble.Session.projectTrackCount = this.tracks.length;
-            Ensemble.Editor.TimelineMGR._buildTrackDisplay(track, index);
+            let trackDisplayObj = Ensemble.Editor.TimelineMGR._buildTrackDisplay(track, index);
+
+        
+            // Insert the track before the item at the given index.
+            $(Ensemble.Editor.UI.PageSections.lowerHalf.timelineHeaders).find(".timeline-track--header").eq(index).before(trackDisplayObj.header);
+            $(Ensemble.Editor.UI.PageSections.lowerHalf.timelineDetails).find(".timeline-track--controls").eq(index).before(trackDisplayObj.detail);
+            $(Ensemble.Editor.UI.PageSections.lowerHalf.timelineTracks).find(".timeline-track--content").eq(index).before(trackDisplayObj.content);
+            this.refreshTrackNumbers();
         },
 
         removeTrack: function (trackId) {
@@ -93,6 +117,11 @@
                 clipObj.startTime = targetTrack.firstFreeSlot(offendingClip.startTime + offendingClip.duration, clipObj.duration);
             }
             targetTrack.insertClip(clipObj);
+
+            let targetTrackEl = document.getElementById(this._buildTrackDOMId(targetTrack.id));
+            let newClipEl = this._buildClipDisplay(clipObj);
+            targetTrackEl.appendChild(newClipEl);
+
             this._rebuildIndex();
             setTimeout(function () {
                 Ensemble.Editor.Renderer.renderSingleFrame();
@@ -294,7 +323,17 @@
                 htmlStr = htmlStr + "<div class='timeChunk timeChunkLarge' style='width:" + widthPerSecond + "px;'>" + i + "</div>";
             }
 
-            Ensemble.Editor.UI.PageSections.lowerHalf.timelineRuler.innerHTML = htmlStr;            
+            Ensemble.Editor.UI.PageSections.lowerHalf.timelineRuler.innerHTML = htmlStr;
+
+            // now update the widths/positions of all the clips.
+
+            for (let i = 0; i < this.tracks.length; i++) {
+                for (let k = 0; k < this.tracks[i].clips.length; k++) {
+                    let clipEl = document.getElementById(this._buildClipDOMId(this.tracks[i].clips[k].id));
+                    clipEl.style.width = Ensemble.Settings.getEditorRulerScale() * this.tracks[i].clips[k].duration + "px";
+                    clipEl.style.left = Ensemble.Settings.getEditorRulerScale() * this.tracks[i].clips[k].startTime + "px";
+                }
+            }
         },
 
         zoomIn: function () {
@@ -372,9 +411,41 @@
             }
         },
 
+        _buildClipDisplay: function (clip) {
+            /// <param name="clip" type="Ensemble.Editor.Clip">The Clip to represent on the timeline.</param>
+            /// <returns>A new DOM element representing the clip.</returns>
+
+            let clipEl = document.createElement("div");
+            clipEl.id = Ensemble.Editor.TimelineMGR._buildClipDOMId(clip.id);
+            clipEl.className = "timeline-clip";
+            clipEl.style.width = Math.floor(Ensemble.Settings.getEditorRulerScale() * clip.duration) + "px";
+            clipEl.style.left = Math.floor(Ensemble.Settings.getEditorRulerScale() * clip.startTime) + "px";
+
+            let thumbEl = document.createElement("img");
+            thumbEl.className = "timeline-clip__thumb";
+
+            let titleEl = document.createElement("div");
+            let titleIcon = document.createElement("span");
+            titleIcon.className = "timeline-clip__icon";
+            titleIcon.innerHTML = clip.file.icon + "&nbsp;";
+
+            let titleText = document.createElement("span");
+            titleText.className = "timeline-clip__title";
+            titleText.innerText = clip.name;
+
+            titleEl.appendChild(titleIcon);
+            titleEl.appendChild(titleText);
+
+            clipEl.appendChild(thumbEl);
+            clipEl.appendChild(titleEl);
+
+            return clipEl;
+        },
+
         _buildTrackDisplay: function (track, index) {
             /// <param name="track" type="Ensemble.Editor.Track">The track to represent on the timeline.</param>
-            /// <param name="index" type="Ensemble.Editor.Track">Optional. The position to insert the track in the array.</param>
+            /// <param name="index" type="Number">The index of the track in the list of tracks.</param>
+            /// <returns type="Object">An object with three parts: header, details, and content.</returns>
 
             var trackNumber = Ensemble.Editor.UI.PageSections.lowerHalf.timelineHeaders.childNodes.length + 1;
             if (index != null) trackNumber = index + 1;
@@ -446,25 +517,12 @@
             var trackContent = document.createElement("div");
             trackContent.className = "timeline-track timeline-track--content";
             trackContent.style.height = trackHeight;
-            trackContent.innerText = "Track content here.";
             trackContent.id = this._buildTrackDOMId(track.id);
-
-            var trackContainer = document.createElement("div");
-            trackContainer.className = "timeline-track";
-            trackContainer.style.height = trackHeight;
-            
-            if ((index == null) || (index == undefined) || (index && index >= this.tracks.length - 1) || ($(Ensemble.Editor.UI.PageSections.lowerHalf.timelineHeaders).find(".timeline-track--header").length == 0) ) {
-                // Append the track to the end.
-                Ensemble.Editor.UI.PageSections.lowerHalf.timelineHeaders.appendChild(trackHeader);
-                Ensemble.Editor.UI.PageSections.lowerHalf.timelineDetails.appendChild(trackDetail);
-                Ensemble.Editor.UI.PageSections.lowerHalf.timelineTracks.appendChild(trackContent);
-            }
-            else {
-                // Insert the track before the item at the given index.
-                $(Ensemble.Editor.UI.PageSections.lowerHalf.timelineHeaders).find(".timeline-track--header").eq(index).before(trackHeader);
-                $(Ensemble.Editor.UI.PageSections.lowerHalf.timelineDetails).find(".timeline-track--controls").eq(index).before(trackDetail);
-                $(Ensemble.Editor.UI.PageSections.lowerHalf.timelineTracks).find(".timeline-track--content").eq(index).before(trackContent);
-            }
+            return {
+                header: trackHeader,
+                detail: trackDetail,
+                content: trackContent
+            };
         },
 
         _buildTrackDOMId: function (idval) {
@@ -477,6 +535,10 @@
 
         _buildTrackDetailId: function (idval) {
             return "timeline-track--controls" + idval;
+        },
+
+        _buildClipDOMId: function (idval) {
+            return "timeline__clip" + idval;
         },
 
         _showTrackControls: function (event) {
