@@ -17,9 +17,18 @@
             _payload:  null,
 
 
-            isCompound: function () {
+            isCompound: function (undoing) {
                 /// <summary>Indicates whether or not the Action is a compound Action (causes other Actions to occur automatically; i.e., removing a Track also removes all instances of MediaClip that it contains).</summary>
+                /// <param name="undoing" type="Boolean">A Boolean indicating that the Action is going to be undone (the answer may vary depending on whether the action will be performed or undone).</param>
                 /// <returns type="Boolean">A Boolean value indicating whether or not the Action is compound.</returns>
+                let returnVal = false;
+                if (undoing) {
+                    
+                }
+                else {
+                    if (this._type == Ensemble.Events.Action.ActionType.importClip) returnVal = true;
+                }
+                return returnVal;
             },
 
             performAction: function () {

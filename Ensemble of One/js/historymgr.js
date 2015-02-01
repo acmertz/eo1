@@ -4,14 +4,22 @@
 
         _forwardStack: [],
         _backStack: [],
+        _callback: null,
 
-        performAction: function (action) {
+        performAction: function (action, cb) {
             /// <summary>Adds an action to the history stack and performs the action.</summary>
             /// <param name="action" type="Ensemble.Events.Action">The action to perform.</param>
-            action.performAction();
-            Ensemble.HistoryMGR._backStack.push(action);
-            Ensemble.HistoryMGR._forwardStack = [];
-            setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
+            /// <param name="cb" type="Function">Optional. The callback to execute upon completion of the Action.</param>
+            if (cb && cb != null) {
+
+            }
+
+            else {
+                action.performAction();
+                Ensemble.HistoryMGR._backStack.push(action);
+                Ensemble.HistoryMGR._forwardStack = [];
+                setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
+            }
         },
 
         createActionFromXML: function (historyType, xml) {

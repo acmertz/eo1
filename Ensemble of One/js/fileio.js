@@ -105,7 +105,6 @@
                             break;
                         case Ensemble.Events.Action.ActionType.importClip:
                             xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
-                            xml.Attrib("destinationTrack", Ensemble.HistoryMGR._backStack[i]._payload.destinationTrack.toString());
                             xml.Attrib("clipId", Ensemble.HistoryMGR._backStack[i]._payload.clipObj.id.toString());
                             break;
                         default:
@@ -433,7 +432,11 @@
                         ));
                     }
                     else if (actionType === Ensemble.Events.Action.ActionType.importClip) {
-                        
+                        Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.importClip,
+                            {
+                                clipId: parseInt(undoActions[i].getAttribute("clipId"), 10)
+                            }
+                        ));
                     }
                     else {
                         console.error("Unable to load History Action from disk - unknown type.");
@@ -492,7 +495,8 @@
                         ));
                     }
                     else if (actionType === Ensemble.Events.Action.ActionType.importClip) {
-
+                        let clipParent = redoActions[i].getElementsByTagName("Clip")[0];
+                        let generatedClip = Ensemble.FileIO._loadClipFromXML(clipParent);
                     }
                     else {
                         console.error("Unable to load History Action from disk - unknown type.");
