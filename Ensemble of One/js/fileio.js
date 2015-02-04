@@ -105,7 +105,7 @@
                             break;
                         case Ensemble.Events.Action.ActionType.importClip:
                             xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
-                            xml.Attrib("clipId", Ensemble.HistoryMGR._backStack[i]._payload.clipObj.id.toString());
+                            xml.Attrib("clipId", Ensemble.HistoryMGR._backStack[i]._payload.clipId.toString());
                             break;
                         default:
                             console.error("Unable to save History Action to disk - unknown type.");
@@ -524,15 +524,17 @@
             }
         },
 
-        _loadFileFromStub: function (clip, payload, callback) {
+        _loadFileFromStub: function (clip, payload, callback, loadClip) {
             /// <summary>Loads an EnsembleFile from disk for the given clip stub.</summary>
             /// <param name="clip" type="Ensemble.Editor.Clip">The clip whose stub to load.</param>
             /// <param name="payload" type="Object">A value to be passed to the callback upon load completion.</param>
             /// <param name="callback" type="Function">A function to execute when the file has been loaded.</param>
+            /// <param name="loadClip" type="Boolean">Optional. If true, goes on and loads the clip as well before firing the callback.</param>
             (function () {
                 let clipObj = clip;
                 let payloadObj = payload;
                 let cb = callback;
+                let continueLoad = loadClip;
                 switch (Ensemble.Platform.currentPlatform) {
                     case "win8":
                         Windows.Storage.StorageFile.getFileFromPathAsync(clipObj.file.path).done(function (loadedFile) {
@@ -563,7 +565,11 @@
                                 console.log("File is of invalid MIME type.");
                             }
                             clipObj.file = newFile;
-                            cb(clipObj, payloadObj);
+
+                            if (continueLoad) {
+                                Ensemble.FileIO.loadClip(clipObj.file, clipObj, cb);
+                            }
+                            else cb(clipObj, payloadObj);
                         });
                         break;
                     case "android":

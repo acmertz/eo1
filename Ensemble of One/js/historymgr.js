@@ -4,14 +4,17 @@
 
         _forwardStack: [],
         _backStack: [],
-        _callback: null,
+        _pendingAction: null,
+        _pendingCallback: null,
 
         performAction: function (action, cb) {
             /// <summary>Adds an action to the history stack and performs the action.</summary>
             /// <param name="action" type="Ensemble.Events.Action">The action to perform.</param>
             /// <param name="cb" type="Function">Optional. The callback to execute upon completion of the Action.</param>
             if (cb && cb != null) {
-
+                this._pendingAction = action;
+                this._pendingCallback = cb;
+                this._pendingAction.performAction(this._actionCompleted);
             }
 
             else {
@@ -22,10 +25,12 @@
             }
         },
 
-        createActionFromXML: function (historyType, xml) {
-            /// <summary>Creates and saves (but does not execute) an Action based on the given XML object.</summary>
-            /// <param name="historyType" type="String">The type of history Action. Must be one of "undo" or "redo".</param>
-            /// <param name="xml">An XML object representing the root node of the Action as it is represented in the .eo1 file format.</param>
+        _actionCompleted: function (params) {
+            Ensemble.HistoryMGR._pendingAction.finish(params);
+            Ensemble.HistoryMGR._backStack.push(Ensemble.HistoryMGR._pendingAction);
+            Ensemble.HistoryMGR._forwardStack = [];
+            Ensemble.HistoryMGR._pendingCallback();
+            setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
         },
 
         undoLast: function () {
