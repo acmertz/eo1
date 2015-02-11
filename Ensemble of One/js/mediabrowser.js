@@ -336,48 +336,8 @@
 
         _addPreviewToLayerLoadFinished: function (clipObj) {
             /// <param name="clipObj" type="Object">The loaded Clip, ready for playback and rendering.</param>
-            //console.log("Media browser received the loaded preview clip.");
-
-            //var eFile = clipObj.file;
-            //var destinationTrack = clipObj.payload.trackId;
-            //var destinationTime = clipObj.payload.projectTime;
-            //var player = clipObj.player;
-
-            //var newClip = new Ensemble.Editor.Clip(null);
-            //newClip.duration = eFile.duration;
-            //newClip.name = eFile.title || eFile.displayName;
-            //newClip.file = eFile;
-            //switch (eFile.eo1type) {
-            //    case "video":
-            //        newClip.type = Ensemble.Editor.Clip.ClipType.video;
-            //        break;
-            //    case "audio":
-            //        newClip.type = Ensemble.Editor.Clip.ClipType.audio;
-            //        break;
-            //    case "picture":
-            //        newClip.type = Ensemble.Editor.Clip.ClipType.picture;
-            //        break;
-            //}
-
-            //newClip.setPlayer(player);
-            //let dimensions = Ensemble.Editor.Renderer.generateClipInitialPosition(player.videoWidth, player.videoHeight);
-            //newClip.width = player.width = dimensions.width;
-            //newClip.height = player.height = dimensions.height;
-            //newClip.xcoord = dimensions.xcoord;
-            //newClip.ycoord = dimensions.ycoord;
-
             Ensemble.MediaBrowser.closeMediaPreview();
             Ensemble.Pages.Editor.hideActionMenu();
-
-            //let clipImportAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.importClip,
-            //    {
-            //        clipId: newClip.id,
-            //        clipObj: newClip,
-            //        destinationTrack: destinationTrack,
-            //        destinationTime: destinationTime
-            //    }
-            //);
-            //Ensemble.HistoryMGR.performAction(clipImportAction);
         },
 
         _openMediaPreviewPopup: function () {

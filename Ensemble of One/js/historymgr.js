@@ -14,7 +14,7 @@
             if (cb && cb != null) {
                 this._pendingAction = action;
                 this._pendingCallback = cb;
-                this._pendingAction.performAction(this._actionCompleted);
+                this._pendingAction.performAction(this._importActionCompleted);
             }
 
             else {
@@ -25,7 +25,12 @@
             }
         },
 
-        _actionCompleted: function (params) {
+        _importActionCompleted: function (params, metadata) {
+            params.file.bitrate = metadata.bitrate;
+            params.file.duration = metadata.duration;
+            params.file.height = metadata.height;
+            params.file.width = metadata.width;
+            params.file.title = metadata.title;
             Ensemble.HistoryMGR._pendingAction.finish(params);
             Ensemble.HistoryMGR._backStack.push(Ensemble.HistoryMGR._pendingAction);
             Ensemble.HistoryMGR._forwardStack = [];

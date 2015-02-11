@@ -179,10 +179,11 @@
                 $(trackItself).insertBefore($("#" + this._buildTrackDOMId(this.tracks[destination].id)));
             }
 
-            let trackNum = $(trackHeader).find(".trackNum");
-            $(trackNum).text(destination + 1);
             var movingItem = this.tracks.splice(origin, 1)[0];
             this.tracks.splice(destination, 0, movingItem);
+            this.refreshTrackNumbers();
+            this._rebuildIndex();
+            requestAnimationFrame(function () { Ensemble.Editor.Renderer.renderSingleFrame(); });
         },
 
         getTrackById: function (idval) {
