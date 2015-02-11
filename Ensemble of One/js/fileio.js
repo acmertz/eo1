@@ -105,8 +105,7 @@
                             break;
                         case Ensemble.Events.Action.ActionType.importClip:
                             xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
-                            xml.Attrib("destinationTrack", Ensemble.HistoryMGR._backStack[i]._payload.destinationTrack.toString());
-                            xml.Attrib("clipId", Ensemble.HistoryMGR._backStack[i]._payload.clipObj.id.toString());
+                            xml.Attrib("clipId", Ensemble.HistoryMGR._backStack[i]._payload.clipId.toString());
                             break;
                         default:
                             console.error("Unable to save History Action to disk - unknown type.");
@@ -387,51 +386,60 @@
                 console.log("Loading " + undoActions.length + " back history items.");
                 for (var i = 0; i < undoActions.length; i++) {
                     var actionType = undoActions[i].getAttribute("type");
-                    switch (actionType) {
-                        case Ensemble.Events.Action.ActionType.createTrack:
-                            Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.createTrack, { trackId: undoActions[i].getAttribute("trackId") }));
-                            break;
-                        case Ensemble.Events.Action.ActionType.renameTrack:
-                            Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.renameTrack,
-                                {
-                                    trackId:parseInt( undoActions[i].getAttribute("trackId"), 10),
-                                    oldName: undoActions[i].getAttribute("oldName"),
-                                    newName: undoActions[i].getAttribute("newName")
-                                }
-                            ));
-                            break;
-                        case Ensemble.Events.Action.ActionType.trackVolumeChanged:
-                            Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.trackVolumeChanged,
-                                {
-                                    trackId: parseInt(undoActions[i].getAttribute("trackId"), 10),
-                                    oldVolume: parseInt(undoActions[i].getAttribute("oldVolume"), 10),
-                                    newVolume: parseInt(undoActions[i].getAttribute("newVolume"), 10)
-                                }
-                            ));
-                            break;
-                        case Ensemble.Events.Action.ActionType.moveTrack:
-                            Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.moveTrack,
-                                {
-                                    trackId: parseInt(undoActions[i].getAttribute("trackId"), 10),
-                                    origin: parseInt(undoActions[i].getAttribute("origin"), 10),
-                                    destination: parseInt(undoActions[i].getAttribute("destination"), 10)
-                                }
-                            ));
-                            break;
-                        case Ensemble.Events.Action.ActionType.removeTrack:
-                            let trackParent = undoActions[i].getElementsByTagName("Track")[0];
-                            let generatedTrack = Ensemble.FileIO._loadTrackFromXML(trackParent);
-                            Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.removeTrack,
-                                {
-                                    trackId: parseInt(undoActions[i].getAttribute("trackId"), 10),
-                                    trackObj: generatedTrack,
-                                    originalLocation: parseInt(undoActions[i].getAttribute("originalLocation"), 10)
-                                }
-                            ));
-                            break;
-                        default:
-                            console.error("Unable to load History Action from disk - unknown type.");
-                            break;
+                    if (actionType === Ensemble.Events.Action.ActionType.createTrack) {
+                        Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.createTrack,
+                            {
+                                trackId: undoActions[i].getAttribute("trackId")
+                            }
+                        ));
+                    }
+                    else if (actionType === Ensemble.Events.Action.ActionType.renameTrack) {
+                        Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.renameTrack,
+                            {
+                                trackId:parseInt( undoActions[i].getAttribute("trackId"), 10),
+                                oldName: undoActions[i].getAttribute("oldName"),
+                                newName: undoActions[i].getAttribute("newName")
+                            }
+                        ));
+                    }
+                    else if (actionType === Ensemble.Events.Action.ActionType.trackVolumeChanged) {
+                        Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.trackVolumeChanged,
+                            {
+                                trackId: parseInt(undoActions[i].getAttribute("trackId"), 10),
+                                oldVolume: parseInt(undoActions[i].getAttribute("oldVolume"), 10),
+                                newVolume: parseInt(undoActions[i].getAttribute("newVolume"), 10)
+                            }
+                        ));
+                    }
+                    else if (actionType === Ensemble.Events.Action.ActionType.moveTrack) {
+                        Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.moveTrack,
+                            {
+                                trackId: parseInt(undoActions[i].getAttribute("trackId"), 10),
+                                origin: parseInt(undoActions[i].getAttribute("origin"), 10),
+                                destination: parseInt(undoActions[i].getAttribute("destination"), 10)
+                            }
+                        ));
+                    }
+                    else if (actionType === Ensemble.Events.Action.ActionType.removeTrack) {
+                        let trackParent = undoActions[i].getElementsByTagName("Track")[0];
+                        let generatedTrack = Ensemble.FileIO._loadTrackFromXML(trackParent);
+                        Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.removeTrack,
+                            {
+                                trackId: parseInt(undoActions[i].getAttribute("trackId"), 10),
+                                trackObj: generatedTrack,
+                                originalLocation: parseInt(undoActions[i].getAttribute("originalLocation"), 10)
+                            }
+                        ));
+                    }
+                    else if (actionType === Ensemble.Events.Action.ActionType.importClip) {
+                        Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.importClip,
+                            {
+                                clipId: parseInt(undoActions[i].getAttribute("clipId"), 10)
+                            }
+                        ));
+                    }
+                    else {
+                        console.error("Unable to load History Action from disk - unknown type.");
                     }
                 }
             }
@@ -441,55 +449,57 @@
                 console.log("Loading " + redoActions.length + " forward history items.");
                 for (var i = 0; i < redoActions.length; i++) {
                     var actionType = redoActions[i].getAttribute("type");
-                    switch (actionType) {
-                        case Ensemble.Events.Action.ActionType.createTrack:
-                            Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.createTrack,
-                                {
-                                    trackId: redoActions[i].getAttribute("trackId")
-                                }
-                            ));
-                            break;
-                        case Ensemble.Events.Action.ActionType.renameTrack:
-                            Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.renameTrack,
-                                {
-                                    trackId: redoActions[i].getAttribute("trackId"),
-                                    oldName: redoActions[i].getAttribute("oldName"),
-                                    newName: redoActions[i].getAttribute("newName")
-                                }
-                            ));
-                            break;
-                        case Ensemble.Events.Action.ActionType.trackVolumeChanged:
-                            Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.trackVolumeChanged,
-                                {
-                                    trackId: redoActions[i].getAttribute("trackId"),
-                                    oldVolume: redoActions[i].getAttribute("oldVolume"),
-                                    newVolume: redoActions[i].getAttribute("newVolume")
-                                }
-                            ));
-                            break;
-                        case Ensemble.Events.Action.ActionType.moveTrack:
-                            Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.moveTrack,
-                                {
-                                    trackId: redoActions[i].getAttribute("trackId"),
-                                    origin: redoActions[i].getAttribute("origin"),
-                                    destination: redoActions[i].getAttribute("destination")
-                                }
-                            ));
-                            break;
-                        case Ensemble.Events.Action.ActionType.removeTrack:
-                            let trackParent = redoActions[i].getElementsByTagName("Track")[0];
-                            let generatedTrack = Ensemble.FileIO._loadTrackFromXML(trackParent);
-                            Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.removeTrack,
-                                {
-                                    trackId: parseInt(redoActions[i].getAttribute("trackId"), 10),
-                                    trackObj: generatedTrack,
-                                    originalLocation: parseInt(redoActions[i].getAttribute("originalLocation"), 10)
-                                }
-                            ));
-                            break;
-                        default:
-                            console.error("Unable to load History Action from disk - unknown type.");
-                            break;
+                    if (actionType === Ensemble.Events.Action.ActionType.createTrack) {
+                        Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.createTrack,
+                            {
+                                trackId: redoActions[i].getAttribute("trackId")
+                            }
+                        ));
+                    }
+                    else if (actionType === Ensemble.Events.Action.ActionType.renameTrack) {
+                        Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.renameTrack,
+                            {
+                                trackId: redoActions[i].getAttribute("trackId"),
+                                oldName: redoActions[i].getAttribute("oldName"),
+                                newName: redoActions[i].getAttribute("newName")
+                            }
+                        ));
+                    }
+                    else if (actionType === Ensemble.Events.Action.ActionType.trackVolumeChanged) {
+                        Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.trackVolumeChanged,
+                            {
+                                trackId: redoActions[i].getAttribute("trackId"),
+                                oldVolume: redoActions[i].getAttribute("oldVolume"),
+                                newVolume: redoActions[i].getAttribute("newVolume")
+                            }
+                        ));
+                    }
+                    else if (actionType === Ensemble.Events.Action.ActionType.moveTrack) {
+                        Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.moveTrack,
+                            {
+                                trackId: redoActions[i].getAttribute("trackId"),
+                                origin: redoActions[i].getAttribute("origin"),
+                                destination: redoActions[i].getAttribute("destination")
+                            }
+                        ));
+                    }
+                    else if (actionType === Ensemble.Events.Action.ActionType.removeTrack) {
+                        let trackParent = redoActions[i].getElementsByTagName("Track")[0];
+                        let generatedTrack = Ensemble.FileIO._loadTrackFromXML(trackParent);
+                        Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.removeTrack,
+                            {
+                                trackId: parseInt(redoActions[i].getAttribute("trackId"), 10),
+                                trackObj: generatedTrack,
+                                originalLocation: parseInt(redoActions[i].getAttribute("originalLocation"), 10)
+                            }
+                        ));
+                    }
+                    else if (actionType === Ensemble.Events.Action.ActionType.importClip) {
+                        let clipParent = redoActions[i].getElementsByTagName("Clip")[0];
+                        let generatedClip = Ensemble.FileIO._loadClipFromXML(clipParent);
+                    }
+                    else {
+                        console.error("Unable to load History Action from disk - unknown type.");
                     }
                 }
             }
@@ -514,15 +524,17 @@
             }
         },
 
-        _loadFileFromStub: function (clip, payload, callback) {
+        _loadFileFromStub: function (clip, payload, callback, loadClip) {
             /// <summary>Loads an EnsembleFile from disk for the given clip stub.</summary>
             /// <param name="clip" type="Ensemble.Editor.Clip">The clip whose stub to load.</param>
             /// <param name="payload" type="Object">A value to be passed to the callback upon load completion.</param>
             /// <param name="callback" type="Function">A function to execute when the file has been loaded.</param>
+            /// <param name="loadClip" type="Boolean">Optional. If true, goes on and loads the clip as well before firing the callback.</param>
             (function () {
                 let clipObj = clip;
                 let payloadObj = payload;
                 let cb = callback;
+                let continueLoad = loadClip;
                 switch (Ensemble.Platform.currentPlatform) {
                     case "win8":
                         Windows.Storage.StorageFile.getFileFromPathAsync(clipObj.file.path).done(function (loadedFile) {
@@ -553,7 +565,11 @@
                                 console.log("File is of invalid MIME type.");
                             }
                             clipObj.file = newFile;
-                            cb(clipObj, payloadObj);
+
+                            if (continueLoad) {
+                                Ensemble.FileIO.loadClip(clipObj.file, clipObj, cb, null, null, true);
+                            }
+                            else cb(clipObj, payloadObj);
                         });
                         break;
                     case "android":
@@ -633,13 +649,14 @@
             return createdClip;
         },
 
-        loadClip: function (ensembleFile, payload, complete, progress, error) {
+        loadClip: function (ensembleFile, payload, complete, progress, error, continueLoad) {
             /// <summary>Loads the media represented by the given EnsembleFile and passes the resulting Ensemble.Editor.Clip object and payload to the given callback.</summary>
             /// <param name="ensembleFile" type="Ensemble.EnsembleFile">The EnsembleFile to load.</param>
             /// <param name="payload" type="Object">A set of arbitrary data that will be passed to the specified callback upon loading completion.</param>
             /// <param name="complete" type="Function">The callback to execute after loading is complete.</param>
             /// <param name="progress" type="Function">The callback to execute on loading progress.</param>
             /// <param name="error" type="Function">The callback to execute if an error is encountered while loading the clip.</param>
+            /// <param name="continueLoad" type="Boolean">Optional. If true, metadata load will be triggered instead of firing the callback.</param>
             
             (function () {
                 var file = ensembleFile;
@@ -678,16 +695,20 @@
                         srcElement.onerror = Ensemble.FileIO._clipLoadError;
                         break;
                 }
-                Ensemble.FileIO._clipLoadBuffer[file._uniqueId] = {
+
+                let clipUniqueImportId = file._uniqueId + "time" + performance.now();
+
+                Ensemble.FileIO._clipLoadBuffer[clipUniqueImportId] = {
                     file: file,
                     player: srcElement,
                     payload: payload,
                     complete: complete,
                     progress: progress,
-                    error: error
+                    error: error,
+                    continueLoad: continueLoad
                 };
-                srcElement.setAttribute("data-eo1-uniqueid", file._uniqueId);
-                console.log("Setting src for EnsembleFile with uniqueId " + file._uniqueId + "...");
+                srcElement.setAttribute("data-eo1-uniqueid", clipUniqueImportId);
+                console.log("Setting src for EnsembleFile with uniqueId " + clipUniqueImportId + "...");
                 srcElement.src = fileURI;
             })();
         },
@@ -702,14 +723,24 @@
                 let payload = bufferItem.payload;
                 let callback = bufferItem.complete;
                 let srcPlayer = event.currentTarget;
+                let continueLoad = bufferItem.continueLoad;
 
                 delete Ensemble.FileIO._clipLoadBuffer[clipUniqueId];
 
-                callback({
+                let cbVal = {
                     file: ensembleFile,
                     payload: payload,
-                    player: srcPlayer
-                });
+                    player: srcPlayer,
+                    continueLoad: continueLoad
+                }
+
+
+                if (continueLoad) {
+                    // trigger a metadata load.
+                    Ensemble.FileIO.retrieveMediaProperties(ensembleFile, cbVal, callback);
+                }
+
+                else callback(cbVal);
             })();
         },
 
@@ -795,8 +826,6 @@
                         folder._src.getFilesAsync().then(function (containedFiles) {
                             console.log("Got a list of media files in the current folder.");
                             for (var i = 0; i < containedFolders.length; i++) {
-                                //console.log("Folder is: " + containedFolders[i].name);
-
                                 var newFolder = new Ensemble.EnsembleFile(containedFolders[i]);
                                 newFolder.dateCreated = containedFolders[i].dateCreated;
                                 newFolder.displayName = containedFolders[i].displayName;
@@ -813,9 +842,6 @@
                             }
                             console.log("Finished adding folders to the array to display.");
                             for (var i = 0; i < containedFiles.length; i++) {
-                                //console.log("File is: " + containedFiles[i].name);
-                                //console.log("    (content type: " + containedFiles[i].contentType + ")");
-                                //console.log("    (filetype: " + containedFiles[i].fileType + ")");
                                 var newFile = new Ensemble.EnsembleFile(containedFiles[i]);
                                 newFile.mime = containedFiles[i].contentType;
                                 newFile.dateCreated = containedFiles[i].dateCreated;
@@ -856,13 +882,6 @@
                             console.log("Finished adding media files to the array to display.");
                             //Now that all files and folders have been added up, pull media information.
                             Ensemble.FileIO._pickItemsCallback(Ensemble.FileIO._pickItemsTempFiles, Ensemble.FileIO._pickItemsTempFolders);
-                            
-
-                            //Ensemble.FileIO._winRetrievePickItemsTempFilesMediaProperties();
-
-                            
-
-                            
                         });
                     });
                     break;
@@ -894,13 +913,11 @@
                                     };
 
                                     callback(index, returnVal, ensembleFile._uniqueId);
-                                    //Ensemble.FileIO._winCompleteMediaPropertyLookup();
                                 });
                                 break;
                             case "audio":
                                 ensembleFile._src.properties.getMusicPropertiesAsync().done(function (success) {
                                     //console.log("Retrieved music properties.");
-
                                     var returnVal = {
                                         album: success.album,
                                         albumArtist: success.albumArtist,
@@ -910,7 +927,6 @@
                                         genre: success.genre,
                                         title: success.title
                                     };
-
                                     callback(index, returnVal, ensembleFile._uniqueId);
                                 });
                                 break;
@@ -955,8 +971,6 @@
                                 break;
                             default:
                                 ensembleFile._src.getScaledImageAsThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.listView, 50).done(function (success) {
-                                    //console.log("Retrieved video properties for the item at index " + index + ".");
-                                    //console.log("Retrieved a thumbnail!");
                                     try {
                                         callback(index, 'url(' + URL.createObjectURL(success, { oneTimeOnly: true }) + ')', ensembleFile._uniqueId);
                                     }
@@ -964,7 +978,6 @@
                                         //Item does not have a thumbnail.
                                         callback(index, '', ensembleFile._uniqueId);
                                     }
-                                    //Ensemble.FileIO._winCompleteMediaPropertyLookup();
                                 });
                                 break;
                             

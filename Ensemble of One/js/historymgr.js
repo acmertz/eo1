@@ -4,20 +4,38 @@
 
         _forwardStack: [],
         _backStack: [],
+        _pendingAction: null,
+        _pendingCallback: null,
 
-        performAction: function (action) {
+        performAction: function (action, cb) {
             /// <summary>Adds an action to the history stack and performs the action.</summary>
             /// <param name="action" type="Ensemble.Events.Action">The action to perform.</param>
-            action.performAction();
-            Ensemble.HistoryMGR._backStack.push(action);
-            Ensemble.HistoryMGR._forwardStack = [];
-            setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
+            /// <param name="cb" type="Function">Optional. The callback to execute upon completion of the Action.</param>
+            if (cb && cb != null) {
+                this._pendingAction = action;
+                this._pendingCallback = cb;
+                this._pendingAction.performAction(this._importActionCompleted);
+            }
+
+            else {
+                action.performAction();
+                Ensemble.HistoryMGR._backStack.push(action);
+                Ensemble.HistoryMGR._forwardStack = [];
+                setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
+            }
         },
 
-        createActionFromXML: function (historyType, xml) {
-            /// <summary>Creates and saves (but does not execute) an Action based on the given XML object.</summary>
-            /// <param name="historyType" type="String">The type of history Action. Must be one of "undo" or "redo".</param>
-            /// <param name="xml">An XML object representing the root node of the Action as it is represented in the .eo1 file format.</param>
+        _importActionCompleted: function (params, metadata) {
+            params.file.bitrate = metadata.bitrate;
+            params.file.duration = metadata.duration;
+            params.file.height = metadata.height;
+            params.file.width = metadata.width;
+            params.file.title = metadata.title;
+            Ensemble.HistoryMGR._pendingAction.finish(params);
+            Ensemble.HistoryMGR._backStack.push(Ensemble.HistoryMGR._pendingAction);
+            Ensemble.HistoryMGR._forwardStack = [];
+            Ensemble.HistoryMGR._pendingCallback();
+            setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
         },
 
         undoLast: function () {

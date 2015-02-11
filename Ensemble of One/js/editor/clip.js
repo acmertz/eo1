@@ -16,6 +16,7 @@
             this.height = 0;
             this.xcoord = 0;
             this.ycoord = 0;
+            this.preExisting = true;
         },
         {
             //Instance members
@@ -31,6 +32,7 @@
             xcoord: null,
             ycoord: null,
             type: null,
+            preExisting: null,
 
             _player: null,
 
