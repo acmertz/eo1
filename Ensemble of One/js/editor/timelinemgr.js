@@ -105,6 +105,34 @@
             };
         },
 
+        removeClip: function (clipId) {
+            /// <summary>Removes the clip with the given ID.</summary>
+            /// <returns type="Object">An object containing Clip "clip" and Number "trackId"</returns>
+            $("#" + this._buildClipDOMId(clipId)).remove();
+            let clipRemoved = null;
+            let trackIndex = null;
+            let found = false;
+            for (let i = 0; i < this.tracks.length; i++) {
+                for (let k = 0; k < this.tracks[i].clips.length; k++) {
+                    if (this.tracks[i].clips[k].id == clipId) {
+                        clipRemoved = this.tracks[i].clips.splice(k, 1);
+                        trackIndex = this.tracks[i].id;
+                        found = true;
+                        break;
+                    }
+                    if (found) break;
+                }
+                if (found) break;
+            }
+            clipRemoved[0].unload();
+            this._rebuildIndex();
+            requestAnimationFrame(function () { Ensemble.Editor.Renderer.renderSingleFrame(); });
+            return {
+                clip: clipRemoved[0],
+                trackId: trackIndex
+            };
+        },
+
         addClipToTrack: function (clipObj, trackId, destinationTime) {
             /// <summary>Adds the given Clip to the track with the given ID.</summary>
             /// <param name="clipObj" type="Ensemble.Editor.Clip">The clip to add.</param>

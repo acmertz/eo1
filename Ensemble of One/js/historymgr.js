@@ -11,10 +11,10 @@
             /// <summary>Adds an action to the history stack and performs the action.</summary>
             /// <param name="action" type="Ensemble.Events.Action">The action to perform.</param>
             /// <param name="cb" type="Function">Optional. The callback to execute upon completion of the Action.</param>
-            if (cb && cb != null) {
+            if (action.isCompound()) {
                 this._pendingAction = action;
                 this._pendingCallback = cb;
-                this._pendingAction.performAction(this._importActionCompleted);
+                this._pendingAction.performAction();
             }
 
             else {
@@ -34,7 +34,10 @@
             Ensemble.HistoryMGR._pendingAction.finish(params);
             Ensemble.HistoryMGR._backStack.push(Ensemble.HistoryMGR._pendingAction);
             Ensemble.HistoryMGR._forwardStack = [];
-            Ensemble.HistoryMGR._pendingCallback();
+            if (Ensemble.HistoryMGR._pendingCallback && Ensemble.HistoryMGR._pendingCallback != null) {
+                Ensemble.HistoryMGR._pendingCallback();
+                Ensemble.HistoryMGR._pendingCallback = null;
+            }
             setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
         },
 
@@ -50,9 +53,17 @@
         redoNext: function () {
             if (Ensemble.HistoryMGR._forwardStack.length > 0) {
                 var actionToRedo = Ensemble.HistoryMGR._forwardStack.pop();
-                actionToRedo.performAction();
-                this._backStack.push(actionToRedo);
-                setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
+
+                if (actionToRedo.isCompound()) {
+                    this._pendingAction = actionToRedo;
+                    this._pendingAction.performAction();
+                }
+
+                else {
+                    actionToRedo.performAction();
+                    this._backStack.push(actionToRedo);
+                    setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
+                }
             }
         },
 
