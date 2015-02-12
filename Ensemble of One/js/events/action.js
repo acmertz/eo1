@@ -31,9 +31,8 @@
                 return returnVal;
             },
 
-            performAction: function (cb) {
+            performAction: function () {
                 /// <summary>Performs the task associated with the Action.</summary>
-                /// <param name="cb" type="Function">Optional. The callback to execute upon completion of the Action.</param>
                 switch (this._type) {
                     case Ensemble.Events.Action.ActionType.createTrack:
                         console.log("Creating new track...");
@@ -63,7 +62,7 @@
                         this._payload.originalLocation = removalObj.index;
                         break;
                     case Ensemble.Events.Action.ActionType.importClip:
-                        Ensemble.FileIO._loadFileFromStub(this._payload.clipObj, null, cb, true);
+                        Ensemble.FileIO._loadFileFromStub(this._payload.clipObj, null, Ensemble.HistoryMGR._importActionCompleted, true);
                         //Ensemble.FileIO.loadClip(this._payload.clipObj, null, cb);
                         //Ensemble.Editor.TimelineMGR.addClipToTrack(this._payload.clipObj, this._payload.destinationTrack, this._payload.destinationTime);
                         break;
@@ -96,6 +95,14 @@
                         Ensemble.Editor.TimelineMGR.addTrackAtIndex(this._payload.trackObj, this._payload.originalLocation);
                         break;
                     case Ensemble.Events.Action.ActionType.importClip:
+                        console.log("Undoing clip import...");
+                        let removedClip = Ensemble.Editor.TimelineMGR.removeClip(this._payload.clipId);
+                        this._payload = {
+                            clipObj: removedClip.clip,
+                            clipId: removedClip.clip.id,
+                            destinationTime: removedClip.clip.startTime,
+                            destinationTrack: removedClip.trackId
+                        };
                         break;
                     default:
                         console.error("Unknown Action!");
@@ -129,14 +136,13 @@
                                 break;
                         }
 
-                        clip.setPlayer(player);
                         let dimensions = Ensemble.Editor.Renderer.generateClipInitialPosition(player.videoWidth, player.videoHeight);
                         clip.width = player.width = dimensions.width;
                         clip.height = player.height = dimensions.height;
                         clip.xcoord = dimensions.xcoord;
                         clip.ycoord = dimensions.ycoord;
                     }
-
+                    clip.setPlayer(player);
                     Ensemble.Editor.TimelineMGR.addClipToTrack(clip, destinationTrack, destinationTime);
                 }
             }

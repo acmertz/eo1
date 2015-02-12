@@ -497,6 +497,15 @@
                     else if (actionType === Ensemble.Events.Action.ActionType.importClip) {
                         let clipParent = redoActions[i].getElementsByTagName("Clip")[0];
                         let generatedClip = Ensemble.FileIO._loadClipFromXML(clipParent);
+                        let destinationTrack = parseInt(redoActions[i].getAttribute("destinationTrack"), 10);
+                        Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.importClip,
+                            {
+                                clipId: generatedClip.id,
+                                clipObj: generatedClip,
+                                destinationTrack: destinationTrack,
+                                destinationTime: generatedClip.startTime
+                            }
+                        ));
                     }
                     else {
                         console.error("Unable to load History Action from disk - unknown type.");
@@ -646,6 +655,7 @@
             createdClip.width = parseInt(xmlClip.getAttribute("width"), 10);
             createdClip.height = parseInt(xmlClip.getAttribute("height"), 10);
             createdClip.file = { path: xmlClip.getAttribute("path") };
+            createdClip.preExisting = true;
             return createdClip;
         },
 
@@ -724,6 +734,8 @@
                 let callback = bufferItem.complete;
                 let srcPlayer = event.currentTarget;
                 let continueLoad = bufferItem.continueLoad;
+
+                srcPlayer.onerror = null;
 
                 delete Ensemble.FileIO._clipLoadBuffer[clipUniqueId];
 

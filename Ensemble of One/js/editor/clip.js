@@ -72,6 +72,15 @@
                 /// <param name="canvas" type="Canvas">The canvas to use as a rendering target.</param>
                 /// <param name="scale" type="Number">A scale multiplier to use when drawing.</param>
                 context.drawImage(this._player, this.xcoord * scale, this.ycoord * scale, this.width * scale, this.height * scale);
+            },
+
+            unload: function () {
+                /// <summary>Unloads the clip and turns its file reference into a stub.</summary>
+                this._player.src = null;
+                this._player = null;
+                this.file = {
+                    path: this.file.path
+                }
             }
 
         },
