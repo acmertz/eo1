@@ -68,12 +68,17 @@
         },
 
         addTrackAtIndex: function (track, index) {
-            /// <summary>Adds the given track to the given position in the list of tracks.</summary>
+            /// <summary>Adds the given track to the given position in the list of tracks, assuming that any and all contained clips are fully loaded and ready for playback.</summary>
             /// <param name="track" type="Ensemble.Editor.Track">The Track to add.</param>
             /// <param name="index" type="Number">The position where the track should be added.</param>
             this.tracks.splice(index, 0, track);
             Ensemble.Session.projectTrackCount = this.tracks.length;
             let trackDisplayObj = Ensemble.Editor.TimelineMGR._buildTrackDisplay(track, index);
+
+            for (let i = 0; i < track.clips.length; i++) {
+                let clipDisplayObj = this._buildClipDisplay(track.clips[i]);
+                trackDisplayObj.content.appendChild(clipDisplayObj);
+            }
 
         
             // Insert the track before the item at the given index.
@@ -81,6 +86,8 @@
             $(Ensemble.Editor.UI.PageSections.lowerHalf.timelineDetails).find(".timeline-track--controls").eq(index).before(trackDisplayObj.detail);
             $(Ensemble.Editor.UI.PageSections.lowerHalf.timelineTracks).find(".timeline-track--content").eq(index).before(trackDisplayObj.content);
             this.refreshTrackNumbers();
+            this._rebuildIndex();
+            Ensemble.Editor.PlaybackMGR.sync();
         },
 
         removeTrack: function (trackId) {
@@ -93,12 +100,17 @@
             let trackRemoved = null;
             for (var i = 0; i < this.tracks.length; i++) {
                 if (this.tracks[i].id == trackId) {
-                    trackRemoved = this.tracks.splice(i, 1);
+                    trackRemoved = this.tracks.splice(i, 1)[0];
                     break;
                 }
             }
             Ensemble.Session.projectTrackCount = this.tracks.length;
             this.refreshTrackNumbers();
+            for (let i = 0; i < trackRemoved.clips.length; i++) {
+                trackRemoved.clips[i].unload();
+            }
+            this._rebuildIndex();
+            requestAnimationFrame(function () { Ensemble.Editor.Renderer.renderSingleFrame(); });
             return {
                 track: trackRemoved,
                 index: i
@@ -151,9 +163,7 @@
             targetTrackEl.appendChild(newClipEl);
 
             this._rebuildIndex();
-            setTimeout(function () {
-                Ensemble.Editor.Renderer.renderSingleFrame();
-            }, 0);
+            Ensemble.Editor.PlaybackMGR.sync();
         },
 
         moveTrackWithId: function (trackId, origin, destination) {

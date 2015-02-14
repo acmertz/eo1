@@ -23,7 +23,7 @@
                 /// <returns type="Boolean">A Boolean value indicating whether or not the Action is compound.</returns>
                 let returnVal = false;
                 if (undoing) {
-                    
+                    if (this._type == Ensemble.Events.Action.ActionType.removeTrack) returnVal = true;
                 }
                 else {
                     if (this._type == Ensemble.Events.Action.ActionType.importClip) returnVal = true;
@@ -58,7 +58,7 @@
                         break;
                     case Ensemble.Events.Action.ActionType.removeTrack:
                         var removalObj = Ensemble.Editor.TimelineMGR.removeTrack(this._payload.trackId);
-                        this._payload.trackObj = removalObj.track[0];
+                        this._payload.trackObj = removalObj.track;
                         this._payload.originalLocation = removalObj.index;
                         break;
                     case Ensemble.Events.Action.ActionType.importClip:
@@ -92,7 +92,8 @@
                         break;
                     case Ensemble.Events.Action.ActionType.removeTrack:
                         console.log("Undoing track removal...");
-                        Ensemble.Editor.TimelineMGR.addTrackAtIndex(this._payload.trackObj, this._payload.originalLocation);
+                        // Load all clips.
+                        Ensemble.FileIO._loadMultipleClips(this._payload.trackObj.clips, null, Ensemble.HistoryMGR._undoRemoveTrackComplete);
                         break;
                     case Ensemble.Events.Action.ActionType.importClip:
                         console.log("Undoing clip import...");
@@ -144,6 +145,13 @@
                     }
                     clip.setPlayer(player);
                     Ensemble.Editor.TimelineMGR.addClipToTrack(clip, destinationTrack, destinationTime);
+                }
+            },
+
+            finishUndo: function (params) {
+                if (this._type == Ensemble.Events.Action.ActionType.removeTrack) {
+                    this._payload.trackObj.clips = params;
+                    Ensemble.Editor.TimelineMGR.addTrackAtIndex(this._payload.trackObj, this._payload.originalLocation);
                 }
             }
         },

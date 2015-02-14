@@ -41,12 +41,27 @@
             setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
         },
 
+        _undoRemoveTrackComplete: function (loadedClips) {
+            Ensemble.HistoryMGR._pendingAction.finishUndo(loadedClips);
+            Ensemble.HistoryMGR._forwardStack.push(Ensemble.HistoryMGR._pendingAction);
+            Ensemble.HistoryMGR._pendingAction = null;
+            setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
+        },
+
         undoLast: function () {
             if (Ensemble.HistoryMGR._backStack.length > 0) {
                 var actionToUndo = Ensemble.HistoryMGR._backStack.pop();
-                actionToUndo.undo();
-                this._forwardStack.push(actionToUndo);
-                setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
+
+                if (actionToUndo.isCompound(true)) {
+                    this._pendingAction = actionToUndo;
+                    this._pendingAction.undo();
+                }
+
+                else {
+                    actionToUndo.undo();
+                    this._forwardStack.push(actionToUndo);
+                    setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
+                }
             }
         },
 

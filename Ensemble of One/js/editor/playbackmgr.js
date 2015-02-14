@@ -71,6 +71,11 @@
             }
         },
 
+        sync: function () {
+            /// <summary>Synchronizes all clips to the current project clock and renders a single frame after the operation completes.</summary>
+            Ensemble.Editor.PlaybackMGR.seek(this.lastTime);
+        },
+
         ui: {
             buttonPlayPause: null,
             buttonSkipBack: null,
@@ -164,6 +169,7 @@
                     //setTimeout(function () { Ensemble.Editor.Renderer.renderSingleFrame(); }, 0);
                     Ensemble.Editor.PlaybackMGR._renderNextTimeUpdate = true;
                     Ensemble.Editor.PlaybackMGR._timer.postMessage({ type: "seeked", contents: Ensemble.Editor.PlaybackMGR._seekDestination });
+                    setTimeout(function () { Ensemble.Editor.Renderer.renderSingleFrame() }, 0);
                 }
             }
         }
