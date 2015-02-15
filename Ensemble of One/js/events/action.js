@@ -145,6 +145,7 @@
                     }
                     clip.setPlayer(player);
                     Ensemble.Editor.TimelineMGR.addClipToTrack(clip, destinationTrack, destinationTime);
+                    Ensemble.HistoryMGR.refreshMessage();
                 }
             },
 
@@ -152,6 +153,32 @@
                 if (this._type == Ensemble.Events.Action.ActionType.removeTrack) {
                     this._payload.trackObj.clips = params;
                     Ensemble.Editor.TimelineMGR.addTrackAtIndex(this._payload.trackObj, this._payload.originalLocation);
+                    Ensemble.HistoryMGR.refreshMessage();
+                }
+            },
+
+            getMessage: function () {
+                /// <summary>Generates a user-friendly message that describes the action.</summary>
+                if (this._type == Ensemble.Events.Action.ActionType.createTrack) {
+                    return "Created track";
+                }
+                else if (this._type == Ensemble.Events.Action.ActionType.renameTrack) {
+                    return "Renamed track \"" + this._payload.oldName + "\" to \"" + this._payload.newName + "\"";
+                }
+                else if (this._type == Ensemble.Events.Action.ActionType.trackVolumeChanged) {
+                    return "Changed track volume from " + (this._payload.oldVolume * 100) + " to " + (this._payload.newVolume * 100);
+                }
+                else if (this._type == Ensemble.Events.Action.ActionType.moveTrack) {
+                    return "Moved track from position " + this._payload.origin + " to " + this._payload.destination;
+                }
+                else if (this._type == Ensemble.Events.Action.ActionType.removeTrack) {
+                    return "Removed track \"" + this._payload.trackObj.name + "\"";
+                }
+                else if (this._type == Ensemble.Events.Action.ActionType.importClip) {
+                    return "Imported clip \"" + Ensemble.Editor.TimelineMGR.getClipById(this._payload.clipId).name + "\"";
+                }
+                else {
+                    return "Unknown action";
                 }
             }
         },

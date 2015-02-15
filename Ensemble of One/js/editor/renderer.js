@@ -28,10 +28,13 @@
         renderSingleFrame: function () {
             /// <summary>Draws a frame from the TimelineMGR's timing index.</summary>
             this._playbackCanvasContext.clearRect(0, 0, this.ui.playbackCanvas.width, this.ui.playbackCanvas.height);
-            for (let k = Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList.length - 1; k > -1; k--) {
-                Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList[k].drawToCanvas(this._playbackCanvasContext, this._scale);
+            if (Ensemble.Editor.TimelineMGR._clipIndex.length > 0) {
+                for (let k = Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList.length - 1; k > -1; k--) {
+                    Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList[k].drawToCanvas(this._playbackCanvasContext, this._scale);
+                }
             }
             this.ui.timerDisplay.innerText = Ensemble.Editor.PlaybackMGR.lastTimeFriendly;
+            Ensemble.Editor.TimelineMGR.updateCursor(Ensemble.Editor.PlaybackMGR.lastTime);
         },
 
 

@@ -26,6 +26,7 @@
             Ensemble.Editor.Renderer.init();
             Ensemble.Editor.TimelineMGR._rebuildIndex();
             Ensemble.Editor.Renderer.renderSingleFrame();
+            Ensemble.HistoryMGR.refreshMessage();
 
             //Hide UI items so they can play their entrance animation
             $(Ensemble.Editor.UI.PageSections.upperHalf.entireSection).removeClass("editorUpperHalfVisible");

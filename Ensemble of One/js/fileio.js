@@ -150,7 +150,7 @@
                         case Ensemble.Events.Action.ActionType.removeTrack:
                             xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
                             xml.Attrib("trackId", Ensemble.HistoryMGR._forwardStack[i]._payload.trackId.toString());                            
-                            xml.Attrib("originalLocation", Ensemble.HistoryMGR._forwardStack[i]._payload.originalLocation.toString())
+                            //xml.Attrib("originalLocation", Ensemble.HistoryMGR._forwardStack[i]._payload.originalLocation.toString())
                             //xml = Ensemble.FileIO._writeTrackToXML(xml, Ensemble.HistoryMGR._forwardStack[i]._payload.trackObj);
                             break;
                         case Ensemble.Events.Action.ActionType.importClip:
@@ -259,6 +259,9 @@
                             xml.EndNode();
                             xml.BeginNode("DateModified");
                             xml.WriteString(savetime);
+                            xml.EndNode();
+                            xml.BeginNode("NumberOfClips");
+                            xml.WriteString("0");
                             xml.EndNode();
                             xml.BeginNode("AspectRatio");
                             xml.WriteString(aspect);

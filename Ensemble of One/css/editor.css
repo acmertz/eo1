@@ -434,6 +434,13 @@
     left: 0px;
 }
 
+#editor-history-msg {
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    padding: 10px;
+}
+
 #editorDraggedPreviewContainer {
     /*visibility: hidden;*/
     position: fixed;
