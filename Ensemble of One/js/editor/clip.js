@@ -67,6 +67,36 @@
                 this._player.addEventListener("seeked", Ensemble.Editor.PlaybackMGR._listeners.clipSeeked);
             },
 
+            setMetadata: function (metadata) {
+                /// <summary>Sets the metadata for the attached file, if it exists.</summary>
+                if (this.file && this.file != null) {
+                    if (this.type == Ensemble.Editor.Clip.ClipType.video) {
+                        this.file.bitrate = metadata.bitrate;
+                        this.file.duration = metadata.duration;
+                        this.file.height = metadata.height;
+                        this.file.width = metadata.width;
+                        this.file.title = metadata.title;
+                    }
+
+                    else if (this.type == Ensemble.Editor.Clip.ClipType.audio) {
+                        this.file.bitrate = metadata.bitrate;
+                        this.file.duration = metadata.duration;
+                        this.file.title = metadata.title;
+                        this.file.album = metadata.album;
+                        this.file.albumArtist = metadata.albumArtist;
+                        this.file.artist = metadata.artist;
+                        this.file.genre = metadata.genre;
+                    }
+
+                    else if (this.type == Ensemble.Editor.Clip.ClipType.picture) {
+                        this.file.title = metadata.title;
+                        this.file.dateTaken = metadata.dateTaken;
+                        this.file.height = metadata.height;
+                        this.file.width = metadata.width;
+                    }
+                }
+            },
+
             drawToCanvas: function (context, scale) {
                 /// <summary>Draws the clip to the specified canvas at the given scale.</summary>
                 /// <param name="canvas" type="Canvas">The canvas to use as a rendering target.</param>

@@ -21,6 +21,7 @@
                 action.performAction();
                 Ensemble.HistoryMGR._backStack.push(action);
                 Ensemble.HistoryMGR._forwardStack = [];
+                Ensemble.HistoryMGR.refreshMessage();
                 setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
             }
         },
@@ -38,15 +39,32 @@
                 Ensemble.HistoryMGR._pendingCallback();
                 Ensemble.HistoryMGR._pendingCallback = null;
             }
+            Ensemble.HistoryMGR.refreshMessage();
+            setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
+        },
+
+        _undoRemoveTrackComplete: function (loadedClips) {
+            Ensemble.HistoryMGR._pendingAction.finishUndo(loadedClips);
+            Ensemble.HistoryMGR._forwardStack.push(Ensemble.HistoryMGR._pendingAction);
+            Ensemble.HistoryMGR._pendingAction = null;
             setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
         },
 
         undoLast: function () {
             if (Ensemble.HistoryMGR._backStack.length > 0) {
                 var actionToUndo = Ensemble.HistoryMGR._backStack.pop();
-                actionToUndo.undo();
-                this._forwardStack.push(actionToUndo);
-                setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
+
+                if (actionToUndo.isCompound(true)) {
+                    this._pendingAction = actionToUndo;
+                    this._pendingAction.undo();
+                }
+
+                else {
+                    actionToUndo.undo();
+                    this._forwardStack.push(actionToUndo);
+                    this.refreshMessage();
+                    setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
+                }
             }
         },
 
@@ -62,6 +80,7 @@
                 else {
                     actionToRedo.performAction();
                     this._backStack.push(actionToRedo);
+                    this.refreshMessage();
                     setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
                 }
             }
@@ -77,6 +96,14 @@
             /// <summary>Returns whether or not a redo operation can currently be performed.</summary>
             /// <returns type="Boolean">A value indicating whether or not a redo operation can currently be performed.</returns>
             return (Ensemble.HistoryMGR._forwardStack.length > 0);
+        },
+
+        refreshMessage: function () {
+            /// <summary>Refreshes the recent action message in the Editor.</summary>
+            if (this._backStack.length > 0) {
+                document.getElementById("editor-history-msg").innerText = this._backStack[this._backStack.length - 1].getMessage();
+            }
+            else document.getElementById("editor-history-msg").innerText = "No recent history. Start editing!";
         }
     });
 })();

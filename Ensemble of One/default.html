@@ -269,7 +269,11 @@
                     <div id="timeline-track-container">
                         <div id="editorTimelineHeaders" class="timeline-scrollable-container"></div>
                         <div id="editorTimelineDetails" class="timeline-scrollable-container"></div>
-                        <div class="timeline-track-container-wrap"><div id="editorTimelineTracks" class="timeline-scrollable-container"></div></div>
+                        <div class="timeline-track-container-wrap">
+                            <div id="editorTimelineTracks" class="timeline-scrollable-container">
+                                <div class="timeline__cursor"></div>
+                            </div>
+                        </div>
                     </div>
                     <div class="editorTimelineSideControls">
                         <i class="editorGeneralButton" id="editorTimelineZoomInButton" title="Zoom in">&#xE12E;</i>
@@ -511,6 +515,8 @@
                 <div id="editorEffectsButton" class="editorMenuToggle fa fa-fw fa-2x fa-star" title="Effects"></div>
             </div>
 
+            <div id="editor-history-msg">Placeholder history message.</div>
+
             <div id="editorMediaBrowserPreviewClickEater" class="editorClickEater editorClickEaterFaded"></div>
             <div id="mediaBrowserPreviewDialog" class="mainMenuZoomDialog">
                 <div class="mainMenuZoomDialogContent">
@@ -584,6 +590,7 @@
             <p>This will also remove all the clips inside it.</p>
             <button id="remove-track-confirmation__button">Remove</button>
         </div>
+        <div class="editorTimelineDragPreviewFlyout" tabindex="-1">00:00:00.000</div>
         <div id="mediaBrowserAddToProjectFlyout" data-win-control="WinJS.UI.Menu"></div>
     </div>
 </body>

@@ -17,6 +17,10 @@
         _pickItemsTempFolders: [],
         _pickItemsTempFoldersCount: 0,
 
+        _multiClipLoadTotal: 0,
+        _multiClipLoadCb: null,
+        _multiClipLoadBuffer: [],
+
         saveProject: function () {
             /// <summary>Saves the currently loaded project to disc.</summary>
 
@@ -146,8 +150,8 @@
                         case Ensemble.Events.Action.ActionType.removeTrack:
                             xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
                             xml.Attrib("trackId", Ensemble.HistoryMGR._forwardStack[i]._payload.trackId.toString());                            
-                            xml.Attrib("originalLocation", Ensemble.HistoryMGR._forwardStack[i]._payload.originalLocation.toString())
-                            xml = Ensemble.FileIO._writeTrackToXML(xml, Ensemble.HistoryMGR._forwardStack[i]._payload.trackObj);
+                            //xml.Attrib("originalLocation", Ensemble.HistoryMGR._forwardStack[i]._payload.originalLocation.toString())
+                            //xml = Ensemble.FileIO._writeTrackToXML(xml, Ensemble.HistoryMGR._forwardStack[i]._payload.trackObj);
                             break;
                         case Ensemble.Events.Action.ActionType.importClip:
                             xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
@@ -255,6 +259,9 @@
                             xml.EndNode();
                             xml.BeginNode("DateModified");
                             xml.WriteString(savetime);
+                            xml.EndNode();
+                            xml.BeginNode("NumberOfClips");
+                            xml.WriteString("0");
                             xml.EndNode();
                             xml.BeginNode("AspectRatio");
                             xml.WriteString(aspect);
@@ -485,12 +492,9 @@
                     }
                     else if (actionType === Ensemble.Events.Action.ActionType.removeTrack) {
                         let trackParent = redoActions[i].getElementsByTagName("Track")[0];
-                        let generatedTrack = Ensemble.FileIO._loadTrackFromXML(trackParent);
                         Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.removeTrack,
                             {
-                                trackId: parseInt(redoActions[i].getAttribute("trackId"), 10),
-                                trackObj: generatedTrack,
-                                originalLocation: parseInt(redoActions[i].getAttribute("originalLocation"), 10)
+                                trackId: parseInt(redoActions[i].getAttribute("trackId"), 10)
                             }
                         ));
                     }
@@ -530,6 +534,39 @@
             if (Ensemble.Session.projectClipCount == 0) {
                 //Fire callback. Project is empty (no tracks or media).
                 Ensemble.Pages.MainMenu.navigateToEditor();
+            }
+        },
+
+        _loadMultipleClips: function (clipArr, payload, callback) {
+            /// <summary>Loads all the clips in the given array and calls the specified callback upon completion.</summary>
+            (function () {
+                let clips = clipArr;
+                let extra = payload;
+                let cb = callback;
+                Ensemble.FileIO._multiClipLoadTotal = clips.length;
+                Ensemble.FileIO._multiClipLoadCb = cb;
+                for (let i = 0; i < clipArr.length; i++) {
+                    Ensemble.FileIO._loadFileFromStub(clips[i], null, Ensemble.FileIO._multiClipLoadFinish, true);
+                }
+            })();
+        },
+
+        _multiClipLoadFinish: function (payload, metadata) {
+            let clip = payload.payload;
+            clip.setPlayer(payload.player);
+            clip.setMetadata(metadata);
+
+            Ensemble.FileIO._multiClipLoadBuffer.push(clip);
+            if (Ensemble.FileIO._multiClipLoadBuffer.length == Ensemble.FileIO._multiClipLoadTotal) {
+                // complete! Fire the callback.
+                let clipArr = Ensemble.FileIO._multiClipLoadBuffer;
+                let cb = Ensemble.FileIO._multiClipLoadCb;
+
+                Ensemble.FileIO._multiClipLoadBuffer = [];
+                Ensemble.FileIO._multiClipLoadTotal = 0;
+                Ensemble.FileIO._multiClipLoadCb = null;
+                
+                cb(clipArr);
             }
         },
 
@@ -711,8 +748,8 @@
                 Ensemble.FileIO._clipLoadBuffer[clipUniqueImportId] = {
                     file: file,
                     player: srcElement,
-                    payload: payload,
-                    complete: complete,
+                    payload: data,
+                    complete: callback,
                     progress: progress,
                     error: error,
                     continueLoad: continueLoad

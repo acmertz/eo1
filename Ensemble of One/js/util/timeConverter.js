@@ -5,7 +5,7 @@
         convertTime: function (milliseconds, shortForm) {
             /// <summary>Returns a user-readable time string, converted from the given number of milliseconds.</summary>
             /// <param name="milliseconds" type="Number">A value in milliseconds, to be converted.</param>
-            /// <param name=shortForm" type="Boolean">Optional. Omit any leading zeros.</param>
+            /// <param name="shortForm" type="Boolean">Optional. Omit any leading zeros.</param>
             /// <returns type="String">A string representing the time.</returns>
 
             //Break the time up into the individual parts, adding leading zeros.
