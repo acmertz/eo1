@@ -9,6 +9,10 @@
     overflow: hidden;
 }
 
+.timeline-clip:hover {
+    border: 1px solid lightblue;
+}
+
 .timeline-clip__thumb {
     background-color: #808080;
     height: calc(100% + 20px);

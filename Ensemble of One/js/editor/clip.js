@@ -17,6 +17,9 @@
             this.xcoord = 0;
             this.ycoord = 0;
             this.preExisting = true;
+
+            this.selected = false;
+            this.hovering = false;
         },
         {
             //Instance members
@@ -35,6 +38,8 @@
             preExisting: null,
 
             _player: null,
+            selected: null,
+            hovering: null,
 
 
 
@@ -102,6 +107,17 @@
                 /// <param name="canvas" type="Canvas">The canvas to use as a rendering target.</param>
                 /// <param name="scale" type="Number">A scale multiplier to use when drawing.</param>
                 context.drawImage(this._player, this.xcoord * scale, this.ycoord * scale, this.width * scale, this.height * scale);
+
+                
+                if (this.hovering) {
+                    context.beginPath();
+                    context.strokeStyle = "lightblue";
+                    context.lineWidth = "1";
+                    context.rect(this.xcoord * scale, this.ycoord * scale, this.width * scale, this.height * scale);
+                    context.closePath();
+                    context.stroke();
+                }
+                
             },
 
             unload: function () {

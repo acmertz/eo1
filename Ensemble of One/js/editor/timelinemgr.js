@@ -514,6 +514,9 @@
             clipEl.appendChild(thumbEl);
             clipEl.appendChild(titleEl);
 
+            clipEl.addEventListener("pointerenter", Ensemble.Editor.TimelineMGR._listeners.pointerEnteredClip);
+            clipEl.addEventListener("pointerleave", Ensemble.Editor.TimelineMGR._listeners.pointerLeftClip);
+
             return clipEl;
         },
 
@@ -844,7 +847,8 @@
             this.ui.buttonZoomIn.addEventListener("click", this._listeners.buttonZoomIn);
             this.ui.buttonZoomOut.addEventListener("click", this._listeners.buttonZoomOut);
             this.ui.buttonNewTrack.addEventListener("click", this._listeners.buttonNewTrack);
-            this.ui.timeCursor.addEventListener("mousedown", this._listeners.timeCursorMousedown);
+            this.ui.timeCursor.addEventListener("pointerdown", this._listeners.timeCursorMousedown);
+            this.ui.trackContainer.addEventListener("pointerdown", this._listeners.timelineTrackContainerPointerDown);
         },
 
         _cleanUI: function () {
@@ -853,7 +857,7 @@
             this.ui.buttonZoomIn.removeEventListener("click", this._listeners.buttonZoomIn);
             this.ui.buttonZoomOut.removeEventListener("click", this._listeners.buttonZoomOut);
             this.ui.buttonNewTrack.removeEventListener("click", this._listeners.buttonNewTrack);
-            this.ui.timeCursor.removeEventListener("mousedown", this._listeners.timeCursorMousedown);
+            this.ui.timeCursor.removeEventListener("pointerdown", this._listeners.timeCursorMousedown);
 
             this.ui.buttonScrollUp = null;
             this.ui.buttonScrollDown = null;
@@ -930,6 +934,16 @@
 
             timeCursorMousedown: function (event) {
                 if (!Ensemble.Editor.PlaybackMGR.playing) {
+                    event.stopPropagation();
+
+                    $("#editorTimelineEWClickEater").removeClass("editorClickEaterFaded");
+
+                    let allClips = document.getElementsByClassName("timeline-clip");
+                    for (let i = 0; i < allClips.length; i++) {
+                        allClips[i].removeEventListener("pointerenter", Ensemble.Editor.TimelineMGR._listeners.pointerEnteredClip);
+                        allClips[i].removeEventListener("pointerleave", Ensemble.Editor.TimelineMGR._listeners.pointerLeftClip);
+                    }
+
                     Ensemble.Editor.TimelineMGR._timeCursorDragOffset = event.offsetX;
                     Ensemble.Editor.TimelineMGR._timeCursorLastMousPos = event.pageX;
                     Ensemble.Editor.TimelineMGR._timeCursorInitialPos = parseInt(Ensemble.Editor.TimelineMGR.ui.timeCursor.style.left, 10);
@@ -945,8 +959,8 @@
                     Ensemble.Editor.TimelineMGR.ui.timeCursorPreview.style.left = Ensemble.Editor.TimelineMGR._timeCursorLastMousPos - (0.5 * Ensemble.Editor.TimelineMGR.ui.timeCursorPreview.offsetWidth) + "px";
                     Ensemble.Editor.TimelineMGR.ui.timeCursorPreview.style.visibility = "visible";
 
-                    document.addEventListener("mousemove", Ensemble.Editor.TimelineMGR._listeners.timeCursorDragUpdate);
-                    document.addEventListener("mouseup", Ensemble.Editor.TimelineMGR._listeners.timeCursorDragFinished);
+                    document.addEventListener("pointermove", Ensemble.Editor.TimelineMGR._listeners.timeCursorDragUpdate);
+                    document.addEventListener("pointerup", Ensemble.Editor.TimelineMGR._listeners.timeCursorDragFinished);
 
                     Ensemble.Editor.TimelineMGR._timeCursorDragging = true;
                     requestAnimationFrame(Ensemble.Editor.TimelineMGR._listeners.updateTimeCursorDragPos);
@@ -954,13 +968,22 @@
             },
 
             timeCursorDragUpdate: function (event) {
+                event.stopPropagation();
                 Ensemble.Editor.TimelineMGR._timeCursorLastMousPos = event.pageX;
             },
 
             timeCursorDragFinished: function (event) {
-                document.removeEventListener("mousemove", Ensemble.Editor.TimelineMGR._listeners.timeCursorDragUpdate);
-                document.removeEventListener("mouseup", Ensemble.Editor.TimelineMGR._listeners.timeCursorDragFinished);
+                event.stopPropagation();
+                document.removeEventListener("pointermove", Ensemble.Editor.TimelineMGR._listeners.timeCursorDragUpdate);
+                document.removeEventListener("pointerup", Ensemble.Editor.TimelineMGR._listeners.timeCursorDragFinished);
+                $("#editorTimelineEWClickEater").addClass("editorClickEaterFaded");
                 Ensemble.Editor.TimelineMGR._timeCursorDragging = false;
+
+                let allClips = document.getElementsByClassName("timeline-clip");
+                for (let i = 0; i < allClips.length; i++) {
+                    allClips[i].addEventListener("pointerenter", Ensemble.Editor.TimelineMGR._listeners.pointerEnteredClip);
+                    allClips[i].addEventListener("pointerleave", Ensemble.Editor.TimelineMGR._listeners.pointerLeftClip);
+                }
             },
 
             updateTimeCursorDragPos: function (event) {
@@ -982,6 +1005,20 @@
                     Ensemble.Editor.TimelineMGR._timeCursorLastFinalPos = -1;
                     Ensemble.Editor.TimelineMGR.ui.timeCursorPreview.style.visibility = "";
                 }
+            },
+            
+            pointerEnteredClip: function (event) {
+                let clipId = parseInt(event.currentTarget.id.match(/\d+$/)[0], 10);
+                Ensemble.Editor.SelectionMGR.addToHovering(clipId);
+            },
+
+            pointerLeftClip: function (event) {
+                let clipId = parseInt(event.currentTarget.id.match(/\d+$/)[0], 10);
+                Ensemble.Editor.SelectionMGR.removeFromHovering(clipId);
+            },
+
+            timelineTrackContainerPointerDown: function (event) {
+                console.log("Pointer down in the timeline track container!");
             }
         }
     });
