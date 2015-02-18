@@ -301,15 +301,15 @@
 	/*background-size: 100px 50%;*/
     overflow: hidden;
     display: flex;
-    background-position: 0px 0px, 8px 8px, 0px 1px, 8px 9px;
-    background-image: radial-gradient(black 15%, transparent 16%), radial-gradient(black 15%, transparent 16%), radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%), radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%);
+    /*background-position: 0px 0px, 8px 8px, 0px 1px, 8px 9px;*/
+    /*background-image: radial-gradient(black 15%, transparent 16%), radial-gradient(black 15%, transparent 16%), radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%), radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%);*/
     /*background-image: url('../img/carbon_fibre_v2_@2X.png');*/
-    background-attachment: scroll, scroll, scroll, scroll;
+    /*background-attachment: scroll, scroll, scroll, scroll;
     background-repeat: repeat, repeat, repeat, repeat;
     background-size: 16px 16px;
     background-origin: padding-box, padding-box, padding-box, padding-box;
     background-clip: border-box, border-box, border-box, border-box;
-    background-color: rgb(40, 40, 40);
+    background-color: rgb(40, 40, 40);*/
 }
 
 #editorTimelineHeaders, #editorTimelineHeaderPlaceholder {
@@ -402,20 +402,6 @@
     flex: 1;
     overflow-x: scroll;
     overflow-y: hidden;
-}
-
-/*#editorTimelineTracks {
-    overflow-x: scroll;
-    overflow-y: hidden;
-}*/
-
-.timeline-track {
-    background-color: #FFFFFF;
-    transition: background-color 0.4s ease;
-}
-
-.timeline-track:nth-child(even) {
-    background-color: #F0F0F0;
 }
 
 #timeline-track-container .timeline-track--content {

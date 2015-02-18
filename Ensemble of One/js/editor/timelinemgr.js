@@ -292,6 +292,8 @@
             this._currentTrackHeight = timelineHeight / numberOfTracksVisible;
             $(".timeline-track").height(this._currentTrackHeight);
             this._snapScrollToNearestTrack();
+
+            this.ui.trackContainer.style.background = "repeating-linear-gradient(#FFFFFF, #FFFFFF " + this._currentTrackHeight + "px, #F0F0F0 " + this._currentTrackHeight + "px, #F0F0F0 " + (2 * this._currentTrackHeight) + "px)";
         },
 
         updateCursor: function (timeMs) {
@@ -431,11 +433,7 @@
             let currentTop = parseFloat($(".timeline-scrollable-container").css("margin-top"));
             if (currentTop < 0) {
                 $(".timeline-scrollable-container").css("margin-top", (currentTop + Ensemble.Editor.TimelineMGR._currentTrackHeight) + "px");
-                //$(".timeline-scrollable-container").css("transition", "");
-                //$(".timeline-scrollable-container").css("transform", "translate3d(0px, -" + Ensemble.Editor.TimelineMGR._currentTrackHeight + "px, 0px)");
-                //$(".timeline-scrollable-container").height();
-                //$(".timeline-scrollable-container").css("transition", "transform 0.2s ease");
-                //$(".timeline-scrollable-container").css("transform", "translate3d(0px, 0px, 0px)");
+                this.ui.trackContainer.style.backgroundPosition = "0 " + (currentTop + Ensemble.Editor.TimelineMGR._currentTrackHeight) + "px";
                 Ensemble.Editor.TimelineMGR._currentScrollIndex = parseFloat($(".timeline-scrollable-container").css("margin-top")) / Ensemble.Editor.TimelineMGR._currentTrackHeight;
             }
         },
@@ -444,16 +442,13 @@
             /// <summary>Scrolls the timeline down by one track.</summary>
             let currentTop = parseFloat($(".timeline-scrollable-container").css("margin-top"));
             $(".timeline-scrollable-container").css("margin-top", (currentTop - Ensemble.Editor.TimelineMGR._currentTrackHeight) + "px");
-            //$(".timeline-scrollable-container").css("transition", "");
-            //$(".timeline-scrollable-container").css("transform", "translateY(" + Ensemble.Editor.TimelineMGR._currentTrackHeight + "px)");
-            //$(".timeline-scrollable-container").height();
-            //$(".timeline-scrollable-container").css("transition", "transform 0.2s ease");
-            //$(".timeline-scrollable-container").css("transform", "translateY(0px)");
+            this.ui.trackContainer.style.backgroundPosition = "0 " + (currentTop + Ensemble.Editor.TimelineMGR._currentTrackHeight) + "px";
             Ensemble.Editor.TimelineMGR._currentScrollIndex = parseFloat($(".timeline-scrollable-container").css("margin-top")) / Ensemble.Editor.TimelineMGR._currentTrackHeight;
         },
 
         _snapScrollToNearestTrack: function () {
             $(".timeline-scrollable-container").css("margin-top", this._currentScrollIndex * this._currentTrackHeight);
+            this.ui.trackContainer.style.backgroundPosition = "0 " + (this._currentScrollIndex * this._currentTrackHeight) + "px";
         },
 
         toggleTrackDetails: function () {
@@ -830,7 +825,8 @@
             buttonZoomOut: null,
             buttonNewTrack: null,
             timeCursor: null,
-            timeCursorPreview: null
+            timeCursorPreview: null,
+            trackContainer: null
         },
 
         _refreshUI: function () {
@@ -841,6 +837,7 @@
             this.ui.buttonNewTrack = document.getElementById("editorTimelineAddTrackButton");
             this.ui.timeCursor = document.getElementsByClassName("timeline__cursor")[0];
             this.ui.timeCursorPreview = document.getElementsByClassName("editorTimelineDragPreviewFlyout")[0];
+            this.ui.trackContainer = document.getElementById("timeline-track-container");
 
             this.ui.buttonScrollUp.addEventListener("click", this._listeners.buttonScrollUp);
             this.ui.buttonScrollDown.addEventListener("click", this._listeners.buttonScrollDown);
@@ -865,6 +862,7 @@
             this.ui.buttonNewTrack = null;
             this.ui.timeCursor = null;
             this.ui.timeCursorPreview = null;
+            this.ui.trackContainer = null;
         },
 
         _rebuildIndex: function () {
