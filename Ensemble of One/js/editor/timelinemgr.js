@@ -126,7 +126,7 @@
                 trackRemoved.clips[i].unload();
             }
             this._rebuildIndex();
-            requestAnimationFrame(function () { Ensemble.Editor.Renderer.renderSingleFrame(); });
+            Ensemble.Editor.Renderer.requestFrame();
             return {
                 track: trackRemoved,
                 index: i
@@ -154,7 +154,7 @@
             }
             clipRemoved[0].unload();
             this._rebuildIndex();
-            requestAnimationFrame(function () { Ensemble.Editor.Renderer.renderSingleFrame(); });
+            Ensemble.Editor.Renderer.requestFrame();
             return {
                 clip: clipRemoved[0],
                 trackId: trackIndex
@@ -237,7 +237,7 @@
             this.tracks.splice(destination, 0, movingItem);
             this.refreshTrackNumbers();
             this._rebuildIndex();
-            requestAnimationFrame(function () { Ensemble.Editor.Renderer.renderSingleFrame(); });
+            Ensemble.Editor.Renderer.requestFrame();
         },
 
         getTrackById: function (idval) {

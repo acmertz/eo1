@@ -37,6 +37,11 @@
             Ensemble.Editor.TimelineMGR.updateCursor(Ensemble.Editor.PlaybackMGR.lastTime);
         },
 
+        requestFrame: function () {
+            /// <summary>Schedules a single frame to be rendered if the Renderer is not already active.</summary>
+            if (!this._active) requestAnimationFrame(Ensemble.Editor.Renderer.renderSingleFrame);
+        },
+
 
         canvasResized: function (event) {
             this._scale = $(this.ui.playbackCanvas).width() / Ensemble.Session.maxResolution[0];
@@ -87,14 +92,43 @@
         _refreshUI: function () {
             this.ui.playbackCanvas = document.getElementById("editorCanvas");
             this.ui.timerDisplay = document.getElementById("editorTimeDisplay");
+
+            this.ui.playbackCanvas.addEventListener("pointermove", this._listeners.playbackCanvasPointerMoved);
+            this.ui.playbackCanvas.addEventListener("pointerleave", this._listeners.playbackCanvasPointerLeave);
         },
 
         _cleanUI: function () {
+            this.ui.playbackCanvas.removeEventListener("pointermove", this._listeners.playbackCanvasPointerMoved);
+            this.ui.playbackCanvas.removeEventListener("pointerleave", this._listeners.playbackCanvasPointerLeave);
+
             this.ui.playbackCanvas = null;
             this.ui.timerDisplay = null;
         },
 
         _listeners: {
+            playbackCanvasPointerMoved: function (event) {
+                let scaledX = event.offsetX / Ensemble.Editor.Renderer._scale;
+                let scaledY = event.offsetY / Ensemble.Editor.Renderer._scale;
+                let found = -1;
+
+                for (let i = 0; i < Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList.length; i++) {
+                    if (Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList[i].containsPoint(scaledX, scaledY)) {
+                        //console.log("Mousing over clip " + Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList[i].id);
+                        found = Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList[i].id;
+                        // replace the hovering state in the SelectionMGR.
+                        // edge case: mouse hover out of canvas, and clip is against edge. clear all hovers on hover out of canvas.
+                        break;
+                    }
+                }
+                if (found > -1) Ensemble.Editor.SelectionMGR.replaceHovering(found);
+                else {
+                    Ensemble.Editor.SelectionMGR.clearHovering();
+                }
+            },
+
+            playbackCanvasPointerLeave: function (event) {
+                Ensemble.Editor.SelectionMGR.clearHovering();
+            }
         }
     });
 })();

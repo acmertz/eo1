@@ -120,6 +120,15 @@
                 
             },
 
+            containsPoint: function (xcoord, ycoord) {
+                /// <summary>Returns whether or not the given point is contained by the clip's dimensions and position.</summary>
+                /// <param name="xcoord" type="Number">The X-coordinate.</param>
+                /// <param name="ycoord" type="Number">The Y-coordinate.</param>
+                /// <returns type="Boolean">A Boolean indicating whether or not the clip bounds the given coordinates.</returns>
+                if (xcoord >= this.xcoord && (this.xcoord + this.width) >= xcoord && ycoord >= this.ycoord && (this.ycoord + this.height) >= ycoord) return true;
+                return false;
+            },
+
             unload: function () {
                 /// <summary>Unloads the clip and turns its file reference into a stub.</summary>
                 this._player.src = null;

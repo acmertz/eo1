@@ -1,16 +1,30 @@
 ﻿.timeline-clip {
     box-sizing: border-box;
     padding: 10px 10px 10px 0;
-    border: 1px solid #BCBCBC;
+    border: 1px solid #707070;
     height: 100%;
-    background-image: url("/img/crossword.png");
+    background-image: url("/img/crossword--dark.png");
     position: absolute;
     top: 0px;
     overflow: hidden;
 }
 
-.timeline-clip:hover {
-    border: 1px solid lightblue;
+.timeline-clip--hovering {
+    background-image: url("/img/crossword.png");
+}
+
+.timeline-clip--hovering:after {
+    content: "lol hovering!";
+    float: left;
+}
+
+.timeline-clip--selected {
+    background-image: url("/img/crossword.png");
+}
+
+.timeline-clip--selected:after {
+    content: "lol selected!";
+    float: left;
 }
 
 .timeline-clip__thumb {

@@ -65,6 +65,7 @@
     <Content Include="images\storelogo.scale-100.png" />
     <Content Include="img\brickwall.png" />
     <Content Include="img\clip-film-reel-edge.png" />
+    <Content Include="img\crossword--dark.png" />
     <Content Include="img\crossword.png" />
     <Content Include="img\packaging\splashScreen.scale-100.png" />
     <Content Include="img\packaging\splashScreen.scale-140.png" />
@@ -74,6 +75,7 @@
     <Content Include="img\projectThumbnails\169.jpg" />
     <Content Include="img\projectThumbnails\2391.jpg" />
     <Content Include="img\projectThumbnails\43.jpg" />
+    <Content Include="img\squared_metal.png" />
     <Content Include="img\stripes.png" />
     <Content Include="img\stripes_reverse.png" />
     <Content Include="img\tiny_grid.png" />
