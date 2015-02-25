@@ -516,6 +516,7 @@
 
             clipEl.addEventListener("pointerenter", Ensemble.Editor.TimelineMGR._listeners.pointerEnteredClip);
             clipEl.addEventListener("pointerleave", Ensemble.Editor.TimelineMGR._listeners.pointerLeftClip);
+            clipEl.addEventListener("pointerdown", Ensemble.Editor.TimelineMGR._listeners.pointerDownOnClip);
 
             return clipEl;
         },
@@ -1017,8 +1018,30 @@
                 Ensemble.Editor.SelectionMGR.removeFromHovering(clipId);
             },
 
+            pointerDownOnClip: function (event) {
+                event.stopPropagation();
+                let clipId = parseInt(event.currentTarget.id.match(/\d+$/)[0], 10);
+                console.log("Pointer down on clip " + clipId + "!");
+                if (event.pointerType == "touch") {
+                    // engage "wait" drag. If the pointer is still in relatively the same place after 0.5 seconds, engage drag.
+                    // otherwise, let the OS handle scroll and give up on pointer events until scrolling finishes.
+                }
+                else {
+                    // mouse or pen precision input.
+                    // select clip and listen for movement.
+                    // if the pointer moves more than 10px while still down, start moving the clip from the offset.
+                    Ensemble.Editor.SelectionMGR.replaceSelection(clipId);
+                    if (event.shiftKey) {
+                        //Ensemble.Editor.SelectionMGR.addToSelection(clipId);
+                    }
+                    else {
+                        Ensemble.Editor.SelectionMGR.replaceSelection(clipId);
+                    }
+                }
+            },
+
             timelineTrackContainerPointerDown: function (event) {
-                console.log("Pointer down in the timeline track container!");
+                Ensemble.Editor.SelectionMGR.clearSelection();
             }
         }
     });

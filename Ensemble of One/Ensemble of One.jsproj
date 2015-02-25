@@ -56,6 +56,7 @@
     <AppxManifest Include="package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <Content Include="css\editor-menu.css" />
     <Content Include="css\editor.css" />
     <Content Include="css\timeline.css" />
     <Content Include="default.html" />
@@ -81,6 +82,7 @@
     <Content Include="img\tiny_grid.png" />
     <Content Include="js\default.js" />
     <Content Include="css\default.css" />
+    <Content Include="js\editor\menumgr.js" />
     <Content Include="js\editor\selectionmgr.js" />
     <Content Include="js\editor\renderer.js" />
     <Content Include="js\editor\playbackmgr.js" />

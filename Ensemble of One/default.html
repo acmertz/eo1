@@ -12,6 +12,7 @@
     <!-- Ensemble of One references -->
     <link href="/css/default.css" rel="stylesheet" />
     <link rel="stylesheet" href="/css/editor.css" />
+    <link rel="stylesheet" href="/css/editor-menu.css" />
     <link rel="stylesheet" href="/css/timeline.css" />
     <script src="/js/default.js"></script>
 
@@ -26,6 +27,7 @@
 
     <!-- Editor -->
     <script src="/js/editor/clip.js"></script>
+    <script src="/js/editor/menumgr.js"></script>
     <script src="/js/editor/playbackmgr.js"></script>
     <script src="/js/editor/renderer.js"></script>
     <script src="/js/editor/selectionmgr.js"></script>
@@ -510,6 +512,80 @@
                 </div>
             </div>
 
+            <div class="editor-menu-clickeater"></div>
+
+            <div class="editor-menu-container">
+                <div class="editor-menu editor-menu--home">
+                    <ul class="editor-menu__command-list">
+                        <li class="editor-menu__command">&#xE10E; Undo</li>
+                        <li class="editor-menu__command">&#xE10D; Redo</li>
+                        <li class="editor-menu__command">&#xE112; Close project</li>
+                    </ul>
+                </div>
+
+                <div class="editor-menu editor-menu--clip">
+                    <h2>Edit clip</h2>
+                    <ul class="editor-menu__command-list">
+                        <li class="editor-menu__command">&#xE16F; Copy</li>
+                        <li class="editor-menu__command">&#xE16B; Cut</li>
+                        <li class="editor-menu__command">&#xE16D; Paste</li>
+                        <li class="editor-menu__command">&#xE174; Move to different track</li>
+                        <li class="editor-menu__divider"></li>
+                        <li class="editor-menu__command">&#xE129; Split</li>
+                        <li class="editor-menu__command">&#xE15D; Volume</li>
+                        <li class="editor-menu__command">&#xE189; Separate audio</li>
+                        <li class="editor-menu__command">&#xE12C; Trim</li>
+                        <li class="editor-menu__command">&#xE123; Transform</li>
+                        <li class="editor-menu__command">&#x1f3a5; Multi-cam</li>
+                        <li class="editor-menu__divider"></li>
+                        <li class="editor-menu__command">&#xE13E; Rename</li>
+                        <li class="editor-menu__command">&#xE107; Remove</li>
+                        <li class="editor-menu__divider"></li>
+                        <li class="editor-menu__command">&#xE14E; Select all</li>
+                        <li class="editor-menu__command">&#xE1C5; Clear selection</li>
+                        <li class="editor-menu__divider"></li>
+                        <li class="editor-menu__command">&#xE1CB; Properties</li>
+                    </ul>
+                </div>
+                <div class="editor-menu editor-menu--import">
+                    <h2>Import menu</h2>
+                    <p>Coming soon!</p>
+                </div>
+                <div class="editor-menu editor-menu--record">
+                    <h2>Record menu</h2>
+                    <p>Coming soon!</p>
+                </div>
+                <div class="editor-menu editor-menu--effects">
+                    <h2>Effects menu</h2>
+                    <p>Coming soon!</p>
+                </div>
+                <div class="editor-menu editor-menu--animations">
+                    <h2>Animations menu</h2>
+                    <p>Coming soon!</p>
+                </div>
+                <div class="editor-menu editor-menu--titles">
+                    <h2>Titles menu</h2>
+                    <p>Coming soon!</p>
+                </div>
+                <div class="editor-menu editor-menu--export">
+                    <h2>Export menu</h2>
+                    <p>Coming soon!</p>
+                </div>
+            </div>
+
+            <nav class="editor-menubar">
+                <ul class="editor-menubar__command-list">
+                    <li class="editor-menubar__command editor-menubar__command--home" data-ensemble-menu="home">&#xE10F;
+                    <li class="editor-menubar__command editor-menubar__command--clip" data-ensemble-menu="clip">Clip
+                    <li class="editor-menubar__command editor-menubar__command--import" data-ensemble-menu="import">Import
+                    <li class="editor-menubar__command editor-menubar__command--record" data-ensemble-menu="record">Record
+                    <li class="editor-menubar__command editor-menubar__command--effects" data-ensemble-menu="effects">Effects
+                    <li class="editor-menubar__command editor-menubar__command--animations" data-ensemble-menu="animations">Animations
+                    <li class="editor-menubar__command editor-menubar__command--titles" data-ensemble-menu="titles">Titles
+                    <li class="editor-menubar__command editor-menubar__command--export" data-ensemble-menu="export">Export
+                </ul>
+            </nav>
+
             <div id="editorMenuButtons">
                 <div id="editorMenuButton" class="editorMenuToggle fa fa-2x fa-list" title="Actions"></div> <br />
                 <div id="editorMediaButton" class="editorMenuToggle fa fa-fw fa-2x fa-film" title="Media"></div> <br />
@@ -555,8 +631,33 @@
 
             <div id="topBottomSplitpointClickEater" class="editorClickEater editorClickEaterFaded"></div>
             <div id="editorTimelineEWClickEater" class="editorClickEater editorClickEaterFaded"></div>
+            <div class="clip-selected-callout" tabindex="-1">
+                <div class="clip-selected-callout__button">&#xE13E;</div>
+                <div class="clip-selected-callout__button">&#xE174;</div>
+                <div class="clip-selected-callout__button">&#xE107;</div>
+                <div class="clip-selected-callout__button">&#xE10C;</div>
+            </div>
+            <div id="clip-selected-rightclick" data-win-control="WinJS.UI.Menu">
+                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#xE129; Split'}"></button>
+                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#xE16F; Copy'}"></button>
+                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#xE16B; Cut'}"></button>
+                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#xE16D; Paste'}"></button>
+                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#xE15D; Volume'}"></button>
+                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#xE189; Separate audio'}"></button>
+                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#x1f3a5; Multi-cam'}"></button>
+                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#xE174; Move to different track'}"></button>
+                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#xE12C; Trim'}"></button>
+                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#xE123; Crop'}"></button>
+                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#x1f4d0; Transform'}"></button>
+                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#xE1CE; Animate'}"></button>
+                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#xE13E; Rename'}"></button>
+                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#xE107; Remove'}"></button>
+                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#xE1CB; Properties'}"></button>
+                <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',type:'separator'}" />
+                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'forwardMenuItem',label:'Browse...'}"></button>
+            </div>
+            <div class="editorTimelineDragPreviewFlyout" tabindex="-1">00:00:00.000</div>
 
-            
         </div>
 
         <div class="pageContainer loadingPage" id="projectLoadingPageContainer">
@@ -591,8 +692,7 @@
             </h3>
             <p>This will also remove all the clips inside it.</p>
             <button id="remove-track-confirmation__button">Remove</button>
-        </div>
-        <div class="editorTimelineDragPreviewFlyout" tabindex="-1">00:00:00.000</div>
+        </div>        
         <div id="mediaBrowserAddToProjectFlyout" data-win-control="WinJS.UI.Menu"></div>
     </div>
 </body>

@@ -25,6 +25,8 @@
 .timeline-clip--selected:after {
     content: "lol selected!";
     float: left;
+    border-color: blue;
+    border-radius: 3px;
 }
 
 .timeline-clip__thumb {
@@ -61,4 +63,27 @@
     padding: 10px;
     background-color: rgba(255,255,255,0.85);
     border: 1px solid #aaa;
+}
+
+.clip-selected-callout {
+    position: fixed;
+    background-color: rgba(255,255,255,0.85);
+    border: 1px solid #aaa;
+    top: 0;
+    left: 0;
+    width: 150px;
+    display: flex;
+    visibility: hidden;
+}
+
+.clip-selected-callout__button {
+    font-size: 16px;
+    padding: 10px;
+    text-align: center;
+    flex: 1;
+}
+
+.clip-selected-callout__button:active {
+    background-color: #000;
+    color: #fff;
 }
