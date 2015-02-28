@@ -42,6 +42,11 @@
             return returnVal;
         },
 
+        refresh: function () {
+            /// <summary>Refreshes the Media Browser at its current location.</summary>
+            Ensemble.MediaBrowser.navigateToFolder(Ensemble.MediaBrowser.currentLocation());
+        },
+
         upOneLevel: function () {
             /// <summary>Navigates the media browser up one level in the current context, if possible.</summary>
             switch (this._context) {
@@ -337,7 +342,7 @@
         _addPreviewToLayerLoadFinished: function (clipObj) {
             /// <param name="clipObj" type="Object">The loaded Clip, ready for playback and rendering.</param>
             Ensemble.MediaBrowser.closeMediaPreview();
-            Ensemble.Pages.Editor.hideActionMenu();
+            Ensemble.Editor.MenuMGR.closeMenu();
         },
 
         _openMediaPreviewPopup: function () {

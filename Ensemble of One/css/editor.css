@@ -120,10 +120,8 @@
     width: 100%;
     background: linear-gradient(to right, white 60%, black 60%);
 	background-size: 22px 2px;
-
     border-top: 5px solid black;
 	border-bottom: 5px solid black;
-
     cursor: ns-resize;
 }
 
@@ -297,19 +295,8 @@
     border: 2px solid gray;
     border-radius: 2px;
     border-top-right-radius: 0px;
-    /*background: linear-gradient(to bottom, rgb(255,255,255) 50%, rgb(240,240,240) 50%);*/
-	/*background-size: 100px 50%;*/
     overflow: hidden;
     display: flex;
-    /*background-position: 0px 0px, 8px 8px, 0px 1px, 8px 9px;*/
-    /*background-image: radial-gradient(black 15%, transparent 16%), radial-gradient(black 15%, transparent 16%), radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%), radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%);*/
-    /*background-image: url('../img/carbon_fibre_v2_@2X.png');*/
-    /*background-attachment: scroll, scroll, scroll, scroll;
-    background-repeat: repeat, repeat, repeat, repeat;
-    background-size: 16px 16px;
-    background-origin: padding-box, padding-box, padding-box, padding-box;
-    background-clip: border-box, border-box, border-box, border-box;
-    background-color: rgb(40, 40, 40);*/
 }
 
 #editorTimelineHeaders, #editorTimelineHeaderPlaceholder {
@@ -410,16 +397,6 @@
     position: relative;
 }
 
-#editorPageContainer #editorMenuButton, .editorMenuButtonPlaceholder {
-    padding: 20px;
-}
-
-#editorMenuButtons {
-    position: fixed;
-    top: 0px;
-    right: 0px;
-}
-
 #editor-history-msg {
     position: fixed;
     top: 0px;
@@ -428,7 +405,6 @@
 }
 
 #editorDraggedPreviewContainer {
-    /*visibility: hidden;*/
     position: fixed;
     left: 0px;
     top: 0px;
@@ -442,10 +418,6 @@
     height: 200px;
     background-color: rgba(200,200,200, 0.8);
     opacity: 0;
-}
-
-.editorDraggedPreviewVisible {
-    /*visibility: visible !important;*/
 }
 
 .editorDraggedPreviewVisible #editorDraggedPreviewContent {
@@ -462,10 +434,6 @@
     }
 }
 
-editorDraggedPreviewHidden {
-    /*visibility: visible !important;*/
-}
-
 .editorDraggedPreviewHidden #editorDraggedPreviewContent {
     animation: editorDragPreviewExit 0.2s ease-in-out;
     animation-fill-mode: forwards;
@@ -473,7 +441,6 @@ editorDraggedPreviewHidden {
 
 @keyframes editorDragPreviewExit {
     0% {
-        /*visibility: visible !important;*/
         transform: scale(1);
         opacity: 1;
     }
@@ -517,413 +484,6 @@ editorDraggedPreviewHidden {
     border-radius: 5px;
     background-color: darkgray;
     pointer-events: all;
-}
-
-#mediaBrowserPreviewVideo {
-}
-
-#mediaBrowserPreviewAudio {
-}
-
-#mediaBrowserPreviewPicture {
-}
-
-#editorPageContainer #editorMenuButton {
-    border-bottom-right-radius: 10px;
-    border-bottom: 1px solid lightgray;
-}
-
-#editorPageContainer .editorMenuToggle {
-    background-color: rgba(240,240,240, 1);
-    border-right: 1px solid lightgray;
-    padding: 10px;
-
-    transition: background-color 0.4s ease-in-out;
-    -webkit-transition: background-color 0.4s ease-in-out;
-}
-
-#editorPageContainer .editorMenuToggle:hover {
-    background-color: rgba(255,255,255, 1);
-    transition: none;
-    -webkit-transition: none;
-}
-
-#editorPageContainer .editorMenuToggle:active {
-    background-color: rgba(0,0,0, 1);
-    color: white;
-    transition: none;
-    -webkit-transition: none;
-}
-
-#editorPageContainer .editorMenuToggleFocused {
-    background-color: white;
-}
-
-.editorMenuButtonPlaceholder {
-    visibility: hidden;
-}
-
-#editorEffectsButton {
-    border-top: 1px solid lightgray;
-    border-bottom: 1px solid lightgray;
-    border-bottom-right-radius: 10px;
-}
-
-#editorPageContainer #editorMenuDialog {
-    position: fixed;
-    left: 0px;
-    top: 0px;
-    /*visibility: hidden;*/
-    /*opacity: 0;*/
-    overflow-x: hidden;
-    width: 662px;
-    height: 100%;
-    max-width: 100%;
-
-    box-shadow: 1px 1px 10px 5px rgba(0,0,0,0.1);
-    background-color: rgba(255,255,255,1);
-    border-right: 2px solid gray;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-
-    transform: translateX(-100%);
-}
-
-.editorMenuDialogVisible {
-    transform: translateX(0%) !important;
-    animation: editorMenuDialogEnter 0.3s ease-in-out;
-}
-
-@keyframes editorMenuDialogEnter {
-    0% {
-        transform: translateX(-100%);
-    }
-    100% {
-        transform: translateX(0%);
-    }
-}
-
-.editorMenuDialogHidden {
-    transform: translateX(-100%);
-    animation: editorMenuDialogExit 0.3s ease-in-out;
-}
-
-@keyframes editorMenuDialogExit {
-    0% {
-        transform: translateX(0%);
-    }
-    100% {
-        transform: translateX(-100%);
-    }
-}
-
-#editorActionMenu {
-}
-
-#editorMediaMenu {
-}
-
-#editorEffectsMenu {
-}
-
-.editorSubMenu {
-    display: none;
-    width: 100%;
-    opacity: 0;
-    flex: 1;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-}
-
-.editorMenuDialogTabs {
-    /* No flex - just enough to hold the text headings. */
-    width: 100%;
-    background-color: white;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: flex-start;
-}
-
-.editorMenuDialogTabs .editorMenuTabHeader {
-    text-align: center;
-    height: 100%;
-    padding: 20px;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    margin-left: 10px;
-    border: 1px solid transparent;
-    color: darkgray;
-}
-
-.editorMenuDialogTabs .editorMenuTabFocused {
-    background-color: rgb(240,240,240);
-    pointer-events: none;
-    border: 1px solid lightgray;
-    color: black;
-}
-
-.editorMenuDialogTabs .editorMenuTabBlurred {
-    background-color: white;
-}
-
-.editorMenuDialogTabs .editorMenuTabBlurred:hover {
-    background-color: rgb(240,240,240);
-    color: black;
-}
-
-.editorMenuDialogTabs .editorMenuTabBlurred:active {
-    color: white;
-    background-color: black;
-}
-
-.editorMenuDialogTabs .editorMenuLeftAdjacentTab {
-    /*border-bottom-right-radius: 10px;*/
-}
-
-.editorMenuDialogTabs .editorMenuRightAdjacentTab {
-    /*border-bottom-left-radius: 10px;*/
-}
-
-#editorMenuDialog .editorMenuDialogContent {
-    width: 100%;
-    display: flex;
-    flex: 1;
-    flex-direction: row;
-    justify-content: flex-start;
-    overflow-y: hidden;
-}
-
-.editorMenuDialogContent .editorMenuContentItem {
-    width: 100%;
-    flex: 1;
-    padding: 10px;
-    padding-bottom: 0px;
-    opacity: 0;
-    display: none;
-    flex-direction: column;
-    overflow-y: auto;
-    background-color: rgb(250,250,250);
-    border-top-left-radius: 5px;
-    border-left: 1px solid lightgray;
-    border-top: 1px solid lightgray;
-}
-
-.editorMenuThumbnailSection {
-    display: flex;
-    flex-direction: row;
-}
-
-.editorMenuThumbnailSectionHalf {
-    flex: 1;
-    padding-right: 10px;
-}
-
-.editorMenuThumbnailSectionThumb {
-    width: 100%;
-    height: 180px;
-    background-color: black;
-}
-
-.editorMenuCommandList {
-    font-size: x-large;
-    /*background: linear-gradient(to bottom, rgb(245,245,245) 50%, rgb(255,255,255) 50%);
-    background-size: 100px 150px;*/
-    padding-top: 10px;
-    padding-right: 10px;
-    flex: 1;
-}
-
-.editorMenuCommandListItem {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    line-height: 50px;
-    margin-bottom: 10px;
-    background-color: white;
-    border: 1px solid lightgray;
-    border-left: 10px solid lightgray;
-}
-
-.editorMenuCommandListItemName {
-    flex: 1;
-    padding-left: 10px;
-}
-
-.editorMenuCommandListItemPinContainer {
-    padding-left: 10px;
-    padding-right: 10px;
-}
-
-.mediaBrowserHeaderContainer {
-    display: flex;
-    justify-content: center;
-    height: 28px;
-}
-
-#editorMenuMediaBrowserFileList {
-    flex: 1;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    padding: 10px;
-    background: rgb(250,250,250);
-    border-top-right-radius: 5px;
-    border-top-left-radius: 5px;
-    border: 2px solid rgb(230,230,230);
-    border-bottom-style: none;
-    z-index: 2;
-}
-
-#editorMediaBrowserLocationButtonContainer {
-    display: inline-block;
-    float: left;
-    font-size: large;
-    font-weight: bold;
-}
-
-#editorMediaBrowserLocationButton {
-
-    transition: transform 0.1s ease-in-out;
-}
-
-#editorMediaBrowserLocationButton:active {
-    transform: scale(0.95);
-}
-
-#editorMediaBrowserCurrentPathContainer {
-    flex: 1;
-    margin-right: 20px;
-    margin-left: 20px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    white-space: nowrap;
-    font-size: large;
-}
-
-.editorMediaBrowserPathItem {
-}
-
-.editorMediaBrowserPathItemButton {
-    padding-left: 5px;
-    padding-right: 5px;
-    max-width: 200px;
-    display: inline-block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.editorMediaBrowserPathItemButton:hover {
-    background-color: rgb(245,245,245);
-}
-
-.editorMediaBrowserPathItemButton:active {
-    background-color: black;
-    color: white;
-}
-
-#editorMediaBrowserFolderControlContainer {
-    display: inline-block;
-    float: right;
-    margin-right: 20px;
-    z-index: 1;
-}
-
-.mediaBrowserFolderControl {
-    font-size: large;
-    background-color: rgb(250,250,250);
-    border: 2px solid rgb(230,230,230);
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    border-bottom-style: none;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-bottom: 5px;
-    padding-top: 5px;
-}
-
-.mediaBrowserFolderControl:hover {
-    background-color: white;
-}
-
-.mediaBrowserFolderControl:active {
-    background-color: black;
-    color: white;
-    border-color: black;
-}
-
-#editorMediaBrowserLoadingProgress {
-    margin-right: 10px;
-    display: none;
-}
-
-.mediaBrowserListItem {
-    padding: 2px;
-    display: flex;
-    flex-direction: row;
-    height: 50px;
-    animation: mediaBrowserListItemEnter 0.3s linear;
-    animation-fill-mode: both;
-}
-
-.mediaBrowserListItem:hover {
-    background-color: rgb(240,240,240);
-}
-
-@keyframes mediaBrowserListItemEnter {
-    0% {
-        opacity: 0;
-        transform: translateX(12%);
-    }
-    50% {
-        opacity: 1;
-        transform: translateX(3%);
-    }
-    75% {
-        transform: translateX(1%);
-    }
-    100% {
-        transform: translateX(0%);
-    }
-}
-
-.mediaBrowserListItemIcon {
-    /* Styling here for the icon column. */
-    font-size: xx-large;
-    padding-left: 5px;
-    padding-right: 5px;
-    text-align: center;
-    width: 50px;
-    color: rgba(0,0,0,0.2);
-}
-
-.mediaBrowserIconFilled {
-    color: rgba(255,255,255,0.8);
-    text-shadow: 0px 0px 10px black;
-}
-
-.mediaBrowserListItemMeta {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    margin-left: 10px;
-}
-
-.mediaBrowserListItemRow {
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-}
-
-.mediaBrowserListItemTitle {
-    font-size: large;
-}
-
-.mediaBrowserListItemRowComponent {
-    flex: 1;
 }
 
 .videoPlaybackSurface {

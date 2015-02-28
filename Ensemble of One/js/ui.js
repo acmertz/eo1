@@ -20,11 +20,7 @@
             this.PageSections.lowerHalf.timelineTracks = document.getElementById("editorTimelineTracks");
             this.PageSections.lowerHalf.timelineHeaderDetailPlaceholder = document.getElementById("editorTimelineDetailsPlaceholder");
             this.PageSections.divider = document.getElementById("editorHorizontalDivider");
-            this.PageSections.menuButtons = document.getElementById("editorMenuButtons");
-            this.PageSections.menu.entireSection = document.getElementById("editorMenuDialog");
 
-            this.PageSections.menu.actionMenu.entireSection = document.getElementById("editorActionMenu");
-            this.PageSections.menu.actionMenu.project.entireSection = document.getElementById("editorMenuContentProject");
             this.PageSections.menu.actionMenu.project.nameDisplay = document.getElementById("editorProjectNameDisplay");
             this.PageSections.menu.actionMenu.project.durationDisplay = document.getElementById("editorMenuDurationDisplay");
             this.PageSections.menu.actionMenu.project.numberOfTracksDisplay = document.getElementById("editorMenuNumberOfTracksDisplay");
@@ -45,22 +41,13 @@
 
             this.RenderSurfaces.mainCanvas = document.getElementById("editorCanvas");
 
-            this.UserInput.Buttons.actionMenu = document.getElementById("editorMenuButton");
-            this.UserInput.Buttons.mediaMenu = document.getElementById("editorMediaButton");
-            this.UserInput.Buttons.effectsMenu = document.getElementById("editorEffectsButton");
             this.UserInput.Buttons.mediaBrowserLocation = document.getElementById("editorMediaBrowserLocationButton");
-            this.UserInput.Buttons.mediaMenuTabLocal = document.getElementById("editorMenuTabMediaLocal");
-            this.UserInput.Buttons.mediaMenuTabCamera = document.getElementById("editorMenuTabMediaCamera");
-            this.UserInput.Buttons.mediaMenuTabMic = document.getElementById("editorMenuTabMediaMic");
             this.UserInput.Buttons.mediaBrowserHome = document.getElementById("editorMediaBrowserHomeButton");
             this.UserInput.Buttons.mediaBrowserUpOneLevel = document.getElementById("editorMediaBrowserUpOneLevelButton");
             this.UserInput.Buttons.mediaBrowserRefresh = document.getElementById("editorMediaBrowserRefreshButton");
             this.UserInput.Buttons.mediaBrowserLocationVideos = document.getElementById("editorMediaBrowserLocationVideosLibrary");
             this.UserInput.Buttons.mediaBrowserLocationMusic = document.getElementById("editorMediaBrowserLocationMusicLibrary");
             this.UserInput.Buttons.mediaBrowserLocationPictures = document.getElementById("editorMediaBrowserLocationPicturesLibrary");
-            this.UserInput.Buttons.exit = document.getElementById("editorExitButton");
-            this.UserInput.Buttons.undo = document.getElementById("editorMenuCommandUndo");
-            this.UserInput.Buttons.redo = document.getElementById("editorMenuCommandRedo");
             this.UserInput.Buttons.moveTrackToTop = document.getElementById("editorMoveTrackTop");
             this.UserInput.Buttons.moveTrackUp = document.getElementById("editorMoveTrackUp");
             this.UserInput.Buttons.moveTrackDown = document.getElementById("editorMoveTrackDown");
@@ -69,7 +56,6 @@
 
             this.UserInput.Boundaries.topBottomSplit = document.getElementById("editorHorizontalDivider");
 
-            this.UserInput.ClickEaters.menu = document.getElementById("editorMenuClickEater");
             this.UserInput.ClickEaters.splitpoint = document.getElementById("topBottomSplitpointClickEater");
             this.UserInput.ClickEaters.mediaPreview = document.getElementById("editorMediaBrowserPreviewClickEater");
 
@@ -155,22 +141,13 @@
 
         UserInput: {
             Buttons: {
-                actionMenu: null,
-                mediaMenu: null,
-                effectsMenu: null,
                 mediaBrowserLocation: null,
-                mediaMenuTabLocal: null,
-                mediaMenuTabCamera: null,
-                mediaMenuTabMic: null,
                 mediaBrowserHome: null,
                 mediaBrowserUpOneLevel: null,
                 mediaBrowserRefresh: null,
                 mediaBrowserLocationVideos: null,
                 mediaBrowserLocationMusic: null,
                 mediaBrowserLocationPictures: null,
-                exit: null,
-                undo: null,
-                redo: null,
                 moveTrackToTop: null,
                 moveTrackUp: null,
                 moveTrackDown: null,
@@ -181,7 +158,6 @@
                 topBottomSplit: null
             },
             ClickEaters: {
-                menu: null,
                 splitpoint: null,
                 mediaPreview: null
             },

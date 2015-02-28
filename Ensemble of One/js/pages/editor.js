@@ -33,9 +33,6 @@
             $(Ensemble.Editor.UI.PageSections.upperHalf.entireSection).removeClass("editorUpperHalfVisible");
             $(Ensemble.Editor.UI.PageSections.lowerHalf.entireSection).removeClass("editorLowerHalfVisible");
             $(Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit).addClass("editorHorizontalDividerHidden");
-            $("#editorMenuDialog").css("animation", "none");
-            $("#editorMenuDialog").removeClass("editorMenuDialogHidden");
-            $("#editorMenuDialog").css("animation", "");
             $(Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit).removeClass();
             $(Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit).addClass("editorHorizontalDividerHidden");
 
@@ -76,24 +73,35 @@
             
         },
 
-        hide: function () {
-            /// <summary>Plays the Editor page hide animation and detaches all event listeners.</summary>
+        unload: function () {
+            /// <summary>Triggers an unload of the project.</summary>
+            console.log("Hiding editor...");
+            $("#projectClosingPageContainer").removeClass("loadingPageHidden");
+            $("#projectClosingPageContainer").addClass("loadingPageVisible");
+            window.setTimeout(function () {
+                $("#editorPageContainer").addClass("pageContainerHidden");
+                Ensemble.Pages.Editor._detachListeners();
+                console.log("Unloading project...");
 
-            // Hide the current page
-            $("#editorPageContainer").addClass("pageContainerHidden");
-            
-            this.hideActionMenu();
-            
+                Ensemble.Editor.TimelineMGR.unload();
+                Ensemble.Editor.PlaybackMGR.unload();
+                Ensemble.Editor.Renderer.unload();
+                Ensemble.Editor.MenuMGR.unload();
 
-            this._detachListeners();
+                window.setTimeout(function () {
+                    $("#imgMainLogo").css("display", "initial");
+                    $("#projectClosingPageContainer").removeClass("loadingPageVisible");
+                    $("#projectClosingPageContainer").addClass("loadingPageHidden");
+                    Ensemble.Pages.MainMenu.showInitial();
+                }, 500);
+            }, 500);
         },
 
         viewResized: function () {
             /// <summary>Adjusts the size of all display surfaces to match the change in window dimensions.</summary>
 
             //Main display canvas
-            var leftClearance = Ensemble.Editor.UI.PageSections.menuButtons.clientWidth;
-            var maxWidth = window.innerWidth - (2 * leftClearance);
+            var maxWidth = window.innerWidth;
             var maxHeight = Ensemble.Editor.UI.PageSections.upperHalf.canvasContainer.clientHeight;
 
             var finalWidth = 0;
@@ -118,128 +126,6 @@
             catch (exception) { }
             Ensemble.Editor.TimelineMGR.updateTrackSizing();
 
-        },
-
-        showActionMenu: function () {
-            /// <summary>Shows the Editor page menu and activates its click eater.</summary>
-            Ensemble.Editor.UI.UserInput.ClickEaters.menu.style.display = "inline";
-            $(Ensemble.Editor.UI.UserInput.Buttons.actionMenu).addClass("editorMenuToggleFocused");
-
-            var menuDialog = Ensemble.Editor.UI.PageSections.menu.entireSection;
-
-            Ensemble.Editor.UI.PageSections.menu.actionMenu.entireSection.style.display = "flex";
-            Ensemble.Editor.UI.PageSections.menu.actionMenu.entireSection.style.opacity = 1;
-
-            Ensemble.Pages.Editor.currentActionMenuItem.style.display = "inline";
-            Ensemble.Pages.Editor.currentActionMenuItem.style.opacity = 1;
-
-            //WinJS.UI.Animation.enterContent(menuDialog);
-            $(menuDialog).removeClass("editorMenuDialogHidden");
-            $(menuDialog).addClass("editorMenuDialogVisible");
-
-            Ensemble.KeyboardMGR.editorActionMenu();
-
-            this.menuOpen = true;
-            this.currentSubmenu = Ensemble.Editor.UI.PageSections.menu.actionMenu.entireSection;
-        },
-
-        hideActionMenu: function () {
-            /// <summary>Hides the Editor page menu and deactivates its click eater.</summary>
-            document.getElementById("editorMenuClickEater").style.display = "none";
-
-            var menuDialog = Ensemble.Editor.UI.PageSections.menu.entireSection;
-            $(menuDialog).removeClass("editorMenuDialogVisible");
-            $(menuDialog).addClass("editorMenuDialogHidden");
-
-            Ensemble.KeyboardMGR.editorDefault();
-
-            window.setTimeout(function (event) {
-                var menuItems = document.getElementsByClassName("editorMenuContentItem");
-                for (var i = 0; i < menuItems.length; i++) {
-                    menuItems[i].style.opacity = 0;
-                    menuItems[i].style.display = "none";
-                }
-                Ensemble.Pages.Editor.hideAllSubmenus();
-            }, 300);
-            this.menuOpen = false;           
-        },
-
-        showMediaMenu: function () {
-            /// <summary>Shows the Media Menu, hiding any other menus if necessary.</summary>
-            Ensemble.Editor.UI.UserInput.ClickEaters.menu.style.display = "inline";
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaMenu).addClass("editorMenuToggleFocused");
-
-            var menuDialog = Ensemble.Editor.UI.PageSections.menu.entireSection;
-
-            this.hideAllSubmenus();
-
-            Ensemble.Editor.UI.PageSections.menu.mediaMenu.entireSection.style.display = "flex";
-            Ensemble.Editor.UI.PageSections.menu.mediaMenu.entireSection.style.opacity = 1;
-
-            var menuInstance = Ensemble.Editor.UI.PageSections.menu.mediaMenu.entireSection.getElementsByClassName("editorMenuContentItem")[0];
-            menuInstance.style.opacity = 1;
-            menuInstance.style.display = "flex";
-
-            //WinJS.UI.Animation.enterContent(menuDialog);
-            $(menuDialog).removeClass("editorMenuDialogHidden");
-            $(menuDialog).addClass("editorMenuDialogVisible");
-
-            Ensemble.KeyboardMGR.editorActionMenu();
-
-            Ensemble.Pages.Editor.refreshMediaBrowser();
-
-            this.menuOpen = true;
-            this.currentSubmenu = Ensemble.Editor.UI.PageSections.menu.mediaMenu.entireSection;
-        },
-
-        showEffectsMenu: function () {
-            /// <summary>Shows the Media Menu, hiding any other menus if necessary.</summary>
-            Ensemble.Editor.UI.UserInput.ClickEaters.menu.style.display = "inline";
-            $(Ensemble.Editor.UI.UserInput.Buttons.effectsMenu).addClass("editorMenuToggleFocused");
-
-            var menuDialog = Ensemble.Editor.UI.PageSections.menu.entireSection;
-
-            this.hideAllSubmenus();
-
-            Ensemble.Editor.UI.PageSections.menu.effectsMenu.entireSection.style.display = "flex";
-            Ensemble.Editor.UI.PageSections.menu.effectsMenu.entireSection.style.opacity = 1;
-
-            var menuInstance = Ensemble.Editor.UI.PageSections.menu.effectsMenu.entireSection.getElementsByClassName("editorMenuContentItem")[0];
-            menuInstance.style.opacity = 1;
-            menuInstance.style.display = "inline";
-
-            //WinJS.UI.Animation.enterContent(menuDialog);
-            $(menuDialog).removeClass("editorMenuDialogHidden");
-            $(menuDialog).addClass("editorMenuDialogVisible");
-
-            Ensemble.KeyboardMGR.editorActionMenu();
-
-            this.menuOpen = true;
-            this.currentSubmenu = Ensemble.Editor.UI.PageSections.menu.effectsMenu.entireSection;
-        },
-
-        hideAllSubmenus: function () {
-            var subMenus = document.getElementsByClassName("editorSubMenu");
-            for (var i = 0; i < subMenus.length; i++) {
-                subMenus[i].style.display = "none";
-            }
-        },
-
-        swapSubmenus: function (submenu1, submenu2) {
-            /// <summary>Swaps the visibility of the two given submenus.</summary>
-            /// <param name="submenu1" type="HTMLElement">The submenu to hide.</param>
-            /// <param name="submenu2" type="HTMLElement">The submenu to show.</param>
-            WinJS.UI.Animation.exitContent(submenu1).then(function () {
-                submenu1.style.display = "none";
-                submenu2.style.display = "flex";
-                if (submenu2 === Ensemble.Editor.UI.PageSections.menu.mediaMenu.entireSection) {
-                    setTimeout(function () {
-                        Ensemble.Pages.Editor.refreshMediaBrowser();
-                    }, 500);
-                }
-                WinJS.UI.Animation.enterContent(submenu2);
-                Ensemble.Pages.Editor.currentSubmenu = submenu2;
-            });
         },
 
         uiSplitpointDragBegin: function (screenOffsetY, splitpointOffsetY) {
@@ -292,59 +178,6 @@
             this.viewResized();
         },
 
-        menuShowProjectTab: function () {
-            /// <summary>Hides the currently active menu tab and shows the Project tab in its place.</summary>
-            this._menuHeaderFocusTab(document.getElementById("editorMenuTabProject"), document.getElementById("editorMenuContentProject"));
-            $("#editorMenuTabEdit").addClass("editorMenuRightAdjacentTab");
-        },
-
-        menuShowEditTab: function () {
-            /// <summary>Hides the currently active menu tab and shows the Edit tab in its place.</summary>
-            this._menuHeaderFocusTab(document.getElementById("editorMenuTabEdit"), document.getElementById("editorMenuContentEdit"));
-            $("#editorMenuTabProject").addClass("editorMenuLeftAdjacentTab");
-            $("#editorMenuTabClip").addClass("editorMenuRightAdjacentTab");
-        },
-
-        menuShowClipTab: function () {
-            /// <summary>Hides the currently active menu tab and shows the Clip tab in its place.</summary>
-            this._menuHeaderFocusTab(document.getElementById("editorMenuTabClip"), document.getElementById("editorMenuContentClip"));
-            $("#editorMenuTabEdit").addClass("editorMenuLeftAdjacentTab");
-            $("#editorMenuTabTrack").addClass("editorMenuRightAdjacentTab");
-        },
-
-        menuShowTrackTab: function () {
-            /// <summary>Hides the currently active menu tab and shows the Track tab in its place.</summary>
-            this._menuHeaderFocusTab(document.getElementById("editorMenuTabTrack"), document.getElementById("editorMenuContentTrack"));
-            $("#editorMenuTabClip").addClass("editorMenuLeftAdjacentTab");
-            $("#editorMenuTabExport").addClass("editorMenuRightAdjacentTab");
-        },
-
-        menuShowExportTab: function () {
-            /// <summary>Hides the currently active menu tab and shows the Export tab in its place.</summary>
-            this._menuHeaderFocusTab(document.getElementById("editorMenuTabExport"), document.getElementById("editorMenuContentExport"));
-            $("#editorMenuTabTrack").addClass("editorMenuLeftAdjacentTab");
-        },
-
-        mediaMenuShowLocalTab: function () {
-            /// <summary>Hides the currently active media menu tab and shows the Local tab in its place.</summary>
-            Ensemble.Pages.Editor.refreshMediaBrowser();
-            this._mediaMenuHeaderFocusTab(Ensemble.Editor.UI.UserInput.Buttons.mediaMenuTabLocal, document.getElementById("editorMediaMenuContentLocal"));
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaMenuTabCamera).addClass("editorMenuRightAdjacentTab");
-        },
-
-        mediaMenuShowCameraTab: function () {
-            /// <summary>Hides the currently active media menu tab and shows the Camera tab in its place.</summary>
-            this._mediaMenuHeaderFocusTab(Ensemble.Editor.UI.UserInput.Buttons.mediaMenuTabCamera, document.getElementById("editorMediaMenuContentCamera"));
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaMenuTabLocal).addClass("editorMenuLeftAdjacentTab");
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaMenuTabMic).addClass("editorMenuRightAdjacentTab");
-        },
-
-        mediaMenuShowMicTab: function () {
-            /// <summary>Hides the currently active media menu tab and shows the Mic tab in its place.</summary>
-            this._mediaMenuHeaderFocusTab(Ensemble.Editor.UI.UserInput.Buttons.mediaMenuTabMic, document.getElementById("editorMediaMenuContentMic"));
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaMenuTabCamera).addClass("editorMenuLeftAdjacentTab");
-        },
-
         refreshMediaBrowser: function () {
             /// <summary>Refreshes the Media Browser at its current location</summary>
             console.log("Refreshing the Media Browser...");
@@ -358,56 +191,17 @@
             Ensemble.Editor.Renderer.unload();
         },
 
-
-
-
-
-
-
-
-
-
-
-
         //// PRIVATE METHODS ////
 
         _attachListeners: function () {
-            var editorButtons = Ensemble.Editor.UI.UserInput.Buttons;
-            $(editorButtons.actionMenu).click(this._menuButtonOnClickListener);
-            $(editorButtons.mediaMenu).click(this._mediaMenuButtonOnClickListener);
-            $(editorButtons.effectsMenu).click(this._effectsMenuButtonOnClickListener);
-
+            //Media Browser commands
             $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocation).click(this._mediaBrowserButtonOnClickListener);
-
-            //Action Menu tabs
-            $("#editorMenuTabProject").click(this._menuHeaderProjectOnClick);
-            $("#editorMenuTabEdit").click(this._menuHeaderEditOnClick);
-            $("#editorMenuTabClip").click(this._menuHeaderClipOnClick);
-            $("#editorMenuTabTrack").click(this._menuHeaderTrackOnClick);
-            $("#editorMenuTabExport").click(this._menuHeaderExportOnClick);
-            $("#editorMenuClickEater").click(this._menuClickEaterOnClickListener);
-
-            //Action menu "Project" tab commands
-            $(Ensemble.Editor.UI.UserInput.Buttons.exit).click(this._editorExitButtonOnClickListener);
-            $(Ensemble.Editor.UI.UserInput.Buttons.undo).click(this._editorUndoButtonOnClickListener);
-            $(Ensemble.Editor.UI.UserInput.Buttons.redo).click(this._editorRedoButtonOnClickListener);
-
-            //Media menu tabs
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaMenuTabLocal).click(this._mediaMenuTabLocalOnClickListener);
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaMenuTabCamera).click(this._mediaMenuTabCameraOnClickListener);
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaMenuTabMic).click(this._mediaMenuTabMicOnClickListener);
-
-            //Media menu "Local" tab commands
             $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserHome).click(this._mediaBrowserHomeButtonOnClickListener);
             $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserUpOneLevel).click(this._mediaBrowserUpOneLevelButtonOnClickListener);
             $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserRefresh).click(this._mediaBrowserRefreshButtonOnClickListener);
             $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationVideos).click(this._mediaBrowserLocationSelectedOnClickListener);
             $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationMusic).click(this._mediaBrowserLocationSelectedOnClickListener);
             $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationPictures).click(this._mediaBrowserLocationSelectedOnClickListener);
-
-            //WinJS general animation listeners
-            $(".editorMenuCommandListItem").mousedown(Ensemble.Pages.MainMenu._projectListItemOnMouseDownListener);
-            $(".editorMenuCommandListItem").mouseup(Ensemble.Pages.MainMenu._projectListItemOnMouseUpListener);
 
             //Other
             $(Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit).mousedown(this._topBottomSplitMouseDown);
@@ -418,32 +212,8 @@
         },
 
         _detachListeners: function () {
-            var editorButtons = Ensemble.Editor.UI.UserInput.Buttons;
-            $(editorButtons.actionMenu).unbind("click");
-            $(editorButtons.mediaMenu).unbind("click");
-            $(editorButtons.effectsMenu).unbind("click");
-
+            //Media Browser commands
             $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocation).unbind("click");
-
-            //Action Menu tabs
-            $("#editorMenuTabProject").unbind("click");
-            $("#editorMenuTabEdit").unbind("click");
-            $("#editorMenuTabClip").unbind("click");
-            $("#editorMenuTabTrack").unbind("click");
-            $("#editorMenuTabExport").unbind("click");
-            $("#editorMenuClickEater").unbind("click");
-
-            //Action menu "Project" tab commands
-            $(Ensemble.Editor.UI.UserInput.Buttons.exit).unbind("click");
-            $(Ensemble.Editor.UI.UserInput.Buttons.undo).unbind("click");
-            $(Ensemble.Editor.UI.UserInput.Buttons.redo).unbind("click");
-
-            //Media menu tabs
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaMenuTabLocal).unbind("click");
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaMenuTabCamera).unbind("click");
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaMenuTabMic).unbind("click");
-
-            //Media menu "Local" tab commands
             $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserHome).unbind("click");
             $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserUpOneLevel).unbind("click");
             $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserRefresh).unbind("click");
@@ -451,102 +221,12 @@
             $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationMusic).unbind("click");
             $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationPictures).unbind("click");
 
-            //WinJS general animation listeners
-            $(".editorMenuCommandListItem").unbind("mousedown");
-            $(".editorMenuCommandListItem").unbind("mouseup");
-
             //Other
             $(Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit).unbind("mousedown");
 
             window.addEventListener("resize", this.viewResized, false);
 
             Ensemble.KeyboardMGR.off();
-        },
-
-        _editorExitButtonOnClickListener: function () {
-            console.log("Clicked the exit button.");
-            $("#projectClosingPageContainer").removeClass("loadingPageHidden");
-            $("#projectClosingPageContainer").addClass("loadingPageVisible");
-            window.setTimeout(function () {
-                Ensemble.Pages.Editor.hide();
-                Ensemble.Pages.Editor.unloadProject();
-                window.setTimeout(function () {
-                    $("#imgMainLogo").css("display", "initial");
-                    $("#projectClosingPageContainer").removeClass("loadingPageVisible");
-                    $("#projectClosingPageContainer").addClass("loadingPageHidden");
-                    Ensemble.Pages.MainMenu.showInitial();
-                }, 500);
-            }, 500);
-        },
-
-        _editorUndoButtonOnClickListener: function () {
-            if (Ensemble.HistoryMGR.canUndo()) Ensemble.HistoryMGR.undoLast();
-            else console.log("Can't undo right now.");
-        },
-
-        _editorRedoButtonOnClickListener: function () {
-            if (Ensemble.HistoryMGR.canRedo()) Ensemble.HistoryMGR.redoNext();
-            else console.log("Can't undo right now.");
-        },
-
-        _menuButtonOnClickListener: function () {
-            var menuDialog = Ensemble.Editor.UI.PageSections.menu.entireSection;
-            $(".editorMenuToggleFocused").removeClass("editorMenuToggleFocused");
-            if (!$(menuDialog).hasClass("editorMenuDialogVisible")) {
-                Ensemble.Pages.Editor.showActionMenu();
-            }
-            else {
-                if (Ensemble.Pages.Editor.currentSubmenu == Ensemble.Editor.UI.PageSections.menu.actionMenu.entireSection) {
-                    Ensemble.Pages.Editor.hideActionMenu();
-                }
-                else {
-                    //Switch to the tab instead.
-                    Ensemble.Pages.Editor.currentActionMenuItem.style.display = "inline";
-                    Ensemble.Pages.Editor.currentActionMenuItem.style.opacity = 1;
-
-                    Ensemble.Pages.Editor.swapSubmenus(Ensemble.Pages.Editor.currentSubmenu, Ensemble.Editor.UI.PageSections.menu.actionMenu.entireSection);
-                }
-            }
-        },
-
-        _mediaMenuButtonOnClickListener: function () {
-            var menuDialog = Ensemble.Editor.UI.PageSections.menu.entireSection;
-            $(".editorMenuToggleFocused").removeClass("editorMenuToggleFocused");
-            if (!$(menuDialog).hasClass("editorMenuDialogVisible")) {
-                Ensemble.Pages.Editor.showMediaMenu();
-            }
-            else {
-                if (Ensemble.Pages.Editor.currentSubmenu == Ensemble.Editor.UI.PageSections.menu.mediaMenu.entireSection) {
-                    Ensemble.Pages.Editor.hideActionMenu();
-                }
-                else {
-                    //Switch to the tab instead.
-                    Ensemble.Pages.Editor.currentMediaMenuItem.style.display = "flex";
-                    Ensemble.Pages.Editor.currentMediaMenuItem.style.opacity = 1;
-
-                    Ensemble.Pages.Editor.swapSubmenus(Ensemble.Pages.Editor.currentSubmenu, Ensemble.Editor.UI.PageSections.menu.mediaMenu.entireSection);
-                }
-            }
-        },
-
-        _effectsMenuButtonOnClickListener: function () {
-            var menuDialog = Ensemble.Editor.UI.PageSections.menu.entireSection;
-            $(".editorMenuToggleFocused").removeClass("editorMenuToggleFocused");
-            if (!$(menuDialog).hasClass("editorMenuDialogVisible")) {
-                Ensemble.Pages.Editor.showEffectsMenu();
-            }
-            else {
-                if (Ensemble.Pages.Editor.currentSubmenu == Ensemble.Editor.UI.PageSections.menu.effectsMenu.entireSection) {
-                    Ensemble.Pages.Editor.hideActionMenu();
-                }
-                else {
-                    //Switch to the tab instead.
-                    Ensemble.Pages.Editor.currentEffectsMenuItem.style.display = "inline";
-                    Ensemble.Pages.Editor.currentEffectsMenuItem.style.opacity = 1;
-
-                    Ensemble.Pages.Editor.swapSubmenus(Ensemble.Pages.Editor.currentSubmenu, Ensemble.Editor.UI.PageSections.menu.effectsMenu.entireSection);
-                }
-            }
         },
 
         _mediaBrowserButtonOnClickListener: function () {
@@ -698,11 +378,5 @@
                     break;
             }
         }
-
-        //_timelineNewTrackButtonOnClickListener: function (event) {
-        //    console.log("Clicked the new track button.");
-        //    var action = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.createTrack);
-        //    Ensemble.HistoryMGR.performAction(action);
-        //}
     });
 })();

@@ -91,7 +91,7 @@
             }
         },
 
-        editorActionMenu: function () {
+        editorMenu: function () {
             $(window).unbind("keydown");
             $(window).keydown(this._handleEditorMenuKeydown);
         },
@@ -99,7 +99,7 @@
         _handleEditorMenuKeydown: function (event) {
             switch (event.keyCode) {
                 case 27:
-                    Ensemble.Pages.Editor.hideActionMenu();
+                    Ensemble.Editor.MenuMGR.closeMenu();
                     break;
             }
         }
