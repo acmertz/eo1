@@ -1,15 +1,32 @@
 ﻿.timeline-clip {
     box-sizing: border-box;
     padding: 10px 10px 10px 0;
-    border: 1px solid #ECECEC;
+    border: 1px solid #707070;
     height: 100%;
-    background-image: url("/img/crossword.png");
+    background-image: url("/img/crossword--dark.png");
     position: absolute;
     top: 0px;
     overflow: hidden;
-    /*background-image: url("/img/clip-film-reel-edge.png");
-    background-repeat: repeat-x;
-    background-size: 20px 100%;*/
+}
+
+.timeline-clip--hovering {
+    background-image: url("/img/crossword.png");
+}
+
+.timeline-clip--hovering:after {
+    content: "lol hovering!";
+    float: left;
+}
+
+.timeline-clip--selected {
+    background-image: url("/img/crossword.png");
+}
+
+.timeline-clip--selected:after {
+    content: "lol selected!";
+    float: left;
+    border-color: blue;
+    border-radius: 3px;
 }
 
 .timeline-clip__thumb {
@@ -46,4 +63,27 @@
     padding: 10px;
     background-color: rgba(255,255,255,0.85);
     border: 1px solid #aaa;
+}
+
+.clip-selected-callout {
+    position: fixed;
+    background-color: rgba(255,255,255,0.85);
+    border: 1px solid #aaa;
+    top: 0;
+    left: 0;
+    width: 150px;
+    display: flex;
+    visibility: hidden;
+}
+
+.clip-selected-callout__button {
+    font-size: 16px;
+    padding: 10px;
+    text-align: center;
+    flex: 1;
+}
+
+.clip-selected-callout__button:active {
+    background-color: #000;
+    color: #fff;
 }

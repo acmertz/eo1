@@ -126,7 +126,7 @@
                 trackRemoved.clips[i].unload();
             }
             this._rebuildIndex();
-            requestAnimationFrame(function () { Ensemble.Editor.Renderer.renderSingleFrame(); });
+            Ensemble.Editor.Renderer.requestFrame();
             return {
                 track: trackRemoved,
                 index: i
@@ -154,7 +154,7 @@
             }
             clipRemoved[0].unload();
             this._rebuildIndex();
-            requestAnimationFrame(function () { Ensemble.Editor.Renderer.renderSingleFrame(); });
+            Ensemble.Editor.Renderer.requestFrame();
             return {
                 clip: clipRemoved[0],
                 trackId: trackIndex
@@ -237,7 +237,7 @@
             this.tracks.splice(destination, 0, movingItem);
             this.refreshTrackNumbers();
             this._rebuildIndex();
-            requestAnimationFrame(function () { Ensemble.Editor.Renderer.renderSingleFrame(); });
+            Ensemble.Editor.Renderer.requestFrame();
         },
 
         getTrackById: function (idval) {
@@ -292,6 +292,8 @@
             this._currentTrackHeight = timelineHeight / numberOfTracksVisible;
             $(".timeline-track").height(this._currentTrackHeight);
             this._snapScrollToNearestTrack();
+
+            this.ui.trackContainer.style.background = "repeating-linear-gradient(#FFFFFF, #FFFFFF " + this._currentTrackHeight + "px, #F0F0F0 " + this._currentTrackHeight + "px, #F0F0F0 " + (2 * this._currentTrackHeight) + "px)";
         },
 
         updateCursor: function (timeMs) {
@@ -431,11 +433,7 @@
             let currentTop = parseFloat($(".timeline-scrollable-container").css("margin-top"));
             if (currentTop < 0) {
                 $(".timeline-scrollable-container").css("margin-top", (currentTop + Ensemble.Editor.TimelineMGR._currentTrackHeight) + "px");
-                //$(".timeline-scrollable-container").css("transition", "");
-                //$(".timeline-scrollable-container").css("transform", "translate3d(0px, -" + Ensemble.Editor.TimelineMGR._currentTrackHeight + "px, 0px)");
-                //$(".timeline-scrollable-container").height();
-                //$(".timeline-scrollable-container").css("transition", "transform 0.2s ease");
-                //$(".timeline-scrollable-container").css("transform", "translate3d(0px, 0px, 0px)");
+                this.ui.trackContainer.style.backgroundPosition = "0 " + (currentTop + Ensemble.Editor.TimelineMGR._currentTrackHeight) + "px";
                 Ensemble.Editor.TimelineMGR._currentScrollIndex = parseFloat($(".timeline-scrollable-container").css("margin-top")) / Ensemble.Editor.TimelineMGR._currentTrackHeight;
             }
         },
@@ -444,16 +442,13 @@
             /// <summary>Scrolls the timeline down by one track.</summary>
             let currentTop = parseFloat($(".timeline-scrollable-container").css("margin-top"));
             $(".timeline-scrollable-container").css("margin-top", (currentTop - Ensemble.Editor.TimelineMGR._currentTrackHeight) + "px");
-            //$(".timeline-scrollable-container").css("transition", "");
-            //$(".timeline-scrollable-container").css("transform", "translateY(" + Ensemble.Editor.TimelineMGR._currentTrackHeight + "px)");
-            //$(".timeline-scrollable-container").height();
-            //$(".timeline-scrollable-container").css("transition", "transform 0.2s ease");
-            //$(".timeline-scrollable-container").css("transform", "translateY(0px)");
+            this.ui.trackContainer.style.backgroundPosition = "0 " + (currentTop + Ensemble.Editor.TimelineMGR._currentTrackHeight) + "px";
             Ensemble.Editor.TimelineMGR._currentScrollIndex = parseFloat($(".timeline-scrollable-container").css("margin-top")) / Ensemble.Editor.TimelineMGR._currentTrackHeight;
         },
 
         _snapScrollToNearestTrack: function () {
             $(".timeline-scrollable-container").css("margin-top", this._currentScrollIndex * this._currentTrackHeight);
+            this.ui.trackContainer.style.backgroundPosition = "0 " + (this._currentScrollIndex * this._currentTrackHeight) + "px";
         },
 
         toggleTrackDetails: function () {
@@ -518,6 +513,10 @@
 
             clipEl.appendChild(thumbEl);
             clipEl.appendChild(titleEl);
+
+            clipEl.addEventListener("pointerenter", Ensemble.Editor.TimelineMGR._listeners.pointerEnteredClip);
+            clipEl.addEventListener("pointerleave", Ensemble.Editor.TimelineMGR._listeners.pointerLeftClip);
+            clipEl.addEventListener("pointerdown", Ensemble.Editor.TimelineMGR._listeners.pointerDownOnClip);
 
             return clipEl;
         },
@@ -830,7 +829,8 @@
             buttonZoomOut: null,
             buttonNewTrack: null,
             timeCursor: null,
-            timeCursorPreview: null
+            timeCursorPreview: null,
+            trackContainer: null
         },
 
         _refreshUI: function () {
@@ -841,13 +841,15 @@
             this.ui.buttonNewTrack = document.getElementById("editorTimelineAddTrackButton");
             this.ui.timeCursor = document.getElementsByClassName("timeline__cursor")[0];
             this.ui.timeCursorPreview = document.getElementsByClassName("editorTimelineDragPreviewFlyout")[0];
+            this.ui.trackContainer = document.getElementById("timeline-track-container");
 
             this.ui.buttonScrollUp.addEventListener("click", this._listeners.buttonScrollUp);
             this.ui.buttonScrollDown.addEventListener("click", this._listeners.buttonScrollDown);
             this.ui.buttonZoomIn.addEventListener("click", this._listeners.buttonZoomIn);
             this.ui.buttonZoomOut.addEventListener("click", this._listeners.buttonZoomOut);
             this.ui.buttonNewTrack.addEventListener("click", this._listeners.buttonNewTrack);
-            this.ui.timeCursor.addEventListener("mousedown", this._listeners.timeCursorMousedown);
+            this.ui.timeCursor.addEventListener("pointerdown", this._listeners.timeCursorMousedown);
+            this.ui.trackContainer.addEventListener("pointerdown", this._listeners.timelineTrackContainerPointerDown);
         },
 
         _cleanUI: function () {
@@ -856,7 +858,7 @@
             this.ui.buttonZoomIn.removeEventListener("click", this._listeners.buttonZoomIn);
             this.ui.buttonZoomOut.removeEventListener("click", this._listeners.buttonZoomOut);
             this.ui.buttonNewTrack.removeEventListener("click", this._listeners.buttonNewTrack);
-            this.ui.timeCursor.removeEventListener("mousedown", this._listeners.timeCursorMousedown);
+            this.ui.timeCursor.removeEventListener("pointerdown", this._listeners.timeCursorMousedown);
 
             this.ui.buttonScrollUp = null;
             this.ui.buttonScrollDown = null;
@@ -865,6 +867,7 @@
             this.ui.buttonNewTrack = null;
             this.ui.timeCursor = null;
             this.ui.timeCursorPreview = null;
+            this.ui.trackContainer = null;
         },
 
         _rebuildIndex: function () {
@@ -932,6 +935,16 @@
 
             timeCursorMousedown: function (event) {
                 if (!Ensemble.Editor.PlaybackMGR.playing) {
+                    event.stopPropagation();
+
+                    $("#editorTimelineEWClickEater").removeClass("editorClickEaterFaded");
+
+                    let allClips = document.getElementsByClassName("timeline-clip");
+                    for (let i = 0; i < allClips.length; i++) {
+                        allClips[i].removeEventListener("pointerenter", Ensemble.Editor.TimelineMGR._listeners.pointerEnteredClip);
+                        allClips[i].removeEventListener("pointerleave", Ensemble.Editor.TimelineMGR._listeners.pointerLeftClip);
+                    }
+
                     Ensemble.Editor.TimelineMGR._timeCursorDragOffset = event.offsetX;
                     Ensemble.Editor.TimelineMGR._timeCursorLastMousPos = event.pageX;
                     Ensemble.Editor.TimelineMGR._timeCursorInitialPos = parseInt(Ensemble.Editor.TimelineMGR.ui.timeCursor.style.left, 10);
@@ -947,8 +960,8 @@
                     Ensemble.Editor.TimelineMGR.ui.timeCursorPreview.style.left = Ensemble.Editor.TimelineMGR._timeCursorLastMousPos - (0.5 * Ensemble.Editor.TimelineMGR.ui.timeCursorPreview.offsetWidth) + "px";
                     Ensemble.Editor.TimelineMGR.ui.timeCursorPreview.style.visibility = "visible";
 
-                    document.addEventListener("mousemove", Ensemble.Editor.TimelineMGR._listeners.timeCursorDragUpdate);
-                    document.addEventListener("mouseup", Ensemble.Editor.TimelineMGR._listeners.timeCursorDragFinished);
+                    document.addEventListener("pointermove", Ensemble.Editor.TimelineMGR._listeners.timeCursorDragUpdate);
+                    document.addEventListener("pointerup", Ensemble.Editor.TimelineMGR._listeners.timeCursorDragFinished);
 
                     Ensemble.Editor.TimelineMGR._timeCursorDragging = true;
                     requestAnimationFrame(Ensemble.Editor.TimelineMGR._listeners.updateTimeCursorDragPos);
@@ -956,13 +969,22 @@
             },
 
             timeCursorDragUpdate: function (event) {
+                event.stopPropagation();
                 Ensemble.Editor.TimelineMGR._timeCursorLastMousPos = event.pageX;
             },
 
             timeCursorDragFinished: function (event) {
-                document.removeEventListener("mousemove", Ensemble.Editor.TimelineMGR._listeners.timeCursorDragUpdate);
-                document.removeEventListener("mouseup", Ensemble.Editor.TimelineMGR._listeners.timeCursorDragFinished);
+                event.stopPropagation();
+                document.removeEventListener("pointermove", Ensemble.Editor.TimelineMGR._listeners.timeCursorDragUpdate);
+                document.removeEventListener("pointerup", Ensemble.Editor.TimelineMGR._listeners.timeCursorDragFinished);
+                $("#editorTimelineEWClickEater").addClass("editorClickEaterFaded");
                 Ensemble.Editor.TimelineMGR._timeCursorDragging = false;
+
+                let allClips = document.getElementsByClassName("timeline-clip");
+                for (let i = 0; i < allClips.length; i++) {
+                    allClips[i].addEventListener("pointerenter", Ensemble.Editor.TimelineMGR._listeners.pointerEnteredClip);
+                    allClips[i].addEventListener("pointerleave", Ensemble.Editor.TimelineMGR._listeners.pointerLeftClip);
+                }
             },
 
             updateTimeCursorDragPos: function (event) {
@@ -984,6 +1006,42 @@
                     Ensemble.Editor.TimelineMGR._timeCursorLastFinalPos = -1;
                     Ensemble.Editor.TimelineMGR.ui.timeCursorPreview.style.visibility = "";
                 }
+            },
+            
+            pointerEnteredClip: function (event) {
+                let clipId = parseInt(event.currentTarget.id.match(/\d+$/)[0], 10);
+                Ensemble.Editor.SelectionMGR.addToHovering(clipId);
+            },
+
+            pointerLeftClip: function (event) {
+                let clipId = parseInt(event.currentTarget.id.match(/\d+$/)[0], 10);
+                Ensemble.Editor.SelectionMGR.removeFromHovering(clipId);
+            },
+
+            pointerDownOnClip: function (event) {
+                event.stopPropagation();
+                let clipId = parseInt(event.currentTarget.id.match(/\d+$/)[0], 10);
+                console.log("Pointer down on clip " + clipId + "!");
+                if (event.pointerType == "touch") {
+                    // engage "wait" drag. If the pointer is still in relatively the same place after 0.5 seconds, engage drag.
+                    // otherwise, let the OS handle scroll and give up on pointer events until scrolling finishes.
+                }
+                else {
+                    // mouse or pen precision input.
+                    // select clip and listen for movement.
+                    // if the pointer moves more than 10px while still down, start moving the clip from the offset.
+                    Ensemble.Editor.SelectionMGR.replaceSelection(clipId);
+                    if (event.shiftKey) {
+                        //Ensemble.Editor.SelectionMGR.addToSelection(clipId);
+                    }
+                    else {
+                        Ensemble.Editor.SelectionMGR.replaceSelection(clipId);
+                    }
+                }
+            },
+
+            timelineTrackContainerPointerDown: function (event) {
+                Ensemble.Editor.SelectionMGR.clearSelection();
             }
         }
     });

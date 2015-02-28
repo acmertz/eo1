@@ -138,7 +138,7 @@
                         Ensemble.Editor.PlaybackMGR.lastTimeFriendly = message.data.contents.friendly;
                         if (Ensemble.Editor.PlaybackMGR._renderNextTimeUpdate) {
                             Ensemble.Editor.PlaybackMGR._renderNextTimeUpdate = false;
-                            requestAnimationFrame(function () { Ensemble.Editor.Renderer.renderSingleFrame(); });
+                            Ensemble.Editor.Renderer.requestFrame();
                         }
                         break;
                     case "endOfPlayback":

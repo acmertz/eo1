@@ -17,6 +17,9 @@
             this.xcoord = 0;
             this.ycoord = 0;
             this.preExisting = true;
+
+            this.selected = false;
+            this.hovering = false;
         },
         {
             //Instance members
@@ -35,6 +38,8 @@
             preExisting: null,
 
             _player: null,
+            selected: null,
+            hovering: null,
 
 
 
@@ -102,6 +107,26 @@
                 /// <param name="canvas" type="Canvas">The canvas to use as a rendering target.</param>
                 /// <param name="scale" type="Number">A scale multiplier to use when drawing.</param>
                 context.drawImage(this._player, this.xcoord * scale, this.ycoord * scale, this.width * scale, this.height * scale);
+
+                
+                if (this.hovering) {
+                    context.beginPath();
+                    context.strokeStyle = "lightblue";
+                    context.lineWidth = "1";
+                    context.rect(this.xcoord * scale, this.ycoord * scale, this.width * scale, this.height * scale);
+                    context.closePath();
+                    context.stroke();
+                }
+                
+            },
+
+            containsPoint: function (xcoord, ycoord) {
+                /// <summary>Returns whether or not the given point is contained by the clip's dimensions and position.</summary>
+                /// <param name="xcoord" type="Number">The X-coordinate.</param>
+                /// <param name="ycoord" type="Number">The Y-coordinate.</param>
+                /// <returns type="Boolean">A Boolean indicating whether or not the clip bounds the given coordinates.</returns>
+                if (xcoord >= this.xcoord && (this.xcoord + this.width) >= xcoord && ycoord >= this.ycoord && (this.ycoord + this.height) >= ycoord) return true;
+                return false;
             },
 
             unload: function () {

@@ -1,0 +1,321 @@
+﻿.editor-menubar {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    z-index: 1;
+}
+
+.editor-menubar__command-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.editor-menubar__command {
+    height: 50px;
+    background-color: #ececec;
+    display: inline-block;
+    line-height: 50px;
+    font-size: 18px;
+    padding: 0 10px;
+    border-bottom: 1px solid #d3d3d3;
+    position: relative;
+    top: -1px;
+    border-right: 1px solid transparent;
+    border-left: 1px solid transparent;
+}
+
+.editor-menubar__command:first-child {
+    top: 0px;
+}
+
+.editor-menubar__command:last-child {
+    border-right: 0;
+}
+
+.editor-menubar__command:hover {
+    background-color: #fafafa;
+}
+
+.editor-menubar__command:active {
+    background-color: #000;
+    color: #fff;
+}
+
+.editor-menubar__command:last-child {
+    border-right: 1px solid #D3D3D3;
+}
+
+.editor-menubar__command--active {
+    background-color: #fafafa;
+    border-bottom: 1px solid #fafafa;
+    border-left: 1px solid #d3d3d3;
+    border-right: 1px solid #d3d3d3;
+}
+
+.editor-menubar__command--active:first-child {
+    border-left: 1px solid #fafafa;
+}
+
+.editor-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 616px;
+    max-width: 100%;
+    max-height: 100%;
+    padding: 60px 10px 10px 10px;
+    border: 1px solid #d3d3d3;
+    border-top: 0;
+    border-left: 0;
+    border-bottom-right-radius: 3px;
+    box-sizing: border-box;
+    background-color: #fafafa;
+    transform: translateY(-100%);
+    transition: transform 0.4s ease;
+    overflow-y: auto;
+}
+
+.editor-menu--visible {
+    transform: translateY(0%);
+}
+
+.editor-menu--import {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.editor-menu__command-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.editor-menu__command {
+    background-color: #fff;
+    border: 1px solid #d3d3d3;
+    border-left: 10px solid #d3d3d3;
+    font-size: 24px;
+    margin: 0 0 10px 0;
+    line-height: 40px;
+    padding: 0 10px;
+}
+
+.editor-menu__command:hover {
+    border-color: #b2b2ff;
+}
+
+.editor-menu__command:last-child {
+    margin: 0;
+}
+
+.editor-command--disabled {
+    pointer-events: none;
+    touch-action: none;
+    color: #999;
+}
+
+.editor-menu__divider {
+    margin: 10px 0;
+    border-top: 5px solid #d3d3d3;
+}
+
+.editor-menu-clickeater {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.editor-menu-clickeater--active {
+    display: block;
+}
+
+/* HOME MENU */
+
+.editor-project-details {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 10px;
+}
+
+.editor-project-details__column {
+    flex: 1;
+    padding-right: 10px;
+}
+
+.editor-project-details__thumb {
+    width: 100%;
+    height: 180px;
+    background-color: black;
+}
+
+/* IMPORT MENU */
+.mediaBrowserHeaderContainer {
+    display: flex;
+    justify-content: center;
+    height: 28px;
+}
+
+#editorMenuMediaBrowserFileList {
+    flex: 1;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: 10px;
+    background: #fafafa;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    border: 2px solid #e6e6e6;
+    z-index: 2;
+}
+
+#editorMediaBrowserLocationButtonContainer {
+    display: inline-block;
+    float: left;
+    font-size: large;
+    font-weight: bold;
+}
+
+#editorMediaBrowserLocationButton {
+
+    transition: transform 0.1s ease-in-out;
+}
+
+#editorMediaBrowserLocationButton:active {
+    transform: scale(0.95);
+}
+
+#editorMediaBrowserCurrentPathContainer {
+    flex: 1;
+    margin-right: 20px;
+    margin-left: 20px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    font-size: large;
+}
+
+.editorMediaBrowserPathItem {
+}
+
+.editorMediaBrowserPathItemButton {
+    padding-left: 5px;
+    padding-right: 5px;
+    max-width: 200px;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.editorMediaBrowserPathItemButton:hover {
+    background-color: rgb(245,245,245);
+}
+
+.editorMediaBrowserPathItemButton:active {
+    background-color: black;
+    color: white;
+}
+
+#editorMediaBrowserFolderControlContainer {
+    display: inline-block;
+    float: right;
+    margin-right: 20px;
+    z-index: 1;
+}
+
+.mediaBrowserFolderControl {
+    font-size: large;
+    background-color: rgb(250,250,250);
+    border: 2px solid rgb(230,230,230);
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-style: none;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+.mediaBrowserFolderControl:hover {
+    background-color: white;
+}
+
+.mediaBrowserFolderControl:active {
+    background-color: black;
+    color: white;
+    border-color: black;
+}
+
+#editorMediaBrowserLoadingProgress {
+    margin-right: 10px;
+    display: none;
+}
+
+.mediaBrowserListItem {
+    padding: 2px;
+    display: flex;
+    flex-direction: row;
+    height: 50px;
+    animation: mediaBrowserListItemEnter 0.3s linear;
+    animation-fill-mode: both;
+}
+
+.mediaBrowserListItem:hover {
+    background-color: rgb(240,240,240);
+}
+
+@keyframes mediaBrowserListItemEnter {
+    0% {
+        opacity: 0;
+        transform: translateX(12%);
+    }
+    50% {
+        opacity: 1;
+        transform: translateX(3%);
+    }
+    75% {
+        transform: translateX(1%);
+    }
+    100% {
+        transform: translateX(0%);
+    }
+}
+
+.mediaBrowserListItemIcon {
+    /* Styling here for the icon column. */
+    font-size: xx-large;
+    padding-left: 5px;
+    padding-right: 5px;
+    text-align: center;
+    width: 50px;
+    color: rgba(0,0,0,0.2);
+}
+
+.mediaBrowserIconFilled {
+    color: rgba(255,255,255,0.8);
+    text-shadow: 0px 0px 10px black;
+}
+
+.mediaBrowserListItemMeta {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+}
+
+.mediaBrowserListItemRow {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+}
+
+.mediaBrowserListItemTitle {
+    font-size: large;
+}
+
+.mediaBrowserListItemRowComponent {
+    flex: 1;
+}
