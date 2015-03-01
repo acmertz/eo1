@@ -1,13 +1,6 @@
 ﻿// For an introduction to the Blank template, see the following documentation:
 // http://go.microsoft.com/fwlink/?LinkId=232509
 
-var clockMGR = null;
-var mediaMGR = null;
-var renderPool = {
-    main: null,
-    fullscreen: null
-};
-
 (function () {
     "use strict";
 
@@ -28,7 +21,6 @@ var renderPool = {
 
                 args.detail.splashScreen.addEventListener("dismissed", function () {
                     console.info("App started up.");
-
 
                     // Load all needed resources here
                     Ensemble.Editor.UI.relink();
