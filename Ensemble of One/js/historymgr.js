@@ -50,6 +50,13 @@
             setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
         },
 
+        _undoRemoveClipComplete: function (loadedClips) {
+            Ensemble.HistoryMGR._pendingAction.finishUndo(loadedClips);
+            Ensemble.HistoryMGR._forwardStack.push(Ensemble.HistoryMGR._pendingAction);
+            Ensemble.HistoryMGR._pendingAction = null;
+            setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
+        },
+
         undoLast: function () {
             if (Ensemble.HistoryMGR._backStack.length > 0) {
                 var actionToUndo = Ensemble.HistoryMGR._backStack.pop();
@@ -104,6 +111,14 @@
                 document.getElementById("editor-history-msg").innerText = this._backStack[this._backStack.length - 1].getMessage();
             }
             else document.getElementById("editor-history-msg").innerText = "No recent history. Start editing!";
+        },
+
+        unload: function () {
+            /// <summary>Resets the HistoryMGR back to its original state.</summary>
+            this._forwardStack = [];
+            this._backStack = [];
+            this._pendingAction = null;
+            this._pendingCallback = null;
         }
     });
 })();

@@ -87,6 +87,7 @@
                 Ensemble.Editor.PlaybackMGR.unload();
                 Ensemble.Editor.Renderer.unload();
                 Ensemble.Editor.MenuMGR.unload();
+                Ensemble.HistoryMGR.unload();
 
                 window.setTimeout(function () {
                     $("#imgMainLogo").css("display", "initial");
@@ -182,13 +183,6 @@
             /// <summary>Refreshes the Media Browser at its current location</summary>
             console.log("Refreshing the Media Browser...");
             Ensemble.MediaBrowser.navigateToFolder(Ensemble.MediaBrowser.currentLocation());
-        },
-
-        unloadProject: function () {
-            //Unloads the current project.
-            Ensemble.Editor.TimelineMGR.unload();
-            Ensemble.Editor.PlaybackMGR.unload();
-            Ensemble.Editor.Renderer.unload();
         },
 
         //// PRIVATE METHODS ////

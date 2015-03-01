@@ -63,8 +63,9 @@
             if (Ensemble.HistoryMGR.canUndo()) $(".editor-command__undo").removeClass("editor-command--disabled");
             if (Ensemble.HistoryMGR.canRedo()) $(".editor-command__redo").removeClass("editor-command--disabled");
 
-            if (this.currentState == this.menuState.clipSelected) {
-
+            if (Ensemble.Editor.SelectionMGR.selected.length > 0) {
+                $(".editor-command__remove-clip").removeClass("editor-command--disabled");
+                $(".editor-command__clear-selection").removeClass("editor-command--disabled");
             }
         },
 
@@ -146,6 +147,16 @@
                 if (command == "undo") setTimeout(function () { Ensemble.HistoryMGR.undoLast() }, 0);
                 else if (command == "redo") setTimeout(function () { Ensemble.HistoryMGR.redoNext() }, 0);
                 else if (command == "exit") setTimeout(function () { Ensemble.Pages.Editor.unload() }, 0);
+
+                else if (command == "remove-clip") {
+                    let removeAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.removeClip, {
+                        clipIds: Ensemble.Editor.SelectionMGR.selected
+                    });
+                    Ensemble.Editor.SelectionMGR.clearSelection();
+                    Ensemble.Editor.SelectionMGR.clearHovering();
+                    Ensemble.HistoryMGR.performAction(removeAction);
+                }
+                else if (command == "clear-selection") setTimeout(function () { Ensemble.Editor.SelectionMGR.clearSelection() }, 0);
 
                 Ensemble.Editor.MenuMGR.closeMenu();
             },
