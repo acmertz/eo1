@@ -94,8 +94,9 @@
 
 .editor-menu__command {
     background-color: #fff;
-    border: 1px solid #d3d3d3;
-    border-left: 10px solid #d3d3d3;
+    border: 1px solid #7e7e7e;
+    border-left: 10px solid #7e7e7e;
+    color: #333;
     font-size: 24px;
     margin: 0 0 10px 0;
     line-height: 40px;
@@ -114,6 +115,7 @@
     pointer-events: none;
     touch-action: none;
     color: #999;
+    border-color: #d3d3d3
 }
 
 .editor-menu__divider {

@@ -78,42 +78,55 @@
             if (Ensemble.HistoryMGR.canUndo()) {
                 for (var i = 0; i < Ensemble.HistoryMGR._backStack.length; i++) {
                     xml.BeginNode("HistoryAction");
-                    switch (Ensemble.HistoryMGR._backStack[i]._type) {
-                        case Ensemble.Events.Action.ActionType.createTrack:
-                            xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
-                            xml.Attrib("trackId", Ensemble.HistoryMGR._backStack[i]._payload.trackId.toString());                            
-                            break;
-                        case Ensemble.Events.Action.ActionType.renameTrack:
-                            xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
-                            xml.Attrib("trackId", Ensemble.HistoryMGR._backStack[i]._payload.trackId.toString());                            
-                            xml.Attrib("oldName", Ensemble.HistoryMGR._backStack[i]._payload.oldName);
-                            xml.Attrib("newName", Ensemble.HistoryMGR._backStack[i]._payload.newName);
-                            break;
-                        case Ensemble.Events.Action.ActionType.trackVolumeChanged:
-                            xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
-                            xml.Attrib("trackId", Ensemble.HistoryMGR._backStack[i]._payload.trackId.toString());                            
-                            xml.Attrib("oldVolume", Ensemble.HistoryMGR._backStack[i]._payload.oldVolume.toString());
-                            xml.Attrib("newVolume", Ensemble.HistoryMGR._backStack[i]._payload.newVolume.toString());
-                            break;
-                        case Ensemble.Events.Action.ActionType.moveTrack:
-                            xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
-                            xml.Attrib("trackId", Ensemble.HistoryMGR._backStack[i]._payload.trackId.toString());                            
-                            xml.Attrib("origin", Ensemble.HistoryMGR._backStack[i]._payload.origin.toString());
-                            xml.Attrib("destination", Ensemble.HistoryMGR._backStack[i]._payload.destination.toString());
-                            break;
-                        case Ensemble.Events.Action.ActionType.removeTrack:
-                            xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
-                            xml.Attrib("trackId", Ensemble.HistoryMGR._backStack[i]._payload.trackId.toString());                            
-                            xml.Attrib("originalLocation", Ensemble.HistoryMGR._backStack[i]._payload.originalLocation.toString())
-                            xml = Ensemble.FileIO._writeTrackToXML(xml, Ensemble.HistoryMGR._backStack[i]._payload.trackObj);
-                            break;
-                        case Ensemble.Events.Action.ActionType.importClip:
-                            xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
-                            xml.Attrib("clipId", Ensemble.HistoryMGR._backStack[i]._payload.clipId.toString());
-                            break;
-                        default:
-                            console.error("Unable to save History Action to disk - unknown type.");
+                    if (Ensemble.HistoryMGR._backStack[i]._type == Ensemble.Events.Action.ActionType.createTrack) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
+                        xml.Attrib("trackId", Ensemble.HistoryMGR._backStack[i]._payload.trackId.toString());
                     }
+
+                    else if (Ensemble.HistoryMGR._backStack[i]._type == Ensemble.Events.Action.ActionType.renameTrack) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
+                        xml.Attrib("trackId", Ensemble.HistoryMGR._backStack[i]._payload.trackId.toString());
+                        xml.Attrib("oldName", Ensemble.HistoryMGR._backStack[i]._payload.oldName);
+                        xml.Attrib("newName", Ensemble.HistoryMGR._backStack[i]._payload.newName);
+                    }
+
+                    else if (Ensemble.HistoryMGR._backStack[i]._type == Ensemble.Events.Action.ActionType.trackVolumeChanged) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
+                        xml.Attrib("trackId", Ensemble.HistoryMGR._backStack[i]._payload.trackId.toString());
+                        xml.Attrib("oldVolume", Ensemble.HistoryMGR._backStack[i]._payload.oldVolume.toString());
+                        xml.Attrib("newVolume", Ensemble.HistoryMGR._backStack[i]._payload.newVolume.toString());
+                    }
+
+                    else if (Ensemble.HistoryMGR._backStack[i]._type == Ensemble.Events.Action.ActionType.moveTrack) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
+                        xml.Attrib("trackId", Ensemble.HistoryMGR._backStack[i]._payload.trackId.toString());
+                        xml.Attrib("origin", Ensemble.HistoryMGR._backStack[i]._payload.origin.toString());
+                        xml.Attrib("destination", Ensemble.HistoryMGR._backStack[i]._payload.destination.toString());
+                    }
+
+                    else if (Ensemble.HistoryMGR._backStack[i]._type == Ensemble.Events.Action.ActionType.removeTrack) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
+                        xml.Attrib("trackId", Ensemble.HistoryMGR._backStack[i]._payload.trackId.toString());
+                        xml.Attrib("originalLocation", Ensemble.HistoryMGR._backStack[i]._payload.originalLocation.toString())
+                        xml = Ensemble.FileIO._writeTrackToXML(xml, Ensemble.HistoryMGR._backStack[i]._payload.trackObj);
+                    }
+
+                    else if (Ensemble.HistoryMGR._backStack[i]._type == Ensemble.Events.Action.ActionType.importClip) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
+                        xml.Attrib("clipId", Ensemble.HistoryMGR._backStack[i]._payload.clipId.toString());
+                    }
+
+                    else if (Ensemble.HistoryMGR._backStack[i]._type == Ensemble.Events.Action.ActionType.removeClip) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
+                        for (let k = 0; k < Ensemble.HistoryMGR._backStack[i]._payload.clipObjs.length; k++) {
+                            xml.BeginNode("RemovedClip");
+                            xml.Attrib("trackId", Ensemble.HistoryMGR._backStack[i]._payload.trackLocations[k].toString());
+                            xml = Ensemble.FileIO._writeClipToXML(xml, Ensemble.HistoryMGR._backStack[i]._payload.clipObjs[k]);
+                            xml.EndNode();
+                        }
+                    }
+
+                    else console.error("Unable to save History Action to disk - unknown type.");
                     xml.EndNode();
                 }
             }
@@ -124,42 +137,54 @@
             if (Ensemble.HistoryMGR.canRedo()) {
                 for (var i = 0; i < Ensemble.HistoryMGR._forwardStack.length; i++) {
                     xml.BeginNode("HistoryAction");
-                    switch (Ensemble.HistoryMGR._forwardStack[i]._type) {
-                        case Ensemble.Events.Action.ActionType.createTrack:
-                            xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
-                            xml.Attrib("trackId", Ensemble.HistoryMGR._forwardStack[i]._payload.trackId.toString());                            
-                            break;
-                        case Ensemble.Events.Action.ActionType.renameTrack:
-                            xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
-                            xml.Attrib("trackId", Ensemble.HistoryMGR._forwardStack[i]._payload.trackId.toString());                            
-                            xml.Attrib("oldName", Ensemble.HistoryMGR._forwardStack[i]._payload.oldName);
-                            xml.Attrib("newName", Ensemble.HistoryMGR._forwardStack[i]._payload.newName);
-                            break;
-                        case Ensemble.Events.Action.ActionType.trackVolumeChanged:
-                            xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
-                            xml.Attrib("trackId", Ensemble.HistoryMGR._forwardStack[i]._payload.trackId.toString());                            
-                            xml.Attrib("oldVolume", Ensemble.HistoryMGR._forwardStack[i]._payload.oldVolume.toString());
-                            xml.Attrib("newVolume", Ensemble.HistoryMGR._forwardStack[i]._payload.newVolume.toString());
-                            break;
-                        case Ensemble.Events.Action.ActionType.moveTrack:
-                            xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
-                            xml.Attrib("trackId", Ensemble.HistoryMGR._forwardStack[i]._payload.trackId.toString());                            
-                            xml.Attrib("origin", Ensemble.HistoryMGR._forwardStack[i]._payload.origin.toString());
-                            xml.Attrib("destination", Ensemble.HistoryMGR._forwardStack[i]._payload.destination.toString());
-                            break;
-                        case Ensemble.Events.Action.ActionType.removeTrack:
-                            xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
-                            xml.Attrib("trackId", Ensemble.HistoryMGR._forwardStack[i]._payload.trackId.toString());                            
-                            //xml.Attrib("originalLocation", Ensemble.HistoryMGR._forwardStack[i]._payload.originalLocation.toString())
-                            //xml = Ensemble.FileIO._writeTrackToXML(xml, Ensemble.HistoryMGR._forwardStack[i]._payload.trackObj);
-                            break;
-                        case Ensemble.Events.Action.ActionType.importClip:
-                            xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
-                            xml.Attrib("destinationTrack", Ensemble.HistoryMGR._forwardStack[i]._payload.destinationTrack.toString());
-                            xml = Ensemble.FileIO._writeClipToXML(xml, Ensemble.HistoryMGR._forwardStack[i]._payload.clipObj);
-                            break;
-                        default:
-                            console.error("Unable to save History Action to disk - unknown type.");
+                    if (Ensemble.HistoryMGR._forwardStack[i]._type == Ensemble.Events.Action.ActionType.createTrack) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
+                        xml.Attrib("trackId", Ensemble.HistoryMGR._forwardStack[i]._payload.trackId.toString());
+                    }
+
+                    else if (Ensemble.HistoryMGR._forwardStack[i]._type == Ensemble.Events.Action.ActionType.renameTrack) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
+                        xml.Attrib("trackId", Ensemble.HistoryMGR._forwardStack[i]._payload.trackId.toString());
+                        xml.Attrib("oldName", Ensemble.HistoryMGR._forwardStack[i]._payload.oldName);
+                        xml.Attrib("newName", Ensemble.HistoryMGR._forwardStack[i]._payload.newName);
+                    }
+
+                    else if (Ensemble.HistoryMGR._forwardStack[i]._type == Ensemble.Events.Action.ActionType.trackVolumeChanged) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
+                        xml.Attrib("trackId", Ensemble.HistoryMGR._forwardStack[i]._payload.trackId.toString());
+                        xml.Attrib("oldVolume", Ensemble.HistoryMGR._forwardStack[i]._payload.oldVolume.toString());
+                        xml.Attrib("newVolume", Ensemble.HistoryMGR._forwardStack[i]._payload.newVolume.toString());
+                    }
+
+                    else if (Ensemble.HistoryMGR._forwardStack[i]._type == Ensemble.Events.Action.ActionType.moveTrack) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
+                        xml.Attrib("trackId", Ensemble.HistoryMGR._forwardStack[i]._payload.trackId.toString());
+                        xml.Attrib("origin", Ensemble.HistoryMGR._forwardStack[i]._payload.origin.toString());
+                        xml.Attrib("destination", Ensemble.HistoryMGR._forwardStack[i]._payload.destination.toString());
+                    }
+
+                    else if (Ensemble.HistoryMGR._forwardStack[i]._type == Ensemble.Events.Action.ActionType.removeTrack) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
+                        xml.Attrib("trackId", Ensemble.HistoryMGR._forwardStack[i]._payload.trackId.toString());
+                    }
+
+                    else if (Ensemble.HistoryMGR._forwardStack[i]._type == Ensemble.Events.Action.ActionType.importClip) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
+                        xml.Attrib("destinationTrack", Ensemble.HistoryMGR._forwardStack[i]._payload.destinationTrack.toString());
+                        xml = Ensemble.FileIO._writeClipToXML(xml, Ensemble.HistoryMGR._forwardStack[i]._payload.clipObj);
+                    }
+
+                    else if (Ensemble.HistoryMGR._forwardStack[i]._type == Ensemble.Events.Action.ActionType.removeClip) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
+                        for (let k = 0; k < Ensemble.HistoryMGR._forwardStack[i]._payload.clipIds.length; k++) {
+                            xml.BeginNode("RemovedClip");
+                            xml.Attrib("clipId", Ensemble.HistoryMGR._forwardStack[i]._payload.clipIds[k].toString());
+                            xml.EndNode();
+                        }
+                    }
+
+                    else {
+                        console.error("Unable to save History Action to disk - unknown type.");
                     }
                     xml.EndNode();
                 }
@@ -445,6 +470,19 @@
                             }
                         ));
                     }
+                    else if (actionType === Ensemble.Events.Action.ActionType.removeClip) {
+                        let removedClips = undoActions[i].getElementsByTagName("RemovedClip");
+                        let removedArr = [];
+                        let trackArr = [];
+                        for (let k = 0; k < removedClips.length; k++) {
+                            removedArr.push(Ensemble.FileIO._loadClipFromXML(removedClips[k].getElementsByTagName("Clip")[0]));
+                            trackArr.push(parseInt(removedClips[k].getAttribute("trackId"), 10));
+                        }
+                        Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.removeClip, {
+                            clipObjs: removedArr,
+                            trackLocations: trackArr
+                        }));
+                    }
                     else {
                         console.error("Unable to load History Action from disk - unknown type.");
                     }
@@ -510,6 +548,16 @@
                                 destinationTime: generatedClip.startTime
                             }
                         ));
+                    }
+                    else if (actionType === Ensemble.Events.Action.ActionType.removeClip) {
+                        let removedClips = redoActions[i].getElementsByTagName("RemovedClip");
+                        let removedArr = [];
+                        for (let k = 0; k < removedClips.length; k++) {
+                            removedArr.push(parseInt(removedClips[k].getAttribute("clipId"), 10));
+                        }
+                        Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.removeClip, {
+                            clipIds: removedArr,
+                        }));
                     }
                     else {
                         console.error("Unable to load History Action from disk - unknown type.");

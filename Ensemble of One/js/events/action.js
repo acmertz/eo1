@@ -24,6 +24,7 @@
                 let returnVal = false;
                 if (undoing) {
                     if (this._type == Ensemble.Events.Action.ActionType.removeTrack) returnVal = true;
+                    if (this._type == Ensemble.Events.Action.ActionType.removeClip) returnVal = true;
                 }
                 else {
                     if (this._type == Ensemble.Events.Action.ActionType.importClip) returnVal = true;
@@ -33,81 +34,106 @@
 
             performAction: function () {
                 /// <summary>Performs the task associated with the Action.</summary>
-                switch (this._type) {
-                    case Ensemble.Events.Action.ActionType.createTrack:
-                        console.log("Creating new track...");
-                        if (this._payload) {
-                            Ensemble.Editor.TimelineMGR.createTrack(null, this._payload.trackId);
-                        }
-                        else {
-                            var affectedId = Ensemble.Editor.TimelineMGR.createTrack();
-                            this._payload = {
-                                trackId: affectedId
-                            };
-                        }
-                        break;
-                    case Ensemble.Events.Action.ActionType.renameTrack:
-                        Ensemble.Editor.TimelineMGR.renameTrack(this._payload.trackId, this._payload.newName);
-                        //Ensemble.Editor.TimelineMGR.getTrackById(this._payload.affectedId).name = this._payload.newName;
-                        break;
-                    case Ensemble.Events.Action.ActionType.trackVolumeChanged:
-                        Ensemble.Editor.TimelineMGR.changeTrackVolume(this._payload.trackId, this._payload.newVolume);
-                        break;
-                    case Ensemble.Events.Action.ActionType.moveTrack:
-                        Ensemble.Editor.TimelineMGR.moveTrackWithId(this._payload.trackId, this._payload.origin, this._payload.destination);
-                        break;
-                    case Ensemble.Events.Action.ActionType.removeTrack:
-                        var removalObj = Ensemble.Editor.TimelineMGR.removeTrack(this._payload.trackId);
-                        this._payload.trackObj = removalObj.track;
-                        this._payload.originalLocation = removalObj.index;
-                        break;
-                    case Ensemble.Events.Action.ActionType.importClip:
-                        Ensemble.FileIO._loadFileFromStub(this._payload.clipObj, null, Ensemble.HistoryMGR._importActionCompleted, true);
-                        //Ensemble.FileIO.loadClip(this._payload.clipObj, null, cb);
-                        //Ensemble.Editor.TimelineMGR.addClipToTrack(this._payload.clipObj, this._payload.destinationTrack, this._payload.destinationTime);
-                        break;
-                    default:
-                        console.error("Unknown Action!");
+                if (this._type == Ensemble.Events.Action.ActionType.createTrack) {
+                    console.log("Creating new track...");
+                    if (this._payload) {
+                        Ensemble.Editor.TimelineMGR.createTrack(null, this._payload.trackId);
+                    }
+                    else {
+                        var affectedId = Ensemble.Editor.TimelineMGR.createTrack();
+                        this._payload = {
+                            trackId: affectedId
+                        };
+                    }
                 }
+
+                else if (this._type == Ensemble.Events.Action.ActionType.renameTrack) {
+                    Ensemble.Editor.TimelineMGR.renameTrack(this._payload.trackId, this._payload.newName);
+                }
+
+                else if (this._type == Ensemble.Events.Action.ActionType.trackVolumeChanged) {
+                    Ensemble.Editor.TimelineMGR.changeTrackVolume(this._payload.trackId, this._payload.newVolume);
+                }
+
+                else if (this._type == Ensemble.Events.Action.ActionType.moveTrack) {
+                    Ensemble.Editor.TimelineMGR.moveTrackWithId(this._payload.trackId, this._payload.origin, this._payload.destination);
+                }
+
+                else if (this._type == Ensemble.Events.Action.ActionType.removeTrack) {
+                    var removalObj = Ensemble.Editor.TimelineMGR.removeTrack(this._payload.trackId);
+                    this._payload.trackObj = removalObj.track;
+                    this._payload.originalLocation = removalObj.index;
+                }
+
+                else if (this._type == Ensemble.Events.Action.ActionType.importClip) {
+                    Ensemble.FileIO._loadFileFromStub(this._payload.clipObj, null, Ensemble.HistoryMGR._importActionCompleted, true);
+                }
+
+                else if (this._type == Ensemble.Events.Action.ActionType.removeClip) {
+                    let removedClips = [];
+                    let trackLocations = [];
+                    for (let i = 0; i < this._payload.clipIds.length; i++) {
+                        let removedClip = Ensemble.Editor.TimelineMGR.removeClip(this._payload.clipIds[i]);
+                        removedClips.push(removedClip.clip);
+                        trackLocations.push(removedClip.trackId);
+                    }
+                    this._payload = {
+                        clipObjs: removedClips,
+                        trackLocations: trackLocations
+                    };
+                }
+
+                else console.error("Unknown Action!");
             },
 
             undo: function () {
                 /// <summary>Reverts the changes caused by this Action.</summary>
-                switch (this._type) {
-                    case Ensemble.Events.Action.ActionType.createTrack:
-                        console.log("Undoing new track creation...");
-                        Ensemble.Editor.TimelineMGR.removeTrack(this._payload.trackId);
-                        break;
-                    case Ensemble.Events.Action.ActionType.renameTrack:
-                        console.log("Undoing new track rename...");
-                        Ensemble.Editor.TimelineMGR.renameTrack(this._payload.trackId, this._payload.oldName);
-                        break;
-                    case Ensemble.Events.Action.ActionType.trackVolumeChanged:
-                        console.log("Undoing track volume change...");
-                        Ensemble.Editor.TimelineMGR.changeTrackVolume(this._payload.trackId, this._payload.oldVolume);
-                        break;
-                    case Ensemble.Events.Action.ActionType.moveTrack:
-                        console.log("Undoing track move...");
-                        Ensemble.Editor.TimelineMGR.moveTrackWithId(this._payload.trackId, this._payload.destination, this._payload.origin);
-                        break;
-                    case Ensemble.Events.Action.ActionType.removeTrack:
-                        console.log("Undoing track removal...");
-                        // Load all clips.
-                        Ensemble.FileIO._loadMultipleClips(this._payload.trackObj.clips, null, Ensemble.HistoryMGR._undoRemoveTrackComplete);
-                        break;
-                    case Ensemble.Events.Action.ActionType.importClip:
-                        console.log("Undoing clip import...");
-                        let removedClip = Ensemble.Editor.TimelineMGR.removeClip(this._payload.clipId);
-                        this._payload = {
-                            clipObj: removedClip.clip,
-                            clipId: removedClip.clip.id,
-                            destinationTime: removedClip.clip.startTime,
-                            destinationTrack: removedClip.trackId
-                        };
-                        break;
-                    default:
-                        console.error("Unknown Action!");
+                if (this._type == Ensemble.Events.Action.ActionType.createTrack) {
+                    console.log("Undoing new track creation...");
+                    Ensemble.Editor.TimelineMGR.removeTrack(this._payload.trackId);
                 }
+
+                else if (this._type == Ensemble.Events.Action.ActionType.renameTrack) {
+                    console.log("Undoing new track rename...");
+                    Ensemble.Editor.TimelineMGR.renameTrack(this._payload.trackId, this._payload.oldName);
+                }
+
+                else if (this._type == Ensemble.Events.Action.ActionType.trackVolumeChanged) {
+                    console.log("Undoing track volume change...");
+                    Ensemble.Editor.TimelineMGR.changeTrackVolume(this._payload.trackId, this._payload.oldVolume);
+                }
+
+                else if (this._type == Ensemble.Events.Action.ActionType.moveTrack) {
+                    console.log("Undoing track move...");
+                    Ensemble.Editor.TimelineMGR.moveTrackWithId(this._payload.trackId, this._payload.destination, this._payload.origin);
+                }
+
+                else if (this._type == Ensemble.Events.Action.ActionType.removeTrack) {
+                    console.log("Undoing track removal...");
+                    Ensemble.FileIO._loadMultipleClips(this._payload.trackObj.clips, null, Ensemble.HistoryMGR._undoRemoveTrackComplete);
+                }
+
+                else if (this._type == Ensemble.Events.Action.ActionType.importClip) {
+                    console.log("Undoing clip import...");
+                    let removedClip = Ensemble.Editor.TimelineMGR.removeClip(this._payload.clipId);
+                    this._payload = {
+                        clipObj: removedClip.clip,
+                        clipId: removedClip.clip.id,
+                        destinationTime: removedClip.clip.startTime,
+                        destinationTrack: removedClip.trackId
+                    };
+                }
+
+                else if (this._type == Ensemble.Events.Action.ActionType.removeClip) {
+                    //this._payload = {
+                    //    clipObjs: removedClips,
+                    //    trackLocations: trackLocations
+                    //};
+                    console.log("Undoing clip removal...");
+                    Ensemble.FileIO._loadMultipleClips(this._payload.clipObjs, null, Ensemble.HistoryMGR._undoRemoveClipComplete);
+                }
+
+                else console.error("Unknown Action!");
             },
 
             finish: function (params) {
@@ -155,6 +181,29 @@
                     Ensemble.Editor.TimelineMGR.addTrackAtIndex(this._payload.trackObj, this._payload.originalLocation);
                     Ensemble.HistoryMGR.refreshMessage();
                 }
+
+                else if (this._type == Ensemble.Events.Action.ActionType.removeClip) {
+                    console.log("Ready to reinsert removed clips.");
+                    for (let i = 0; i < params.length; i++) {
+                        //find the clip in the payload.
+                        let clipIndex = -1;
+                        for (let k = 0; k < this._payload.clipObjs.length; k++) {
+                            if (this._payload.clipObjs[k].id == params[i].id) {
+                                clipIndex = k;
+                                break;
+                            }
+                        }
+                        Ensemble.Editor.TimelineMGR.addClipToTrack(params[i], this._payload.trackLocations[clipIndex], params[i].startTime);
+                    }
+                    let idList = [];
+                    for (let i = 0; i < this._payload.clipObjs.length; i++) {
+                        idList.push(this._payload.clipObjs[i].id);
+                    }
+                    this._payload = {
+                        clipIds: idList
+                    }
+                    Ensemble.HistoryMGR.refreshMessage();
+                }
             },
 
             getMessage: function () {
@@ -190,7 +239,8 @@
                 trackVolumeChanged: "trackVolumeChanged",
                 moveTrack: "moveTrack",
                 removeTrack: "removeTrack",
-                importClip: "importClip"
+                importClip: "importClip",
+                removeClip: "removeClip"
             }
         }
     );
