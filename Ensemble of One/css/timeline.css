@@ -1,4 +1,32 @@
-﻿.timeline-clip {
+﻿/* TIMELINE RULER */
+#editorTimelineRulerContent .timeChunk {
+    display: inline-block;
+    box-sizing: border-box;
+}
+
+.timeChunk.timeChunkLarge {
+    height: 25px;
+    margin-top: 25px;
+    line-height: 25px;
+    border-right: 2px solid black;
+}
+
+.timeChunk.timeChunkSmall {
+    height: 12px;
+    margin-top: 12px;
+    line-height: 12px;
+    border-right: 2px solid gray;
+}
+
+#editorTimelineRulerContent .timeLabel {
+    position: absolute;
+    top: 0px;
+    transform: translateX(-50%);
+}
+
+
+/* TIMELINE CLIP */
+.timeline-clip {
     box-sizing: border-box;
     padding: 10px 10px 10px 0;
     border: 1px solid #707070;

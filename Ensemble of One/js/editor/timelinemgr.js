@@ -830,7 +830,9 @@
             buttonNewTrack: null,
             timeCursor: null,
             timeCursorPreview: null,
-            trackContainer: null
+            trackContainer: null,
+            scrollableContainer: null,
+            timeRuler: null
         },
 
         _refreshUI: function () {
@@ -842,6 +844,8 @@
             this.ui.timeCursor = document.getElementsByClassName("timeline__cursor")[0];
             this.ui.timeCursorPreview = document.getElementsByClassName("editorTimelineDragPreviewFlyout")[0];
             this.ui.trackContainer = document.getElementById("timeline-track-container");
+            this.ui.scrollableContainer = document.getElementsByClassName("timeline-track-container-wrap")[0];
+            this.ui.timeRuler = document.getElementById("editorTimelineRulerContent");
 
             this.ui.buttonScrollUp.addEventListener("click", this._listeners.buttonScrollUp);
             this.ui.buttonScrollDown.addEventListener("click", this._listeners.buttonScrollDown);
@@ -850,6 +854,7 @@
             this.ui.buttonNewTrack.addEventListener("click", this._listeners.buttonNewTrack);
             this.ui.timeCursor.addEventListener("pointerdown", this._listeners.timeCursorMousedown);
             this.ui.trackContainer.addEventListener("pointerdown", this._listeners.timelineTrackContainerPointerDown);
+            this.ui.scrollableContainer.addEventListener("scroll", this._listeners.timelineScrolled);
         },
 
         _cleanUI: function () {
@@ -859,6 +864,7 @@
             this.ui.buttonZoomOut.removeEventListener("click", this._listeners.buttonZoomOut);
             this.ui.buttonNewTrack.removeEventListener("click", this._listeners.buttonNewTrack);
             this.ui.timeCursor.removeEventListener("pointerdown", this._listeners.timeCursorMousedown);
+            this.ui.scrollableContainer.addEventListener("scroll", this._listeners.timelineScrolled);
 
             this.ui.buttonScrollUp = null;
             this.ui.buttonScrollDown = null;
@@ -868,6 +874,8 @@
             this.ui.timeCursor = null;
             this.ui.timeCursorPreview = null;
             this.ui.trackContainer = null;
+            this.ui.scrollableContainer = null;
+            this.ui.timeRuler = null;
         },
 
         _rebuildIndex: function () {
@@ -1042,6 +1050,10 @@
 
             timelineTrackContainerPointerDown: function (event) {
                 Ensemble.Editor.SelectionMGR.clearSelection();
+            },
+
+            timelineScrolled: function (event) {
+                Ensemble.Editor.TimelineMGR.ui.timeRuler.scrollLeft = Ensemble.Editor.TimelineMGR.ui.scrollableContainer.scrollLeft;
             }
         }
     });

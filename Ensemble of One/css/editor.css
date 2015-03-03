@@ -230,31 +230,6 @@
     white-space: nowrap;
 }
 
-#editorTimelineRulerContent .timeChunk {
-    display: inline-block;
-    box-sizing: border-box;
-}
-
-.timeChunk.timeChunkLarge {
-    height: 25px;
-    margin-top: 25px;
-    line-height: 25px;
-    border-right: 2px solid black;
-}
-
-.timeChunk.timeChunkSmall {
-    height: 12px;
-    margin-top: 12px;
-    line-height: 12px;
-    border-right: 2px solid gray;
-}
-
-#editorTimelineRulerContent .timeLabel {
-    position: absolute;
-    top: 0px;
-    transform: translateX(-50%);
-}
-
 #editorPageContainer #editorLowerHalf #editorTimelineContainer .editorTimelineSideControls, .editorTimelineRulerButtonPlaceholder {
     width: 50px;
     height: 100%;
@@ -277,6 +252,10 @@
     background-color: white;
     font-style: normal;
     font-size: 18px;
+}
+
+.editorGeneralButton:first-child {
+    margin-top: 0;
 }
 
 .editorTimelineSideControls i:active {
