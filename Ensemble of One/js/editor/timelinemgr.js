@@ -294,14 +294,7 @@
             this._snapScrollToNearestTrack();
 
             this.ui.trackContainer.style.background = "repeating-linear-gradient(#FFFFFF, #FFFFFF " + this._currentTrackHeight + "px, #F0F0F0 " + this._currentTrackHeight + "px, #F0F0F0 " + (2 * this._currentTrackHeight) + "px)";
-        },
-
-        updateCursor: function (timeMs) {
-            /// <summary>Updates the position of the Timeline cursor.</summary>
-            /// <param name="timeMs" type="Number">The current playback time.</param>
-            let pxPos = Math.floor(timeMs * Ensemble.Settings.getEditorRulerScale());
-            //this.ui.timeCursor.style.transform = "translateX(" + pxPos + "px)";
-            this.ui.timeCursor.style.left = pxPos + "px";
+            this.newRulerScale();
         },
 
         generateNewTrackId: function () {
@@ -318,114 +311,77 @@
             return this._uniqueClipID - 1;
         },
 
-        setRulerScale: function (rulerScale) {
+        newRulerScale: function () {
             /// <summary>Sets the scale used to display the timeline, its tracks and clips, and the timing ruler.</summary>
-            /// <param name="rulerScale" type="Number">A number representing the number of milliseconds per pixel to use in the timeline display.</param>
-            console.log("Set timeline scale to " + rulerScale);
-            Ensemble.Settings.setEditorRulerScale(rulerScale);
+            let params = Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel];
 
-            var displayWidthTime = Ensemble.Editor.UI.PageSections.lowerHalf.timelineRuler.clientWidth / rulerScale;
-            if (Ensemble.Session.projectDuration > displayWidthTime) displayWidthTime = Ensemble.Session.projectDuration;
+            let ratio = params.ratio;
+            let interval = params.interval;
+            let mark = params.mark;
+            let sub = params.sub;
 
-            var timeSec = Math.ceil(displayWidthTime / 1000);
+            let markWidth = mark / ratio;
 
-            console.log("Generating timeline ruler with length " + timeSec + " seconds...");
+            let displayTime = Ensemble.Editor.UI.PageSections.lowerHalf.timelineRuler.clientWidth * ratio;
+            if (Ensemble.Session.projectDuration > displayTime) displayTime = Ensemble.Session.projectDuration;
 
-            var chunkSize = 0;
-            var subChunkSize = 0;
-            var subChunkCount = 0;
-            if (displayWidthTime < 60000) {
-                //1-second chunks, 0.5-second subchunks
-                chunkSize = Math.floor(rulerScale * 1000);
-                subChunkSize = Math.floor(0.5 * chunkSize);
-                subChunkCount = 1;
-            }
-            else if (displayWidthTime < 180000) {
-                //5-second chunks, 1-second subchunks
-                chunkSize = Math.floor(rulerScale * 5000);
-                subChunkSize = Math.floor(0.2 * chunkSize);
-                subChunkCount = 4;
-            }
-            else if (displayWidthTime < 600000) {
-                //15-second chunks, 5-second subchunks
-                chunkSize = Math.floor(rulerScale * 15000);
-                subChunkSize = Math.floor((1 / 3) * chunkSize);
-                subChunkCount = 2;
-            }
-            else if (displayWidthTime < 900000) {
-                //30-second chunks, 10-second subchunks
-                chunkSize = Math.floor(rulerScale * 30000);
-                subChunkSize = Math.floor((1 / 3) * chunkSize);
-                subChunkCount = 2;
-            }
-            else if (displayWidthTime < 1800000) {
-                //1-minute chunks, 30-second subchunks
-                chunkSize = Math.floor(rulerScale * 60000)
-                subChunkSize = Math.floor(0.5 * chunkSize);
-                subChunkCount = 1;
-            }
-            else if (displayWidthTime < 3600000) {
-                //5-minute chunks, 1-minute subchunks
-                chunkSize = Math.floor(rulerScale * 300000);
-                subChunkSize = Math.floor(0.2 * chunkSize);
-                subChunkCount = 4;
-            }
-            else if (displayWidthTime < 7200000) {
-                //15-minute chunks, 5-minute subchunks
-                chunkSize = Math.floor(rulerScale * 900000);
-                subChunkSize = Math.floor((1 / 3) * chunkSize);
-                subChunkCount = 2;
-            }
+            let cur = 0;
+            let htmlStr = "";
+            let timeStr = "";
 
-
-            else {
-                //1-hour chunks, no subchunks
-                chunkSize = Math.floor(rulerScale * 3600000);
-                subChunkSize = 0;
-                subChunkCount = 0;
-            }
-
-            var widthPerSecond = Math.floor(rulerScale * 1000);
-            var htmlStr = "";
-
-            var chunkCount = Math.ceil(Ensemble.Editor.UI.PageSections.lowerHalf.timelineRuler.clientWidth / chunkSize);
-
-            for (var i = 0; i < chunkCount; i++) {
-                htmlStr = htmlStr + "<div class='timeChunk timeChunkLarge' style='width:" + chunkSize + "px;'>";
-                for (var k = 0; k < subChunkCount; k++) {
-                    htmlStr = htmlStr + "<div class='timeChunk timeChunkSmall' style='width:" + subChunkSize + "px;'></div>";
+            while (displayTime > cur) {
+                htmlStr = htmlStr + "<span style='width: " + markWidth + "px' class='timeline-ruler__mark"
+                if (cur > 0) {
+                    //if (cur % mark === 0) console.log("Mark at " + cur);
+                    if (cur % sub === 0) {
+                        //console.log("Sub at " + cur);
+                        htmlStr = htmlStr + " timeline-ruler__mark--sub";
+                    }
+                    if (cur % interval === 0) {
+                        //console.log("Interval at " + cur);
+                        htmlStr = htmlStr + " timeline-ruler__mark--interval";
+                        timeStr = timeStr + "<span class='timeline-ruler__time' style='left: " + (cur / ratio) + "px'>" + Ensemble.Utilities.TimeConverter.timelineTime(cur) + "</span>";
+                    }
                 }
-                htmlStr = htmlStr + "</div>";
-                htmlStr = htmlStr + "<div class='timeLabel' style='left: " + (chunkSize * (i + 1)) + "px;'>Label</div>";
+                htmlStr = htmlStr + "'></span>";
+                cur = cur + mark;
             }
-
-            for (var i = 0; i < timeSec; i++) {
-                htmlStr = htmlStr + "<div class='timeChunk timeChunkLarge' style='width:" + widthPerSecond + "px;'>" + i + "</div>";
-            }
-
-            Ensemble.Editor.UI.PageSections.lowerHalf.timelineRuler.innerHTML = htmlStr;
-
-            // now update the widths/positions of all the clips.
+            //console.log("Finished determining intervals.");
+            Ensemble.Editor.UI.PageSections.lowerHalf.timelineRuler.innerHTML = htmlStr + timeStr;
 
             for (let i = 0; i < this.tracks.length; i++) {
                 for (let k = 0; k < this.tracks[i].clips.length; k++) {
                     let clipEl = document.getElementById(this._buildClipDOMId(this.tracks[i].clips[k].id));
-                    clipEl.style.width = Ensemble.Settings.getEditorRulerScale() * this.tracks[i].clips[k].duration + "px";
-                    clipEl.style.left = Ensemble.Settings.getEditorRulerScale() * this.tracks[i].clips[k].startTime + "px";
+                    clipEl.style.width = (this.tracks[i].clips[k].duration / ratio) + "px";
+                    clipEl.style.left = (this.tracks[i].clips[k].startTime / ratio) + "px";
                 }
             }
 
-            this.updateCursor(Ensemble.Editor.PlaybackMGR.lastTime);
+            this.newCursorUpdate(Ensemble.Editor.PlaybackMGR.lastTime);
+        },
+
+        newCursorUpdate: function (time) {
+            /// <summary>Updates the position of the timeline playback cursor.</summary>
+            /// <param name="time" type="Number">The time position at which to display the cursor.</param>
+            this.ui.timeCursor.style.left = time / Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel].ratio + "px";
         },
 
         zoomIn: function () {
             /// <summary>Increases the zoom on the timeline display by one level.</summary>
-            Ensemble.Editor.TimelineMGR.setRulerScale(Ensemble.Settings.getEditorRulerScale() * 2);
+            if (Ensemble.Editor.TimelineZoomMGR.canZoomIn()) {
+                Ensemble.Editor.TimelineZoomMGR.zoomIn();
+                Ensemble.Editor.TimelineMGR.newRulerScale();
+                setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
+            }
         },
 
         zoomOut: function () {
             /// <summary>Decreases the zoom on the timeline display by one level.</summary>
-            Ensemble.Editor.TimelineMGR.setRulerScale(Ensemble.Settings.getEditorRulerScale() * 0.5);
+            if (Ensemble.Editor.TimelineZoomMGR.canZoomOut()) {
+                Ensemble.Editor.TimelineZoomMGR.zoomOut();
+                Ensemble.Editor.TimelineMGR.newRulerScale();
+                setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
+            }
         },
 
         scrollUp: function () {
@@ -493,8 +449,8 @@
             let clipEl = document.createElement("div");
             clipEl.id = Ensemble.Editor.TimelineMGR._buildClipDOMId(clip.id);
             clipEl.className = "timeline-clip";
-            clipEl.style.width = Math.floor(Ensemble.Settings.getEditorRulerScale() * clip.duration) + "px";
-            clipEl.style.left = Math.floor(Ensemble.Settings.getEditorRulerScale() * clip.startTime) + "px";
+            clipEl.style.width = (clip.duration / Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel].ratio) + "px";
+            clipEl.style.left = (clip.startTime / Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel].ratio) + "px";
 
             let thumbEl = document.createElement("img");
             thumbEl.className = "timeline-clip__thumb";
@@ -956,7 +912,7 @@
                     Ensemble.Editor.TimelineMGR._timeCursorDragOffset = event.offsetX;
                     Ensemble.Editor.TimelineMGR._timeCursorLastMousPos = event.pageX;
                     Ensemble.Editor.TimelineMGR._timeCursorInitialPos = parseInt(Ensemble.Editor.TimelineMGR.ui.timeCursor.style.left, 10);
-                    Ensemble.Editor.TimelineMGR._timeCursorDisplayScale = Ensemble.Settings.getEditorRulerScale();
+                    Ensemble.Editor.TimelineMGR._timeCursorDisplayScale = Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel].ratio;
 
                     let cursorScreenPos = event.pageX - event.offsetX;
                     let cursorOffset = cursorScreenPos - Ensemble.Editor.TimelineMGR._timeCursorInitialPos;
@@ -998,7 +954,7 @@
             updateTimeCursorDragPos: function (event) {
                 let candidatePos = Ensemble.Editor.TimelineMGR._timeCursorLastMousPos - Ensemble.Editor.TimelineMGR._timeCursorDragOffset;
                 if (0 > candidatePos) candidatePos = 0;
-                let candidateTime = candidatePos / Ensemble.Editor.TimelineMGR._timeCursorDisplayScale;
+                let candidateTime = candidatePos * Ensemble.Editor.TimelineMGR._timeCursorDisplayScale;
 
                 if (Ensemble.Editor.TimelineMGR._timeCursorLastFinalPos != candidatePos) {
                     Ensemble.Editor.TimelineMGR._timeCursorLastFinalPos = candidatePos;

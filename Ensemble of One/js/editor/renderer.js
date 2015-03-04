@@ -34,7 +34,7 @@
                 }
             }
             Ensemble.Editor.Renderer.ui.timerDisplay.innerText = Ensemble.Editor.PlaybackMGR.lastTimeFriendly;
-            Ensemble.Editor.TimelineMGR.updateCursor(Ensemble.Editor.PlaybackMGR.lastTime);
+            Ensemble.Editor.TimelineMGR.newCursorUpdate(Ensemble.Editor.PlaybackMGR.lastTime);
         },
 
         requestFrame: function () {

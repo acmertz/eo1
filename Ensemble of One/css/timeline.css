@@ -1,29 +1,31 @@
 ﻿/* TIMELINE RULER */
-#editorTimelineRulerContent .timeChunk {
+.timeline-ruler__mark {
     display: inline-block;
+    margin: 25px 0 0 0;
     box-sizing: border-box;
+    height: 6px;
+    border-left: 1px solid #999;
+    overflow: visible;
 }
 
-.timeChunk.timeChunkLarge {
-    height: 25px;
-    margin-top: 25px;
-    line-height: 25px;
-    border-right: 2px solid black;
-}
-
-.timeChunk.timeChunkSmall {
+.timeline-ruler__mark--sub {
     height: 12px;
-    margin-top: 12px;
-    line-height: 12px;
-    border-right: 2px solid gray;
+    border-left: 1px solid #333;
 }
 
-#editorTimelineRulerContent .timeLabel {
+.timeline-ruler__mark--interval {
+    height: 25px;
+    border-left: 1px solid #333;
+}
+
+.timeline-ruler__mark:first-child {
+    border: 0
+}
+
+.timeline-ruler__time {
     position: absolute;
-    top: 0px;
     transform: translateX(-50%);
 }
-
 
 /* TIMELINE CLIP */
 .timeline-clip {

@@ -24,6 +24,19 @@
             return returnStr;
         },
 
+        timelineTime: function (milliseconds) {
+            //Break the time up into the individual parts, adding leading zeros.
+            var ms = (Math.floor(milliseconds % 1000)).toString();
+            var sec = (Math.floor((milliseconds / 1000) % 60)).toString();
+            var min = (Math.floor(((milliseconds / 1000) / 60))).toString();
+            var hour = (Math.floor(((milliseconds / 1000) / 60) / 60)).toString();
+
+            if (ms > sec && ms > min && ms > hour) return ms + "ms";
+            if (sec > ms && sec > min && sec > hour) return sec + "s";
+            if (min > ms && min > sec && min > hour) return min + "m";
+            if (hour > ms && hour > sec && hour > min) return hour + "h";
+        },
+
         verboseTime: function (milliseconds) {
             /// <summary>Returns a user-readable time string of the form "X minutes, X seconds."</summary>
             /// <param name="milliseconds" type="Number">A value in milliseconds, to be converted.</param>
