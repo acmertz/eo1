@@ -1,4 +1,34 @@
-﻿.timeline-clip {
+﻿/* TIMELINE RULER */
+.timeline-ruler__mark {
+    display: inline-block;
+    margin: 25px 0 0 0;
+    box-sizing: border-box;
+    height: 6px;
+    border-left: 1px solid #999;
+    overflow: visible;
+}
+
+.timeline-ruler__mark--sub {
+    height: 12px;
+    border-left: 1px solid #333;
+}
+
+.timeline-ruler__mark--interval {
+    height: 25px;
+    border-left: 1px solid #333;
+}
+
+.timeline-ruler__mark:first-child {
+    border: 0
+}
+
+.timeline-ruler__time {
+    position: absolute;
+    transform: translateX(-50%);
+}
+
+/* TIMELINE CLIP */
+.timeline-clip {
     box-sizing: border-box;
     padding: 10px 10px 10px 0;
     border: 1px solid #707070;

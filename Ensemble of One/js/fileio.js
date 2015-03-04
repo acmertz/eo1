@@ -32,6 +32,10 @@
             xml.WriteString(Ensemble.Session.projectName);
             xml.EndNode();
 
+            xml.BeginNode("TimelineZoom");
+            xml.WriteString(Ensemble.Editor.TimelineZoomMGR.currentLevel.toString());
+            xml.EndNode();
+
             xml.BeginNode("DateCreated");
             xml.WriteString(Ensemble.Session.projectDateCreated.getTime().toString());
             xml.EndNode();
@@ -276,6 +280,9 @@
                             xml.BeginNode("ProjectName");
                             xml.WriteString(name);
                             xml.EndNode();
+                            xml.BeginNode("TimelineZoom");
+                            xml.WriteString(Ensemble.Editor.TimelineZoomMGR.currentLevel.toString());
+                            xml.EndNode();
                             xml.BeginNode("ProjectFilename");
                             xml.WriteString(projectFile.name);
                             xml.EndNode();
@@ -385,6 +392,8 @@
             var projectName = xmlDoc.getElementsByTagName("ProjectName")[0].childNodes[0].nodeValue;
             console.log("Loading project \"" + projectName + "...\"");
 
+            var zoomLevel = parseInt(xmlDoc.getElementsByTagName("TimelineZoom")[0].childNodes[0].nodeValue, 10);
+
             var dateModified = new Date(parseInt(xmlDoc.getElementsByTagName("DateModified")[0].childNodes[0].nodeValue, 10));
             var dateCreated = new Date(parseInt(xmlDoc.getElementsByTagName("DateCreated")[0].childNodes[0].nodeValue, 10));
             var numberOfClips = parseInt(xmlDoc.getElementsByTagName("NumberOfClips")[0].childNodes[0].nodeValue, 10);
@@ -407,6 +416,8 @@
             Ensemble.Session.projectDateModified = dateModified;
             Ensemble.Session.projectDateCreated = dateCreated;
             Ensemble.Session.projectClipCount = numberOfClips;
+
+            Ensemble.Editor.TimelineZoomMGR.currentLevel = zoomLevel;
 
             //May be overridden during the rest of the load process due to missing or invalid clip references.
             Ensemble.Session.projectTrackCount = tracks.length;

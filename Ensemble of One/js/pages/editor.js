@@ -48,7 +48,7 @@
 
             //Update the Editor with the current settings
             this.layoutInterfaceToSplitpoint(Ensemble.Settings.getEditorDividerPosition() * window.innerHeight);
-            Ensemble.Editor.TimelineMGR.setRulerScale(Ensemble.Settings.getEditorRulerScale());
+            Ensemble.Editor.TimelineMGR.newRulerScale();
 
             $(Ensemble.Editor.UI.PageSections.upperHalf.entireSection).addClass("editorUpperHalfVisible");
 
@@ -126,7 +126,6 @@
             try { Ensemble.Editor.Renderer.canvasResized(); }
             catch (exception) { }
             Ensemble.Editor.TimelineMGR.updateTrackSizing();
-
         },
 
         uiSplitpointDragBegin: function (screenOffsetY, splitpointOffsetY) {

@@ -86,6 +86,7 @@
     <Content Include="js\editor\selectionmgr.js" />
     <Content Include="js\editor\renderer.js" />
     <Content Include="js\editor\playbackmgr.js" />
+    <Content Include="js\editor\timelinezoommgr.js" />
     <Content Include="js\editor\timelinemgr.js" />
     <Content Include="js\editor\clip.js" />
     <Content Include="js\editor\timer.js" />

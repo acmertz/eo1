@@ -34,7 +34,7 @@
                 }
             }
             Ensemble.Editor.Renderer.ui.timerDisplay.innerText = Ensemble.Editor.PlaybackMGR.lastTimeFriendly;
-            Ensemble.Editor.TimelineMGR.updateCursor(Ensemble.Editor.PlaybackMGR.lastTime);
+            Ensemble.Editor.TimelineMGR.newCursorUpdate(Ensemble.Editor.PlaybackMGR.lastTime);
         },
 
         requestFrame: function () {
@@ -107,22 +107,20 @@
 
         _listeners: {
             playbackCanvasPointerMoved: function (event) {
-                let scaledX = event.offsetX / Ensemble.Editor.Renderer._scale;
-                let scaledY = event.offsetY / Ensemble.Editor.Renderer._scale;
-                let found = -1;
-
-                for (let i = 0; i < Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList.length; i++) {
-                    if (Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList[i].containsPoint(scaledX, scaledY)) {
-                        //console.log("Mousing over clip " + Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList[i].id);
-                        found = Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList[i].id;
-                        // replace the hovering state in the SelectionMGR.
-                        // edge case: mouse hover out of canvas, and clip is against edge. clear all hovers on hover out of canvas.
-                        break;
+                if (Ensemble.Editor.TimelineMGR._clipIndex.length > 0) {
+                    let scaledX = event.offsetX / Ensemble.Editor.Renderer._scale;
+                    let scaledY = event.offsetY / Ensemble.Editor.Renderer._scale;
+                    let found = -1;
+                    for (let i = 0; i < Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList.length; i++) {
+                        if (Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList[i].containsPoint(scaledX, scaledY)) {
+                            found = Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList[i].id;
+                            break;
+                        }
                     }
-                }
-                if (found > -1) Ensemble.Editor.SelectionMGR.replaceHovering(found);
-                else {
-                    Ensemble.Editor.SelectionMGR.clearHovering();
+                    if (found > -1) Ensemble.Editor.SelectionMGR.replaceHovering(found);
+                    else {
+                        Ensemble.Editor.SelectionMGR.clearHovering();
+                    }
                 }
             },
 
