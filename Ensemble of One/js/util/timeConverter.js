@@ -26,15 +26,18 @@
 
         timelineTime: function (milliseconds) {
             //Break the time up into the individual parts, adding leading zeros.
-            var ms = (Math.floor(milliseconds % 1000)).toString();
-            var sec = (Math.floor((milliseconds / 1000) % 60)).toString();
-            var min = (Math.floor(((milliseconds / 1000) / 60))).toString();
-            var hour = (Math.floor(((milliseconds / 1000) / 60) / 60)).toString();
+            let ms = (Math.floor(milliseconds % 1000)).toString();
+            let sec = (Math.floor((milliseconds / 1000) % 60)).toString();
+            let min = (Math.floor(((milliseconds / 1000) / 60))).toString();
+            let hour = (Math.floor(((milliseconds / 1000) / 60) / 60)).toString();
 
-            if (ms > sec && ms > min && ms > hour) return ms + "ms";
-            if (sec > ms && sec > min && sec > hour) return sec + "s";
-            if (min > ms && min > sec && min > hour) return min + "m";
-            if (hour > ms && hour > sec && hour > min) return hour + "h";
+            let timeStr = "";
+            if (hour > 0) timeStr = timeStr + hour + "h";
+            if (min > 0) timeStr = timeStr + min + "m";
+            if (sec > 0) timeStr = timeStr + sec + "s";
+            if (ms > 0) timeStr = timeStr + ms + "ms";
+
+            return timeStr;
         },
 
         verboseTime: function (milliseconds) {
