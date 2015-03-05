@@ -102,6 +102,10 @@
                     Ensemble.Editor.MenuMGR.closeMenu();
                     break;
             }
+        },
+
+        editorTimelineCursorDrag: function () {
+            $(window).unbind("keydown");
         }
 
     });

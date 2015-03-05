@@ -347,7 +347,7 @@
                 cur = cur + mark;
             }
             //console.log("Finished determining intervals.");
-            Ensemble.Editor.UI.PageSections.lowerHalf.timelineRuler.innerHTML = htmlStr + timeStr;
+            Ensemble.Editor.TimelineMGR.ui.timeRulerInner.innerHTML = htmlStr + timeStr;
 
             for (let i = 0; i < this.tracks.length; i++) {
                 for (let k = 0; k < this.tracks[i].clips.length; k++) {
@@ -363,7 +363,9 @@
         newCursorUpdate: function (time) {
             /// <summary>Updates the position of the timeline playback cursor.</summary>
             /// <param name="time" type="Number">The time position at which to display the cursor.</param>
-            this.ui.timeCursor.style.left = time / Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel].ratio + "px";
+            let pos = time / Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel].ratio + "px"
+            this.ui.timeCursor.style.left = pos;
+            this.ui.timeRulerFlag.style.left = pos;
         },
 
         zoomIn: function () {
@@ -788,7 +790,9 @@
             timeCursorPreview: null,
             trackContainer: null,
             scrollableContainer: null,
-            timeRuler: null
+            timeRuler: null,
+            timeRulerInner: null,
+            timeRulerFlag: null
         },
 
         _refreshUI: function () {
@@ -802,6 +806,8 @@
             this.ui.trackContainer = document.getElementById("timeline-track-container");
             this.ui.scrollableContainer = document.getElementsByClassName("timeline-track-container-wrap")[0];
             this.ui.timeRuler = document.getElementById("editorTimelineRulerContent");
+            this.ui.timeRulerInner = document.getElementsByClassName("timeline-ruler__inner")[0];
+            this.ui.timeRulerFlag = document.getElementsByClassName("timeline-ruler__flag")[0];
 
             this.ui.buttonScrollUp.addEventListener("click", this._listeners.buttonScrollUp);
             this.ui.buttonScrollDown.addEventListener("click", this._listeners.buttonScrollDown);
@@ -809,6 +815,7 @@
             this.ui.buttonZoomOut.addEventListener("click", this._listeners.buttonZoomOut);
             this.ui.buttonNewTrack.addEventListener("click", this._listeners.buttonNewTrack);
             this.ui.timeCursor.addEventListener("pointerdown", this._listeners.timeCursorMousedown);
+            this.ui.timeRulerFlag.addEventListener("pointerdown", this._listeners.timeCursorMousedown);
             this.ui.trackContainer.addEventListener("pointerdown", this._listeners.timelineTrackContainerPointerDown);
             this.ui.scrollableContainer.addEventListener("scroll", this._listeners.timelineScrolled);
         },
@@ -820,6 +827,7 @@
             this.ui.buttonZoomOut.removeEventListener("click", this._listeners.buttonZoomOut);
             this.ui.buttonNewTrack.removeEventListener("click", this._listeners.buttonNewTrack);
             this.ui.timeCursor.removeEventListener("pointerdown", this._listeners.timeCursorMousedown);
+            this.ui.timeRulerFlag.removeEventListener("pointerdown", this._listeners.timeCursorMousedown);
             this.ui.scrollableContainer.addEventListener("scroll", this._listeners.timelineScrolled);
 
             this.ui.buttonScrollUp = null;
@@ -832,6 +840,8 @@
             this.ui.trackContainer = null;
             this.ui.scrollableContainer = null;
             this.ui.timeRuler = null;
+            this.ui.timeRulerInner = null;
+            this.ui.timeRulerFlag = null;
         },
 
         _rebuildIndex: function () {
@@ -901,6 +911,7 @@
                 if (!Ensemble.Editor.PlaybackMGR.playing) {
                     event.stopPropagation();
 
+                    Ensemble.KeyboardMGR.editorTimelineCursorDrag();
                     $("#editorTimelineEWClickEater").removeClass("editorClickEaterFaded");
 
                     let allClips = document.getElementsByClassName("timeline-clip");
@@ -943,6 +954,7 @@
                 document.removeEventListener("pointerup", Ensemble.Editor.TimelineMGR._listeners.timeCursorDragFinished);
                 $("#editorTimelineEWClickEater").addClass("editorClickEaterFaded");
                 Ensemble.Editor.TimelineMGR._timeCursorDragging = false;
+                Ensemble.KeyboardMGR.editorDefault();
 
                 let allClips = document.getElementsByClassName("timeline-clip");
                 for (let i = 0; i < allClips.length; i++) {
@@ -959,6 +971,7 @@
                 if (Ensemble.Editor.TimelineMGR._timeCursorLastFinalPos != candidatePos) {
                     Ensemble.Editor.TimelineMGR._timeCursorLastFinalPos = candidatePos;
                     Ensemble.Editor.TimelineMGR.ui.timeCursor.style.left = candidatePos + "px";
+                    Ensemble.Editor.TimelineMGR.ui.timeRulerFlag.style.left = candidatePos + "px";
                     Ensemble.Editor.TimelineMGR.ui.timeCursorPreview.style.left = Ensemble.Editor.TimelineMGR._timeCursorLastMousPos - (0.5 * Ensemble.Editor.TimelineMGR.ui.timeCursorPreview.offsetWidth) + "px";
                     Ensemble.Editor.TimelineMGR.ui.timeCursorPreview.innerText = Ensemble.Utilities.TimeConverter.convertTime(candidateTime);
                 }
