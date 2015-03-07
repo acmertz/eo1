@@ -156,7 +156,10 @@
                     Ensemble.Editor.SelectionMGR.clearHovering();
                     Ensemble.HistoryMGR.performAction(removeAction);
                 }
-                else if (command == "clear-selection") setTimeout(function () { Ensemble.Editor.SelectionMGR.clearSelection() }, 0);
+                else if (command == "clear-selection") setTimeout(function () {
+                    Ensemble.Editor.SelectionMGR.clearSelection();
+                    Ensemble.Editor.TimelineMGR._hideSelectionCallout();
+                }, 0);
 
                 Ensemble.Editor.MenuMGR.closeMenu();
             },

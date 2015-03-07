@@ -1102,6 +1102,7 @@
     display: flex !important;
     animation: loadingPageExit 0.5s ease-in-out forwards;
     transform: translateY(-100%);
+    pointer-events: none;
 }
 
 @keyframes loadingPageExit {

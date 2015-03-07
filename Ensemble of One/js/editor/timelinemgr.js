@@ -778,6 +778,29 @@
             Ensemble.HistoryMGR.performAction(trackDeleteAction);
         },
 
+        _showSelectionCallout: function (event) {
+            let clip = document.getElementById(Ensemble.Editor.TimelineMGR._buildClipDOMId(Ensemble.Editor.SelectionMGR.selected[0]));
+            let pos = $(clip).offset();
+            Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.style.top = pos.top + "px";
+            Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.style.left = event.pageX + "px";
+            Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.style.visibility = "visible";
+
+            let commands = document.getElementsByClassName("selection-callout__command");
+            for (let i = 0; i < commands.length; i++) {
+                if (commands[i].dataset.calloutCommand == "move-clip") commands[i].addEventListener("pointerdown", Ensemble.Editor.TimelineMGR._listeners.calloutMoveClipPointerDown);
+                else commands[i].addEventListener("click", Ensemble.Editor.TimelineMGR._listeners.selectionCalloutButtonClicked);
+            }
+        },
+
+        _hideSelectionCallout: function () {
+            Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.style.visibility = "";
+            let commands = document.getElementsByClassName("selection-callout__command");
+            for (let i = 0; i < commands.length; i++) {
+                if (commands[i].dataset.calloutCommand == "move-clip") commands[i].removeEventListener("pointerdown", Ensemble.Editor.TimelineMGR._listeners.calloutMoveClipPointerDown);
+                else commands[i].removeEventListener("click", Ensemble.Editor.TimelineMGR._listeners.selectionCalloutButtonClicked);
+            }
+        },
+
 
 
         ui: {
@@ -792,7 +815,9 @@
             scrollableContainer: null,
             timeRuler: null,
             timeRulerInner: null,
-            timeRulerFlag: null
+            timeRulerFlag: null,
+            timelineSelectionCallout: null,
+            timelineSelectionContextMenu: null
         },
 
         _refreshUI: function () {
@@ -808,6 +833,8 @@
             this.ui.timeRuler = document.getElementById("editorTimelineRulerContent");
             this.ui.timeRulerInner = document.getElementsByClassName("timeline-ruler__inner")[0];
             this.ui.timeRulerFlag = document.getElementsByClassName("timeline-ruler__flag")[0];
+            this.ui.timelineSelectionCallout = document.getElementsByClassName("timeline-selection-callout")[0];
+            this.ui.timelineSelectionContextMenu = document.getElementById("clip-selected-contextmenu");
 
             this.ui.buttonScrollUp.addEventListener("click", this._listeners.buttonScrollUp);
             this.ui.buttonScrollDown.addEventListener("click", this._listeners.buttonScrollDown);
@@ -842,6 +869,8 @@
             this.ui.timeRuler = null;
             this.ui.timeRulerInner = null;
             this.ui.timeRulerFlag = null;
+            this.ui.timelineSelectionCallout = null;
+            this.ui.timelineSelectionContextMenu = null;
         },
 
         _rebuildIndex: function () {
@@ -999,30 +1028,47 @@
                 event.stopPropagation();
                 let clipId = parseInt(event.currentTarget.id.match(/\d+$/)[0], 10);
                 console.log("Pointer down on clip " + clipId + "!");
-                if (event.pointerType == "touch") {
-                    // engage "wait" drag. If the pointer is still in relatively the same place after 0.5 seconds, engage drag.
-                    // otherwise, let the OS handle scroll and give up on pointer events until scrolling finishes.
+
+                if (event.shiftKey) {
+                    //Ensemble.Editor.SelectionMGR.addToSelection(clipId);
                 }
                 else {
-                    // mouse or pen precision input.
-                    // select clip and listen for movement.
-                    // if the pointer moves more than 10px while still down, start moving the clip from the offset.
                     Ensemble.Editor.SelectionMGR.replaceSelection(clipId);
-                    if (event.shiftKey) {
-                        //Ensemble.Editor.SelectionMGR.addToSelection(clipId);
-                    }
-                    else {
-                        Ensemble.Editor.SelectionMGR.replaceSelection(clipId);
-                    }
                 }
+
+                if (Ensemble.Editor.SelectionMGR.selected.length > 1) {
+                    Ensemble.Editor.TimelineMGR._hideSelectionCallout();
+                }
+                else {
+                    Ensemble.Editor.TimelineMGR._showSelectionCallout(event);
+                }
+
+                if (event.button == 2) {
+                    event.stopPropagation();
+                    event.preventDefault();
+                    let commands = document.getElementsByClassName("selection-callout__command");
+                    Ensemble.Editor.TimelineMGR.ui.timelineSelectionContextMenu.winControl.show(commands[commands.length - 1]);
+                    Ensemble.Editor.TimelineMGR.ui.timelineSelectionContextMenu.focus();
+                }
+                return false;
             },
 
             timelineTrackContainerPointerDown: function (event) {
                 Ensemble.Editor.SelectionMGR.clearSelection();
+                Ensemble.Editor.TimelineMGR._hideSelectionCallout();
             },
 
             timelineScrolled: function (event) {
                 Ensemble.Editor.TimelineMGR.ui.timeRuler.scrollLeft = Ensemble.Editor.TimelineMGR.ui.scrollableContainer.scrollLeft;
+            },
+
+            selectionCalloutButtonClicked: function (event) {
+                if (event.currentTarget.dataset.calloutCommand == "context-menu") Ensemble.Editor.TimelineMGR.ui.timelineSelectionContextMenu.winControl.show(event.currentTarget);
+                else console.log("Unidentified callout command.");
+            },
+
+            calloutMoveClipPointerDown: function (event) {
+                console.log("Pointer down on move clip button!");
             }
         }
     });

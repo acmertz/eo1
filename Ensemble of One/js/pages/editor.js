@@ -88,6 +88,7 @@
                 Ensemble.Editor.Renderer.unload();
                 Ensemble.Editor.MenuMGR.unload();
                 Ensemble.HistoryMGR.unload();
+                Ensemble.Editor.SelectionMGR.unload();
 
                 window.setTimeout(function () {
                     $("#imgMainLogo").css("display", "initial");
