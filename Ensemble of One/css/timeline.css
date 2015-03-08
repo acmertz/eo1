@@ -56,6 +56,7 @@
     position: absolute;
     top: 0px;
     overflow: hidden;
+    transition: left 0.4s ease, width 0.4s ease;
 }
 
 .timeline-clip--hovering {
@@ -94,6 +95,12 @@
 
 }
 
+.timeline-clip-ghost {
+    position: absolute;
+    border: 1px solid #b2b2ff;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
 .timeline__cursor {
     position: absolute;
     top: 0;
@@ -127,6 +134,10 @@
     border-radius: 3px;
     transform: translate(-50%, -100%);
     margin-top: -5px;
+}
+
+.timeline-selection-callout--animatable {
+    transition: left 0.4s ease, top 0.4s ease;
 }
 
 .selection-callout__command {

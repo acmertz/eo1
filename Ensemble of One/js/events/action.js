@@ -83,6 +83,17 @@
                     };
                 }
 
+                else if (this._type == Ensemble.Events.Action.ActionType.moveClip) {
+                    let destTracks = this._payload.destinationTracks;
+                    let destTimes = this._payload.destinationTimes;
+                    let origTracks = this._payload.originalTracks;
+                    let origTimes = this._payload.originalTimes;
+                    let ids = this._payload.clipIds;
+                    for (let i = 0; i < ids.length; i++) {
+                        Ensemble.Editor.TimelineMGR.moveClip(ids[i], destTracks[i], destTimes[i]);
+                    }
+                }
+
                 else console.error("Unknown Action!");
             },
 
@@ -125,12 +136,20 @@
                 }
 
                 else if (this._type == Ensemble.Events.Action.ActionType.removeClip) {
-                    //this._payload = {
-                    //    clipObjs: removedClips,
-                    //    trackLocations: trackLocations
-                    //};
                     console.log("Undoing clip removal...");
                     Ensemble.FileIO._loadMultipleClips(this._payload.clipObjs, null, Ensemble.HistoryMGR._undoRemoveClipComplete);
+                }
+
+                else if (this._type == Ensemble.Events.Action.ActionType.moveClip) {
+                    console.log("Undoing clip move.");
+                    let destTracks = this._payload.destinationTracks;
+                    let destTimes = this._payload.destinationTimes;
+                    let origTracks = this._payload.originalTracks;
+                    let origTimes = this._payload.originalTimes;
+                    let ids = this._payload.clipIds;
+                    for (let i = 0; i < ids.length; i++) {
+                        Ensemble.Editor.TimelineMGR.moveClip(ids[i], origTracks[i], origTimes[i]);
+                    }
                 }
 
                 else console.error("Unknown Action!");
@@ -226,6 +245,12 @@
                 else if (this._type == Ensemble.Events.Action.ActionType.importClip) {
                     return "Imported clip \"" + Ensemble.Editor.TimelineMGR.getClipById(this._payload.clipId).name + "\"";
                 }
+                else if (this._type == Ensemble.Events.Action.ActionType.removeClip) {
+                    return "Removed clip.";
+                }
+                else if (this._type == Ensemble.Events.Action.ActionType.moveClip) {
+                    return "Moved clip.";
+                }
                 else {
                     return "Unknown action";
                 }
@@ -240,7 +265,8 @@
                 moveTrack: "moveTrack",
                 removeTrack: "removeTrack",
                 importClip: "importClip",
-                removeClip: "removeClip"
+                removeClip: "removeClip",
+                moveClip: "moveClip"
             }
         }
     );

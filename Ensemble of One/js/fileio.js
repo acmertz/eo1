@@ -130,6 +130,23 @@
                         }
                     }
 
+                    else if (Ensemble.HistoryMGR._backStack[i]._type == Ensemble.Events.Action.ActionType.moveClip) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
+                        let destTracks = Ensemble.HistoryMGR._backStack[i]._payload.destinationTracks;
+                        let destTimes = Ensemble.HistoryMGR._backStack[i]._payload.destinationTimes;
+                        let origTracks = Ensemble.HistoryMGR._backStack[i]._payload.originalTracks;
+                        let origTimes = Ensemble.HistoryMGR._backStack[i]._payload.originalTimes;
+                        let ids = Ensemble.HistoryMGR._backStack[i]._payload.clipIds;
+                        for (let k = 0; k < ids.length; k++) {
+                            xml.BeginNode("MovedClip");
+                            xml.Attrib("clipId", ids[k].toString());
+                            xml.Attrib("destinationTrack", destTracks[k].toString());
+                            xml.Attrib("destinationTime", destTimes[k].toString());
+                            xml.Attrib("originalTrack", origTracks[k].toString());
+                            xml.Attrib("originalTime", origTimes[k].toString());
+                        }
+                    }
+
                     else console.error("Unable to save History Action to disk - unknown type.");
                     xml.EndNode();
                 }
@@ -184,6 +201,23 @@
                             xml.BeginNode("RemovedClip");
                             xml.Attrib("clipId", Ensemble.HistoryMGR._forwardStack[i]._payload.clipIds[k].toString());
                             xml.EndNode();
+                        }
+                    }
+
+                    else if (Ensemble.HistoryMGR._forwardStack[i]._type == Ensemble.Events.Action.ActionType.moveClip) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
+                        let destTracks = Ensemble.HistoryMGR._forwardStack[i]._payload.destinationTracks;
+                        let destTimes = Ensemble.HistoryMGR._forwardStack[i]._payload.destinationTimes;
+                        let origTracks = Ensemble.HistoryMGR._forwardStack[i]._payload.originalTracks;
+                        let origTimes = Ensemble.HistoryMGR._forwardStack[i]._payload.originalTimes;
+                        let ids = Ensemble.HistoryMGR._forwardStack[i]._payload.clipIds;
+                        for (let k = 0; k < ids.length; k++) {
+                            xml.BeginNode("MovedClip");
+                            xml.Attrib("clipId", ids[k].toString());
+                            xml.Attrib("destinationTrack", destTracks[k].toString());
+                            xml.Attrib("destinationTime", destTimes[k].toString());
+                            xml.Attrib("originalTrack", origTracks[k].toString());
+                            xml.Attrib("originalTime", origTimes[k].toString());
                         }
                     }
 
@@ -494,6 +528,28 @@
                             trackLocations: trackArr
                         }));
                     }
+                    else if (actionType === Ensemble.Events.Action.ActionType.moveClip) {
+                        let movedClips = undoActions[i].getElementsByTagName("MovedClip");
+                        let ids = [];
+                        let destinationTimes = [];
+                        let destinationTracks = [];
+                        let originalTimes = [];
+                        let originalTracks = [];
+                        for (let i = 0; i < movedClips.length; i++) {
+                            ids.push(parseInt(movedClips[i].getAttribute("clipId"), 10));
+                            destinationTimes.push(parseInt(movedClips[i].getAttribute("destinationTime"), 10));
+                            destinationTracks.push(parseInt(movedClips[i].getAttribute("destinationTrack"), 10));
+                            originalTimes.push(parseInt(movedClips[i].getAttribute("originalTime"), 10));
+                            originalTracks.push(parseInt(movedClips[i].getAttribute("originalTrack"), 10));
+                        }
+                        Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.moveClip, {
+                                clipIds: ids,
+                                destinationTimes: destinationTimes,
+                                destinationTracks: destinationTracks,
+                                originalTimes: originalTimes,
+                                originalTracks: originalTracks
+                        }));
+                    }
                     else {
                         console.error("Unable to load History Action from disk - unknown type.");
                     }
@@ -568,6 +624,28 @@
                         }
                         Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.removeClip, {
                             clipIds: removedArr,
+                        }));
+                    }
+                    else if (actionType === Ensemble.Events.Action.ActionType.moveClip) {
+                        let movedClips = redoActions[i].getElementsByTagName("MovedClip");
+                        let ids = [];
+                        let destinationTimes = [];
+                        let destinationTracks = [];
+                        let originalTimes = [];
+                        let originalTracks = [];
+                        for (let i = 0; i < movedClips.length; i++) {
+                            ids.push(parseInt(movedClips[i].getAttribute("clipId"), 10));
+                            destinationTimes.push(parseInt(movedClips[i].getAttribute("destinationTime"), 10));
+                            destinationTracks.push(parseInt(movedClips[i].getAttribute("destinationTrack"), 10));
+                            originalTimes.push(parseInt(movedClips[i].getAttribute("originalTime"), 10));
+                            originalTracks.push(parseInt(movedClips[i].getAttribute("originalTrack"), 10));
+                        }
+                        Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.moveClip, {
+                            clipIds: ids,
+                            destinationTimes: destinationTimes,
+                            destinationTracks: destinationTracks,
+                            originalTimes: originalTimes,
+                            originalTracks: originalTracks
                         }));
                     }
                     else {
