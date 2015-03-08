@@ -56,6 +56,7 @@
     position: absolute;
     top: 0px;
     overflow: hidden;
+    transition: left 0.4s ease, width 0.4s ease;
 }
 
 .timeline-clip--hovering {
@@ -94,6 +95,12 @@
 
 }
 
+.timeline-clip-ghost {
+    position: absolute;
+    border: 1px solid #b2b2ff;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
 .timeline__cursor {
     position: absolute;
     top: 0;
@@ -114,25 +121,39 @@
     border: 1px solid #aaa;
 }
 
-.clip-selected-callout {
+.timeline-selection-callout {
     position: fixed;
-    background-color: rgba(255,255,255,0.85);
-    border: 1px solid #aaa;
-    top: 0;
+    top: 100px;
     left: 0;
-    width: 150px;
+    height: 40px;
     display: flex;
+    flex-direction: row;
     visibility: hidden;
+    background-color: rgba(255,255,255,0.8);
+    border: 1px solid #aaa;
+    border-radius: 3px;
+    transform: translate(-50%, -100%);
+    margin-top: -5px;
 }
 
-.clip-selected-callout__button {
-    font-size: 16px;
-    padding: 10px;
+.timeline-selection-callout--animatable {
+    transition: left 0.4s ease, top 0.4s ease;
+}
+
+.selection-callout__command {
+    width: 40px;
+    height: 100%;
     text-align: center;
-    flex: 1;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 40px;
 }
 
-.clip-selected-callout__button:active {
+.selection-callout__command:active {
     background-color: #000;
     color: #fff;
+}
+
+.callout-command--move-clip {
+    cursor: pointer;
 }

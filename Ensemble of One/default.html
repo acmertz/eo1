@@ -303,6 +303,16 @@
                 </div>
             </div>
 
+            <div id="editor-history-msg">Placeholder history message.</div>
+
+            <div class="editorTimelineDragPreviewFlyout" tabindex="-1">00:00:00.000</div>
+            <div class="timeline-selection-callout" tabindex="-1">
+                <div class="selection-callout__command callout-command--customizable callout-command--split-clip" data-callout-command="split-clip">&#xE129;</div>
+                <div class="selection-callout__command callout-command--customizable callout-command--trim-clip" data-callout-command="trim-clip">&#xE12C;</div>
+                <div class="selection-callout__command callout-command--move-clip" data-callout-command="move-clip">&#xE13C;</div>
+                <div class="selection-callout__command callout-command--context-menu" data-callout-command="context-menu">&#xE10C;</div>
+            </div>
+
             <div class="editor-menu-clickeater"></div>
 
             <div class="editor-menu-container">
@@ -386,8 +396,6 @@
                 </div>
             </div>
 
-            <div id="editor-history-msg">Placeholder history message.</div>
-
             <div id="editorMediaBrowserPreviewClickEater" class="editorClickEater editorClickEaterFaded"></div>
             <div id="mediaBrowserPreviewDialog" class="mainMenuZoomDialog">
                 <div class="mainMenuZoomDialogContent">
@@ -425,33 +433,6 @@
 
             <div id="topBottomSplitpointClickEater" class="editorClickEater editorClickEaterFaded"></div>
             <div id="editorTimelineEWClickEater" class="editorClickEater editorClickEaterFaded"></div>
-            <div class="clip-selected-callout" tabindex="-1">
-                <div class="clip-selected-callout__button">&#xE13E;</div>
-                <div class="clip-selected-callout__button">&#xE174;</div>
-                <div class="clip-selected-callout__button">&#xE107;</div>
-                <div class="clip-selected-callout__button">&#xE10C;</div>
-            </div>
-            <div id="clip-selected-rightclick" data-win-control="WinJS.UI.Menu">
-                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#xE129; Split'}"></button>
-                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#xE16F; Copy'}"></button>
-                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#xE16B; Cut'}"></button>
-                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#xE16D; Paste'}"></button>
-                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#xE15D; Volume'}"></button>
-                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#xE189; Separate audio'}"></button>
-                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#x1f3a5; Multi-cam'}"></button>
-                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#xE174; Move to different track'}"></button>
-                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#xE12C; Trim'}"></button>
-                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#xE123; Crop'}"></button>
-                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#x1f4d0; Transform'}"></button>
-                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#xE1CE; Animate'}"></button>
-                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#xE13E; Rename'}"></button>
-                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#xE107; Remove'}"></button>
-                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'&#xE1CB; Properties'}"></button>
-                <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',type:'separator'}" />
-                <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'forwardMenuItem',label:'Browse...'}"></button>
-            </div>
-            <div class="editorTimelineDragPreviewFlyout" tabindex="-1">00:00:00.000</div>
-
         </div>
 
         <div class="pageContainer loadingPage" id="projectLoadingPageContainer">
@@ -486,8 +467,21 @@
             </h3>
             <p>This will also remove all the clips inside it.</p>
             <button id="remove-track-confirmation__button">Remove</button>
-        </div>        
+        </div>
         <div id="mediaBrowserAddToProjectFlyout" data-win-control="WinJS.UI.Menu"></div>
+        <div id="clip-selected-contextmenu" data-win-control="WinJS.UI.Menu">
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Copy'}"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Cut'}"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Paste'}"></button>
+            <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',type:'separator'}" />
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Split'}"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Volume'}"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Move to different track'}"></button>
+            <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',type:'separator'}" />
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Remove'}"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Rename'}"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Properties'}"></button>
+        </div>
     </div>
 </body>
 </html>
