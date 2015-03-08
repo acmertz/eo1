@@ -144,6 +144,7 @@
                             xml.Attrib("destinationTime", destTimes[k].toString());
                             xml.Attrib("originalTrack", origTracks[k].toString());
                             xml.Attrib("originalTime", origTimes[k].toString());
+                            xml.EndNode();
                         }
                     }
 
@@ -218,6 +219,7 @@
                             xml.Attrib("destinationTime", destTimes[k].toString());
                             xml.Attrib("originalTrack", origTracks[k].toString());
                             xml.Attrib("originalTime", origTimes[k].toString());
+                            xml.EndNode();
                         }
                     }
 

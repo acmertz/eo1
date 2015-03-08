@@ -1149,18 +1149,33 @@
             },
 
             updateDraggedClipPosition: function (event) {
+                let zoomRatio = Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel].ratio;
                 let dif = Ensemble.Editor.TimelineMGR._clipDragPointerCurrentLeft - Ensemble.Editor.TimelineMGR._clipDragPointerOriginalLeft;
                 let ghosts = document.getElementsByClassName("timeline-clip-ghost");
                 for (let i = 0; i < ghosts.length; i++) {
-                    let candidateLeft = parseFloat(ghosts[i].dataset.origLeft, 10) + dif;
+                    let candidateLeft = parseFloat(ghosts[i].dataset.origLeft) + dif;
                     if (0 > candidateLeft) candidateLeft = 0;
-                    ghosts[i].style.left = candidateLeft + "px";                   
+                    ghosts[i].style.left = candidateLeft + "px";
+
+                    let collision = false;
+                    let trackIndex = parseFloat(ghosts[i].style.top) / Ensemble.Editor.TimelineMGR._currentTrackHeight;
+                    
+                    for (let g = 0; g < Ensemble.Editor.TimelineMGR.tracks[trackIndex].clips.length; g++) {
+                        let candidateStartTime = candidateLeft * zoomRatio;
+                        let candidateEndTime = candidateStartTime + (parseFloat(ghosts[i].style.width) * zoomRatio);
+                        let ghostId = parseInt(ghosts[i].dataset.clipId, 10);
+                        if (Ensemble.Editor.TimelineMGR.tracks[trackIndex].clips[g].timeCollision(ghostId, candidateStartTime, candidateEndTime)) {
+                            collision = true;
+                            break;
+                        }
+                    }
+                    if (collision) $(ghosts[i]).addClass("timeline-clip-ghost--collision");
+                    else $(ghosts[i]).removeClass("timeline-clip-ghost--collision");
                 }
-                Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.style.left = parseFloat(Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.dataset.origLeft, 10) + dif + "px";
+                Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.style.left = parseFloat(Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.dataset.origLeft) + dif + "px";
 
                 if (Ensemble.Editor.TimelineMGR._clipDragging) requestAnimationFrame(Ensemble.Editor.TimelineMGR._listeners.updateDraggedClipPosition);
                 else {
-                    let zoomRatio = Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel].ratio;
                     let clipsToMove = [];
                     let destinationTimes = [];
                     let destinationTracks = [];
@@ -1171,7 +1186,7 @@
                         let origClip = Ensemble.Editor.TimelineMGR.getClipById(clipId);
                         clipsToMove.push(clipId);
                         destinationTimes.push(Math.floor(parseFloat(ghosts[i].style.left, 10) * zoomRatio));
-                        destinationTracks.push(parseFloat(ghosts[i].style.top, 10) / Ensemble.Editor.TimelineMGR._currentTrackHeight);
+                        destinationTracks.push(Ensemble.Editor.TimelineMGR.tracks[(parseFloat(ghosts[i].style.top, 10) / Ensemble.Editor.TimelineMGR._currentTrackHeight)].id);
                         originalTimes.push(origClip.startTime);
                         originalTracks.push(parseFloat(ghosts[i].dataset.origTop, 10) / Ensemble.Editor.TimelineMGR._currentTrackHeight);
                         ghosts[i].parentNode.removeChild(ghosts[i]);
