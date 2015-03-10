@@ -203,6 +203,15 @@
             };
         },
 
+        closestCompatibleTimes: function (target, starts, durations, tracks) {
+            /// <summary>Finds the closest time compatible with the specified start times and durations across the given tracks.</summary>
+            /// <param name="target" type="Number">The number from which to compute time.</param>
+            /// <param name="starts" type="Array">An array of start times.</param>
+            /// <param name="durations" type="Array">An array of durations.</param>
+            /// <param name="tracks" type="Array">An array of track IDs.</param>
+            /// <returns type="Object">An object containing the two closest times, in the following format: {before: [], after: []}</returns>
+        },
+
         addClipToTrack: function (clipObj, trackId, destinationTime) {
             /// <summary>Adds the given Clip to the track with the given ID.</summary>
             /// <param name="clipObj" type="Ensemble.Editor.Clip">The clip to add.</param>
@@ -211,8 +220,9 @@
             var targetTrack = this.getTrackById(trackId);
             var fits = targetTrack.clipCollisionAt(destinationTime, clipObj.duration);
             if (fits.collision) {
-                var offendingClip = targetTrack.getClipById(fits.offending);
-                clipObj.startTime = targetTrack.firstFreeSlot(offendingClip.startTime + offendingClip.duration, clipObj.duration);
+                let offendingClip = targetTrack.getClipById(fits.offending);
+                let slotsAfter = targetTrack.freeSlotsAfter(offendingClip, clipObj);
+                clipObj.startTime = slotsAfter[0];
             }
             targetTrack.insertClip(clipObj);
 
@@ -1158,6 +1168,7 @@
                     ghosts[i].style.left = candidateLeft + "px";
 
                     let collision = false;
+                    let offendingClip = -1;
                     let trackIndex = parseFloat(ghosts[i].style.top) / Ensemble.Editor.TimelineMGR._currentTrackHeight;
                     
                     for (let g = 0; g < Ensemble.Editor.TimelineMGR.tracks[trackIndex].clips.length; g++) {
@@ -1166,16 +1177,45 @@
                         let ghostId = parseInt(ghosts[i].dataset.clipId, 10);
                         if (Ensemble.Editor.TimelineMGR.tracks[trackIndex].clips[g].timeCollision(ghostId, candidateStartTime, candidateEndTime)) {
                             collision = true;
+                            offendingClip = Ensemble.Editor.TimelineMGR.tracks[trackIndex].clips[g].id;
                             break;
                         }
                     }
-                    if (collision) $(ghosts[i]).addClass("timeline-clip-ghost--collision");
+                    if (collision) {
+                        $(ghosts[i]).addClass("timeline-clip-ghost--collision");
+                        ghosts[i].dataset.offendingId = offendingClip;
+                    }
                     else $(ghosts[i]).removeClass("timeline-clip-ghost--collision");
                 }
                 Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.style.left = parseFloat(Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.dataset.origLeft) + dif + "px";
 
                 if (Ensemble.Editor.TimelineMGR._clipDragging) requestAnimationFrame(Ensemble.Editor.TimelineMGR._listeners.updateDraggedClipPosition);
                 else {
+                    // finish move operation.
+                    let candidateSeekTime = Math.floor(parseFloat(ghosts[i].style.left) * zoomRatio);
+                    let invalidClips = document.getElementsByClassName("timeline-clip-ghost--collision");
+                    let movingClips = document.getElementsByClassName("timeline-clip-ghost");
+                    let movingTargets = [];
+
+                    if (invalidClips.length > 0) {
+                        let durations = [];
+                        let starts = [];
+                        let ids = [];
+                        let tracks = [];
+                        for (let i = 0; i < ghosts.length; i++) {
+                            durations.push(Ensemble.Editor.TimelineMGR.getClipById(parseInt(ghosts[i], 10)).duration);
+                            starts.push(Math.floor(parseFloat(ghosts[i].style.left) * zoomRatio));
+                            ids.push(parseInt(ghosts[i].dataset.clipId, 10));
+                            tracks.push(Ensemble.Editor.TimelineMGR.tracks[(parseFloat(ghosts[i].style.top) / Ensemble.Editor.TimelineMGR._currentTrackHeight)].id);
+                        }
+
+
+
+                        // TODO: using closestCompatibleTimes(), generate an appropriate timeset for all of the clips.
+
+
+                    }
+
                     let clipsToMove = [];
                     let destinationTimes = [];
                     let destinationTracks = [];
@@ -1185,14 +1225,13 @@
                         let clipId = parseInt(ghosts[i].dataset.clipId, 10);
                         let origClip = Ensemble.Editor.TimelineMGR.getClipById(clipId);
                         clipsToMove.push(clipId);
-                        destinationTimes.push(Math.floor(parseFloat(ghosts[i].style.left, 10) * zoomRatio));
-                        destinationTracks.push(Ensemble.Editor.TimelineMGR.tracks[(parseFloat(ghosts[i].style.top, 10) / Ensemble.Editor.TimelineMGR._currentTrackHeight)].id);
+                        destinationTimes.push(candidateSeekTime);
+                        destinationTracks.push(Ensemble.Editor.TimelineMGR.tracks[(parseFloat(ghosts[i].style.top) / Ensemble.Editor.TimelineMGR._currentTrackHeight)].id);
                         originalTimes.push(origClip.startTime);
-                        originalTracks.push(parseFloat(ghosts[i].dataset.origTop, 10) / Ensemble.Editor.TimelineMGR._currentTrackHeight);
+                        originalTracks.push(Ensemble.Editor.TimelineMGR.tracks[parseFloat(ghosts[i].dataset.origTop) / Ensemble.Editor.TimelineMGR._currentTrackHeight].id);
                         ghosts[i].parentNode.removeChild(ghosts[i]);
                     }
-                    $(Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout).addClass("timeline-selection-callout--animatable");
-                    
+
                     let moveAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.moveClip, {
                         clipIds: clipsToMove,
                         destinationTimes: destinationTimes,

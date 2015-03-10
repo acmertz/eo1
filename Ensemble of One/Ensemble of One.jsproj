@@ -98,6 +98,7 @@
     <Content Include="js\historymgr.js" />
     <Content Include="js\keyboardmgr.js" />
     <Content Include="js\mediabrowser.js" />
+    <Content Include="js\osdialogmgr.js" />
     <Content Include="js\pages\editor.js" />
     <Content Include="js\pages\mainmenu.js" />
     <Content Include="js\platform.js" />

@@ -110,13 +110,54 @@
                 };
             },
 
-            firstFreeSlot: function (time, duration) {
-                /// <summary>Returns the first free slot that would contain a clip with the given start time and duration.</summary>
-                /// <param name="time" type="Number">A number in milliseconds representing the time to begin searching.</param>
-                /// <param name="duration" type="Number">A number in mlliseconds representing the duration of the clip.</param>
-                /// <returns type="Number">A time in milliseconds representing the beginning of the first free slot large enough to contain the clip.</returns>
-                
-                // todo: return an appropriate start time.
+            freeSlotsAfter: function (offending, newClip) {
+                /// <summary>Returns an array of start times that would be suitable for the new clip.</summary>
+                /// <param name="offending" type="Ensemble.Editor.Clip">The existing clip, around which the new one will be positioned.</param>
+                /// <param name="newClip" type="Ensemble.Editor.Clip">The new clip, with a potentially inappropriate time.</param>
+                /// <returns type="Array">An array of suitable times for the new clip.</returns>
+                let searchStart = null;
+                for (let i = 0; i < this.clips.length; i++) {
+                    if (this.clips[i].id == offending.id) {
+                        searchStart = i;
+                        break;
+                    }
+                }
+
+                let validTimes = [];
+                for (let i = searchStart; i < this.clips.length - 1; i++) {
+                    let existingEndTime = this.clips[i].startTime + this.clips[i].duration;
+                    let requiredEndTime = existingEndTime + newClip.duration;
+                    if (this.clips[i + 1].startTime >= requiredEndTime) validTimes.push(existingEndTime);
+                }
+
+                validTimes.push(this.clips[this.clips.length - 1].startTime + this.clips[this.clips.length - 1].duration);
+
+                return validTimes;
+            },
+
+            freeSlotsBefore: function (offending, newClip) {
+                /// <summary>Returns an array of start times that would be suitable for the new clip.</summary>
+                /// <param name="offending" type="Ensemble.Editor.Clip">The existing clip, around which the new one will be positioned.</param>
+                /// <param name="newClip" type="Ensemble.Editor.Clip">The new clip, with a potentially inappropriate time.</param>
+                /// <returns type="Array">An array of suitable times for the new clip.</returns>
+                let searchStart = null;
+                for (let i = this.clips.length - 1; i >= 0; i--) {
+                    if (this.clips[i].id == offending.id) {
+                        searchStart = i;
+                        break;
+                    }
+                }
+
+                let validTimes = [];
+                for (let i = searchStart; i > 0; i--) {
+                    let existingEndTime = this.clips[i - 1].startTime + this.clips[i - 1].duration;
+                    let requiredEndTime = existingEndTime + newClip.duration;
+                    if (this.clips[i].startTime >= requiredEndTime) validTimes.push(existingEndTime);
+                }
+
+                if (this.clips[0].startTime >= newClip.duration) validTimes.push(this.clips[0].startTime - newClip.duration);
+
+                return validTimes;
             }
         },
         {
