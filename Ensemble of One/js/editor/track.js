@@ -115,7 +115,80 @@
                 /// <param name="time" type="Number">The target time.</param>
                 /// <param name="duration" type="Number">The duration of the clip.</param>
                 /// <param name="omit" type="Number">The ID of a clip to omit from the search.</param>
-                return time;
+                let computedTime = time;
+
+                // first, check to see if there's actually a collision.
+                let collision = false;
+                for (let i = 0; i < this.clips.length; i++) {
+                    if (this.clips[i].timeCollision(omit, time, time + duration)) {
+                        collision = true;
+                        break;
+                    }
+                }
+
+                if (collision) {
+                    let prunedClipList = [];
+                    for (let i = 0; i < this.clips.length; i++) {
+                        if (this.clips[i].id != omit) prunedClipList.push(this.clips[i]);
+                    }
+
+                    let emptySlots = [];
+                    if (prunedClipList[0].startTime > 0) {
+                        if (prunedClipList[0].startTime > duration) {
+                            emptySlots.push({
+                                start: 0,
+                                end: prunedClipList[0].startTime
+                            });
+                        }
+                    }
+
+                    let min = Infinity;
+                    for (let i = 0; i < prunedClipList.length; i++) {
+                        if (prunedClipList.length > i + 1) {
+                            let tempStart = prunedClipList[i].startTime + prunedClipList[i].duration;
+                            let tempEnd = prunedClipList[i + 1].startTime;
+                            if (tempEnd - tempStart > duration) emptySlots.push({
+                                    start: tempStart,
+                                    end: prunedClipList[i + 1].startTime
+                                });
+                        }
+                    }
+                    emptySlots.push({
+                        start: prunedClipList[prunedClipList.length - 1].startTime + prunedClipList[prunedClipList.length - 1].duration,
+                        end: Infinity
+                    })
+
+                    // emptySlots is now an array containing all positions that could hold the clip. Now find the one that's closest
+                    
+                    let closestAfter = null;
+                    let closestBefore = null;
+
+                    let lastDif = Infinity;
+                    for (let i = 0; i < emptySlots.length; i++) {
+                        if (Math.abs(emptySlots[i].start - time) > lastDif) {
+                            closestAfter = emptySlots[i].start;
+                            break;
+                        }
+                        else lastDif = Math.abs(emptySlots[i].start - time);
+                    }
+
+                    lastDif = -Infinity;
+                    for (let i = emptySlots.length - 1; i > -1; i--) {
+                        if (Math.abs(emptySlots[i].end - time) < lastDif) {
+                            closestBefore = emptySlots[i].end;
+                            break;
+                        }
+                        else lastDif = Math.abs(emptySlots[i].end - time);
+                    }
+
+                    if (closestBefore > closestAfter) computedTime = closestAfter;
+                    else computedTime = closestBefore;
+                }
+
+                
+                // TODO:  closestBefore and closestAfter are the differences used in computing. need to return the actual value; not the difference.
+
+                return computedTime;
             },
 
             freeSlotsAfter: function (offending, newClip) {

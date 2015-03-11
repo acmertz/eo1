@@ -21,6 +21,8 @@
         _timeCursorLastFinalPos: -1,
 
         _clipDragging: false,
+        _clipDragArr: [],
+        _ghostDragArr: [],
         _clipDragPointerOriginalLeft: 0,
         _clipDragPointerCurrentLeft: 0,
 
@@ -1140,6 +1142,9 @@
                         ghostEl.dataset.origTop = ghostEl.style.top;
                         ghostEl.dataset.clipId = Ensemble.Editor.SelectionMGR.selected[i];
                         document.getElementById("editorTimelineTracks").appendChild(ghostEl);
+
+                        Ensemble.Editor.TimelineMGR._clipDragArr.push(Ensemble.Editor.TimelineMGR.getClipById(Ensemble.Editor.SelectionMGR.selected[i]));
+                        Ensemble.Editor.TimelineMGR._ghostDragArr.push(ghostEl);
                     }
 
                     document.addEventListener("pointermove", Ensemble.Editor.TimelineMGR._listeners.clipDragCursorUpdate);
@@ -1149,13 +1154,51 @@
                     Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.dataset.origLeft = Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.style.left;
 
                     Ensemble.Editor.TimelineMGR._clipDragging = true;
-                    requestAnimationFrame(Ensemble.Editor.TimelineMGR._listeners.updateDraggedClipPosition);
+
+                    if (Ensemble.Editor.SelectionMGR.selected.length == 1) requestAnimationFrame(Ensemble.Editor.TimelineMGR._listeners.updateSingleClipTimeDrag);
+                    else requestAnimationFrame(Ensemble.Editor.TimelineMGR._listeners.updateDraggedClipPosition);
                 }
             },
 
             clipDragCursorUpdate: function (event) {
                 event.stopPropagation();
                 Ensemble.Editor.TimelineMGR._clipDragPointerCurrentLeft = event.pageX;
+            },
+
+            updateSingleClipTimeDrag: function (event) {
+                let zoomRatio = Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel].ratio;
+                let ghost = Ensemble.Editor.TimelineMGR._ghostDragArr[0];
+                let clip = Ensemble.Editor.TimelineMGR._clipDragArr[0];
+                let dif = Ensemble.Editor.TimelineMGR._clipDragPointerCurrentLeft - Ensemble.Editor.TimelineMGR._clipDragPointerOriginalLeft;
+                let dragTime = (parseFloat(ghost.dataset.origLeft) + dif) * zoomRatio;
+                let trackIndex = parseFloat(ghost.style.top) / Ensemble.Editor.TimelineMGR._currentTrackHeight;
+
+                if (dragTime < 0) dragTime = 0;
+                
+                dragTime = Ensemble.Editor.TimelineMGR.tracks[trackIndex].closestFreeSlot(dragTime, clip.duration, clip.id);
+                dragPx = dragTime / zoomRatio;
+
+                ghost.style.left = (dragTime / zoomRatio) + "px";
+                Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.style.left = parseFloat(Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.dataset.origLeft) + dif + "px";
+
+                if (Ensemble.Editor.TimelineMGR._clipDragging) requestAnimationFrame(Ensemble.Editor.TimelineMGR._listeners.updateSingleClipTimeDrag);
+                else {
+                    // finish move.
+                    let moveAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.moveClip, {
+                        clipIds: [clip.id],
+                        destinationTimes: [dragTime],
+                        destinationTracks: [Ensemble.Editor.TimelineMGR.tracks[trackIndex].id],
+                        originalTimes: [clip.startTime],
+                        originalTracks: [Ensemble.Editor.TimelineMGR.tracks[parseFloat(ghost.dataset.origTop) / Ensemble.Editor.TimelineMGR._currentTrackHeight].id]
+                    });
+
+                    Ensemble.HistoryMGR.performAction(moveAction);
+
+                    ghost.parentNode.removeChild(ghost);
+                    Ensemble.Editor.TimelineMGR._ghostDragArr = [];
+                    Ensemble.Editor.TimelineMGR._clipDragArr = [];
+                    console.log("Finish single clip move.");
+                }
             },
 
             updateDraggedClipPosition: function (event) {
