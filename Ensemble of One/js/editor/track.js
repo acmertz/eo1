@@ -110,6 +110,14 @@
                 };
             },
 
+            closestFreeSlot: function (time, duration, omit) {
+                /// <summary>Returns the time closest to the given value that could contain the clip with the given duration.</summary>
+                /// <param name="time" type="Number">The target time.</param>
+                /// <param name="duration" type="Number">The duration of the clip.</param>
+                /// <param name="omit" type="Number">The ID of a clip to omit from the search.</param>
+                return time;
+            },
+
             freeSlotsAfter: function (offending, newClip) {
                 /// <summary>Returns an array of start times that would be suitable for the new clip.</summary>
                 /// <param name="offending" type="Ensemble.Editor.Clip">The existing clip, around which the new one will be positioned.</param>
