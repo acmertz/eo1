@@ -163,30 +163,36 @@
                     let closestAfter = null;
                     let closestBefore = null;
 
-                    let lastDif = Infinity;
                     for (let i = 0; i < emptySlots.length; i++) {
-                        if (Math.abs(emptySlots[i].start - time) > lastDif) {
+                        if (emptySlots[i].start > time) {
                             closestAfter = emptySlots[i].start;
                             break;
                         }
-                        else lastDif = Math.abs(emptySlots[i].start - time);
                     }
 
-                    lastDif = -Infinity;
-                    for (let i = emptySlots.length - 1; i > -1; i--) {
-                        if (Math.abs(emptySlots[i].end - time) < lastDif) {
-                            closestBefore = emptySlots[i].end;
+                    for (let i = 0; i < emptySlots.length; i++) {
+                        if (emptySlots[i].start > time && i > 0) {
+                            closestBefore = emptySlots[i - 1].end;
                             break;
                         }
-                        else lastDif = Math.abs(emptySlots[i].end - time);
                     }
 
-                    if (closestBefore > closestAfter) computedTime = closestAfter;
-                    else computedTime = closestBefore;
-                }
+                    //for (let i = emptySlots.length - 1; i > -1; i--) {
+                    //    if (emptySlots[i].end > time && emptySlots[i].end != Infinity) {
+                    //        closestBefore = emptySlots[i].end;
+                    //        break;
+                    //    }
+                    //}
 
-                
-                // TODO:  closestBefore and closestAfter are the differences used in computing. need to return the actual value; not the difference.
+                    if (closestBefore == null || Math.abs(closestBefore - time) > Math.abs(closestAfter - time)) {
+                        computedTime = closestAfter;
+                        console.log("Snapping after: " + computedTime);
+                    }
+                    else {
+                        computedTime = closestBefore - duration;
+                        console.log("Snapping before: " + computedTime);
+                    }
+                }
 
                 return computedTime;
             },

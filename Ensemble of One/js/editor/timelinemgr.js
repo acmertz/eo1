@@ -1178,7 +1178,7 @@
                 dragTime = Ensemble.Editor.TimelineMGR.tracks[trackIndex].closestFreeSlot(dragTime, clip.duration, clip.id);
                 dragPx = dragTime / zoomRatio;
 
-                ghost.style.left = (dragTime / zoomRatio) + "px";
+                ghost.style.left = dragPx + "px";
                 Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.style.left = parseFloat(Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.dataset.origLeft) + dif + "px";
 
                 if (Ensemble.Editor.TimelineMGR._clipDragging) requestAnimationFrame(Ensemble.Editor.TimelineMGR._listeners.updateSingleClipTimeDrag);
