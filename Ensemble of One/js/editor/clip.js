@@ -120,6 +120,21 @@
                 
             },
 
+            timeCollision: function (id, start, end) {
+                /// <summary>Returns whether or not the given times specify with this clip.</summary>
+                /// <param name="id" type="Number">The ID of the clip whose collision we are checking.</param>
+                /// <param name="start" type="Number">The start bound.</param>
+                /// <param name="end" type="Number">The end bound.</param>
+                if (id != this.id) {
+                    let curEndTime = this.startTime + this.duration;
+                    if (curEndTime >= start && start >= this.startTime) return true;
+                    if (curEndTime >= end && end >= this.startTime) return true;
+                    if (end >= curEndTime && curEndTime >= start) return true;
+                    if (end >= this.startTime && this.startTime >= start) return true;
+                }
+                return false;
+            },
+
             containsPoint: function (xcoord, ycoord) {
                 /// <summary>Returns whether or not the given point is contained by the clip's dimensions and position.</summary>
                 /// <param name="xcoord" type="Number">The X-coordinate.</param>

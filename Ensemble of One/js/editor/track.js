@@ -110,13 +110,141 @@
                 };
             },
 
-            firstFreeSlot: function (time, duration) {
-                /// <summary>Returns the first free slot that would contain a clip with the given start time and duration.</summary>
-                /// <param name="time" type="Number">A number in milliseconds representing the time to begin searching.</param>
-                /// <param name="duration" type="Number">A number in mlliseconds representing the duration of the clip.</param>
-                /// <returns type="Number">A time in milliseconds representing the beginning of the first free slot large enough to contain the clip.</returns>
-                
-                // todo: return an appropriate start time.
+            closestFreeSlot: function (time, duration, omit) {
+                /// <summary>Returns the time closest to the given value that could contain the clip with the given duration.</summary>
+                /// <param name="time" type="Number">The target time.</param>
+                /// <param name="duration" type="Number">The duration of the clip.</param>
+                /// <param name="omit" type="Number">The ID of a clip to omit from the search.</param>
+                let computedTime = time;
+
+                // first, check to see if there's actually a collision.
+                let collision = false;
+                for (let i = 0; i < this.clips.length; i++) {
+                    if (this.clips[i].timeCollision(omit, time, time + duration)) {
+                        collision = true;
+                        break;
+                    }
+                }
+
+                if (collision) {
+                    let prunedClipList = [];
+                    for (let i = 0; i < this.clips.length; i++) {
+                        if (this.clips[i].id != omit) prunedClipList.push(this.clips[i]);
+                    }
+
+                    let emptySlots = [];
+                    if (prunedClipList[0].startTime > 0) {
+                        if (prunedClipList[0].startTime > duration) {
+                            emptySlots.push({
+                                start: 0,
+                                end: prunedClipList[0].startTime
+                            });
+                        }
+                    }
+
+                    let min = Infinity;
+                    for (let i = 0; i < prunedClipList.length; i++) {
+                        if (prunedClipList.length > i + 1) {
+                            let tempStart = prunedClipList[i].startTime + prunedClipList[i].duration;
+                            let tempEnd = prunedClipList[i + 1].startTime;
+                            if (tempEnd - tempStart > duration) emptySlots.push({
+                                    start: tempStart,
+                                    end: prunedClipList[i + 1].startTime
+                                });
+                        }
+                    }
+                    emptySlots.push({
+                        start: prunedClipList[prunedClipList.length - 1].startTime + prunedClipList[prunedClipList.length - 1].duration,
+                        end: Infinity
+                    })
+
+                    // emptySlots is now an array containing all positions that could hold the clip. Now find the one that's closest
+                    
+                    let closestAfter = null;
+                    let closestBefore = null;
+
+                    for (let i = 0; i < emptySlots.length; i++) {
+                        if (emptySlots[i].start > time) {
+                            closestAfter = emptySlots[i].start;
+                            break;
+                        }
+                    }
+
+                    for (let i = 0; i < emptySlots.length; i++) {
+                        if (emptySlots[i].start > time && i > 0) {
+                            closestBefore = emptySlots[i - 1].end;
+                            break;
+                        }
+                    }
+
+                    //for (let i = emptySlots.length - 1; i > -1; i--) {
+                    //    if (emptySlots[i].end > time && emptySlots[i].end != Infinity) {
+                    //        closestBefore = emptySlots[i].end;
+                    //        break;
+                    //    }
+                    //}
+
+                    if (closestBefore == null || Math.abs(closestBefore - time) > Math.abs(closestAfter - time)) {
+                        computedTime = closestAfter;
+                        console.log("Snapping after: " + computedTime);
+                    }
+                    else {
+                        computedTime = closestBefore - duration;
+                        console.log("Snapping before: " + computedTime);
+                    }
+                }
+
+                return computedTime;
+            },
+
+            freeSlotsAfter: function (offending, newClip) {
+                /// <summary>Returns an array of start times that would be suitable for the new clip.</summary>
+                /// <param name="offending" type="Ensemble.Editor.Clip">The existing clip, around which the new one will be positioned.</param>
+                /// <param name="newClip" type="Ensemble.Editor.Clip">The new clip, with a potentially inappropriate time.</param>
+                /// <returns type="Array">An array of suitable times for the new clip.</returns>
+                let searchStart = null;
+                for (let i = 0; i < this.clips.length; i++) {
+                    if (this.clips[i].id == offending.id) {
+                        searchStart = i;
+                        break;
+                    }
+                }
+
+                let validTimes = [];
+                for (let i = searchStart; i < this.clips.length - 1; i++) {
+                    let existingEndTime = this.clips[i].startTime + this.clips[i].duration;
+                    let requiredEndTime = existingEndTime + newClip.duration;
+                    if (this.clips[i + 1].startTime >= requiredEndTime) validTimes.push(existingEndTime);
+                }
+
+                validTimes.push(this.clips[this.clips.length - 1].startTime + this.clips[this.clips.length - 1].duration);
+
+                return validTimes;
+            },
+
+            freeSlotsBefore: function (offending, newClip) {
+                /// <summary>Returns an array of start times that would be suitable for the new clip.</summary>
+                /// <param name="offending" type="Ensemble.Editor.Clip">The existing clip, around which the new one will be positioned.</param>
+                /// <param name="newClip" type="Ensemble.Editor.Clip">The new clip, with a potentially inappropriate time.</param>
+                /// <returns type="Array">An array of suitable times for the new clip.</returns>
+                let searchStart = null;
+                for (let i = this.clips.length - 1; i >= 0; i--) {
+                    if (this.clips[i].id == offending.id) {
+                        searchStart = i;
+                        break;
+                    }
+                }
+
+                let validTimes = [];
+                for (let i = searchStart; i > 0; i--) {
+                    let existingEndTime = this.clips[i - 1].startTime + this.clips[i - 1].duration;
+                    let requiredEndTime = existingEndTime + newClip.duration;
+                    if (this.clips[i].startTime >= requiredEndTime) validTimes.push(existingEndTime);
+                }
+
+                if (this.clips[0].startTime >= newClip.duration) validTimes.push(this.clips[0].startTime - newClip.duration);
+
+                return validTimes;
             }
         },
         {
