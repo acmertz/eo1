@@ -25,6 +25,10 @@
         _ghostDragArr: [],
         _clipDragPointerOriginalLeft: 0,
         _clipDragPointerCurrentLeft: 0,
+        _clipDragPointerOriginalTop: 0,
+        _clipDragPointerCurrentTop: 0,
+        _clipDragSnapBefore: null,
+        _clipDragSnapAfter: null,
 
         init: function () {
             /// <summary>Links all UI references.</summary>
@@ -145,22 +149,29 @@
             /// <param name="trackId" type="Number">The ID of the destination track.</param>
             /// <param name="time" type="Number">The destination time, in milliseconds.</param>
 
-            let switchLayers = true;
+            let continueSearch = true;
+            let switchLayers = false;
             let clipEl = null;
             let clipObj = null;
 
             for (let i = 0; i < Ensemble.Editor.TimelineMGR.tracks.length; i++) {
-                if (!switchLayers) break;
+                if (!continueSearch) break;
                 for (let k = 0; k < Ensemble.Editor.TimelineMGR.tracks[i].clips.length; k++) {
                     if (Ensemble.Editor.TimelineMGR.tracks[i].clips[k].id == clipId) {
                         if (Ensemble.Editor.TimelineMGR.tracks[i].id == trackId) {
-                            switchLayers = false;
+                            continueSearch = false;
                             clipObj = Ensemble.Editor.TimelineMGR.tracks[i].clips[k];
                             clipEl = document.getElementById(this._buildClipDOMId(clipId));
                             break;
                         }
                         else {
                             // TODO: extract the clip from the DOM.
+                            clipObj = Ensemble.Editor.TimelineMGR.tracks[i].clips.splice(k, 1)[0];
+                            let tempEl = document.getElementById(Ensemble.Editor.TimelineMGR._buildClipDOMId(clipObj.id));
+                            clipEl = tempEl.parentElement.removeChild(tempEl);
+                            continueSearch = false;
+                            switchLayers = true;
+                            break;
                         }
                     }
                 }
@@ -171,6 +182,8 @@
 
             if (switchLayers) {
                 // Reinsert the clip.
+                Ensemble.Editor.TimelineMGR.getTrackById(trackId).insertClip(clipObj);
+                document.getElementById(Ensemble.Editor.TimelineMGR._buildTrackDOMId(trackId)).appendChild(clipEl);
             }
 
             this._rebuildIndex();
@@ -840,6 +853,7 @@
             let commands = document.getElementsByClassName("selection-callout__command");
             for (let i = 0; i < commands.length; i++) {
                 if (commands[i].dataset.calloutCommand == "move-clip") commands[i].addEventListener("pointerdown", Ensemble.Editor.TimelineMGR._listeners.calloutMoveClipPointerDown);
+                else if (commands[i].dataset.calloutCommand == "move-track-clip") commands[i].addEventListener("pointerdown", Ensemble.Editor.TimelineMGR._listeners.calloutMoveTrackClipPointerDown);
                 else commands[i].addEventListener("click", Ensemble.Editor.TimelineMGR._listeners.selectionCalloutButtonClicked);
             }
         },
@@ -850,6 +864,7 @@
             let commands = document.getElementsByClassName("selection-callout__command");
             for (let i = 0; i < commands.length; i++) {
                 if (commands[i].dataset.calloutCommand == "move-clip") commands[i].removeEventListener("pointerdown", Ensemble.Editor.TimelineMGR._listeners.calloutMoveClipPointerDown);
+                else if (commands[i].dataset.calloutCommand == "move-track-clip") commands[i].removeEventListener("pointerdown", Ensemble.Editor.TimelineMGR._listeners.calloutMoveTrackClipPointerDown);
                 else commands[i].removeEventListener("click", Ensemble.Editor.TimelineMGR._listeners.selectionCalloutButtonClicked);
             }
         },
@@ -1163,6 +1178,7 @@
             clipDragCursorUpdate: function (event) {
                 event.stopPropagation();
                 Ensemble.Editor.TimelineMGR._clipDragPointerCurrentLeft = event.pageX;
+                Ensemble.Editor.TimelineMGR._clipDragPointerCurrentTop = event.pageY;
             },
 
             updateSingleClipTimeDrag: function (event) {
@@ -1306,6 +1322,147 @@
                 document.removeEventListener("pointerup", Ensemble.Editor.TimelineMGR._listeners.clipDragFinished);
                 Ensemble.Editor.TimelineMGR._clipDragging = false;
                 Ensemble.KeyboardMGR.editorDefault();
+            },
+
+            calloutMoveTrackClipPointerDown: function (event) {
+                if (!Ensemble.Editor.PlaybackMGR.playing) {
+                    event.stopPropagation();
+
+                    Ensemble.KeyboardMGR.editorTimelineCursorDrag();
+
+                    Ensemble.Editor.TimelineMGR._clipDragPointerOriginalTop = event.pageY;
+                    Ensemble.Editor.TimelineMGR._clipDragPointerCurrentTop = event.pageY;
+
+                    for (let i = 0; i < Ensemble.Editor.SelectionMGR.selected.length; i++) {
+                        let origEl = document.getElementById(Ensemble.Editor.TimelineMGR._buildClipDOMId(Ensemble.Editor.SelectionMGR.selected[i]));
+                        let ghostEl = document.createElement("div");
+                        ghostEl.className = "timeline-clip-ghost";
+                        ghostEl.style.width = origEl.style.width;
+                        ghostEl.style.height = Ensemble.Editor.TimelineMGR._currentTrackHeight + "px";
+                        ghostEl.style.top = $(origEl).closest(".timeline-track--content").position().top + "px";
+                        ghostEl.style.left = $(origEl).position().left + "px";
+                        ghostEl.dataset.origLeft = ghostEl.style.left;
+                        ghostEl.dataset.origTop = ghostEl.style.top;
+                        ghostEl.dataset.clipId = Ensemble.Editor.SelectionMGR.selected[i];
+                        document.getElementById("editorTimelineTracks").appendChild(ghostEl);
+
+                        Ensemble.Editor.TimelineMGR._clipDragArr.push(Ensemble.Editor.TimelineMGR.getClipById(Ensemble.Editor.SelectionMGR.selected[i]));
+                        Ensemble.Editor.TimelineMGR._ghostDragArr.push(ghostEl);
+                    }
+
+                    document.addEventListener("pointermove", Ensemble.Editor.TimelineMGR._listeners.clipDragCursorUpdate);
+                    document.addEventListener("pointerup", Ensemble.Editor.TimelineMGR._listeners.clipDragFinished);
+
+                    $(Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout).removeClass("timeline-selection-callout--animatable");
+                    Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.dataset.origLeft = Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.style.left;
+                    Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.dataset.origTop = Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.style.top;
+
+                    Ensemble.Editor.TimelineMGR._clipDragging = true;
+
+                    if (Ensemble.Editor.SelectionMGR.selected.length == 1) requestAnimationFrame(Ensemble.Editor.TimelineMGR._listeners.updateSingleClipTrackDrag);
+                }
+            },
+
+            updateSingleClipTrackDrag: function (event) {
+                let zoomRatio = Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel].ratio;
+                let ghost = Ensemble.Editor.TimelineMGR._ghostDragArr[0];
+                let clip = Ensemble.Editor.TimelineMGR._clipDragArr[0];
+                let dif = Ensemble.Editor.TimelineMGR._clipDragPointerCurrentTop - Ensemble.Editor.TimelineMGR._clipDragPointerOriginalTop;
+
+                let trackIndex = Math.floor((parseFloat(ghost.dataset.origTop) + dif) / Ensemble.Editor.TimelineMGR._currentTrackHeight);
+                if (0 > trackIndex) trackIndex = 0;
+                console.log("Dragging over track with index " + trackIndex);
+
+                Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.style.top = parseFloat(Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.dataset.origTop) + dif + "px";
+                //ghost.style.top = parseFloat(ghost.dataset.origTop) + dif + "px";
+                ghost.style.top = (trackIndex * Ensemble.Editor.TimelineMGR._currentTrackHeight) + "px";
+                let result = Ensemble.Editor.TimelineMGR.tracks[trackIndex].clipCollisionAt(clip.startTime, clip.duration);
+                let sameClip = true;
+                if (result.collision) {
+                    for (let i = 0; i < result.offending.length; i++) {
+                        if (result.offending[i] != clip.id) {
+                            $(ghost).addClass("timeline-clip-ghost--collision");
+                            sameClip = false;
+                            break;
+                        }
+                    }
+                }
+                if (sameClip) $(ghost).removeClass("timeline-clip-ghost--collision");
+
+
+                if (Ensemble.Editor.TimelineMGR._clipDragging) requestAnimationFrame(Ensemble.Editor.TimelineMGR._listeners.updateSingleClipTrackDrag);
+                else {
+                    let collisionClip = document.getElementsByClassName("timeline-clip-ghost--collision");
+                    if (collisionClip.length > 0) {
+                        collisionClip = collisionClip[0];
+                        let closestBefore = Ensemble.Editor.TimelineMGR.tracks[trackIndex].closestFreeSlot(clip.startTime, clip.duration, clip.id, false, true);
+                        let closestAfter = Ensemble.Editor.TimelineMGR.tracks[trackIndex].closestFreeSlot(clip.startTime, clip.duration, clip.id, true, false);
+
+                        let title = "Resolve Collision";
+                        let commands = [];
+                        let message = "Oops, it looks like there's a collision. You can't move " + clip.name + " to that track because there's already another clip in the way. Do you want to move " + clip.name + " ";
+                        if (closestBefore != null) {
+                            message = message + "before or ";
+                            Ensemble.Editor.TimelineMGR._clipDragSnapBefore = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.moveClip, {
+                                clipIds: [clip.id],
+                                destinationTimes: [closestBefore],
+                                destinationTracks: [Ensemble.Editor.TimelineMGR.tracks[trackIndex].id],
+                                originalTimes: [clip.startTime],
+                                originalTracks: [Ensemble.Editor.TimelineMGR.tracks[parseFloat(ghost.dataset.origTop) / Ensemble.Editor.TimelineMGR._currentTrackHeight].id]
+                            });
+                            commands.push({
+                                label: "Before",
+                                handler: function () { Ensemble.Editor.TimelineMGR._listeners.finishSingleClipTrackDrag(Ensemble.Editor.TimelineMGR._clipDragSnapBefore) }
+                            });
+                        }
+                        message = message + "after the offending clip?";
+
+                        Ensemble.Editor.TimelineMGR._clipDragSnapAfter = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.moveClip, {
+                            clipIds: [clip.id],
+                            destinationTimes: [closestAfter],
+                            destinationTracks: [Ensemble.Editor.TimelineMGR.tracks[trackIndex].id],
+                            originalTimes: [clip.startTime],
+                            originalTracks: [Ensemble.Editor.TimelineMGR.tracks[parseFloat(ghost.dataset.origTop) / Ensemble.Editor.TimelineMGR._currentTrackHeight].id]
+                        });
+
+                        commands.push({
+                            label: "After",
+                            handler: function () { Ensemble.Editor.TimelineMGR._listeners.finishSingleClipTrackDrag(Ensemble.Editor.TimelineMGR._clipDragSnapAfter) }
+                        });
+
+                        commands.push({
+                            label: "Cancel",
+                            handler: function () { Ensemble.Editor.TimelineMGR._listeners.finishSingleClipTrackDrag(null) }
+                        });
+
+                        Ensemble.OSDialogMGR.showDialog(title, message, commands, commands.length - 1, commands.length - 1);
+                    }
+
+                    else {
+                        // no collision. just move the clip to the track.
+                        let moveAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.moveClip, {
+                            clipIds: [clip.id],
+                            destinationTimes: [clip.startTime],
+                            destinationTracks: [Ensemble.Editor.TimelineMGR.tracks[trackIndex].id],
+                            originalTimes: [clip.startTime],
+                            originalTracks: [Ensemble.Editor.TimelineMGR.tracks[parseFloat(ghost.dataset.origTop) / Ensemble.Editor.TimelineMGR._currentTrackHeight].id]
+                        });
+                        Ensemble.Editor.TimelineMGR._listeners.finishSingleClipTrackDrag(moveAction);
+                    }
+                }
+            },
+
+            finishSingleClipTrackDrag: function (action) {
+                if (action) {
+                    Ensemble.HistoryMGR.performAction(action);
+                    Ensemble.Editor.TimelineMGR._clipDragSnapBefore = null;
+                    Ensemble.Editor.TimelineMGR._clipDragSnapAfter = null;
+                }
+                else console.log("Canceled move.");
+                Ensemble.Editor.TimelineMGR._ghostDragArr[0].parentNode.removeChild(Ensemble.Editor.TimelineMGR._ghostDragArr[0]);
+                Ensemble.Editor.TimelineMGR._ghostDragArr = [];
+                Ensemble.Editor.TimelineMGR._clipDragArr = [];
+                console.log("Finish single clip move.");
             }
         }
     });

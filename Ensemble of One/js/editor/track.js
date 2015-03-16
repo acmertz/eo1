@@ -43,6 +43,7 @@
                         for (let i = 0; i < this.clips.length; i++) {
                             if (clipObj.startTime > this.clips[i].startTime) {
                                 this.clips.splice(i + 1, 0, clipObj);
+                                break;
                             }
                         }
                     }
@@ -65,56 +66,53 @@
                 /// <summary>Returns whether or not a clip with the given duration would fit in the track at the given time.</summary>
                 /// <param name="time" type="Number">A number in milliseconds representing the time where the clip would start.</param>
                 /// <param name="duration" type="Number">A number in mlliseconds representing the duration of the clip.</param>
-                /// <returns type="Object">An object containing three members: boolean "collision", string "reason", and Clip ID "offending".</returns>
+                /// <returns type="Object">An object containing three members: boolean "collision", Number Array "offending" (containing clip IDs), and String Array "reason."</returns>
+                let returnVal = {
+                    collision: false,
+                    offending: [],
+                    reason: []
+                }
                 if (this.clips.length > 0) {
                     for (var i = 0; i < this.clips.length; i++) {
-                        if (this.clips[i].startTime < time) {
-                            if (time < this.clips[i].startTime + this.clips[i].duration) {
+                        if (this.clips[i].startTime <= time) {
+                            if (time <= this.clips[i].startTime + this.clips[i].duration) {
                                 // new clip beginning intersects old clip
-                                return {
-                                    collision: true,
-                                    reason: Ensemble.Editor.Clip.CollisionType.clipBeginning,
-                                    offending: this.clips[i].id
-                                };
+                                returnVal.collision = true;
+                                returnVal.offending.push(this.clips[i].id);
+                                returnVal.reason.push(Ensemble.Editor.Clip.CollisionType.clipBeginning);
                             }
                         }
 
-                        if (this.clips[i].startTime < time + duration) {
-                            if (time + duration < this.clips[i] + this.clips[i].duration) {
+                        if (this.clips[i].startTime <= time + duration) {
+                            if (time + duration <= this.clips[i].startTime + this.clips[i].duration) {
                                 // new clip end intersects old clip
-                                return {
-                                    collision: true,
-                                    reason: Ensemble.Editor.Clip.CollisionType.clipEnd,
-                                    offending: this.clips[i].id
-                                };
+                                returnVal.collision = true;
+                                returnVal.offending.push(this.clips[i].id);
+                                returnVal.reason.push(Ensemble.Editor.Clip.CollisionType.clipEnd);
                             }
                         }
 
-                        if (time < this.clips[i].startTime) {
-                            if (this.clips[i].startTime + this.clips[i].duration < time + duration) {
+                        if (time <= this.clips[i].startTime) {
+                            if (this.clips[i].startTime + this.clips[i].duration <= time + duration) {
                                 // new clip encloses old
-                                return {
-                                    collision: true,
-                                    reason: Ensemble.Editor.Clip.CollisionType.clipContains,
-                                    offending: this.clips[i].id
-                                };
+                                returnVal.collision = true;
+                                returnVal.offending.push(this.clips[i].id);
+                                returnVal.reason.push(Ensemble.Editor.Clip.CollisionType.clipContains);
                             }
                         }
 
                     }
                 }
-                return {
-                    collision: false,
-                    reason: null,
-                    offending: null
-                };
+                return returnVal;
             },
 
-            closestFreeSlot: function (time, duration, omit) {
+            closestFreeSlot: function (time, duration, omit, skipBefore, skipAfter) {
                 /// <summary>Returns the time closest to the given value that could contain the clip with the given duration.</summary>
                 /// <param name="time" type="Number">The target time.</param>
                 /// <param name="duration" type="Number">The duration of the clip.</param>
                 /// <param name="omit" type="Number">The ID of a clip to omit from the search.</param>
+                /// <param name="skipBefore" type="Boolean">Optional. When true, skips checking for a slot before the given time.</param>
+                /// <param name="skipAfter" type="Boolean">Optional. When true, skips checking for a slot after the given time.</param>
                 let computedTime = time;
 
                 // first, check to see if there's actually a collision.
@@ -163,34 +161,29 @@
                     let closestAfter = null;
                     let closestBefore = null;
 
-                    for (let i = 0; i < emptySlots.length; i++) {
-                        if (emptySlots[i].start > time) {
-                            closestAfter = emptySlots[i].start;
-                            break;
+                    if (!skipAfter) {
+                        for (let i = 0; i < emptySlots.length; i++) {
+                            if (emptySlots[i].start > time) {
+                                closestAfter = emptySlots[i].start;
+                                break;
+                            }
                         }
                     }
 
-                    for (let i = 0; i < emptySlots.length; i++) {
-                        if (emptySlots[i].start > time && i > 0) {
-                            closestBefore = emptySlots[i - 1].end;
-                            break;
+                    if (!skipBefore) {
+                        for (let i = 0; i < emptySlots.length; i++) {
+                            if (emptySlots[i].start > time && i > 0) {
+                                closestBefore = emptySlots[i - 1].end;
+                                break;
+                            }
                         }
                     }
-
-                    //for (let i = emptySlots.length - 1; i > -1; i--) {
-                    //    if (emptySlots[i].end > time && emptySlots[i].end != Infinity) {
-                    //        closestBefore = emptySlots[i].end;
-                    //        break;
-                    //    }
-                    //}
 
                     if (closestBefore == null || Math.abs(closestBefore - time) > Math.abs(closestAfter - time)) {
                         computedTime = closestAfter;
-                        console.log("Snapping after: " + computedTime);
                     }
                     else {
                         computedTime = closestBefore - duration;
-                        console.log("Snapping before: " + computedTime);
                     }
                 }
 

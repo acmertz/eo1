@@ -171,6 +171,6 @@
     color: #fff;
 }
 
-.callout-command--move-clip {
+.callout-command--move-clip, .callout-command--move-track-clip {
     cursor: pointer;
 }
