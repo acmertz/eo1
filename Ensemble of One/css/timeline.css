@@ -103,6 +103,16 @@
     background-color: rgba(255, 255, 255, 0.8);
     font-size: 24px;
     font-weight: bold;
+    animation: timelineGhostEnter 0.2s ease;
+}
+
+@keyframes timelineGhostEnter {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
 .timeline-clip-ghost:after {
