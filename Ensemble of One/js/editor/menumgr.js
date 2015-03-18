@@ -64,6 +64,7 @@
             if (Ensemble.HistoryMGR.canRedo()) $(".editor-command__redo").removeClass("editor-command--disabled");
 
             if (Ensemble.Editor.SelectionMGR.selected.length > 0) {
+                $(".editor-command__trim-clip").removeClass("editor-command--disabled");
                 $(".editor-command__remove-clip").removeClass("editor-command--disabled");
                 $(".editor-command__clear-selection").removeClass("editor-command--disabled");
             }
@@ -144,10 +145,15 @@
             menuCommandClick: function (event) {
                 let command = event.currentTarget.dataset.editorCommand;
 
+                // HOME
                 if (command == "undo") setTimeout(function () { Ensemble.HistoryMGR.undoLast() }, 0);
                 else if (command == "redo") setTimeout(function () { Ensemble.HistoryMGR.redoNext() }, 0);
                 else if (command == "exit") setTimeout(function () { Ensemble.Pages.Editor.unload() }, 0);
 
+                // CLIP
+                else if (command = "trim-clip") {
+                    Ensemble.Editor.TimelineMGR.showTrimControls(Ensemble.Editor.SelectionMGR.selected[0]);
+                }
                 else if (command == "remove-clip") {
                     let removeAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.removeClip, {
                         clipIds: Ensemble.Editor.SelectionMGR.selected
