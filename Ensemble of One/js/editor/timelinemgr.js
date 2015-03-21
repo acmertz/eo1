@@ -1624,30 +1624,77 @@
                 Ensemble.Editor.TimelineMGR._clipDragPointerOriginalLeft = event.pageX;
                 Ensemble.Editor.TimelineMGR._clipDragPointerCurrentLeft = event.pageX;
 
+                event.currentTarget.dataset.origLeft = event.currentTarget.style.left;
+                $(event.currentTarget).addClass("timeline-clip-gripper--active");
+
                 document.addEventListener("pointermove", Ensemble.Editor.TimelineMGR._listeners.clipDragCursorUpdate);
-                document.addEventListener("pointerup", Ensemble.Editor.TimelineMGR._listeners.clipTrimFinished);
+                document.addEventListener("pointerup", Ensemble.Editor.TimelineMGR._listeners.clipTrimStopped);
 
                 Ensemble.Editor.TimelineMGR._clipTrimming = true;
                 requestAnimationFrame(Ensemble.Editor.TimelineMGR._listeners.updateClipTrim);
             },
 
             updateClipTrim: function (event) {
+                let zoomRatio = Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel].ratio;
+                let dif = Ensemble.Editor.TimelineMGR._clipDragPointerCurrentLeft - Ensemble.Editor.TimelineMGR._clipDragPointerOriginalLeft;
+                let ghost = Ensemble.Editor.TimelineMGR._ghostDragArr[0];
+                let origClip = Ensemble.Editor.TimelineMGR._clipDragArr[0];
+                let activeGripper = document.getElementsByClassName("timeline-clip-gripper--active")[0];
+                let leftGripper = Ensemble.Editor.TimelineMGR._trimGripperArr[0];
+                let rightGripper = Ensemble.Editor.TimelineMGR._trimGripperArr[1];
+
+                let maxDur = origClip.file.duration;
+
+                let leftGripperTime = 0;
+                let rightGripperTime = 0;
+                let ghostTime = 0;
+                let ghostDur = 0;
+
+                if ($(activeGripper).hasClass("timeline-clip-gripper--left")) {
+                    leftGripperTime = (parseFloat(leftGripper.dataset.origLeft) + dif) * zoomRatio;
+                    rightGripperTime = parseFloat(rightGripper.style.left) * zoomRatio;
+
+                    if (0 > leftGripperTime) leftGripperTime = 0;
+                    if (rightGripperTime - leftGripperTime > maxDur) leftGripperTime = rightGripperTime - maxDur;
+                    if (leftGripperTime >= rightGripperTime) leftGripperTime = rightGripperTime - 1;
+                    ghostTime = leftGripperTime;
+                    ghostDur = rightGripperTime - leftGripperTime;
+                }
+                else {
+                    leftGripperTime = (parseFloat(leftGripper.style.left) + dif) * zoomRatio;
+                    rightGripperTime = (parseFloat(rightGripper.dataset.origLeft) + dif) * zoomRatio;
+
+                    if (rightGripperTime - leftGripperTime > maxDur) rightGripperTime = leftGripperTime + maxDur;
+                    if (leftGripperTime >= rightGripperTime) rightGripperTime = leftGripperTime + 1;
+                    ghostTime = leftGripperTime;
+                    ghostDur = rightGripperTime - leftGripperTime;
+                }
+
+                leftGripper.style.left = (leftGripperTime / zoomRatio) + "px";
+                rightGripper.style.left = (rightGripperTime / zoomRatio) + "px";
+                ghost.style.left = (ghostTime / zoomRatio) + "px";
+                ghost.style.width = (ghostDur / zoomRatio) + "px";
+
+
+
+
                 if (Ensemble.Editor.TimelineMGR._clipTrimming) requestAnimationFrame(Ensemble.Editor.TimelineMGR._listeners.updateClipTrim);
                 else {
-                    console.log("Finished trimming!");
-                    $(Ensemble.Editor.TimelineMGR._trimGripperArr).remove();
-                    $(Ensemble.Editor.TimelineMGR._ghostDragArr).remove();
+                    $(".timeline-clip-gripper--active").removeClass("timeline-clip-gripper--active");
+                    //console.log("Finished trimming!");
+                    //$(Ensemble.Editor.TimelineMGR._trimGripperArr).remove();
+                    //$(Ensemble.Editor.TimelineMGR._ghostDragArr).remove();
 
-                    Ensemble.Editor.TimelineMGR._trimGripperArr = [];
-                    Ensemble.Editor.TimelineMGR._clipDragArr = [];
-                    Ensemble.Editor.TimelineMGR._ghostDragArr = [];
+                    //Ensemble.Editor.TimelineMGR._trimGripperArr = [];
+                    //Ensemble.Editor.TimelineMGR._clipDragArr = [];
+                    //Ensemble.Editor.TimelineMGR._ghostDragArr = [];
                 }
             },
 
-            clipTrimFinished: function (event) {
+            clipTrimStopped: function (event) {
                 event.stopPropagation();
                 document.removeEventListener("pointermove", Ensemble.Editor.TimelineMGR._listeners.clipDragCursorUpdate);
-                document.removeEventListener("pointerup", Ensemble.Editor.TimelineMGR._listeners.clipTrimFinished);
+                document.removeEventListener("pointerup", Ensemble.Editor.TimelineMGR._listeners.clipTrimStopped);
                 Ensemble.Editor.TimelineMGR._clipTrimming = false;
                 Ensemble.KeyboardMGR.editorDefault();
             }
