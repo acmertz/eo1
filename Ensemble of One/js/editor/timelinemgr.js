@@ -223,6 +223,26 @@
             };
         },
 
+        trimClip: function (clipId, startTime, dur, startTrim, endTrim) {
+            /// <summary>Trims the clip with the given ID to the given parameters.</summary>
+            /// <param name="clipId" type="Number">The ID of the clip to trim.</param>
+            /// <param name="startTime" type="Number">The new start time of the clip.</param>
+            /// <param name="dur" type="Number">The new duration of the clip.</param>
+            /// <param name="startTrim" type="Number">The new start trim of the clip.</param>
+            /// <param name="endTrim" type="Number">The new end trim of the clip.</param>
+            let clipObj = Ensemble.Editor.TimelineMGR.getClipById(clipId);
+            let clipEl = document.getElementById(Ensemble.Editor.TimelineMGR._buildClipDOMId(clipId));
+            let zoomRatio = Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel].ratio;
+
+            clipObj.startTime = startTime;
+            clipObj.duration = dur;
+            clipObj.startTrim = startTrim;
+            clipObj.endTrim = endTrim;
+
+            clipEl.style.left = (startTime / zoomRatio) + "px";
+            clipEl.style.width = ((startTime + dur) / zoomRatio) + "px";
+        },
+
         closestCompatibleTimes: function (target, starts, durations, tracks) {
             /// <summary>Finds the closest time compatible with the specified start times and durations across the given tracks.</summary>
             /// <param name="target" type="Number">The number from which to compute time.</param>
@@ -551,7 +571,7 @@
             rightGripper.addEventListener("pointerdown", Ensemble.Editor.TimelineMGR._listeners.clipTrimGripperMouseDown);
             ghostEl.addEventListener("pointerdown", Ensemble.Editor.TimelineMGR._listeners.clipTrimGhostMouseDown);
 
-            Ensemble.Editor.TimelineMGR._clipDragArr.push(clipEl);
+            Ensemble.Editor.TimelineMGR._clipDragArr.push(clipObj);
             Ensemble.Editor.TimelineMGR._ghostDragArr.push(ghostEl);
             Ensemble.Editor.TimelineMGR._trimGripperArr.push(leftGripper);
             Ensemble.Editor.TimelineMGR._trimGripperArr.push(rightGripper);
@@ -559,7 +579,43 @@
             document.getElementById("editorTimelineTracks").appendChild(ghostEl);
             document.getElementById("editorTimelineTracks").appendChild(leftGripper);
             document.getElementById("editorTimelineTracks").appendChild(rightGripper);
+
+            Ensemble.Editor.CalloutMGR.setState(Ensemble.Editor.CalloutMGR.States.trim);
         },
+
+        acceptTrim: function () {
+            /// <summary>Accepts and completes the current trim operation.</summary>
+            let zoomRatio = Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel].ratio;
+            let ghost = Ensemble.Editor.TimelineMGR._ghostDragArr[0];
+            let clip = Ensemble.Editor.TimelineMGR._clipDragArr[0];
+            
+            let clipStart = Math.round(parseFloat(ghost.style.left) * zoomRatio);
+            let clipDur = Math.round(parseFloat(ghost.style.width) * zoomRatio);
+
+            let trimAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.trimClip, {
+                clipId: clip.id,
+                newStartTime: clipStart,
+                newDuration: clipDur,
+                newStartTrim: clipStart - clip.startTrim,
+                newEndTrim: (clipStart + clipDur + clip.endTrim) - (clipStart + clipDur),
+                oldStartTrim: clip.startTrim,
+                oldEndTrim: clip.endTrim,
+                oldDuration: clip.duration,
+                oldStartTime: clip.startTime
+            });
+            Ensemble.HistoryMGR.performAction(trimAction);
+        },
+        
+        rejectTrim: function () {
+            /// <summary>Rejects and cancels the current trim operation.</summary>
+            Ensemble.Editor.TimelineMGR._clipTrimming = false;
+            $(".timeline-clip-gripper").remove();
+            $(".timeline-clip-ghost").remove();
+            Ensemble.Editor.TimelineMGR._clipDragArr = [];
+            Ensemble.Editor.TimelineMGR._ghostDragArr = [];
+            Ensemble.Editor.TimelineMGR._trimGripperArr = [];
+        },
+
 
         _buildClipDisplay: function (clip) {
             /// <param name="clip" type="Ensemble.Editor.Clip">The Clip to represent on the timeline.</param>
@@ -894,35 +950,6 @@
             Ensemble.HistoryMGR.performAction(trackDeleteAction);
         },
 
-        _showSelectionCallout: function (event) {
-            let clip = document.getElementById(Ensemble.Editor.TimelineMGR._buildClipDOMId(Ensemble.Editor.SelectionMGR.selected[0]));
-            let pos = $(clip).offset();
-            Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.style.top = pos.top + "px";
-            Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.style.left = event.pageX + "px";
-            Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.style.visibility = "visible";
-            $(Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout).addClass("timeline-selection-callout--animatable");
-
-            let commands = document.getElementsByClassName("selection-callout__command");
-            for (let i = 0; i < commands.length; i++) {
-                if (commands[i].dataset.calloutCommand == "move-clip") commands[i].addEventListener("pointerdown", Ensemble.Editor.TimelineMGR._listeners.calloutMoveClipPointerDown);
-                else if (commands[i].dataset.calloutCommand == "move-track-clip") commands[i].addEventListener("pointerdown", Ensemble.Editor.TimelineMGR._listeners.calloutMoveTrackClipPointerDown);
-                else commands[i].addEventListener("click", Ensemble.Editor.TimelineMGR._listeners.selectionCalloutButtonClicked);
-            }
-        },
-
-        _hideSelectionCallout: function () {
-            Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.style.visibility = "";
-            $(Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout).removeClass("timeline-selection-callout--animatable");
-            let commands = document.getElementsByClassName("selection-callout__command");
-            for (let i = 0; i < commands.length; i++) {
-                if (commands[i].dataset.calloutCommand == "move-clip") commands[i].removeEventListener("pointerdown", Ensemble.Editor.TimelineMGR._listeners.calloutMoveClipPointerDown);
-                else if (commands[i].dataset.calloutCommand == "move-track-clip") commands[i].removeEventListener("pointerdown", Ensemble.Editor.TimelineMGR._listeners.calloutMoveTrackClipPointerDown);
-                else commands[i].removeEventListener("click", Ensemble.Editor.TimelineMGR._listeners.selectionCalloutButtonClicked);
-            }
-        },
-
-
-
         ui: {
             buttonScrollUp: null,
             buttonScrollDown: null,
@@ -1150,7 +1177,7 @@
                 console.log("Pointer down on clip " + clipId + "!");
 
                 Ensemble.Editor.SelectionMGR.replaceSelection(clipId);
-                Ensemble.Editor.TimelineMGR._showSelectionCallout(event);
+                Ensemble.Editor.CalloutMGR.show(Ensemble.Editor.SelectionMGR.selected[0], event)
 
                 if (event.pointerType == "touch") {
                 }
@@ -1175,8 +1202,13 @@
             },
 
             timelineTrackContainerPointerDown: function (event) {
-                Ensemble.Editor.SelectionMGR.clearSelection();
-                Ensemble.Editor.TimelineMGR._hideSelectionCallout();
+                if (Ensemble.Editor.TimelineMGR._clipTrimming) {
+                    Ensemble.Editor.TimelineMGR.rejectTrim();
+                }
+                else {
+                    Ensemble.Editor.SelectionMGR.clearSelection();
+                    Ensemble.Editor.CalloutMGR.hide();
+                }
             },
 
             timelineScrolled: function (event) {
@@ -1221,7 +1253,6 @@
                 document.addEventListener("pointermove", Ensemble.Editor.TimelineMGR._listeners.clipDragCursorUpdate);
                 document.addEventListener("pointerup", Ensemble.Editor.TimelineMGR._listeners.clipDirectDragFinished);
 
-                $(Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout).removeClass("timeline-selection-callout--animatable");
                 Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.dataset.origLeft = Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.style.left;
 
                 Ensemble.Editor.TimelineMGR._clipDragging = true;
@@ -1279,11 +1310,6 @@
                 Ensemble.KeyboardMGR.editorDefault();
             },
 
-            selectionCalloutButtonClicked: function (event) {
-                if (event.currentTarget.dataset.calloutCommand == "context-menu") Ensemble.Editor.TimelineMGR.ui.timelineSelectionContextMenu.winControl.show(event.currentTarget);
-                else console.log("Unidentified callout command.");
-            },
-
             calloutMoveClipPointerDown: function (event) {
                 if (!Ensemble.Editor.PlaybackMGR.playing) {
                     event.stopPropagation();
@@ -1313,7 +1339,6 @@
                     document.addEventListener("pointermove", Ensemble.Editor.TimelineMGR._listeners.clipDragCursorUpdate);
                     document.addEventListener("pointerup", Ensemble.Editor.TimelineMGR._listeners.clipDragFinished);
 
-                    $(Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout).removeClass("timeline-selection-callout--animatable");
                     Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.dataset.origLeft = Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.style.left;
 
                     Ensemble.Editor.TimelineMGR._clipDragging = true;
@@ -1335,7 +1360,7 @@
                 let clip = Ensemble.Editor.TimelineMGR._clipDragArr[0];
                 let dif = Ensemble.Editor.TimelineMGR._clipDragPointerCurrentLeft - Ensemble.Editor.TimelineMGR._clipDragPointerOriginalLeft;
                 let dragTime = (parseFloat(ghost.dataset.origLeft) + dif) * zoomRatio;
-                let trackIndex = parseFloat(ghost.style.top) / Ensemble.Editor.TimelineMGR._currentTrackHeight;
+                let trackIndex = Math.round(parseFloat(ghost.style.top) / Ensemble.Editor.TimelineMGR._currentTrackHeight);
 
                 if (dragTime < 0) dragTime = 0;
                 
@@ -1353,7 +1378,7 @@
                         destinationTimes: [dragTime],
                         destinationTracks: [Ensemble.Editor.TimelineMGR.tracks[trackIndex].id],
                         originalTimes: [clip.startTime],
-                        originalTracks: [Ensemble.Editor.TimelineMGR.tracks[parseFloat(ghost.dataset.origTop) / Ensemble.Editor.TimelineMGR._currentTrackHeight].id]
+                        originalTracks: [Ensemble.Editor.TimelineMGR.tracks[Math.round(parseFloat(ghost.dataset.origTop) / Ensemble.Editor.TimelineMGR._currentTrackHeight)].id]
                     });
 
                     Ensemble.HistoryMGR.performAction(moveAction);
@@ -1501,7 +1526,6 @@
                     document.addEventListener("pointermove", Ensemble.Editor.TimelineMGR._listeners.clipDragCursorUpdate);
                     document.addEventListener("pointerup", Ensemble.Editor.TimelineMGR._listeners.clipDragFinished);
 
-                    $(Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout).removeClass("timeline-selection-callout--animatable");
                     Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.dataset.origLeft = Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.style.left;
                     Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.dataset.origTop = Ensemble.Editor.TimelineMGR.ui.timelineSelectionCallout.style.top;
 
@@ -1592,7 +1616,7 @@
                             destinationTimes: [clip.startTime],
                             destinationTracks: [Ensemble.Editor.TimelineMGR.tracks[trackIndex].id],
                             originalTimes: [clip.startTime],
-                            originalTracks: [Ensemble.Editor.TimelineMGR.tracks[parseFloat(ghost.dataset.origTop) / Ensemble.Editor.TimelineMGR._currentTrackHeight].id]
+                            originalTracks: [Ensemble.Editor.TimelineMGR.tracks[Math.round(parseFloat(ghost.dataset.origTop) / Ensemble.Editor.TimelineMGR._currentTrackHeight)].id]
                         });
                         Ensemble.Editor.TimelineMGR._listeners.finishSingleClipTrackDrag(moveAction);
                     }
@@ -1661,7 +1685,7 @@
                     ghostDur = rightGripperTime - leftGripperTime;
                 }
                 else {
-                    leftGripperTime = (parseFloat(leftGripper.style.left) + dif) * zoomRatio;
+                    leftGripperTime = parseFloat(leftGripper.style.left) * zoomRatio;
                     rightGripperTime = (parseFloat(rightGripper.dataset.origLeft) + dif) * zoomRatio;
 
                     if (rightGripperTime - leftGripperTime > maxDur) rightGripperTime = leftGripperTime + maxDur;
@@ -1676,18 +1700,9 @@
                 ghost.style.width = (ghostDur / zoomRatio) + "px";
 
 
-
-
                 if (Ensemble.Editor.TimelineMGR._clipTrimming) requestAnimationFrame(Ensemble.Editor.TimelineMGR._listeners.updateClipTrim);
                 else {
                     $(".timeline-clip-gripper--active").removeClass("timeline-clip-gripper--active");
-                    //console.log("Finished trimming!");
-                    //$(Ensemble.Editor.TimelineMGR._trimGripperArr).remove();
-                    //$(Ensemble.Editor.TimelineMGR._ghostDragArr).remove();
-
-                    //Ensemble.Editor.TimelineMGR._trimGripperArr = [];
-                    //Ensemble.Editor.TimelineMGR._clipDragArr = [];
-                    //Ensemble.Editor.TimelineMGR._ghostDragArr = [];
                 }
             },
 

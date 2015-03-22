@@ -26,6 +26,7 @@
     <!-- Classes, functions, and global variables -->
 
     <!-- Editor -->
+    <script src="/js/editor/calloutmgr.js"></script>
     <script src="/js/editor/clip.js"></script>
     <script src="/js/editor/menumgr.js"></script>
     <script src="/js/editor/playbackmgr.js"></script>
@@ -35,17 +36,21 @@
     <script src="/js/editor/timelinezoommgr.js"></script>
     <script src="js/editor/track.js"></script>
 
+    <!-- Events -->
     <script src="/js/events/action.js"></script>
 
+    <!-- Page controllers -->
     <script src="/js/pages/mainmenu.js"></script>
     <script src="/js/pages/editor.js"></script>
 
+    <!-- Utilities -->
     <script src="/js/util/aspectgenerator.js"></script>
     <script src="/js/util/friendlyResolutionGenerator.js"></script>
     <script src="/js/util/mousetracker.js"></script>
     <script src="/js/util/screen.js"></script>
     <script src="/js/util/timeConverter.js"></script>
 
+    <!-- Global controllers and platform compatibility namespaces -->
     <script src="/js/ensemblefile.js"></script>
     <script src="/js/ensemblefolder.js"></script>
     <script src="/js/fileio.js"></script>
@@ -308,9 +313,16 @@
 
             <div class="editorTimelineDragPreviewFlyout" tabindex="-1">00:00:00.000</div>
             <div class="timeline-selection-callout" tabindex="-1">
-                <div class="selection-callout__command callout-command--move-track-clip" data-callout-command="move-track-clip">&#xE174;</div>
-                <div class="selection-callout__command callout-command--move-clip" data-callout-command="move-clip">&#xE13C;</div>
-                <div class="selection-callout__command callout-command--context-menu" data-callout-command="context-menu">&#xE10C;</div>
+                <div class="selection-callout__state selection-callout__state--standard">
+                    <div class="standard-callout__favorites"></div>
+                    <div class="selection-callout__command callout-command--move-track-clip" data-callout-command="move-track-clip">&#xE174;</div>
+                    <div class="selection-callout__command callout-command--move-clip" data-callout-command="move-clip">&#xE13C;</div>
+                    <div class="selection-callout__command callout-command--context-menu" data-callout-command="context-menu">&#xE10C;</div>
+                </div>
+                <div class="selection-callout__state selection-callout__state--clip-trim">
+                    <div class="selection-callout__command callout-command--accept-trim" data-callout-command="accept-trim">&#xE10B;</div>
+                    <div class="selection-callout__command callout-command--reject-trim" data-callout-command="reject-trim">&#xE10A;</div>
+                </div>
             </div>
 
             <div class="editor-menu-clickeater"></div>

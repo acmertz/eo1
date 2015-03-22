@@ -190,18 +190,43 @@
     top: 100px;
     left: 0;
     height: 40px;
-    display: flex;
-    flex-direction: row;
-    visibility: hidden;
+    overflow: hidden;
+    white-space: nowrap;
     background-color: rgba(255,255,255,0.8);
     border: 1px solid #aaa;
     border-radius: 3px;
-    transform: translate(-50%, -100%);
     margin-top: -5px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -90%);
+    transition: transform 0.1s ease, opacity 0.1s ease;
 }
 
-.timeline-selection-callout--animatable {
-    transition: left 0.4s ease, top 0.4s ease;
+.timeline-selection-callout--visible {
+    visibility: visible;
+    opacity: 1;
+    transform: translate(-50%, -100%);
+    transition-duration: 0.2s;
+    pointer-events: all;
+}
+
+@keyframes selectionCalloutEnter {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0px);
+    }
+}
+
+.selection-callout__state {
+    display: none;
+}
+
+.selection-callout__state--visible {
+    display: block;
 }
 
 .selection-callout__command {
@@ -211,6 +236,8 @@
     font-weight: bold;
     font-size: 20px;
     line-height: 40px;
+    display: inline-block;
+    padding: 0 5px;
 }
 
 .selection-callout__command:active {

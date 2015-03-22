@@ -94,6 +94,10 @@
                     }
                 }
 
+                else if (this._type == Ensemble.Events.Action.ActionType.trimClip) {
+
+                }
+
                 else console.error("Unknown Action!");
             },
 
@@ -150,6 +154,10 @@
                     for (let i = 0; i < ids.length; i++) {
                         Ensemble.Editor.TimelineMGR.moveClip(ids[i], origTracks[i], origTimes[i]);
                     }
+                }
+
+                else if (this._type == Ensemble.Events.Action.ActionType.trimClip) {
+
                 }
 
                 else console.error("Unknown Action!");
@@ -266,7 +274,8 @@
                 removeTrack: "removeTrack",
                 importClip: "importClip",
                 removeClip: "removeClip",
-                moveClip: "moveClip"
+                moveClip: "moveClip",
+                trimClip: "trimClip"
             }
         }
     );

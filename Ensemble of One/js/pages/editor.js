@@ -28,6 +28,7 @@
             Ensemble.Editor.Renderer.renderSingleFrame();
             Ensemble.HistoryMGR.refreshMessage();
             Ensemble.Editor.MenuMGR.init();
+            Ensemble.Editor.CalloutMGR.init();
 
             //Hide UI items so they can play their entrance animation
             $(Ensemble.Editor.UI.PageSections.upperHalf.entireSection).removeClass("editorUpperHalfVisible");
@@ -89,6 +90,7 @@
                 Ensemble.Editor.MenuMGR.unload();
                 Ensemble.HistoryMGR.unload();
                 Ensemble.Editor.SelectionMGR.unload();
+                Ensemble.Editor.CalloutMGR.unload();
 
                 window.setTimeout(function () {
                     $("#imgMainLogo").css("display", "initial");

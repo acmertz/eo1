@@ -11,6 +11,8 @@
             this.name = "Untitled clip";
             this.duration = 0;
             this.startTime = 0;
+            this.startTrim = 0;
+            this.endTrim = 0;
             this.volume = 1;
             this.width = 0;
             this.height = 0;
@@ -29,6 +31,8 @@
             name: null,
             duration: null,
             startTime: null,
+            startTrim: null,
+            endTrim: null,
             volume: null,
             width: null,
             height: null,

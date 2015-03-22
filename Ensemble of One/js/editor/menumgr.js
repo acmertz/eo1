@@ -1,6 +1,6 @@
 ﻿(function () {
     WinJS.Namespace.define("Ensemble.Editor.MenuMGR", {
-        /// <summary>Manages the history state of the current project.</summary>
+        /// <summary>Manages the functionality of the Editor menu and all its commands.</summary>
 
         menuOpen: false,
         currentMenu: null,
@@ -163,8 +163,9 @@
                     Ensemble.HistoryMGR.performAction(removeAction);
                 }
                 else if (command == "clear-selection") setTimeout(function () {
+                    Ensemble.Editor.TimelineMGR.rejectTrim();
                     Ensemble.Editor.SelectionMGR.clearSelection();
-                    Ensemble.Editor.TimelineMGR._hideSelectionCallout();
+                    Ensemble.Editor.CalloutMGR.hide();
                 }, 0);
 
                 Ensemble.Editor.MenuMGR.closeMenu();

@@ -148,6 +148,18 @@
                         }
                     }
 
+                    else if (Ensemble.HistoryMGR._backStack[i]._type == Ensemble.Events.Action.ActionType.trimClip) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
+                        xml.Attrib("newStartTime", Ensemble.HistoryMGR._backStack[i]._payload.newStartTime);
+                        xml.Attrib("newDuration", Ensemble.HistoryMGR._backStack[i]._payload.newDuration);
+                        xml.Attrib("newStartTrim", Ensemble.HistoryMGR._backStack[i]._payload.newStartTrim);
+                        xml.Attrib("newEndTrim", Ensemble.HistoryMGR._backStack[i]._payload.newEndTrim);
+                        xml.Attrib("oldStartTrim", Ensemble.HistoryMGR._backStack[i]._payload.oldStartTrim);
+                        xml.Attrib("oldEndTrim", Ensemble.HistoryMGR._backStack[i]._payload.oldEndTrim);
+                        xml.Attrib("oldDuration", Ensemble.HistoryMGR._backStack[i]._payload.oldDuration);
+                        xml.Attrib("oldStartTime", Ensemble.HistoryMGR._backStack[i]._payload.oldStartTime);
+                    }
+
                     else console.error("Unable to save History Action to disk - unknown type.");
                     xml.EndNode();
                 }
@@ -223,6 +235,18 @@
                         }
                     }
 
+                    else if (Ensemble.HistoryMGR._forwardStack[i]._type == Ensemble.Events.Action.ActionType.trimClip) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
+                        xml.Attrib("newStartTime", Ensemble.HistoryMGR._forwardStack[i]._payload.newStartTime);
+                        xml.Attrib("newDuration", Ensemble.HistoryMGR._forwardStack[i]._payload.newDuration);
+                        xml.Attrib("newStartTrim", Ensemble.HistoryMGR._forwardStack[i]._payload.newStartTrim);
+                        xml.Attrib("newEndTrim", Ensemble.HistoryMGR._forwardStack[i]._payload.newEndTrim);
+                        xml.Attrib("oldStartTrim", Ensemble.HistoryMGR._forwardStack[i]._payload.oldStartTrim);
+                        xml.Attrib("oldEndTrim", Ensemble.HistoryMGR._forwardStack[i]._payload.oldEndTrim);
+                        xml.Attrib("oldDuration", Ensemble.HistoryMGR._forwardStack[i]._payload.oldDuration);
+                        xml.Attrib("oldStartTime", Ensemble.HistoryMGR._forwardStack[i]._payload.oldStartTime);
+                    }
+
                     else {
                         console.error("Unable to save History Action to disk - unknown type.");
                     }
@@ -290,6 +314,8 @@
             xml.Attrib("volume", clip.volume.toString());
             xml.Attrib("start", clip.startTime.toString());
             xml.Attrib("duration", clip.duration.toString());
+            xml.Attrib("startTrim", clip.startTrim.toString());
+            xml.Attrib("endTrim", clip.endTrim.toString());
             xml.Attrib("xcoord", clip.xcoord.toString());
             xml.Attrib("ycoord", clip.ycoord.toString());
             xml.Attrib("width", clip.width.toString());
@@ -552,6 +578,19 @@
                                 originalTracks: originalTracks
                         }));
                     }
+                    else if (actionType === Ensemble.Events.Action.ActionType.trimClip) {
+                        Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.trimClip, {
+                            clipId: parseInt(undoActions[i].getAttribute("clipId"), 10),
+                            newStartTime: parseInt(undoActions[i].getAttribute("newStartTime"), 10),
+                            newDuration: parseInt(undoActions[i].getAttribute("newDuration"), 10),
+                            newStartTrim: parseInt(undoActions[i].getAttribute("newStartTrim"), 10),
+                            newEndTrim: parseInt(undoActions[i].getAttribute("newEndTrim"), 10),
+                            oldStartTrim: parseInt(undoActions[i].getAttribute("oldStartTrim"), 10),
+                            oldEndTrim: parseInt(undoActions[i].getAttribute("oldEndTrim"), 10),
+                            oldDuration: parseInt(undoActions[i].getAttribute("oldDuration"), 10),
+                            oldStartTime: parseInt(undoActions[i].getAttribute("oldStartTime"), 10)
+                        }));
+                    }
                     else {
                         console.error("Unable to load History Action from disk - unknown type.");
                     }
@@ -648,6 +687,19 @@
                             destinationTracks: destinationTracks,
                             originalTimes: originalTimes,
                             originalTracks: originalTracks
+                        }));
+                    }
+                    else if (actionType === Ensemble.Events.Action.ActionType.trimClip) {
+                        Ensemble.HistoryMGR._redoStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.trimClip, {
+                            clipId: parseInt(redoActions[i].getAttribute("clipId"), 10),
+                            newStartTime: parseInt(redoActions[i].getAttribute("newStartTime"), 10),
+                            newDuration: parseInt(redoActions[i].getAttribute("newDuration"), 10),
+                            newStartTrim: parseInt(redoActions[i].getAttribute("newStartTrim"), 10),
+                            newEndTrim: parseInt(redoActions[i].getAttribute("newEndTrim"), 10),
+                            oldStartTrim: parseInt(redoActions[i].getAttribute("oldStartTrim"), 10),
+                            oldEndTrim: parseInt(redoActions[i].getAttribute("oldEndTrim"), 10),
+                            oldDuration: parseInt(redoActions[i].getAttribute("oldDuration"), 10),
+                            oldStartTime: parseInt(redoActions[i].getAttribute("oldStartTime"), 10)
                         }));
                     }
                     else {
@@ -782,6 +834,13 @@
             /// <param name="properties" type="Object">An object containing the clip's media properties.</param>
             let clip = Ensemble.FileIO._projectLoadBuffer[id];
             clip.file._winProperties = properties;
+
+            clip.file.bitrate = properties.bitrate;
+            clip.file.duration = properties.duration;
+            clip.file.height = properties.height;
+            clip.file.title = properties.title;
+            clip.file.width = properties.width;
+
             console.log("Loading player for clip with ID " + id + "...");
             Ensemble.FileIO.loadClip(clip.file, clip.id, Ensemble.FileIO._projectFilePlayerLoaded);
         },
@@ -826,6 +885,8 @@
             createdClip.volume = parseFloat(xmlClip.getAttribute("volume"), 10);
             createdClip.startTime = parseInt(xmlClip.getAttribute("start"), 10);
             createdClip.duration = parseInt(xmlClip.getAttribute("duration"), 10);
+            createdClip.startTrim = parseInt(xmlClip.getAttribute("startTrim"), 10);
+            createdClip.endTrim = parseInt(xmlClip.getAttribute("endTrim"), 10);
             createdClip.xcoord = parseInt(xmlClip.getAttribute("xcoord"), 10);
             createdClip.ycoord = parseInt(xmlClip.getAttribute("ycoord"), 10);
             createdClip.width = parseInt(xmlClip.getAttribute("width"), 10);
