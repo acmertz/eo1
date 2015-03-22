@@ -240,7 +240,10 @@
             clipObj.endTrim = endTrim;
 
             clipEl.style.left = (startTime / zoomRatio) + "px";
-            clipEl.style.width = ((startTime + dur) / zoomRatio) + "px";
+            clipEl.style.width = (dur / zoomRatio) + "px";
+
+            Ensemble.Editor.TimelineMGR._rebuildIndex();
+            Ensemble.Editor.Renderer.requestFrame();
         },
 
         closestCompatibleTimes: function (target, starts, durations, tracks) {
@@ -580,6 +583,7 @@
             document.getElementById("editorTimelineTracks").appendChild(leftGripper);
             document.getElementById("editorTimelineTracks").appendChild(rightGripper);
 
+            Ensemble.Editor.TimelineMGR.ui.timeCursor.style.display = "none";
             Ensemble.Editor.CalloutMGR.setState(Ensemble.Editor.CalloutMGR.States.trim);
         },
 
@@ -592,28 +596,45 @@
             let clipStart = Math.round(parseFloat(ghost.style.left) * zoomRatio);
             let clipDur = Math.round(parseFloat(ghost.style.width) * zoomRatio);
 
+            // now find where the clip would be if it were not trimmed at all
+            let tempStart = clip.startTime - clip.startTrim;
+            let tempEnd = clip.startTime + clip.duration + clip.endTrim;
+
+            // compare the new start and duration to the calculated ones to determine the trim values.
+            let tempStartTrim = clipStart - tempStart;
+            let tempEndTrim = tempEnd - (clipStart + clipDur);
+
             let trimAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.trimClip, {
                 clipId: clip.id,
                 newStartTime: clipStart,
                 newDuration: clipDur,
-                newStartTrim: clipStart - clip.startTrim,
-                newEndTrim: (clipStart + clipDur + clip.endTrim) - (clipStart + clipDur),
+                newStartTrim: tempStartTrim,
+                newEndTrim: tempEndTrim,
                 oldStartTrim: clip.startTrim,
                 oldEndTrim: clip.endTrim,
                 oldDuration: clip.duration,
                 oldStartTime: clip.startTime
             });
             Ensemble.HistoryMGR.performAction(trimAction);
-        },
-        
-        rejectTrim: function () {
-            /// <summary>Rejects and cancels the current trim operation.</summary>
-            Ensemble.Editor.TimelineMGR._clipTrimming = false;
+            Ensemble.Editor.CalloutMGR.setState(Ensemble.Editor.CalloutMGR.States.standard);
             $(".timeline-clip-gripper").remove();
             $(".timeline-clip-ghost").remove();
             Ensemble.Editor.TimelineMGR._clipDragArr = [];
             Ensemble.Editor.TimelineMGR._ghostDragArr = [];
             Ensemble.Editor.TimelineMGR._trimGripperArr = [];
+            Ensemble.Editor.TimelineMGR.ui.timeCursor.style.display = "";
+        },
+        
+        rejectTrim: function () {
+            /// <summary>Rejects and cancels the current trim operation.</summary>
+            Ensemble.Editor.TimelineMGR._clipTrimming = false;
+            Ensemble.Editor.CalloutMGR.setState(Ensemble.Editor.CalloutMGR.States.standard);
+            $(".timeline-clip-gripper").remove();
+            $(".timeline-clip-ghost").remove();
+            Ensemble.Editor.TimelineMGR._clipDragArr = [];
+            Ensemble.Editor.TimelineMGR._ghostDragArr = [];
+            Ensemble.Editor.TimelineMGR._trimGripperArr = [];
+            Ensemble.Editor.TimelineMGR.ui.timeCursor.style.display = "";
         },
 
 
@@ -1668,6 +1689,9 @@
                 let rightGripper = Ensemble.Editor.TimelineMGR._trimGripperArr[1];
 
                 let maxDur = origClip.file.duration;
+                let minStart = origClip.startTime - origClip.startTrim;
+                let maxEnd = origClip.startTime + origClip.duration + origClip.endTrim;
+                console.log("Bounds: " + minStart + ", " + maxEnd);
 
                 let leftGripperTime = 0;
                 let rightGripperTime = 0;
@@ -1679,20 +1703,18 @@
                     rightGripperTime = parseFloat(rightGripper.style.left) * zoomRatio;
 
                     if (0 > leftGripperTime) leftGripperTime = 0;
-                    if (rightGripperTime - leftGripperTime > maxDur) leftGripperTime = rightGripperTime - maxDur;
                     if (leftGripperTime >= rightGripperTime) leftGripperTime = rightGripperTime - 1;
-                    ghostTime = leftGripperTime;
-                    ghostDur = rightGripperTime - leftGripperTime;
+                    if (minStart > leftGripperTime) leftGripperTime = minStart;
                 }
                 else {
                     leftGripperTime = parseFloat(leftGripper.style.left) * zoomRatio;
                     rightGripperTime = (parseFloat(rightGripper.dataset.origLeft) + dif) * zoomRatio;
 
-                    if (rightGripperTime - leftGripperTime > maxDur) rightGripperTime = leftGripperTime + maxDur;
                     if (leftGripperTime >= rightGripperTime) rightGripperTime = leftGripperTime + 1;
-                    ghostTime = leftGripperTime;
-                    ghostDur = rightGripperTime - leftGripperTime;
+                    if (rightGripperTime > maxEnd) rightGripperTime = maxEnd; 
                 }
+                ghostTime = leftGripperTime;
+                ghostDur = rightGripperTime - leftGripperTime;
 
                 leftGripper.style.left = (leftGripperTime / zoomRatio) + "px";
                 rightGripper.style.left = (rightGripperTime / zoomRatio) + "px";

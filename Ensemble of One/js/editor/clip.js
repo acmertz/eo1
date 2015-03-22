@@ -63,7 +63,7 @@
                 let seekTime = ms;
                 if (this.startTime > seekTime) seekTime = this.startTime;
                 else if (seekTime > this.startTime + this.duration) seekTime = this.startTime + this.duration;
-                this._player.currentTime = (seekTime - this.startTime) / 1000;
+                this._player.currentTime = ((seekTime - this.startTime) + this.startTrim) / 1000;
             },
 
             setPlayer: function (playerObj) {

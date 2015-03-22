@@ -150,14 +150,14 @@
 
                     else if (Ensemble.HistoryMGR._backStack[i]._type == Ensemble.Events.Action.ActionType.trimClip) {
                         xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
-                        xml.Attrib("newStartTime", Ensemble.HistoryMGR._backStack[i]._payload.newStartTime);
-                        xml.Attrib("newDuration", Ensemble.HistoryMGR._backStack[i]._payload.newDuration);
-                        xml.Attrib("newStartTrim", Ensemble.HistoryMGR._backStack[i]._payload.newStartTrim);
-                        xml.Attrib("newEndTrim", Ensemble.HistoryMGR._backStack[i]._payload.newEndTrim);
-                        xml.Attrib("oldStartTrim", Ensemble.HistoryMGR._backStack[i]._payload.oldStartTrim);
-                        xml.Attrib("oldEndTrim", Ensemble.HistoryMGR._backStack[i]._payload.oldEndTrim);
-                        xml.Attrib("oldDuration", Ensemble.HistoryMGR._backStack[i]._payload.oldDuration);
-                        xml.Attrib("oldStartTime", Ensemble.HistoryMGR._backStack[i]._payload.oldStartTime);
+                        xml.Attrib("newStartTime", Ensemble.HistoryMGR._backStack[i]._payload.newStartTime.toString());
+                        xml.Attrib("newDuration", Ensemble.HistoryMGR._backStack[i]._payload.newDuration.toString());
+                        xml.Attrib("newStartTrim", Ensemble.HistoryMGR._backStack[i]._payload.newStartTrim.toString());
+                        xml.Attrib("newEndTrim", Ensemble.HistoryMGR._backStack[i]._payload.newEndTrim.toString());
+                        xml.Attrib("oldStartTrim", Ensemble.HistoryMGR._backStack[i]._payload.oldStartTrim.toString());
+                        xml.Attrib("oldEndTrim", Ensemble.HistoryMGR._backStack[i]._payload.oldEndTrim.toString());
+                        xml.Attrib("oldDuration", Ensemble.HistoryMGR._backStack[i]._payload.oldDuration.toString());
+                        xml.Attrib("oldStartTime", Ensemble.HistoryMGR._backStack[i]._payload.oldStartTime.toString());
                     }
 
                     else console.error("Unable to save History Action to disk - unknown type.");
@@ -237,14 +237,14 @@
 
                     else if (Ensemble.HistoryMGR._forwardStack[i]._type == Ensemble.Events.Action.ActionType.trimClip) {
                         xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
-                        xml.Attrib("newStartTime", Ensemble.HistoryMGR._forwardStack[i]._payload.newStartTime);
-                        xml.Attrib("newDuration", Ensemble.HistoryMGR._forwardStack[i]._payload.newDuration);
-                        xml.Attrib("newStartTrim", Ensemble.HistoryMGR._forwardStack[i]._payload.newStartTrim);
-                        xml.Attrib("newEndTrim", Ensemble.HistoryMGR._forwardStack[i]._payload.newEndTrim);
-                        xml.Attrib("oldStartTrim", Ensemble.HistoryMGR._forwardStack[i]._payload.oldStartTrim);
-                        xml.Attrib("oldEndTrim", Ensemble.HistoryMGR._forwardStack[i]._payload.oldEndTrim);
-                        xml.Attrib("oldDuration", Ensemble.HistoryMGR._forwardStack[i]._payload.oldDuration);
-                        xml.Attrib("oldStartTime", Ensemble.HistoryMGR._forwardStack[i]._payload.oldStartTime);
+                        xml.Attrib("newStartTime", Ensemble.HistoryMGR._forwardStack[i]._payload.newStartTime.toString());
+                        xml.Attrib("newDuration", Ensemble.HistoryMGR._forwardStack[i]._payload.newDuration.toString());
+                        xml.Attrib("newStartTrim", Ensemble.HistoryMGR._forwardStack[i]._payload.newStartTrim.toString());
+                        xml.Attrib("newEndTrim", Ensemble.HistoryMGR._forwardStack[i]._payload.newEndTrim.toString());
+                        xml.Attrib("oldStartTrim", Ensemble.HistoryMGR._forwardStack[i]._payload.oldStartTrim.toString());
+                        xml.Attrib("oldEndTrim", Ensemble.HistoryMGR._forwardStack[i]._payload.oldEndTrim.toString());
+                        xml.Attrib("oldDuration", Ensemble.HistoryMGR._forwardStack[i]._payload.oldDuration.toString());
+                        xml.Attrib("oldStartTime", Ensemble.HistoryMGR._forwardStack[i]._payload.oldStartTime.toString());
                     }
 
                     else {
