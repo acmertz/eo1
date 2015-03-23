@@ -22,6 +22,11 @@
 
         _clipTrimming: false,
         _trimGripperArr: [],
+        _trimMaxDur: 0,
+        _trimMinStart: 0,
+        _trimMaxEnd: 0,
+        _trimStartBound: 0,
+        _trimEndBound: 0,
 
         _clipDragPrimeTimer: null,
         _lastMouseDragEvent: null,
@@ -583,6 +588,32 @@
             document.getElementById("editorTimelineTracks").appendChild(leftGripper);
             document.getElementById("editorTimelineTracks").appendChild(rightGripper);
 
+            Ensemble.Editor.TimelineMGR._trimMaxDur = clipObj.file.duration;
+            Ensemble.Editor.TimelineMGR._trimMinStart = clipObj.startTime - clipObj.startTrim;
+            Ensemble.Editor.TimelineMGR._trimMaxEnd = clipObj.startTime + clipObj.duration + clipObj.endTrim;
+
+            let found = false;
+            for (let i = 0; i < Ensemble.Editor.TimelineMGR.tracks.length; i++) {
+                if (found) break;
+                for (let k = 0; k < Ensemble.Editor.TimelineMGR.tracks[i].clips.length; k++) {
+                    if (Ensemble.Editor.TimelineMGR.tracks[i].clips[k].id == clipObj.id) {
+                        if (k > 0) {
+                            let prev = Ensemble.Editor.TimelineMGR._trimStartBound = Ensemble.Editor.TimelineMGR.tracks[i].clips[k - 1];
+                            Ensemble.Editor.TimelineMGR._trimStartBound = prev.startTime + prev.duration;
+                        }
+                        else Ensemble.Editor.TimelineMGR._trimStartBound = 0;
+
+                        if (Ensemble.Editor.TimelineMGR.tracks[i].clips.length > k + 1) {
+                            let next = Ensemble.Editor.TimelineMGR._trimStartBound = Ensemble.Editor.TimelineMGR.tracks[i].clips[k + 1];
+                            Ensemble.Editor.TimelineMGR._trimEndBound = next.startTime;
+                        }
+                        else Ensemble.Editor.TimelineMGR._trimEndBound = Infinity;
+                        found = true;
+                        break;
+                    }
+                }
+            }
+            $(".timeline-clip").addClass("timeline-clip--interaction-disabled");
             Ensemble.Editor.TimelineMGR.ui.timeCursor.style.display = "none";
             Ensemble.Editor.CalloutMGR.setState(Ensemble.Editor.CalloutMGR.States.trim);
         },
@@ -623,6 +654,7 @@
             Ensemble.Editor.TimelineMGR._ghostDragArr = [];
             Ensemble.Editor.TimelineMGR._trimGripperArr = [];
             Ensemble.Editor.TimelineMGR.ui.timeCursor.style.display = "";
+            $(".timeline-clip").removeClass("timeline-clip--interaction-disabled");
         },
         
         rejectTrim: function () {
@@ -635,6 +667,7 @@
             Ensemble.Editor.TimelineMGR._ghostDragArr = [];
             Ensemble.Editor.TimelineMGR._trimGripperArr = [];
             Ensemble.Editor.TimelineMGR.ui.timeCursor.style.display = "";
+            $(".timeline-clip").removeClass("timeline-clip--interaction-disabled");
         },
 
 
@@ -1312,7 +1345,7 @@
                         destinationTimes: [dragTime],
                         destinationTracks: [Ensemble.Editor.TimelineMGR.tracks[trackIndex].id],
                         originalTimes: [clip.startTime],
-                        originalTracks: [Ensemble.Editor.TimelineMGR.tracks[parseFloat(ghost.dataset.origTop) / Ensemble.Editor.TimelineMGR._currentTrackHeight].id]
+                        originalTracks: [Ensemble.Editor.TimelineMGR.tracks[Math.round(parseFloat(ghost.dataset.origTop) / Ensemble.Editor.TimelineMGR._currentTrackHeight)].id]
                     });
                     Ensemble.HistoryMGR.performAction(moveAction);
                     ghost.parentNode.removeChild(ghost);
@@ -1688,9 +1721,11 @@
                 let leftGripper = Ensemble.Editor.TimelineMGR._trimGripperArr[0];
                 let rightGripper = Ensemble.Editor.TimelineMGR._trimGripperArr[1];
 
-                let maxDur = origClip.file.duration;
-                let minStart = origClip.startTime - origClip.startTrim;
-                let maxEnd = origClip.startTime + origClip.duration + origClip.endTrim;
+                let maxDur = Ensemble.Editor.TimelineMGR._trimMaxDur;
+                let minStart = Ensemble.Editor.TimelineMGR._trimMinStart;
+                let maxEnd = Ensemble.Editor.TimelineMGR._trimMaxEnd;
+                let startBound = Ensemble.Editor.TimelineMGR._trimStartBound;
+                let endBound = Ensemble.Editor.TimelineMGR._trimEndBound;
                 console.log("Bounds: " + minStart + ", " + maxEnd);
 
                 let leftGripperTime = 0;
@@ -1702,16 +1737,17 @@
                     leftGripperTime = (parseFloat(leftGripper.dataset.origLeft) + dif) * zoomRatio;
                     rightGripperTime = parseFloat(rightGripper.style.left) * zoomRatio;
 
-                    if (0 > leftGripperTime) leftGripperTime = 0;
                     if (leftGripperTime >= rightGripperTime) leftGripperTime = rightGripperTime - 1;
                     if (minStart > leftGripperTime) leftGripperTime = minStart;
+                    if (startBound > leftGripperTime) leftGripperTime = startBound;
                 }
                 else {
                     leftGripperTime = parseFloat(leftGripper.style.left) * zoomRatio;
                     rightGripperTime = (parseFloat(rightGripper.dataset.origLeft) + dif) * zoomRatio;
 
                     if (leftGripperTime >= rightGripperTime) rightGripperTime = leftGripperTime + 1;
-                    if (rightGripperTime > maxEnd) rightGripperTime = maxEnd; 
+                    if (rightGripperTime > maxEnd) rightGripperTime = maxEnd;
+                    if (rightGripperTime > endBound) rightGripperTime = endBound;
                 }
                 ghostTime = leftGripperTime;
                 ghostDur = rightGripperTime - leftGripperTime;

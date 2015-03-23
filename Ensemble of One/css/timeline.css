@@ -79,6 +79,10 @@
     border-radius: 3px;
 }
 
+.timeline-clip--interaction-disabled {
+    pointer-events: none;
+}
+
 .timeline-clip__thumb {
     background-color: #808080;
     height: calc(100% + 20px);
