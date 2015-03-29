@@ -731,13 +731,22 @@
         _loadMultipleClips: function (clipArr, payload, callback) {
             /// <summary>Loads all the clips in the given array and calls the specified callback upon completion.</summary>
             (function () {
-                let clips = clipArr;
-                let extra = payload;
-                let cb = callback;
-                Ensemble.FileIO._multiClipLoadTotal = clips.length;
-                Ensemble.FileIO._multiClipLoadCb = cb;
-                for (let i = 0; i < clipArr.length; i++) {
-                    Ensemble.FileIO._loadFileFromStub(clips[i], null, Ensemble.FileIO._multiClipLoadFinish, true);
+                if (clipArr.length > 0) {
+                    let clips = clipArr;
+                    let extra = payload;
+                    let cb = callback;
+                    Ensemble.FileIO._multiClipLoadTotal = clips.length;
+                    Ensemble.FileIO._multiClipLoadCb = cb;
+                    for (let i = 0; i < clipArr.length; i++) {
+                        Ensemble.FileIO._loadFileFromStub(clips[i], null, Ensemble.FileIO._multiClipLoadFinish, true);
+                    }
+                }
+                else {
+                    Ensemble.FileIO._multiClipLoadBuffer = [];
+                    Ensemble.FileIO._multiClipLoadTotal = 0;
+                    Ensemble.FileIO._multiClipLoadCb = null;
+
+                    callback(clipArr);
                 }
             })();
         },
