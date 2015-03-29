@@ -94,8 +94,8 @@
 
 .editor-menu__command {
     background-color: #fff;
-    border: 1px solid #7e7e7e;
-    border-left: 10px solid #7e7e7e;
+    border: 1px solid #b2b2ff;
+    border-left: 10px solid #b2b2ff;
     color: #333;
     font-size: 24px;
     margin: 0 0 10px 0;
@@ -104,7 +104,7 @@
 }
 
 .editor-menu__command:hover {
-    border-color: #b2b2ff;
+    border-color: #c1c1ff;
 }
 
 .editor-menu__command:last-child {

@@ -56,6 +56,14 @@
 
         clearSelection: function () {
             /// <summary>Clears the list of selected clips.</summary>
+
+            $(Ensemble.Editor.TimelineMGR._trimGripperArr).remove();
+            $(Ensemble.Editor.TimelineMGR._ghostDragArr).remove();
+
+            Ensemble.Editor.TimelineMGR._trimGripperArr = [];
+            Ensemble.Editor.TimelineMGR._clipDragArr = [];
+            Ensemble.Editor.TimelineMGR._ghostDragArr = [];
+
             let needFrame = false;
             if (this.selected.length > 0) needFrame = true;
             for (let i = 0; i < this.selected.length; i++) {

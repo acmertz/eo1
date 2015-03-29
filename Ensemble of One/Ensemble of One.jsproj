@@ -82,6 +82,7 @@
     <Content Include="img\tiny_grid.png" />
     <Content Include="js\default.js" />
     <Content Include="css\default.css" />
+    <Content Include="js\editor\calloutmgr.js" />
     <Content Include="js\editor\menumgr.js" />
     <Content Include="js\editor\selectionmgr.js" />
     <Content Include="js\editor\renderer.js" />

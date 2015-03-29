@@ -356,22 +356,6 @@
             
         },
 
-        showDeleteAllProjectsConfirmationDialog: function () {
-            /// <summary>Shows a zoom dialog to confirm that the user really wants to delete all projects.</summary>
-            $("#deleteAllProjectsConfirmationDialog").removeClass("mainMenuZoomDialogHidden");
-            $("#deleteAllProjectsConfirmationDialog").addClass("mainMenuZoomDialogVisible");
-            $("#deleteProjectConfirmationClickEater").addClass("mainMenuClickEaterVisible");
-        },
-
-        hideDeleteAllProjectsConfirmationDialog: function () {
-            /// <summary>Hides "Delete all projects" confirmation zoom dialog.</summary>
-            $("#deleteAllProjectsConfirmationDialog").removeClass("mainMenuZoomDialogVisible");
-            $("#deleteAllProjectsConfirmationDialog").addClass("mainMenuZoomDialogHidden");
-            $("#deleteProjectConfirmationClickEater").removeClass("mainMenuClickEaterVisible");
-        },
-
-
-
         //// PRIVATE METHODS ////
 
         _attachListeners: function () {
@@ -419,8 +403,6 @@
 
             //Delete Project dialog
             document.getElementById("mainMenuDeleteAllProjectsButton").addEventListener("click", this._deleteAllProjectsButtonOnClickListener, false);
-            document.getElementById("mainMenuConfirmDeleteAllProjectsButton").addEventListener("click", this._confirmDeleteAllProjectsButtonOnClickListener, false);
-            document.getElementById("mainMenuCancelDeleteAllProjectsButton").addEventListener("click", this._cancelDeleteAllProjectsButtonOnClickListener, false);
 
             Ensemble.KeyboardMGR.mainMenuDefault();
         },
@@ -589,11 +571,21 @@
         },
 
         _deleteAllProjectsButtonOnClickListener: function (event) {
-            Ensemble.Pages.MainMenu.showDeleteAllProjectsConfirmationDialog();
+            Ensemble.OSDialogMGR.showDialog("Delete all projects?", "You're about to permanently delete all of your projects. Every last one. Are you absolutely sure you want to do this?",
+                [
+                    {
+                        label: "Delete all projects",
+                        handler: Ensemble.Pages.MainMenu._confirmDeleteAllProjectsButtonOnClickListener
+                    },
+                    {
+                        label: "Cancel",
+                        handler: function () { }
+                    }
+                ],
+                1, 1);
         },
 
         _confirmDeleteAllProjectsButtonOnClickListener: function (event) {
-            Ensemble.Pages.MainMenu.hideDeleteAllProjectsConfirmationDialog();
             Ensemble.FileIO.deleteAllProjects();
         },
 

@@ -1,6 +1,6 @@
 ﻿(function () {
     WinJS.Namespace.define("Ensemble.Editor.MenuMGR", {
-        /// <summary>Manages the history state of the current project.</summary>
+        /// <summary>Manages the functionality of the Editor menu and all its commands.</summary>
 
         menuOpen: false,
         currentMenu: null,
@@ -64,6 +64,7 @@
             if (Ensemble.HistoryMGR.canRedo()) $(".editor-command__redo").removeClass("editor-command--disabled");
 
             if (Ensemble.Editor.SelectionMGR.selected.length > 0) {
+                $(".editor-command__trim-clip").removeClass("editor-command--disabled");
                 $(".editor-command__remove-clip").removeClass("editor-command--disabled");
                 $(".editor-command__clear-selection").removeClass("editor-command--disabled");
             }
@@ -144,10 +145,15 @@
             menuCommandClick: function (event) {
                 let command = event.currentTarget.dataset.editorCommand;
 
+                // HOME
                 if (command == "undo") setTimeout(function () { Ensemble.HistoryMGR.undoLast() }, 0);
                 else if (command == "redo") setTimeout(function () { Ensemble.HistoryMGR.redoNext() }, 0);
                 else if (command == "exit") setTimeout(function () { Ensemble.Pages.Editor.unload() }, 0);
 
+                // CLIP
+                else if (command = "trim-clip") {
+                    Ensemble.Editor.TimelineMGR.showTrimControls(Ensemble.Editor.SelectionMGR.selected[0]);
+                }
                 else if (command == "remove-clip") {
                     let removeAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.removeClip, {
                         clipIds: Ensemble.Editor.SelectionMGR.selected
@@ -157,8 +163,9 @@
                     Ensemble.HistoryMGR.performAction(removeAction);
                 }
                 else if (command == "clear-selection") setTimeout(function () {
+                    Ensemble.Editor.TimelineMGR.rejectTrim();
                     Ensemble.Editor.SelectionMGR.clearSelection();
-                    Ensemble.Editor.TimelineMGR._hideSelectionCallout();
+                    Ensemble.Editor.CalloutMGR.hide();
                 }, 0);
 
                 Ensemble.Editor.MenuMGR.closeMenu();

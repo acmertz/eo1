@@ -11,6 +11,8 @@
             this.name = "Untitled clip";
             this.duration = 0;
             this.startTime = 0;
+            this.startTrim = 0;
+            this.endTrim = 0;
             this.volume = 1;
             this.width = 0;
             this.height = 0;
@@ -29,6 +31,8 @@
             name: null,
             duration: null,
             startTime: null,
+            startTrim: null,
+            endTrim: null,
             volume: null,
             width: null,
             height: null,
@@ -59,7 +63,7 @@
                 let seekTime = ms;
                 if (this.startTime > seekTime) seekTime = this.startTime;
                 else if (seekTime > this.startTime + this.duration) seekTime = this.startTime + this.duration;
-                this._player.currentTime = (seekTime - this.startTime) / 1000;
+                this._player.currentTime = ((seekTime - this.startTime) + this.startTrim) / 1000;
             },
 
             setPlayer: function (playerObj) {

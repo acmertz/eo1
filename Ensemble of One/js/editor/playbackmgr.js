@@ -61,7 +61,7 @@
             /// <summary>Seeks playback to the given time.</summary>
             /// <param name="time" type="Number">The time in milliseconds.</param>
             this._clipSeekCount = 0;
-            this._seekDestination = time;
+            this._seekDestination = Math.round(time);
             if (this._seekDestination > Ensemble.Session.projectDuration) this._seekDestination = Ensemble.Session.projectDuration;
             else if (0 > this._seekDestination) this._seekDestination = 0;
             for (let i = 0; i < Ensemble.Editor.TimelineMGR.tracks.length; i++) {
