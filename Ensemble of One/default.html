@@ -227,13 +227,8 @@
             <nav class="editor-menubar">
                 <ul class="editor-menubar__command-list">
                     <li class="editor-menubar__command editor-menubar__command--home" data-ensemble-menu="home">&#xE10F;
-                    <li class="editor-menubar__command editor-menubar__command--clip" data-ensemble-menu="clip">Clip
+                    <li class="editor-menubar__command editor-menubar__command--edit" data-ensemble-menu="edit">Edit
                     <li class="editor-menubar__command editor-menubar__command--import" data-ensemble-menu="import">Import
-                    <li class="editor-menubar__command editor-menubar__command--record" data-ensemble-menu="record">Record
-                    <li class="editor-menubar__command editor-menubar__command--effects" data-ensemble-menu="effects">Effects
-                    <li class="editor-menubar__command editor-menubar__command--animations" data-ensemble-menu="animations">Animations
-                    <li class="editor-menubar__command editor-menubar__command--titles" data-ensemble-menu="titles">Titles
-                    <li class="editor-menubar__command editor-menubar__command--export" data-ensemble-menu="export">Export
                 </ul>
             </nav>
             <div id="editorUpperHalf">
@@ -338,27 +333,21 @@
                     </ul>
                 </div>
 
-                <div class="editor-menu editor-menu--clip">
+                <div class="editor-menu editor-menu--edit">
                     <ul class="editor-menu__command-list">
                         <li class="editor-menu__command editor-command__copy" data-editor-command="copy">&#xE16F; Copy</li>
                         <li class="editor-menu__command editor-command__cut" data-editor-command="cut">&#xE16B; Cut</li>
                         <li class="editor-menu__command editor-command__paste" data-editor-command="paste">&#xE16D; Paste</li>
-                        <li class="editor-menu__command editor-command__move-clip-to-track" data-editor-command="move-clip-to-track">&#xE174; Move to different track</li>
                         <li class="editor-menu__divider"></li>
                         <li class="editor-menu__command editor-command__split-clip" data-editor-command="split-clip">&#xE129; Split</li>
                         <li class="editor-menu__command editor-command__clip-volume" data-editor-command="clip-volume">&#xE15D; Volume</li>
                         <li class="editor-menu__command editor-command__separate-clip-audio" data-editor-command="separate-clip-audio">&#xE189; Separate audio</li>
                         <li class="editor-menu__command editor-command__trim-clip" data-editor-command="trim-clip">&#xE12C; Trim</li>
-                        <li class="editor-menu__command editor-command__transform-clip" data-editor-command="transform-clip">&#xE123; Transform</li>
-                        <li class="editor-menu__command editor-command__multi-cam" data-editor-command="multi-cam">&#x1f3a5; Multi-cam</li>
                         <li class="editor-menu__divider"></li>
                         <li class="editor-menu__command editor-command__rename-clip" data-editor-command="rename-clip">&#xE13E; Rename</li>
                         <li class="editor-menu__command editor-command__remove-clip" data-editor-command="remove-clip">&#xE107; Remove</li>
                         <li class="editor-menu__divider"></li>
                         <li class="editor-menu__command editor-command__select-all" data-editor-command="select-all">&#xE14E; Select all</li>
-                        <li class="editor-menu__command editor-command__clear-selection" data-editor-command="clear-selection">&#xE1C5; Clear selection</li>
-                        <li class="editor-menu__divider"></li>
-                        <li class="editor-menu__command editor-command__clip-properties" data-editor-command="clip-properties">&#xE1CB; Properties</li>
                     </ul>
                 </div>
                 <div class="editor-menu editor-menu--import">
@@ -373,26 +362,6 @@
                         </div>
                     </div>
                     <div id="editorMenuMediaBrowserFileList"></div>
-                </div>
-                <div class="editor-menu editor-menu--record">
-                    <h2>Record menu</h2>
-                    <p>Coming soon!</p>
-                </div>
-                <div class="editor-menu editor-menu--effects">
-                    <h2>Effects menu</h2>
-                    <p>Coming soon!</p>
-                </div>
-                <div class="editor-menu editor-menu--animations">
-                    <h2>Animations menu</h2>
-                    <p>Coming soon!</p>
-                </div>
-                <div class="editor-menu editor-menu--titles">
-                    <h2>Titles menu</h2>
-                    <p>Coming soon!</p>
-                </div>
-                <div class="editor-menu editor-menu--export">
-                    <h2>Export menu</h2>
-                    <p>Coming soon!</p>
                 </div>
             </div>
 
@@ -476,7 +445,6 @@
             <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',type:'separator'}" />
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Split'}"></button>
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Volume'}"></button>
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Move to different track'}"></button>
             <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',type:'separator'}" />
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Remove'}"></button>
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Rename'}"></button>

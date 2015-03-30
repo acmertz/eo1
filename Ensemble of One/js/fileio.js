@@ -160,6 +160,19 @@
                         xml.Attrib("oldStartTime", Ensemble.HistoryMGR._backStack[i]._payload.oldStartTime.toString());
                     }
 
+                    else if (Ensemble.HistoryMGR._backStack[i]._type == Ensemble.Events.Action.ActionType.splitClip) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
+                        let clipIds = Ensemble.HistoryMGR._backStack[i]._payload.clipIds;
+                        let newIds = Ensemble.HistoryMGR._backStack[i]._payload.newIds;
+                        xml.Attrib("time", Ensemble.HistoryMGR._backStack[i]._payload.time.toString());
+                        for (let k = 0; k < clipIds.length; k++) {
+                            xml.BeginNode("SplitClip");
+                            xml.Attrib("clipId", clipIds[k].toString());
+                            xml.Attrib("newId", newIds[k].toString());
+                            xml.EndNode();
+                        }
+                    }
+
                     else console.error("Unable to save History Action to disk - unknown type.");
                     xml.EndNode();
                 }
@@ -922,7 +935,7 @@
                 var fileURI = null;
                 switch (Ensemble.Platform.currentPlatform) {
                     case "win8":
-                        fileURI = URL.createObjectURL(file._src, { oneTimeOnly: true });
+                        fileURI = URL.createObjectURL(file._src, { oneTimeOnly: false });
                         break;
                     case "android":
                         break;
