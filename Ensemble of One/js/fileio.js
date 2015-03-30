@@ -260,6 +260,19 @@
                         xml.Attrib("oldStartTime", Ensemble.HistoryMGR._forwardStack[i]._payload.oldStartTime.toString());
                     }
 
+                    else if (Ensemble.HistoryMGR._forwardStack[i]._type == Ensemble.Events.Action.ActionType.splitClip) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
+                        let clipIds = Ensemble.HistoryMGR._forwardStack[i]._payload.clipIds;
+                        let newIds = Ensemble.HistoryMGR._forwardStack[i]._payload.newIds;
+                        xml.Attrib("time", Ensemble.HistoryMGR._forwardStack[i]._payload.time.toString());
+                        for (let k = 0; k < clipIds.length; k++) {
+                            xml.BeginNode("SplitClip");
+                            xml.Attrib("clipId", clipIds[k].toString());
+                            xml.Attrib("newId", newIds[k].toString());
+                            xml.EndNode();
+                        }
+                    }
+
                     else {
                         console.error("Unable to save History Action to disk - unknown type.");
                     }
@@ -604,6 +617,21 @@
                             oldStartTime: parseInt(undoActions[i].getAttribute("oldStartTime"), 10)
                         }));
                     }
+                    else if (actionType === Ensemble.Events.Action.ActionType.splitClip) {
+                        let splitClips = undoActions[i].getElementsByTagName("SplitClip");
+                        let ids = [];
+                        let newids = [];
+                        let time = parseInt(undoActions[i].getAttribute("time"), 10);
+                        for (let k = 0; k < splitClips.length; k++) {
+                            ids.push(parseInt(splitClips[k].getAttribute("clipId"), 10));
+                            newids.push(parseInt(splitClips[k].getAttribute("newId"), 10));
+                        }
+                        Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.splitClip, {
+                            clipIds: ids,
+                            newIds: newids,
+                            time: time
+                        }));
+                    }
                     else {
                         console.error("Unable to load History Action from disk - unknown type.");
                     }
@@ -713,6 +741,21 @@
                             oldEndTrim: parseInt(redoActions[i].getAttribute("oldEndTrim"), 10),
                             oldDuration: parseInt(redoActions[i].getAttribute("oldDuration"), 10),
                             oldStartTime: parseInt(redoActions[i].getAttribute("oldStartTime"), 10)
+                        }));
+                    }
+                    else if (actionType === Ensemble.Events.Action.ActionType.splitClip) {
+                        let splitClips = redoActions[i].getElementsByTagName("SplitClip");
+                        let ids = [];
+                        let newids = [];
+                        let time = parseInt(redoActions[i].getAttribute("time"), 10);
+                        for (let k = 0; k < splitClips.length; k++) {
+                            ids.push(parseInt(splitClips[k].getAttribute("clipId"), 10));
+                            newids.push(parseInt(splitClips[k].getAttribute("newId"), 10));
+                        }
+                        Ensemble.HistoryMGR._redoStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.splitClip, {
+                            clipIds: ids,
+                            newIds: newids,
+                            time: time
                         }));
                     }
                     else {

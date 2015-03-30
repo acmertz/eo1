@@ -315,9 +315,33 @@
         },
 
         concatClip: function (clipIds, newIds) {
-            /// <summary>Splits the clips with the given IDs at the specified project time.</summary>
+            /// <summary>Concatenates pairs of clips if and only if they are exactly adjacent (share at least one bound).</summary>
             /// <param name="clipIds" type="Array">An array containing the earlier portion of each clip to concatenate.</param>
             /// <param name="newIds" type="Array">An array containing the later portion of each clip to concatenate.</param>
+            let zoomRatio = Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel].ratio;
+            for (let i = 0; i < clipIds.length; i++) {
+                for (let k = 0; k < Ensemble.Editor.TimelineMGR.tracks.length; k++) {
+                    let foundClip = false;
+                    for (let g = 0; g < Ensemble.Editor.TimelineMGR.tracks[k].clips.length; g++) {
+                        if (Ensemble.Editor.TimelineMGR.tracks[k].clips[g].id == clipIds[i]) {
+                            // found the clip.
+                            let tempClip = Ensemble.Editor.TimelineMGR.tracks[k].clips[g];
+                            let nextClip = Ensemble.Editor.TimelineMGR.tracks[k].clips[g + 1];
+                            if (nextClip && nextClip.id == newIds[i]) {
+                                // clip is matched
+                                if (tempClip.startTime + tempClip.duration == nextClip.startTime) {
+                                    // clips are adjacent.
+                                }
+                            }
+
+                            foundClip = true;
+                            break;
+                        }
+                    }
+                    if (foundClip) break;
+                }
+                console.log("Finished copying clip data into new clip.");
+            }
         },
 
         addClipToTrack: function (clipObj, trackId, destinationTime) {
