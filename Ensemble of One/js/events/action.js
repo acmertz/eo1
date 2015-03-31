@@ -98,6 +98,10 @@
                     Ensemble.Editor.TimelineMGR.trimClip(this._payload.clipId, this._payload.newStartTime, this._payload.newDuration, this._payload.newStartTrim, this._payload.newEndTrim);
                 }
 
+                else if (this._type == Ensemble.Events.Action.ActionType.splitClip) {
+                    this._payload.newIds = Ensemble.Editor.TimelineMGR.splitClip(this._payload.clipIds, this._payload.time, this._payload.newIds);
+                }
+
                 else console.error("Unknown Action!");
             },
 
@@ -158,6 +162,10 @@
 
                 else if (this._type == Ensemble.Events.Action.ActionType.trimClip) {
                     Ensemble.Editor.TimelineMGR.trimClip(this._payload.clipId, this._payload.oldStartTime, this._payload.oldDuration, this._payload.oldStartTrim, this._payload.oldEndTrim);
+                }
+
+                else if (this._type == Ensemble.Events.Action.ActionType.splitClip) {
+                    Ensemble.Editor.TimelineMGR.concatClip(this._payload.clipIds, this._payload.newIds);
                 }
 
                 else console.error("Unknown Action!");
@@ -259,6 +267,9 @@
                 else if (this._type == Ensemble.Events.Action.ActionType.moveClip) {
                     return "Moved clip.";
                 }
+                else if (this._type == Ensemble.Events.Action.ActionType.splitClip) {
+                    return "Split clip.";
+                }
                 else {
                     return "Unknown action";
                 }
@@ -275,7 +286,8 @@
                 importClip: "importClip",
                 removeClip: "removeClip",
                 moveClip: "moveClip",
-                trimClip: "trimClip"
+                trimClip: "trimClip",
+                splitClip: "splitClip"
             }
         }
     );

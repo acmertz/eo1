@@ -251,13 +251,109 @@
             Ensemble.Editor.Renderer.requestFrame();
         },
 
-        closestCompatibleTimes: function (target, starts, durations, tracks) {
-            /// <summary>Finds the closest time compatible with the specified start times and durations across the given tracks.</summary>
-            /// <param name="target" type="Number">The number from which to compute time.</param>
-            /// <param name="starts" type="Array">An array of start times.</param>
-            /// <param name="durations" type="Array">An array of durations.</param>
-            /// <param name="tracks" type="Array">An array of track IDs.</param>
-            /// <returns type="Object">An object containing the two closest times, in the following format: {before: [], after: []}</returns>
+        splitClip: function (clipIds, time, newIds) {
+            /// <summary>Splits the clips with the given IDs at the specified project time.</summary>
+            /// <param name="clipIds" type="Array">An array containing the IDs of the clips to split.</param>
+            /// <param name="time" type="Number">The project time where the split should occur.</param>
+            /// <param name="newIds" type="Array">A list of IDs to use for the new clips generated in the split.</param>
+            let zoomRatio = Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel].ratio;
+            let idArr = [];
+            for (let i = 0; i < clipIds.length; i++) {
+                for (let k = 0; k < Ensemble.Editor.TimelineMGR.tracks.length; k++) {
+                    let foundClip = false;
+                    for (let g = 0; g < Ensemble.Editor.TimelineMGR.tracks[k].clips.length; g++) {
+                        if (Ensemble.Editor.TimelineMGR.tracks[k].clips[g].id == clipIds[i]) {
+                            // found the clip.
+                            let tempClip = Ensemble.Editor.TimelineMGR.tracks[k].clips[g]
+                            let tempNew = new Ensemble.Editor.Clip(newIds[i]);
+                            for (prop in tempClip) {
+                                if (prop == "id" || prop == "_player" || typeof prop == "function") continue;
+                                tempNew[prop] = tempClip[prop];
+                            }
+
+                            let tempPlayer = null;
+                            if (tempNew.type == Ensemble.Editor.Clip.ClipType.video) tempPlayer = document.createElement("video");
+                            else if (tempNew.type == Ensemble.Editor.Clip.ClipType.audio) tempPlayer = document.createElement("audio");
+                            else tempPlayer = document.createElement("img");
+
+                            tempPlayer.src = tempClip._player.src;
+                            tempNew.setPlayer(tempPlayer);
+
+                            // Now update the times and trims of the two clips.
+                            let newClipNewDur = (tempClip.startTime + tempClip.duration) - time;
+                            let newClipTrimModifier = time - tempClip.startTime;
+                            tempNew.startTrim = tempNew.startTrim + newClipTrimModifier;
+                            tempNew.duration = newClipNewDur;
+                            tempNew.startTime = time;
+
+
+                            let tempClipNewDur = time - tempClip.startTime;
+                            let tempClipTrimModifier = (tempClip.startTime + tempClip.duration) - (tempClip.startTime + tempClipNewDur);
+                            tempClip.endTrim = tempClip.endTrim + tempClipTrimModifier;
+                            tempClip.duration = tempClipNewDur;
+
+                            let clipEl = document.getElementById(Ensemble.Editor.TimelineMGR._buildClipDOMId(tempClip.id));
+                            clipEl.style.left = (tempClip.startTime / zoomRatio) + "px";
+                            clipEl.style.width = (tempClip.duration / zoomRatio) + "px";
+
+                            let targetTrackEl = document.getElementById(this._buildTrackDOMId(Ensemble.Editor.TimelineMGR.tracks[k].id));
+                            let newClipEl = this._buildClipDisplay(tempNew);
+                            targetTrackEl.appendChild(newClipEl);
+
+                            Ensemble.Editor.TimelineMGR.tracks[k].clips.splice(g + 1, 0, tempNew);
+                            idArr.push(tempNew.id);
+
+                            foundClip = true;
+                            break;
+                        }
+                    }
+                    if (foundClip) break;
+                }
+                console.log("Finished copying clip data into new clip.");
+            }
+            Ensemble.Editor.TimelineMGR._rebuildIndex();
+            Ensemble.Editor.Renderer.requestFrame();
+            return idArr;
+        },
+
+        concatClip: function (clipIds, newIds) {
+            /// <summary>Concatenates pairs of clips if and only if they are exactly adjacent (share at least one bound).</summary>
+            /// <param name="clipIds" type="Array">An array containing the earlier portion of each clip to concatenate.</param>
+            /// <param name="newIds" type="Array">An array containing the later portion of each clip to concatenate.</param>
+            let zoomRatio = Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel].ratio;
+            for (let i = 0; i < clipIds.length; i++) {
+                for (let k = 0; k < Ensemble.Editor.TimelineMGR.tracks.length; k++) {
+                    let foundClip = false;
+                    for (let g = 0; g < Ensemble.Editor.TimelineMGR.tracks[k].clips.length; g++) {
+                        if (Ensemble.Editor.TimelineMGR.tracks[k].clips[g].id == clipIds[i]) {
+                            // found the clip.
+                            let tempClip = Ensemble.Editor.TimelineMGR.tracks[k].clips[g];
+                            let nextClip = Ensemble.Editor.TimelineMGR.tracks[k].clips[g + 1];
+                            if (nextClip && nextClip.id == newIds[i]) {
+                                // clip is matched
+                                if (tempClip.startTime + tempClip.duration == nextClip.startTime) {
+                                    // clips are adjacent.
+                                    let newDur = (nextClip.startTime + nextClip.duration) - tempClip.startTime;
+                                    tempClip.duration = newDur;
+                                    tempClip.endTrim = nextClip.endTrim;
+                                    nextClip = Ensemble.Editor.TimelineMGR.tracks[k].clips.splice(g + 1, 1)[0];
+                                    nextClip.unload();
+                                    $("#" + this._buildClipDOMId(nextClip.id)).remove();
+                                    let clipEl = document.getElementById(Ensemble.Editor.TimelineMGR._buildClipDOMId(tempClip.id));
+                                    clipEl.style.left = (tempClip.startTime / zoomRatio) + "px";
+                                    clipEl.style.width = (tempClip.duration / zoomRatio) + "px";
+                                }
+                            }
+
+                            foundClip = true;
+                            break;
+                        }
+                    }
+                    if (foundClip) break;
+                }
+            }
+            Ensemble.Editor.TimelineMGR._rebuildIndex();
+            Ensemble.Editor.Renderer.requestFrame();
         },
 
         addClipToTrack: function (clipObj, trackId, destinationTime) {
@@ -1508,11 +1604,6 @@
                             tracks.push(Ensemble.Editor.TimelineMGR.tracks[(parseFloat(ghosts[i].style.top) / Ensemble.Editor.TimelineMGR._currentTrackHeight)].id);
                         }
 
-
-
-                        // TODO: using closestCompatibleTimes(), generate an appropriate timeset for all of the clips.
-
-
                     }
 
                     let clipsToMove = [];
@@ -1726,7 +1817,6 @@
                 let maxEnd = Ensemble.Editor.TimelineMGR._trimMaxEnd;
                 let startBound = Ensemble.Editor.TimelineMGR._trimStartBound;
                 let endBound = Ensemble.Editor.TimelineMGR._trimEndBound;
-                console.log("Bounds: " + minStart + ", " + maxEnd);
 
                 let leftGripperTime = 0;
                 let rightGripperTime = 0;

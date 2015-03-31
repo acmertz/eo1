@@ -63,10 +63,11 @@
             if (Ensemble.HistoryMGR.canUndo()) $(".editor-command__undo").removeClass("editor-command--disabled");
             if (Ensemble.HistoryMGR.canRedo()) $(".editor-command__redo").removeClass("editor-command--disabled");
 
-            if (Ensemble.Editor.SelectionMGR.selected.length > 0) {
+            if (Ensemble.Editor.SelectionMGR.selected.length == 1) {
                 $(".editor-command__trim-clip").removeClass("editor-command--disabled");
                 $(".editor-command__remove-clip").removeClass("editor-command--disabled");
                 $(".editor-command__clear-selection").removeClass("editor-command--disabled");
+                $(".editor-command__split-clip").removeClass("editor-command--disabled");
             }
         },
 
@@ -151,7 +152,17 @@
                 else if (command == "exit") setTimeout(function () { Ensemble.Pages.Editor.unload() }, 0);
 
                 // CLIP
-                else if (command = "trim-clip") {
+                else if (command == "split-clip") {
+                    let splitAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.splitClip, {
+                        clipIds: Ensemble.Editor.SelectionMGR.selected,
+                        newIds: [],
+                        time: Ensemble.Editor.PlaybackMGR.lastTime
+                    });
+                    Ensemble.Editor.SelectionMGR.clearSelection();
+                    Ensemble.Editor.SelectionMGR.clearHovering();
+                    Ensemble.HistoryMGR.performAction(splitAction);
+                }
+                else if (command == "trim-clip") {
                     Ensemble.Editor.TimelineMGR.showTrimControls(Ensemble.Editor.SelectionMGR.selected[0]);
                 }
                 else if (command == "remove-clip") {
