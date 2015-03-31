@@ -165,7 +165,7 @@
                 }
 
                 else if (this._type == Ensemble.Events.Action.ActionType.splitClip) {
-                    Ensemble.Editor.TimelineMGR.concatClip(this._payload.clipIds, this._payload.time, this._payload.newIds);
+                    Ensemble.Editor.TimelineMGR.concatClip(this._payload.clipIds, this._payload.newIds);
                 }
 
                 else console.error("Unknown Action!");

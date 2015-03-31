@@ -731,7 +731,7 @@
                         }));
                     }
                     else if (actionType === Ensemble.Events.Action.ActionType.trimClip) {
-                        Ensemble.HistoryMGR._redoStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.trimClip, {
+                        Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.trimClip, {
                             clipId: parseInt(redoActions[i].getAttribute("clipId"), 10),
                             newStartTime: parseInt(redoActions[i].getAttribute("newStartTime"), 10),
                             newDuration: parseInt(redoActions[i].getAttribute("newDuration"), 10),
@@ -752,7 +752,7 @@
                             ids.push(parseInt(splitClips[k].getAttribute("clipId"), 10));
                             newids.push(parseInt(splitClips[k].getAttribute("newId"), 10));
                         }
-                        Ensemble.HistoryMGR._redoStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.splitClip, {
+                        Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.splitClip, {
                             clipIds: ids,
                             newIds: newids,
                             time: time

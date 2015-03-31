@@ -311,6 +311,8 @@
                 }
                 console.log("Finished copying clip data into new clip.");
             }
+            Ensemble.Editor.TimelineMGR._rebuildIndex();
+            Ensemble.Editor.Renderer.requestFrame();
             return idArr;
         },
 
@@ -331,6 +333,15 @@
                                 // clip is matched
                                 if (tempClip.startTime + tempClip.duration == nextClip.startTime) {
                                     // clips are adjacent.
+                                    let newDur = (nextClip.startTime + nextClip.duration) - tempClip.startTime;
+                                    tempClip.duration = newDur;
+                                    tempClip.endTrim = nextClip.endTrim;
+                                    nextClip = Ensemble.Editor.TimelineMGR.tracks[k].clips.splice(g + 1, 1)[0];
+                                    nextClip.unload();
+                                    $("#" + this._buildClipDOMId(nextClip.id)).remove();
+                                    let clipEl = document.getElementById(Ensemble.Editor.TimelineMGR._buildClipDOMId(tempClip.id));
+                                    clipEl.style.left = (tempClip.startTime / zoomRatio) + "px";
+                                    clipEl.style.width = (tempClip.duration / zoomRatio) + "px";
                                 }
                             }
 
@@ -340,8 +351,9 @@
                     }
                     if (foundClip) break;
                 }
-                console.log("Finished copying clip data into new clip.");
             }
+            Ensemble.Editor.TimelineMGR._rebuildIndex();
+            Ensemble.Editor.Renderer.requestFrame();
         },
 
         addClipToTrack: function (clipObj, trackId, destinationTime) {
