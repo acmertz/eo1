@@ -5,9 +5,9 @@
     <title>Ensemble_of_One</title>
 
     <!-- WinJS references -->
-    <link href="//Microsoft.WinJS.2.0/css/ui-light.css" rel="stylesheet" />
     <script src="//Microsoft.WinJS.2.0/js/base.js"></script>
-    <script src="//Microsoft.WinJS.2.0/js/ui.js"></script>
+    <link rel="stylesheet" href="lib/Microsoft.WinJS.4.0/css/ui-light.css" />
+    <script src="lib/Microsoft.WinJS.4.0/js/WinJS.min.js"></script>
 
     <!-- Ensemble of One references -->
     <link href="/css/default.css" rel="stylesheet" />
@@ -18,7 +18,6 @@
 
     <!-- Libraries -->
     <link rel="stylesheet" href="lib/font-awesome-4.1.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="lib/pure/buttons-min.css">
     <script src="lib/jquery-2.1.1.min.js"></script>
     <script src="lib/underscore-min.js"></script>
     <script src="lib/XMLWriter.js"></script>
@@ -145,7 +144,7 @@
                                 </select></td>
                             </tr>
                         </table>
-                        <button class="pure-button ensembleButton ensembleButtonDefault" id="mainMenuValidateProjectButton">
+                        <button id="mainMenuValidateProjectButton">
                             <i class="fa fa-check"></i>
                             Create!
                         </button>
@@ -225,11 +224,52 @@
 
         <div class="pageContainer pageContainerHidden" id="editorPageContainer">
             <nav class="editor-menubar">
-                <ul class="editor-menubar__command-list">
-                    <li class="editor-menubar__command editor-menubar__command--home" data-ensemble-menu="home">&#xE10F;
-                    <li class="editor-menubar__command editor-menubar__command--edit" data-ensemble-menu="edit">Edit
-                    <li class="editor-menubar__command editor-menubar__command--import" data-ensemble-menu="import">Import
-                </ul>
+                <div class="editor-menubar__command-list">
+                    <span class="editor-menubar__command editor-menubar__command--active editor-menubar__command--home" data-ensemble-menu="home">Home</span>
+                    <span class="editor-menubar__command editor-menubar__command--edit" data-ensemble-menu="edit">Edit</span>
+                    <span class="editor-menubar__command editor-menubar__command--import" data-ensemble-menu="import">Import</span>
+                </div>
+                <div data-win-control="WinJS.UI.ToolBar" class="editor-menubar__toolbar">
+                    <button data-editor-command="show-library" data-win-control="WinJS.UI.Command" data-win-options="{
+                        className:'editor-toolbar-command--standard',
+                        label:'Import',
+                        section:'primary',
+                        type:'button',
+                        icon: 'add'}"></button>
+                    <button data-editor-command="browse-media" data-win-control="WinJS.UI.Command" data-win-options="{
+                        className:'editor-toolbar-command--standard',
+                        label:'Browse',
+                        section:'primary',
+                        type:'button',
+                        icon: 'openfile'}"></button>
+                    <hr data-win-control="WinJS.UI.Command" data-win-options="{type:'separator'}" />
+                    <button data-editor-command="split-clip" data-win-control="WinJS.UI.Command" data-win-options="{
+                        className:'editor-toolbar-command--edit',
+                        label:'Split',
+                        section:'primary',
+                        type:'button',
+                        icon: 'flag'}"></button>
+                    <button data-editor-command="trim-clip" data-win-control="WinJS.UI.Command" data-win-options="{
+                        className:'editor-toolbar-command--edit',
+                        label:'Trim',
+                        section:'primary',
+                        type:'button',
+                        icon: 'trim'}"></button>
+                    <hr data-win-control="WinJS.UI.Command" data-win-options="{type:'separator'}" />
+                    <button data-editor-command="remove-clip" data-win-control="WinJS.UI.Command" data-win-options="{
+                        className:'editor-toolbar-command--edit',
+                        label:'Remove',
+                        section:'primary',
+                        type:'button',
+                        icon: 'delete'}"></button>
+                    <hr data-win-control="WinJS.UI.Command" data-win-options="{type:'separator'}" />
+                    <button data-editor-command="remove-clip" data-win-control="WinJS.UI.Command" data-win-options="{
+                        className:'editor-toolbar-command--edit',
+                        label:'Clear',
+                        section:'primary',
+                        type:'button',
+                        icon: 'clearselection'}"></button>
+                </div>
             </nav>
             <div id="editorUpperHalf">
                 <div id="editorCanvasContainer">
@@ -352,7 +392,7 @@
                 </div>
                 <div class="editor-menu editor-menu--import">
                     <div class="mediaBrowserHeaderContainer">
-                        <div id="editorMediaBrowserLocationButtonContainer"><span id="editorMediaBrowserLocationButton">Videos library</span><span> &#xe228;</span></div>
+                        <div id="editorMediaBrowserLocationButtonContainer"><span id="editorMediaBrowserLocationButton">Videos library</span><span>&nbsp;&rsaquo;</span></div>
                         <div id="editorMediaBrowserCurrentPathContainer"></div>
                         <div id="editorMediaBrowserFolderControlContainer">
                             <progress class="win-ring" id="editorMediaBrowserLoadingProgress"></progress>
@@ -372,8 +412,8 @@
                         <video controls autoplay></video><br />
                         <div class="previewItemControls">
                             <div class="previewItemControlsInnerCenter">
-                                <button class="pure-button pure-button-primary media-browser-preview__btn media-browser-preview__btn--add-to-project"><i class="fa fa-plus"></i> Add to project</button>
-                                <button class="pure-button media-browser-preview__btn media-browser-preview__btn--close-preview"><i class="fa fa-times"></i> Close</button>
+                                <button class="media-browser-preview__btn media-browser-preview__btn--add-to-project"><i class="fa fa-plus"></i> Add to project</button>
+                                <button class="media-browser-preview__btn media-browser-preview__btn--close-preview"><i class="fa fa-times"></i> Close</button>
                             </div>
                         </div>
                     </div>
@@ -381,8 +421,8 @@
                         <audio controls autoplay></audio><br />
                         <div class="previewItemControls">
                             <div class="previewItemControlsInnerCenter">
-                                <button class="pure-button pure-button-primary media-browser-preview__btn media-browser-preview__btn--add-to-project"><i class="fa fa-plus"></i> Add to project</button>
-                                <button class="pure-button media-browser-preview__btn media-browser-preview__btn--close-preview"><i class="fa fa-times"></i> Close</button>
+                                <button class="media-browser-preview__btn media-browser-preview__btn--add-to-project"><i class="fa fa-plus"></i> Add to project</button>
+                                <button class="media-browser-preview__btn media-browser-preview__btn--close-preview"><i class="fa fa-times"></i> Close</button>
                             </div>
                         </div>
                     </div>
@@ -390,8 +430,8 @@
                         <img /><br />
                         <div class="previewItemControls">
                             <div class="previewItemControlsInnerCenter">
-                                <button class="pure-button pure-button-primary media-browser-preview__btn media-browser-preview__btn--add-to-project"><i class="fa fa-plus"></i> Add to project</button>
-                                <button class="pure-button media-browser-preview__btn media-browser-preview__btn--close-preview"><i class="fa fa-times"></i> Close</button>
+                                <button class="media-browser-preview__btn media-browser-preview__btn--add-to-project"><i class="fa fa-plus"></i> Add to project</button>
+                                <button class="media-browser-preview__btn media-browser-preview__btn--close-preview"><i class="fa fa-times"></i> Close</button>
                             </div>
                         </div>
                     </div>

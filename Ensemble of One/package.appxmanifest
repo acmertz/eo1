@@ -15,13 +15,13 @@
   </Resources>
   <Applications>
     <Application Id="App" StartPage="default.html">
-      <m2:VisualElements DisplayName="Ensemble of One" Description="Edit videos with ease from the comfort of your Windows 8 device. Ensemble of One is the most powerful video editor on the tablet market, offering a fully-featured timeline and a range of titles, transitions, and effects for you to include in your video projects. Customize the UI just the way you like it with Ensemble of One's support for hotkeys, and if you get stuck in a rut don't be afraid to use the &quot;Undo&quot; button - it goes back as far as the first edit you made! Export your finished project in all of the formats supported natively by Windows 8 (MP4, WMV, AVI, MPG, MP3, WAV, WMA) with an encoder that takes full advantage of multi-core machines. With the ability to create as many overlay tracks as you can imagine, the sky is truly the limit for what you can make with Ensemble of One. Our free trial includes all the functionality of the paid version - if you like what you see, please support us by buying the paid version (we'll remove the ads if you do). Send us your feedback from within the app and we'll do our very best to address your concerns." ForegroundText="dark" BackgroundColor="#F0F0F0" Square150x150Logo="images\Logo.png" Square30x30Logo="images\SmallLogo.png" ToastCapable="false">
-        <m2:DefaultTile DefaultSize="square150x150Logo">
+      <m2:VisualElements DisplayName="Ensemble of One" Description="Edit videos with ease from the comfort of your Windows 8 device. Ensemble of One is the most powerful video editor on the tablet market, offering a fully-featured timeline and a range of titles, transitions, and effects for you to include in your video projects. Customize the UI just the way you like it with Ensemble of One's support for hotkeys, and if you get stuck in a rut don't be afraid to use the &quot;Undo&quot; button - it goes back as far as the first edit you made! Export your finished project in all of the formats supported natively by Windows 8 (MP4, WMV, AVI, MPG, MP3, WAV, WMA) with an encoder that takes full advantage of multi-core machines. With the ability to create as many overlay tracks as you can imagine, the sky is truly the limit for what you can make with Ensemble of One. Our free trial includes all the functionality of the paid version - if you like what you see, please support us by buying the paid version (we'll remove the ads if you do). Send us your feedback from within the app and we'll do our very best to address your concerns." ForegroundText="dark" BackgroundColor="#dc143c" Square150x150Logo="images\Logo.png" Square30x30Logo="images\SmallLogo.png" ToastCapable="false">
+        <m2:DefaultTile DefaultSize="square150x150Logo" ShortName="Eo1">
           <m2:ShowNameOnTiles>
             <m2:ShowOn Tile="square150x150Logo" />
           </m2:ShowNameOnTiles>
         </m2:DefaultTile>
-        <m2:SplashScreen Image="img\packaging\splashScreen.png" />
+        <m2:SplashScreen Image="img\packaging\splashScreen.png" BackgroundColor="#dc143c" />
         <m2:InitialRotationPreference>
           <m2:Rotation Preference="portrait" />
           <m2:Rotation Preference="landscape" />

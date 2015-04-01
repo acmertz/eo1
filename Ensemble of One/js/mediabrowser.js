@@ -213,27 +213,11 @@
                     break;
             }
 
-            for (var i = 1; i < listToUse.length; i++) {
-                var pathItem = document.createElement("span");
-                pathItem.className = "editorMediaBrowserPathItem";
+            var pathItem = document.createElement("span");
+            pathItem.className = "editorMediaBrowserPathItem";
+            pathItem.innerText = listToUse[listToUse.length - 1].displayName;
 
-                var pathItemName = document.createElement("span");
-                pathItemName.className = "editorMediaBrowserPathItemButton";
-                pathItemName.innerText = listToUse[i].displayName;
-                pathItemName.title = listToUse[i].displayName;
-
-                var pathItemArrow = document.createElement("span");
-                pathItemArrow.className = "editorMediaBrowserPathItemButton";
-                pathItemArrow.innerHTML = "&rsaquo;";
-
-                pathItem.appendChild(pathItemName);
-                pathItem.appendChild(pathItemArrow);
-                pathItem.ensembleFile = listToUse[i];
-
-                pathItem.addEventListener("click", Ensemble.MediaBrowser._breadcrumbOnClick, false);
-
-                Ensemble.Editor.UI.PageSections.menu.mediaMenu.local.pathDisplay.appendChild(pathItem);
-            }
+            Ensemble.Editor.UI.PageSections.menu.mediaMenu.local.pathDisplay.appendChild(pathItem);
 
         },
 
@@ -440,6 +424,7 @@
         },
 
         _breadcrumbOnClick: function (event) {
+            /// <summary>DEPRECATED. Used to enable breadcrumb navigation in the Media Browser title area.</summary>
             console.log("Clicked a bread crumb.");
             switch (Ensemble.MediaBrowser._context) {
                 case "video":

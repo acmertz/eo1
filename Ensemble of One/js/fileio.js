@@ -398,9 +398,14 @@
                             xml.WriteString("0");
                             xml.EndNode();
                             xml.BeginNode("Tracks");
-                            xml.Attrib("FreeTrackId", "0");
+                            xml.Attrib("FreeTrackId", "1");
                             xml.Attrib("FreeClipId", "0");
+                            xml.BeginNode("Track");
+                            xml.Attrib("trackId", "0");
+                            xml.Attrib("trackName", "Untitled track");
+                            xml.Attrib("trackVolume", "1");
                             xml.WriteString("");
+                            xml.EndNode();
                             xml.EndNode();
                             xml.BeginNode("History");
                             xml.BeginNode("Undo");

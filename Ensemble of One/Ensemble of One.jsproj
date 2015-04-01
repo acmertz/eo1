@@ -146,6 +146,10 @@
     <Content Include="lib\font-awesome-4.1.0\scss\_stacked.scss" />
     <Content Include="lib\font-awesome-4.1.0\scss\_variables.scss" />
     <Content Include="lib\jquery-2.1.1.min.js" />
+    <Content Include="lib\Microsoft.WinJS.4.0\css\ui-dark.css" />
+    <Content Include="lib\Microsoft.WinJS.4.0\css\ui-light.css" />
+    <Content Include="lib\Microsoft.WinJS.4.0\fonts\Symbols.ttf" />
+    <Content Include="lib\Microsoft.WinJS.4.0\js\WinJS.min.js" />
     <Content Include="lib\pure\buttons-min.css" />
     <Content Include="lib\pure\pure-min.css" />
     <Content Include="lib\underscore-min.js" />

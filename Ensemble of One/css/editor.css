@@ -381,6 +381,8 @@
     top: 0px;
     right: 0px;
     padding: 10px;
+    color: #fafafa;
+    z-index: 1;
 }
 
 #editorDraggedPreviewContainer {
