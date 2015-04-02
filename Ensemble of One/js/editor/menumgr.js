@@ -58,16 +58,26 @@
         _reevaluateState: function () {
             // All commands are disabled unless explicitly enabled.
             $(".editor-menu__command").addClass("editor-command--disabled");
+            $(".editor-toolbar-command").attr("disabled", "disabled");
+            let myComm = $(".editor-toolbar-command");
 
             $(".editor-command__exit").removeClass("editor-command--disabled");
             if (Ensemble.HistoryMGR.canUndo()) $(".editor-command__undo").removeClass("editor-command--disabled");
             if (Ensemble.HistoryMGR.canRedo()) $(".editor-command__redo").removeClass("editor-command--disabled");
+
+            $(".editor-toolbar-command--import-media").removeAttr("disabled");
+            $(".editor-toolbar-command--browse-media").removeAttr("disabled");
 
             if (Ensemble.Editor.SelectionMGR.selected.length == 1) {
                 $(".editor-command__trim-clip").removeClass("editor-command--disabled");
                 $(".editor-command__remove-clip").removeClass("editor-command--disabled");
                 $(".editor-command__clear-selection").removeClass("editor-command--disabled");
                 $(".editor-command__split-clip").removeClass("editor-command--disabled");
+
+                $(".editor-toolbar-command--trim-clip").removeAttr("disabled");
+                $(".editor-toolbar-command--remove-clip").removeAttr("disabled");
+                $(".editor-toolbar-command--clear-selection").removeAttr("disabled");
+                $(".editor-toolbar-command--split-clip").removeAttr("disabled");
             }
         },
 
@@ -85,6 +95,11 @@
                 menuBarButtons[i].addEventListener("click", Ensemble.Editor.MenuMGR._listeners.menubarButtonClicked);
             }
 
+            let toolbarCommands = document.getElementsByClassName("editor-toolbar-command");
+            for (let i = 0; i < toolbarCommands.length; i++) {
+                toolbarCommands[i].addEventListener("click", Ensemble.Editor.MenuMGR._listeners.menuCommandClick);
+            }
+
             let menuCommands = document.getElementsByClassName("editor-menu__command");
             for (let i = 0; i < menuCommands.length; i++) {
                 menuCommands[i].addEventListener("pointerdown", Ensemble.Editor.MenuMGR._listeners.menuCommandPointerDown);
@@ -100,6 +115,11 @@
             let menuBarButtons = document.getElementsByClassName("editor-menubar__command");
             for (let i = 0; i < menuBarButtons.length; i++) {
                 menuBarButtons[i].removeEventListener("click", Ensemble.Editor.MenuMGR._listeners.menubarButtonClicked);
+            }
+
+            let toolbarCommands = document.getElementsByClassName("editor-toolbar-command");
+            for (let i = 0; i < toolbarCommands.length; i++) {
+                toolbarCommands[i].removeEventListener("click", Ensemble.Editor.MenuMGR._listeners.menuCommandClick);
             }
 
             let menuCommands = document.getElementsByClassName("editor-menu__command");
