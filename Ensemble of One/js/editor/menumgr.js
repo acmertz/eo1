@@ -31,11 +31,11 @@
         showMenu: function (menuElement, menubarCommand) {
             /// <summary>Shows the given menu.</summary>
             /// <param name="menuElement" type="Element">The HTML element representing the menu.</param>
-            this.hideMenus();
+            //this.hideMenus();
             this._reevaluateState();
             if (menubarCommand.dataset.ensembleMenu == "import") menuElement.addEventListener("transitionend", Ensemble.Editor.MenuMGR._listeners.importMenuTransitioned);
             $(menuElement).addClass("editor-menu--visible");
-            $(menubarCommand).addClass("editor-menubar__command--active");
+            //$(menubarCommand).addClass("editor-menubar__command--active");
             this.currentMenu = menuElement;
         },
 
@@ -43,7 +43,7 @@
             /// <summary>Hides any active menus, but keeps the menu in the "Open" state. Useful for swapping menues.</summary>
             if (this.currentMenu) this.currentMenu.removeEventListener("transitionend", Ensemble.Editor.MenuMGR._listeners.importMenuTransitioned);
             $(".editor-menu").removeClass("editor-menu--visible");
-            $(".editor-menubar__command--active").removeClass("editor-menubar__command--active");
+            //$(".editor-menubar__command--active").removeClass("editor-menubar__command--active");
             this.currentMenu = null;
         },
 
@@ -82,11 +82,13 @@
         },
 
         ui: {
-            clickEater: null
+            clickEater: null,
+            toolbar: null
         },
 
         _refreshUI: function () {
             this.ui.clickEater = document.getElementsByClassName("editor-menu-clickeater")[0];
+            this.ui.toolbar = document.getElementsByClassName("editor-menubar__toolbar")[0];
 
             this.ui.clickEater.addEventListener("click", Ensemble.Editor.MenuMGR._listeners.clickEaterClicked);
 
@@ -111,6 +113,7 @@
             this.ui.clickEater.removeEventListener("click", Ensemble.Editor.MenuMGR._listeners.clickEaterClicked);
 
             this.ui.clickEater = null;
+            this.ui.toolbar = null;
 
             let menuBarButtons = document.getElementsByClassName("editor-menubar__command");
             for (let i = 0; i < menuBarButtons.length; i++) {
@@ -131,15 +134,29 @@
 
         _listeners: {
             menubarButtonClicked: function (event) {
-                let targetMenu = document.getElementsByClassName("editor-menu--" + event.currentTarget.dataset.ensembleMenu)[0];
-                if (Ensemble.Editor.MenuMGR.currentMenu == targetMenu) {
-                    Ensemble.Editor.MenuMGR.closeMenu();
-                }
-                else {
-                    Ensemble.Editor.MenuMGR.showMenu(targetMenu, event.currentTarget);
+                let menuId = event.currentTarget.dataset.ensembleMenu;
+                if (menuId == "file") {
+                    console.log("Show file menu.");
+                    let targetMenu = document.getElementsByClassName("editor-menu--" + event.currentTarget.dataset.ensembleMenu)[0];
+                    $(targetMenu).addClass("editor-menu--visible");
                     Ensemble.Editor.MenuMGR.menuOpen = true;
                     $(Ensemble.Editor.MenuMGR.ui.clickEater).addClass("editor-menu-clickeater--active");
                     Ensemble.KeyboardMGR.editorMenu();
+                }
+                else {
+                    Ensemble.Editor.MenuMGR.ui.toolbar;
+
+
+                    let targetMenu = document.getElementsByClassName("editor-menu--" + event.currentTarget.dataset.ensembleMenu)[0];
+                    if (Ensemble.Editor.MenuMGR.currentMenu == targetMenu) {
+                        Ensemble.Editor.MenuMGR.closeMenu();
+                    }
+                    else {
+                        Ensemble.Editor.MenuMGR.showMenu(targetMenu, event.currentTarget);
+                        Ensemble.Editor.MenuMGR.menuOpen = true;
+                        $(Ensemble.Editor.MenuMGR.ui.clickEater).addClass("editor-menu-clickeater--active");
+                        Ensemble.KeyboardMGR.editorMenu();
+                    }
                 }
             },
 
@@ -165,6 +182,18 @@
 
             menuCommandClick: function (event) {
                 let command = event.currentTarget.dataset.editorCommand;
+
+                if (command == "show-library") {
+                    let targetMenu = document.getElementsByClassName("editor-menu--import")[0];
+
+                    targetMenu.addEventListener("transitionend", Ensemble.Editor.MenuMGR._listeners.importMenuTransitioned);
+                    $(targetMenu).addClass("editor-menu--visible");
+
+
+                    Ensemble.Editor.MenuMGR.menuOpen = true;
+                    $(Ensemble.Editor.MenuMGR.ui.clickEater).addClass("editor-menu-clickeater--active");
+                    Ensemble.KeyboardMGR.editorMenu();
+                }
 
                 // HOME
                 if (command == "undo") setTimeout(function () { Ensemble.HistoryMGR.undoLast() }, 0);
@@ -199,7 +228,7 @@
                     Ensemble.Editor.CalloutMGR.hide();
                 }, 0);
 
-                Ensemble.Editor.MenuMGR.closeMenu();
+                //Ensemble.Editor.MenuMGR.closeMenu();
             },
 
             importMenuTransitioned: function (event) {

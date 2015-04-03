@@ -227,39 +227,38 @@
                 <div class="editor-menubar__command-list">
                     <span class="editor-menubar__command editor-menubar__command--file" data-ensemble-menu="file">File</span>
                     <span class="editor-menubar__command editor-menubar__command--active editor-menubar__command--home" data-ensemble-menu="home">Home</span>
-                    <span class="editor-menubar__command editor-menubar__command--edit" data-ensemble-menu="edit">Edit</span>
-                    <span class="editor-menubar__command editor-menubar__command--import" data-ensemble-menu="import">Import</span>
+                    <!--<span class="editor-menubar__command editor-menubar__command--import" data-ensemble-menu="import">Import</span>-->
                 </div>
-                <div data-win-control="WinJS.UI.ToolBar" class="editor-menubar__toolbar">
-                    <button data-editor-command="show-library" class="editor-toolbar-command editor-toolbar-command--home editor-toolbar-command--import-media" data-win-control="WinJS.UI.Command" data-win-options="{
+                <div data-win-control="WinJS.UI.ToolBar" class="editor-menubar__toolbar editor-toolbar--home">
+                    <button data-editor-command="show-library" class="editor-toolbar-command editor-toolbar-command--import-media" data-win-control="WinJS.UI.Command" data-win-options="{
                         label:'Import',
                         section:'primary',
                         type:'button',
                         icon: 'add'}"></button>
-                    <button data-editor-command="browse-media" class="editor-toolbar-command editor-toolbar-command--home editor-toolbar-command--browse-media" data-win-control="WinJS.UI.Command" data-win-options="{
+                    <button data-editor-command="browse-media" class="editor-toolbar-command editor-toolbar-command--browse-media" data-win-control="WinJS.UI.Command" data-win-options="{
                         label:'Browse',
                         section:'primary',
                         type:'button',
                         icon: 'openfile'}"></button>
-                    <hr data-win-control="WinJS.UI.Command" class="editor-toolbar-command editor-toolbar-command--home" data-win-options="{type:'separator'}" />
-                    <button data-editor-command="split-clip" class="editor-toolbar-command editor-toolbar-command--home editor-toolbar-command--split-clip" data-win-control="WinJS.UI.Command" data-win-options="{
+                    <hr data-win-control="WinJS.UI.Command" class="editor-toolbar-command" data-win-options="{type:'separator'}" />
+                    <button data-editor-command="split-clip" class="editor-toolbar-command editor-toolbar-command--split-clip" data-win-control="WinJS.UI.Command" data-win-options="{
                         label:'Split',
                         section:'primary',
                         type:'button',
                         icon: 'flag'}"></button>
-                    <button data-editor-command="trim-clip" class="editor-toolbar-command editor-toolbar-command--home editor-toolbar-command--trim-clip" data-win-control="WinJS.UI.Command" data-win-options="{
+                    <button data-editor-command="trim-clip" class="editor-toolbar-command editor-toolbar-command--trim-clip" data-win-control="WinJS.UI.Command" data-win-options="{
                         label:'Trim',
                         section:'primary',
                         type:'button',
                         icon: 'trim'}"></button>
                     <hr data-win-control="WinJS.UI.Command" class="" data-win-options="{type:'separator'}" />
-                    <button data-editor-command="remove-clip" class="editor-toolbar-command editor-toolbar-command--home editor-toolbar-command--remove-clip" data-win-control="WinJS.UI.Command" data-win-options="{
+                    <button data-editor-command="remove-clip" class="editor-toolbar-command editor-toolbar-command--remove-clip" data-win-control="WinJS.UI.Command" data-win-options="{
                         label:'Remove',
                         section:'primary',
                         type:'button',
                         icon: 'delete'}"></button>
-                    <hr data-win-control="WinJS.UI.Command" class="editor-toolbar-command editor-toolbar-command--home" data-win-options="{type:'separator'}" />
-                    <button data-editor-command="clear-selection" class="editor-toolbar-command editor-toolbar-command--home editor-toolbar-command--clear-selection" data-win-control="WinJS.UI.Command" data-win-options="{
+                    <hr data-win-control="WinJS.UI.Command" class="editor-toolbar-command" data-win-options="{type:'separator'}" />
+                    <button data-editor-command="clear-selection" class="editor-toolbar-command editor-toolbar-command--clear-selection" data-win-control="WinJS.UI.Command" data-win-options="{
                         label:'Clear',
                         section:'primary',
                         type:'button',
@@ -365,24 +364,6 @@
                         <li class="editor-menu__command editor-command__redo" data-editor-command="redo">&#xE10D; Redo</li>
                         <li class="editor-menu__divider"></li>
                         <li class="editor-menu__command editor-command__exit" data-editor-command="exit">&#xE112; Close project</li>
-                    </ul>
-                </div>
-
-                <div class="editor-menu editor-menu--edit">
-                    <ul class="editor-menu__command-list">
-                        <li class="editor-menu__command editor-command__copy" data-editor-command="copy">&#xE16F; Copy</li>
-                        <li class="editor-menu__command editor-command__cut" data-editor-command="cut">&#xE16B; Cut</li>
-                        <li class="editor-menu__command editor-command__paste" data-editor-command="paste">&#xE16D; Paste</li>
-                        <li class="editor-menu__divider"></li>
-                        <li class="editor-menu__command editor-command__split-clip" data-editor-command="split-clip">&#xE129; Split</li>
-                        <li class="editor-menu__command editor-command__clip-volume" data-editor-command="clip-volume">&#xE15D; Volume</li>
-                        <li class="editor-menu__command editor-command__separate-clip-audio" data-editor-command="separate-clip-audio">&#xE189; Separate audio</li>
-                        <li class="editor-menu__command editor-command__trim-clip" data-editor-command="trim-clip">&#xE12C; Trim</li>
-                        <li class="editor-menu__divider"></li>
-                        <li class="editor-menu__command editor-command__rename-clip" data-editor-command="rename-clip">&#xE13E; Rename</li>
-                        <li class="editor-menu__command editor-command__remove-clip" data-editor-command="remove-clip">&#xE107; Remove</li>
-                        <li class="editor-menu__divider"></li>
-                        <li class="editor-menu__command editor-command__select-all" data-editor-command="select-all">&#xE14E; Select all</li>
                     </ul>
                 </div>
                 <div class="editor-menu editor-menu--import">
