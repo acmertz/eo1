@@ -5,20 +5,20 @@
     <title>Ensemble_of_One</title>
 
     <!-- WinJS references -->
-    <link href="//Microsoft.WinJS.2.0/css/ui-light.css" rel="stylesheet" />
     <script src="//Microsoft.WinJS.2.0/js/base.js"></script>
-    <script src="//Microsoft.WinJS.2.0/js/ui.js"></script>
+    <link rel="stylesheet" href="lib/Microsoft.WinJS.4.0/css/ui-light.css" />
+    <script src="lib/Microsoft.WinJS.4.0/js/WinJS.min.js"></script>
 
     <!-- Ensemble of One references -->
     <link href="/css/default.css" rel="stylesheet" />
     <link rel="stylesheet" href="/css/editor.css" />
     <link rel="stylesheet" href="/css/editor-menu.css" />
+    <link rel="stylesheet" href="/css/media-browser.css" />
     <link rel="stylesheet" href="/css/timeline.css" />
     <script src="/js/default.js"></script>
 
     <!-- Libraries -->
     <link rel="stylesheet" href="lib/font-awesome-4.1.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="lib/pure/buttons-min.css">
     <script src="lib/jquery-2.1.1.min.js"></script>
     <script src="lib/underscore-min.js"></script>
     <script src="lib/XMLWriter.js"></script>
@@ -145,7 +145,7 @@
                                 </select></td>
                             </tr>
                         </table>
-                        <button class="pure-button ensembleButton ensembleButtonDefault" id="mainMenuValidateProjectButton">
+                        <button id="mainMenuValidateProjectButton">
                             <i class="fa fa-check"></i>
                             Create!
                         </button>
@@ -225,11 +225,99 @@
 
         <div class="pageContainer pageContainerHidden" id="editorPageContainer">
             <nav class="editor-menubar">
-                <ul class="editor-menubar__command-list">
-                    <li class="editor-menubar__command editor-menubar__command--home" data-ensemble-menu="home">&#xE10F;
-                    <li class="editor-menubar__command editor-menubar__command--edit" data-ensemble-menu="edit">Edit
-                    <li class="editor-menubar__command editor-menubar__command--import" data-ensemble-menu="import">Import
-                </ul>
+                <div class="editor-menubar__command-list">
+                    <span class="editor-menubar__command editor-menubar__command--file" data-ensemble-menu="file">&#59136;</span>
+                    <span class="editor-menubar__command editor-menubar__command--home editor-menubar__command--active" data-ensemble-menu="home">Home</span>
+                    <span class="editor-menubar__command editor-menubar__command--record" data-ensemble-menu="record">Record</span>
+                    <span class="editor-menubar__command editor-menubar__command--effects" data-ensemble-menu="effects">Animations</span>
+                    <span class="editor-menubar__command editor-menubar__command--export" data-ensemble-menu="export">Export</span>
+                </div>
+                <div data-win-control="WinJS.UI.ToolBar" class="editor-menubar__toolbar editor-toolbar--home" data-ensemble-menu="home">
+                    <button data-editor-command="show-library" class="editor-toolbar-command editor-toolbar-command--import-media" data-win-control="WinJS.UI.Command" data-win-options="{
+                        label:'Import',
+                        section:'primary',
+                        type:'button',
+                        icon: 'add'}"></button>
+                    <button data-editor-command="browse-media" class="editor-toolbar-command editor-toolbar-command--browse-media" data-win-control="WinJS.UI.Command" data-win-options="{
+                        label:'Browse',
+                        section:'primary',
+                        type:'button',
+                        icon: 'openfile'}"></button>
+                    <hr data-win-control="WinJS.UI.Command" class="editor-toolbar-command" data-win-options="{type:'separator'}" />
+                    <button data-editor-command="split-clip" class="editor-toolbar-command editor-toolbar-command--split-clip" data-win-control="WinJS.UI.Command" data-win-options="{
+                        label:'Split',
+                        section:'primary',
+                        type:'button',
+                        icon: 'flag'}"></button>
+                    <button data-editor-command="trim-clip" class="editor-toolbar-command editor-toolbar-command--trim-clip" data-win-control="WinJS.UI.Command" data-win-options="{
+                        label:'Trim',
+                        section:'primary',
+                        type:'button',
+                        icon: 'trim'}"></button>
+                    <hr data-win-control="WinJS.UI.Command" class="" data-win-options="{type:'separator'}" />
+                    <button data-editor-command="remove-clip" class="editor-toolbar-command editor-toolbar-command--remove-clip" data-win-control="WinJS.UI.Command" data-win-options="{
+                        label:'Remove',
+                        section:'primary',
+                        type:'button',
+                        icon: 'delete'}"></button>
+                    <hr data-win-control="WinJS.UI.Command" class="editor-toolbar-command" data-win-options="{type:'separator'}" />
+                    <button data-editor-command="clear-selection" class="editor-toolbar-command editor-toolbar-command--clear-selection" data-win-control="WinJS.UI.Command" data-win-options="{
+                        label:'Clear',
+                        section:'primary',
+                        type:'button',
+                        icon: 'clearselection'}"></button>
+                </div>
+                <div data-win-control="WinJS.UI.ToolBar" class="editor-menubar__toolbar editor-toolbar--record" data-ensemble-menu="record">
+                    <button data-editor-command="record-video" class="editor-toolbar-command editor-toolbar-command--record-video" data-win-control="WinJS.UI.Command" data-win-options="{
+                        label:'Video',
+                        section:'primary',
+                        type:'button',
+                        icon: 'video'}"></button>
+                    <button data-editor-command="record-audio" class="editor-toolbar-command editor-toolbar-command--record-audio" data-win-control="WinJS.UI.Command" data-win-options="{
+                        label:'Audio',
+                        section:'primary',
+                        type:'button',
+                        icon: 'microphone'}"></button>
+                    <button data-editor-command="record-photo" class="editor-toolbar-command editor-toolbar-command--record-photo" data-win-control="WinJS.UI.Command" data-win-options="{
+                        label:'Photo',
+                        section:'primary',
+                        type:'button',
+                        icon: 'camera'}"></button>
+                </div>
+                <div data-win-control="WinJS.UI.ToolBar" class="editor-menubar__toolbar editor-toolbar--effects" data-ensemble-menu="effects">
+                    <button data-editor-command="create-title" class="editor-toolbar-command editor-toolbar-command--create-title" data-win-control="WinJS.UI.Command" data-win-options="{
+                        label:'Title',
+                        section:'primary',
+                        type:'button',
+                        icon: 'previewlink'}"></button>
+                    <button data-editor-command="create-filter" class="editor-toolbar-command editor-toolbar-command--create-filter" data-win-control="WinJS.UI.Command" data-win-options="{
+                        label:'Filter',
+                        section:'primary',
+                        type:'button',
+                        icon: 'favorite'}"></button>
+                    <button data-editor-command="edit-animation" class="editor-toolbar-command editor-toolbar-command--edit-animation" data-win-control="WinJS.UI.Command" data-win-options="{
+                        label:'Animation',
+                        section:'primary',
+                        type:'button',
+                        icon: 'list'}"></button>
+                </div>
+                <div data-win-control="WinJS.UI.ToolBar" class="editor-menubar__toolbar editor-toolbar--export" data-ensemble-menu="export">
+                    <button data-editor-command="export-video" class="editor-toolbar-command editor-toolbar-command--export-video" data-win-control="WinJS.UI.Command" data-win-options="{
+                        label:'Video',
+                        section:'primary',
+                        type:'button',
+                        icon: 'videochat'}"></button>
+                    <button data-editor-command="export-audio" class="editor-toolbar-command editor-toolbar-command--export-audio" data-win-control="WinJS.UI.Command" data-win-options="{
+                        label:'Audio',
+                        section:'primary',
+                        type:'button',
+                        icon: 'audio'}"></button>
+                    <button data-editor-command="export-photo" class="editor-toolbar-command editor-toolbar-command--export-photo" data-win-control="WinJS.UI.Command" data-win-options="{
+                        label:'Photo',
+                        section:'primary',
+                        type:'button',
+                        icon: 'pictures'}"></button>
+                </div>
             </nav>
             <div id="editorUpperHalf">
                 <div id="editorCanvasContainer">
@@ -241,12 +329,9 @@
                             <span id="editorTimeDisplay">00:00:00.000</span>
                         </div>
                         <div class="editorPlayControlSection" id="editorPlayControlsMain">
-                            <i class="portraitHidden editorGeneralButton" id="editorSkipBackButton" title="Skip backward">&#xE100;</i>
                             <i class="editorGeneralButton" id="editorPlaypauseButton" title="Play">&#xE102;</i>
-                            <i class="portraitHidden editorGeneralButton" id="editorSkipForwardButton" title="Skip forward">&#xE101;</i>
                         </div>
                         <div class="editorPlayControlSection" id="editorPlayControlsRight">
-                            <i class="editorGeneralButton" id="editorFullscreenButton" title="Full screen">&#xE1D9;</i>
                         </div>
 
                         
@@ -311,9 +396,9 @@
             <div class="editor-menu-clickeater"></div>
 
             <div class="editor-menu-container">
-                <div class="editor-menu editor-menu--home">
+                <div class="editor-menu editor-menu--file">
+                    <button class="win-backbutton editor-file-menu__close-button"></button>
                     <h2 id="editorProjectNameDisplay">Project Name Here</h2>
-                    <span>&#xE13E; Rename</span>
                     <div class="editor-project-details">
                         <div class="editor-project-details__column">
                             <img src="" alt="Project thumbnail" class="editor-project-details__thumb" />
@@ -332,30 +417,13 @@
                         <li class="editor-menu__command editor-command__exit" data-editor-command="exit">&#xE112; Close project</li>
                     </ul>
                 </div>
-
-                <div class="editor-menu editor-menu--edit">
-                    <ul class="editor-menu__command-list">
-                        <li class="editor-menu__command editor-command__copy" data-editor-command="copy">&#xE16F; Copy</li>
-                        <li class="editor-menu__command editor-command__cut" data-editor-command="cut">&#xE16B; Cut</li>
-                        <li class="editor-menu__command editor-command__paste" data-editor-command="paste">&#xE16D; Paste</li>
-                        <li class="editor-menu__divider"></li>
-                        <li class="editor-menu__command editor-command__split-clip" data-editor-command="split-clip">&#xE129; Split</li>
-                        <li class="editor-menu__command editor-command__clip-volume" data-editor-command="clip-volume">&#xE15D; Volume</li>
-                        <li class="editor-menu__command editor-command__separate-clip-audio" data-editor-command="separate-clip-audio">&#xE189; Separate audio</li>
-                        <li class="editor-menu__command editor-command__trim-clip" data-editor-command="trim-clip">&#xE12C; Trim</li>
-                        <li class="editor-menu__divider"></li>
-                        <li class="editor-menu__command editor-command__rename-clip" data-editor-command="rename-clip">&#xE13E; Rename</li>
-                        <li class="editor-menu__command editor-command__remove-clip" data-editor-command="remove-clip">&#xE107; Remove</li>
-                        <li class="editor-menu__divider"></li>
-                        <li class="editor-menu__command editor-command__select-all" data-editor-command="select-all">&#xE14E; Select all</li>
-                    </ul>
-                </div>
                 <div class="editor-menu editor-menu--import">
                     <div class="mediaBrowserHeaderContainer">
-                        <div id="editorMediaBrowserLocationButtonContainer"><span id="editorMediaBrowserLocationButton">Videos library</span><span> &#xe228;</span></div>
+                        <button class="win-backbutton editor-import-menu__close-button"></button>
+                        <div id="editorMediaBrowserLocationButtonContainer"><span id="editorMediaBrowserLocationButton">Videos library</span><span>&nbsp;&rsaquo;</span></div>
                         <div id="editorMediaBrowserCurrentPathContainer"></div>
                         <div id="editorMediaBrowserFolderControlContainer">
-                            <progress class="win-ring" id="editorMediaBrowserLoadingProgress"></progress>
+                            <progress class="win-ring win-medium" id="editorMediaBrowserLoadingProgress"></progress>
                             <span class="mediaBrowserFolderControl" id="editorMediaBrowserHomeButton">&#xE10F;</span>
                             <span class="mediaBrowserFolderControl" id="editorMediaBrowserUpOneLevelButton">&#xE110;</span>
                             <span class="mediaBrowserFolderControl" id="editorMediaBrowserRefreshButton">&#xE117;</span>
@@ -372,8 +440,8 @@
                         <video controls autoplay></video><br />
                         <div class="previewItemControls">
                             <div class="previewItemControlsInnerCenter">
-                                <button class="pure-button pure-button-primary media-browser-preview__btn media-browser-preview__btn--add-to-project"><i class="fa fa-plus"></i> Add to project</button>
-                                <button class="pure-button media-browser-preview__btn media-browser-preview__btn--close-preview"><i class="fa fa-times"></i> Close</button>
+                                <button class="media-browser-preview__btn media-browser-preview__btn--add-to-project"><i class="fa fa-plus"></i> Add to project</button>
+                                <button class="media-browser-preview__btn media-browser-preview__btn--close-preview"><i class="fa fa-times"></i> Close</button>
                             </div>
                         </div>
                     </div>
@@ -381,8 +449,8 @@
                         <audio controls autoplay></audio><br />
                         <div class="previewItemControls">
                             <div class="previewItemControlsInnerCenter">
-                                <button class="pure-button pure-button-primary media-browser-preview__btn media-browser-preview__btn--add-to-project"><i class="fa fa-plus"></i> Add to project</button>
-                                <button class="pure-button media-browser-preview__btn media-browser-preview__btn--close-preview"><i class="fa fa-times"></i> Close</button>
+                                <button class="media-browser-preview__btn media-browser-preview__btn--add-to-project"><i class="fa fa-plus"></i> Add to project</button>
+                                <button class="media-browser-preview__btn media-browser-preview__btn--close-preview"><i class="fa fa-times"></i> Close</button>
                             </div>
                         </div>
                     </div>
@@ -390,8 +458,8 @@
                         <img /><br />
                         <div class="previewItemControls">
                             <div class="previewItemControlsInnerCenter">
-                                <button class="pure-button pure-button-primary media-browser-preview__btn media-browser-preview__btn--add-to-project"><i class="fa fa-plus"></i> Add to project</button>
-                                <button class="pure-button media-browser-preview__btn media-browser-preview__btn--close-preview"><i class="fa fa-times"></i> Close</button>
+                                <button class="media-browser-preview__btn media-browser-preview__btn--add-to-project"><i class="fa fa-plus"></i> Add to project</button>
+                                <button class="media-browser-preview__btn media-browser-preview__btn--close-preview"><i class="fa fa-times"></i> Close</button>
                             </div>
                         </div>
                     </div>
@@ -418,8 +486,6 @@
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMediaBrowserLocationVideosLibrary',label:'Videos library'}"></button>
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMediaBrowserLocationMusicLibrary',label:'Music library'}"></button>
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMediaBrowserLocationPicturesLibrary',label:'Pictures library'}"></button>
-            <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'separator',type:'separator'}" />
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'forwardMenuItem',label:'Browse...'}"></button>
         </div>
         <div id="editorMoveTrackFlyout" data-win-control="WinJS.UI.Menu">
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMoveTrackTop',label:'Move to top'}"></button>
@@ -438,6 +504,21 @@
             <button id="remove-track-confirmation__button">Remove</button>
         </div>
         <div id="mediaBrowserAddToProjectFlyout" data-win-control="WinJS.UI.Menu"></div>
+        <div class="media-browser__preview-flyout" data-win-control="WinJS.UI.Flyout" aria-label="{Preview clip}">
+            <video class="media-browser-preview media-browser-preview--video" autoplay></video>
+            <audio class="media-browser-preview media-browser-preview--audio" autoplay controls></audio>
+            <img class="media-browser-preview media-browser-preview--picture" />
+        </div>
+        <div class="media-browser__properties-flyout" data-win-control="WinJS.UI.Flyout" aria-label="{Clip properties}">
+            <h3 class="media-browser-property media-browser-property--display-name">[Display name here]</h3>
+            <span class="bold">Folder-unique ID: </span><span class="media-browser-property media-browser-property--unique-id"></span><br />
+            <span class="bold">Path: </span><span class="media-browser-property media-browser-property--path"></span><br />
+            <span class="bold">Mime: </span><span class="media-browser-property media-browser-property--mime"></span><br />
+            <span class="bold">Width: </span><span class="media-browser-property media-browser-property--width"></span><br />
+            <span class="bold">Height: </span><span class="media-browser-property media-browser-property--height"></span><br />
+            <span class="bold">Duration: </span><span class="media-browser-property media-browser-property--duration"></span><br />
+            <span class="bold">Bitrate: </span><span class="media-browser-property media-browser-property--bitrate"></span>       
+        </div>
         <div id="clip-selected-contextmenu" data-win-control="WinJS.UI.Menu">
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Copy'}"></button>
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Cut'}"></button>

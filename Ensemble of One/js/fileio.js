@@ -290,13 +290,9 @@
             
             switch (Ensemble.Platform.currentPlatform) {
                 case "win8":
-                    var uri = new Windows.Foundation.Uri('ms-appdata:///local/Projects/' + Ensemble.Session.projectFilename);
-                    Windows.Storage.StorageFile.getFileFromApplicationUriAsync(uri).then(function (outputFile) {
-                        Windows.Storage.FileIO.writeTextAsync(outputFile, xml).done(function (complete) {
-                            console.info("Saved " + Ensemble.Session.projectName + ".");
-                        });
-                    }, function (error) {
-                        console.error("Unable to save project: " + error);
+                    //var uri = new Windows.Foundation.Uri('ms-appdata:///local/Projects/' + Ensemble.Session.projectFilename);
+                    Windows.Storage.FileIO.writeTextAsync(Ensemble.Session.projectFile, xml).done(function (complete) {
+                        console.info("Saved " + Ensemble.Session.projectName + ".");
                     });
                     break;
                 case "android":
@@ -398,9 +394,14 @@
                             xml.WriteString("0");
                             xml.EndNode();
                             xml.BeginNode("Tracks");
-                            xml.Attrib("FreeTrackId", "0");
+                            xml.Attrib("FreeTrackId", "1");
                             xml.Attrib("FreeClipId", "0");
+                            xml.BeginNode("Track");
+                            xml.Attrib("trackId", "0");
+                            xml.Attrib("trackName", "Untitled track");
+                            xml.Attrib("trackVolume", "1");
                             xml.WriteString("");
+                            xml.EndNode();
                             xml.EndNode();
                             xml.BeginNode("History");
                             xml.BeginNode("Undo");
@@ -420,12 +421,6 @@
                                 saveaspect = saveaspect.replace(".", "")
                                 Windows.Storage.StorageFile.getFileFromApplicationUriAsync(new Windows.Foundation.Uri("ms-appx:///img/projectThumbnails/" + saveaspect + ".jpg")).then(function (defaultThumb) {
                                     defaultThumb.copyAsync(projectDir, projectFile.name + ".jpg").done(function () {
-                                        //Finished creating project files. Now update session state.
-                                        //Ensemble.Session.projectName = name;
-                                        //Ensemble.Session.projectAspect = aspect;
-                                        //Ensemble.Session.projectFilename = projectFile.name;
-
-                                        //Ensemble.Session.projectLoading = false;
                                         console.log("Project finished creating.");
 
                                         window.setTimeout(function () {
@@ -450,19 +445,28 @@
             }
         },
 
-        loadProject: function (filename) {
-            /// <summary>Loads a previously saved project from storage.</summary>
+        loadProject: function (filename, fileobj) {
+            /// <summary>Loads a previously saved project from storage. You may pass either a file name (internal app storage) or a loaded file object (external storage).</summary>
             /// <param name="filename" type="String">The name of the project to be loaded.</param>
-            /// <param name="callback" type="Function">The callback to execute when the project is fully loaded.</param>
+            /// <param name="fileobj" type="Windows.Storage.StorageFile">
 
             switch (Ensemble.Platform.currentPlatform) {
                 case "win8":
-                    var uri = new Windows.Foundation.Uri('ms-appdata:///local/Projects/' + filename);
-                    var file = Windows.Storage.StorageFile.getFileFromApplicationUriAsync(uri).then(function (projectFile) {
-                        Windows.Storage.FileIO.readTextAsync(projectFile).then(function (contents) {
+                    if (filename == null && fileobj != null) {
+                        Ensemble.Session.projectFile = fileobj;
+                        Windows.Storage.FileIO.readTextAsync(fileobj).then(function (contents) {
                             Ensemble.FileIO._processLoadedProjectData(filename, contents);
                         })
-                    });
+                    }
+                    else {
+                        var uri = new Windows.Foundation.Uri('ms-appdata:///local/Projects/' + filename);
+                        var file = Windows.Storage.StorageFile.getFileFromApplicationUriAsync(uri).then(function (projectFile) {
+                            Ensemble.Session.projectFile = projectFile;
+                            Windows.Storage.FileIO.readTextAsync(projectFile).then(function (contents) {
+                                Ensemble.FileIO._processLoadedProjectData(filename, contents);
+                            })
+                        });
+                    }
                     break;
                 case "android":
                     break;
@@ -1305,10 +1309,11 @@
             }
         },
 
-        retrieveMediaPreview: function (ensembleFile, callback) {
+        retrieveMediaPreview: function (ensembleFile, callback, payload) {
             /// <summary>Loads a preview for the given Ensemble file.</summary>
             /// <param name="ensembleFile" type="Ensemble.EnsembleFile">The file for which to load a preview.</param>
             /// <param name="callback" type="Function">The callback to execute after the preview loaded. The callback will be passed both the Ensemble file and a URI referencing its media.</param>
+            /// <param name="payload" type="Object">Optional. An object that will be passed to the callback with the retrieved data.</param>
             var returnVal = "";
             switch (Ensemble.Platform.currentPlatform) {
                 case "win8":
@@ -1319,7 +1324,7 @@
                 case "android":
                     break;
             }
-            callback(ensembleFile, returnVal);
+            callback(ensembleFile, returnVal, payload);
         },
 
         _clearTempItemsLookup: function () {

@@ -8,7 +8,8 @@
 
         init: function () {
             this._refreshUI();
-            this.setMenuState(this.menuState.defaultMenu);
+            this._reevaluateState();
+            $(".editor-toolbar--home").removeClass("editor-toolbar--hidden").addClass("editor-toolbar--visible");
         },
 
         unload: function () {
@@ -19,23 +20,14 @@
             $(".editor-menu").removeClass(".editor-menu--visible");
         },
 
-        setMenuState: function (state) {
-            /// <summary>Sets the state of the menu items to reflect which commands are currently valid.</summary>
-            /// <param name="state" type="String">The state to set.</param>
-            if (state in this.menuState) {
-                this.currentState = state;
-                this._reevaluateState();
-            }
-        },
-
         showMenu: function (menuElement, menubarCommand) {
             /// <summary>Shows the given menu.</summary>
             /// <param name="menuElement" type="Element">The HTML element representing the menu.</param>
-            this.hideMenus();
+            //this.hideMenus();
             this._reevaluateState();
             if (menubarCommand.dataset.ensembleMenu == "import") menuElement.addEventListener("transitionend", Ensemble.Editor.MenuMGR._listeners.importMenuTransitioned);
             $(menuElement).addClass("editor-menu--visible");
-            $(menubarCommand).addClass("editor-menubar__command--active");
+            //$(menubarCommand).addClass("editor-menubar__command--active");
             this.currentMenu = menuElement;
         },
 
@@ -43,7 +35,7 @@
             /// <summary>Hides any active menus, but keeps the menu in the "Open" state. Useful for swapping menues.</summary>
             if (this.currentMenu) this.currentMenu.removeEventListener("transitionend", Ensemble.Editor.MenuMGR._listeners.importMenuTransitioned);
             $(".editor-menu").removeClass("editor-menu--visible");
-            $(".editor-menubar__command--active").removeClass("editor-menubar__command--active");
+            //$(".editor-menubar__command--active").removeClass("editor-menubar__command--active");
             this.currentMenu = null;
         },
 
@@ -58,31 +50,47 @@
         _reevaluateState: function () {
             // All commands are disabled unless explicitly enabled.
             $(".editor-menu__command").addClass("editor-command--disabled");
+            $(".editor-toolbar-command").attr("disabled", "disabled");
+            let myComm = $(".editor-toolbar-command");
 
             $(".editor-command__exit").removeClass("editor-command--disabled");
             if (Ensemble.HistoryMGR.canUndo()) $(".editor-command__undo").removeClass("editor-command--disabled");
             if (Ensemble.HistoryMGR.canRedo()) $(".editor-command__redo").removeClass("editor-command--disabled");
+
+            $(".editor-toolbar-command--import-media").removeAttr("disabled");
 
             if (Ensemble.Editor.SelectionMGR.selected.length == 1) {
                 $(".editor-command__trim-clip").removeClass("editor-command--disabled");
                 $(".editor-command__remove-clip").removeClass("editor-command--disabled");
                 $(".editor-command__clear-selection").removeClass("editor-command--disabled");
                 $(".editor-command__split-clip").removeClass("editor-command--disabled");
+
+                $(".editor-toolbar-command--trim-clip").removeAttr("disabled");
+                $(".editor-toolbar-command--remove-clip").removeAttr("disabled");
+                $(".editor-toolbar-command--clear-selection").removeAttr("disabled");
+                $(".editor-toolbar-command--split-clip").removeAttr("disabled");
             }
         },
 
         ui: {
-            clickEater: null
+            clickEater: null,
         },
 
         _refreshUI: function () {
             this.ui.clickEater = document.getElementsByClassName("editor-menu-clickeater")[0];
 
             this.ui.clickEater.addEventListener("click", Ensemble.Editor.MenuMGR._listeners.clickEaterClicked);
+            document.getElementsByClassName("editor-import-menu__close-button")[0].addEventListener("click", Ensemble.Editor.MenuMGR._listeners.clickEaterClicked);
+            document.getElementsByClassName("editor-file-menu__close-button")[0].addEventListener("click", Ensemble.Editor.MenuMGR._listeners.clickEaterClicked);
 
             let menuBarButtons = document.getElementsByClassName("editor-menubar__command");
             for (let i = 0; i < menuBarButtons.length; i++) {
                 menuBarButtons[i].addEventListener("click", Ensemble.Editor.MenuMGR._listeners.menubarButtonClicked);
+            }
+
+            let toolbarCommands = document.getElementsByClassName("editor-toolbar-command");
+            for (let i = 0; i < toolbarCommands.length; i++) {
+                toolbarCommands[i].addEventListener("click", Ensemble.Editor.MenuMGR._listeners.menuCommandClick);
             }
 
             let menuCommands = document.getElementsByClassName("editor-menu__command");
@@ -94,12 +102,19 @@
 
         _cleanUI: function () {
             this.ui.clickEater.removeEventListener("click", Ensemble.Editor.MenuMGR._listeners.clickEaterClicked);
+            document.getElementsByClassName("editor-import-menu__close-button")[0].removeEventListener("click", Ensemble.Editor.MenuMGR._listeners.clickEaterClicked);
+            document.getElementsByClassName("editor-file-menu__close-button")[0].removeEventListener("click", Ensemble.Editor.MenuMGR._listeners.clickEaterClicked);
 
             this.ui.clickEater = null;
 
             let menuBarButtons = document.getElementsByClassName("editor-menubar__command");
             for (let i = 0; i < menuBarButtons.length; i++) {
                 menuBarButtons[i].removeEventListener("click", Ensemble.Editor.MenuMGR._listeners.menubarButtonClicked);
+            }
+
+            let toolbarCommands = document.getElementsByClassName("editor-toolbar-command");
+            for (let i = 0; i < toolbarCommands.length; i++) {
+                toolbarCommands[i].removeEventListener("click", Ensemble.Editor.MenuMGR._listeners.menuCommandClick);
             }
 
             let menuCommands = document.getElementsByClassName("editor-menu__command");
@@ -111,15 +126,29 @@
 
         _listeners: {
             menubarButtonClicked: function (event) {
-                let targetMenu = document.getElementsByClassName("editor-menu--" + event.currentTarget.dataset.ensembleMenu)[0];
-                if (Ensemble.Editor.MenuMGR.currentMenu == targetMenu) {
-                    Ensemble.Editor.MenuMGR.closeMenu();
-                }
-                else {
-                    Ensemble.Editor.MenuMGR.showMenu(targetMenu, event.currentTarget);
+                let targetToolbarId = event.currentTarget.dataset.ensembleMenu;
+                let targetToolbar = document.getElementsByClassName("editor-toolbar--" + event.currentTarget.dataset.ensembleMenu)[0];
+                if (targetToolbarId == "file") {
+                    console.log("Show file menu.");
+                    $(".editor-menu--file").addClass("editor-menu--visible");
                     Ensemble.Editor.MenuMGR.menuOpen = true;
                     $(Ensemble.Editor.MenuMGR.ui.clickEater).addClass("editor-menu-clickeater--active");
                     Ensemble.KeyboardMGR.editorMenu();
+                }
+                else {
+                    let activeToolbar = document.getElementsByClassName("editor-toolbar--visible")[0];
+                    let activeToolbarId = null;
+                    if (activeToolbar) {
+                        activeToolbarId = activeToolbar.dataset.ensembleMenu;
+                        $(activeToolbar).removeClass("editor-toolbar--visible").addClass("editor-toolbar--hidden");
+                        $(".editor-menubar__command--" + activeToolbarId).removeClass("editor-menubar__command--active");
+                    }
+                    
+                    if (targetToolbarId != activeToolbarId) {
+                        $(targetToolbar).removeClass("editor-toolbar--hidden").addClass("editor-toolbar--visible");
+                        $(".editor-menubar__command--" + targetToolbarId).addClass("editor-menubar__command--active");
+                    }
+                    Ensemble.Pages.Editor.viewResized();
                 }
             },
 
@@ -145,6 +174,18 @@
 
             menuCommandClick: function (event) {
                 let command = event.currentTarget.dataset.editorCommand;
+
+                if (command == "show-library") {
+                    let targetMenu = document.getElementsByClassName("editor-menu--import")[0];
+
+                    targetMenu.addEventListener("transitionend", Ensemble.Editor.MenuMGR._listeners.importMenuTransitioned);
+                    $(targetMenu).addClass("editor-menu--visible");
+
+
+                    Ensemble.Editor.MenuMGR.menuOpen = true;
+                    $(Ensemble.Editor.MenuMGR.ui.clickEater).addClass("editor-menu-clickeater--active");
+                    Ensemble.KeyboardMGR.editorMenu();
+                }
 
                 // HOME
                 if (command == "undo") setTimeout(function () { Ensemble.HistoryMGR.undoLast() }, 0);
@@ -179,7 +220,7 @@
                     Ensemble.Editor.CalloutMGR.hide();
                 }, 0);
 
-                Ensemble.Editor.MenuMGR.closeMenu();
+                //Ensemble.Editor.MenuMGR.closeMenu();
             },
 
             importMenuTransitioned: function (event) {
@@ -187,10 +228,5 @@
                 Ensemble.MediaBrowser.refresh();
             }
         },
-
-        menuState: {
-            defaultMenu: "defaultMenu",
-            clipSelected: "clipSelected"
-        }
     });
 })();

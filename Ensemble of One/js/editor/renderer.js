@@ -44,14 +44,18 @@
 
 
         canvasResized: function (event) {
-            this._scale = $(this.ui.playbackCanvas).width() / Ensemble.Session.maxResolution[0];
             this.ui.playbackCanvas.setAttribute("width", this.ui.playbackCanvas.clientWidth);
             this.ui.playbackCanvas.setAttribute("height", this.ui.playbackCanvas.clientHeight);
+            this._scale = this.ui.playbackCanvas.height / Ensemble.Session.maxResolution[1];
+
             this._playbackCanvasContext = this.ui.playbackCanvas.getContext("2d");
             try {
                 this.renderSingleFrame();
             }
-            catch (exception) { }
+            catch (exception) {
+                console.error("The Renderer is dead. Long live the Renderer.");
+                console.error(exception);
+            }
         },
 
         generateClipInitialPosition: function (width, height) {

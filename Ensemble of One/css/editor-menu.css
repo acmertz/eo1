@@ -3,58 +3,79 @@
     margin: 0;
     padding: 0;
     z-index: 1;
+    background-color: #dc143c;
+    padding: 5px 0 0 0;
+    box-sizing: border-box;
 }
 
 .editor-menubar__command-list {
     list-style: none;
     margin: 0;
     padding: 0;
+    display: flex;
 }
 
 .editor-menubar__command {
-    height: 50px;
-    background-color: #ececec;
+    height: 40px;
+    text-align: center;
     display: inline-block;
-    line-height: 50px;
+    line-height: 40px;
     font-size: 18px;
-    padding: 0 10px;
-    border-bottom: 1px solid #d3d3d3;
-    position: relative;
-    top: -1px;
-    border-right: 1px solid transparent;
-    border-left: 1px solid transparent;
-}
-
-.editor-menubar__command:first-child {
-    top: 0px;
+    padding: 0 15px;
+    color: #fafafa;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    margin: 0 0 0 5px;
 }
 
 .editor-menubar__command:last-child {
-    border-right: 0;
 }
 
 .editor-menubar__command:hover {
-    background-color: #fafafa;
+    background-color: #df2b4f;
 }
 
 .editor-menubar__command:active {
-    background-color: #000;
-    color: #fff;
+    background-color: #e6e6e6;
+    color: #dc143c;
 }
 
 .editor-menubar__command:last-child {
-    border-right: 1px solid #D3D3D3;
 }
 
 .editor-menubar__command--active {
-    background-color: #fafafa;
-    border-bottom: 1px solid #fafafa;
-    border-left: 1px solid #d3d3d3;
-    border-right: 1px solid #d3d3d3;
+    background-color: #e6e6e6;
+    color: #dc143c;
 }
 
-.editor-menubar__command--active:first-child {
-    border-left: 1px solid #fafafa;
+.editor-menubar__command--active:hover {
+    background-color: #e6e6e6;
+    color: #dc143c;
+}
+
+.editor-menubar__command--file {
+}
+
+.editor-menubar__toolbar {
+    border-bottom: 1px solid #dc143c;
+    display: none;
+}
+
+.editor-menubar__toolbar .win-toolbar-actionarea {
+    -ms-flex-pack: start;
+    -webkit-justify-content: flex-start;
+    justify-content: flex-start;
+}
+
+.editor-toolbar--visible {
+    display: block;
+    visibility: visible;
+}
+
+.editor-toolbar--hidden {
+    display: block;
+    position: absolute;
+    visibility: hidden;
 }
 
 .editor-menu {
@@ -64,20 +85,21 @@
     width: 616px;
     max-width: 100%;
     max-height: 100%;
-    padding: 60px 10px 10px 10px;
+    padding: 10px;
     border: 1px solid #d3d3d3;
     border-top: 0;
     border-left: 0;
     border-bottom-right-radius: 3px;
     box-sizing: border-box;
     background-color: #fafafa;
-    transform: translateY(-100%);
+    transform: translateX(-100%);
     transition: transform 0.4s ease;
     overflow-y: auto;
+    z-index: 100;
 }
 
 .editor-menu--visible {
-    transform: translateY(0%);
+    transform: translateX(0);
 }
 
 .editor-menu--import {
@@ -118,6 +140,10 @@
     border-color: #d3d3d3
 }
 
+.editor-menubar__command--file {
+    font-family: "Segoe MDL2 Assets", "Symbols";
+}
+
 .editor-menu__divider {
     margin: 10px 0;
     border-top: 5px solid #d3d3d3;
@@ -130,6 +156,7 @@
     left: 0;
     width: 100%;
     height: 100%;
+    z-index: 99;
 }
 
 .editor-menu-clickeater--active {
@@ -137,6 +164,12 @@
 }
 
 /* HOME MENU */
+
+#editorProjectNameDisplay {
+    display: inline-block;
+    line-height: 41px;
+    vertical-align: top;
+}
 
 .editor-project-details {
     display: flex;
@@ -159,7 +192,6 @@
 .mediaBrowserHeaderContainer {
     display: flex;
     justify-content: center;
-    height: 28px;
 }
 
 #editorMenuMediaBrowserFileList {
@@ -168,17 +200,18 @@
     overflow-x: hidden;
     padding: 10px;
     background: #fafafa;
-    border-top-right-radius: 5px;
-    border-top-left-radius: 5px;
+    border-radius: 5px;
+    border-top-right-radius: 0;
     border: 2px solid #e6e6e6;
-    z-index: 2;
 }
 
 #editorMediaBrowserLocationButtonContainer {
     display: inline-block;
-    float: left;
     font-size: large;
-    font-weight: bold;
+    line-height: 41px;
+    height: 41px;
+    vertical-align: top;
+    margin: 0 0 0 10px;
 }
 
 #editorMediaBrowserLocationButton {
@@ -192,40 +225,18 @@
 
 #editorMediaBrowserCurrentPathContainer {
     flex: 1;
-    margin-right: 20px;
-    margin-left: 20px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    white-space: nowrap;
-    font-size: large;
-}
-
-.editorMediaBrowserPathItem {
-}
-
-.editorMediaBrowserPathItemButton {
-    padding-left: 5px;
-    padding-right: 5px;
-    max-width: 200px;
-    display: inline-block;
+    margin: 0 10px;
     overflow: hidden;
+    white-space: nowrap;
     text-overflow: ellipsis;
-}
-
-.editorMediaBrowserPathItemButton:hover {
-    background-color: rgb(245,245,245);
-}
-
-.editorMediaBrowserPathItemButton:active {
-    background-color: black;
-    color: white;
+    font-size: large;
+    line-height: 41px;
+    height: 41px;
 }
 
 #editorMediaBrowserFolderControlContainer {
-    display: inline-block;
-    float: right;
-    margin-right: 20px;
-    z-index: 1;
+    display: flex;
+    line-height: 41px;
 }
 
 .mediaBrowserFolderControl {
@@ -235,10 +246,12 @@
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     border-bottom-style: none;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-bottom: 5px;
-    padding-top: 5px;
+    padding: 0 15px;
+    margin: 0 0 0 5px;
+}
+
+.mediaBrowserFolderControl:first-of-type {
+    margin: 0;
 }
 
 .mediaBrowserFolderControl:hover {
@@ -254,22 +267,23 @@
 #editorMediaBrowserLoadingProgress {
     margin-right: 10px;
     display: none;
+    vertical-align: top;
 }
 
-.mediaBrowserListItem {
+.media-browser__list-item {
     padding: 2px;
     display: flex;
     flex-direction: row;
     height: 50px;
-    animation: mediaBrowserListItemEnter 0.3s linear;
+    animation: media-browser__list-itemEnter 0.3s linear;
     animation-fill-mode: both;
 }
 
-.mediaBrowserListItem:hover {
+.media-browser__list-item:hover {
     background-color: rgb(240,240,240);
 }
 
-@keyframes mediaBrowserListItemEnter {
+@keyframes media-browser__list-itemEnter {
     0% {
         opacity: 0;
         transform: translateX(12%);
@@ -286,7 +300,7 @@
     }
 }
 
-.mediaBrowserListItemIcon {
+.media-browser__list-itemIcon {
     /* Styling here for the icon column. */
     font-size: xx-large;
     padding-left: 5px;
@@ -301,23 +315,48 @@
     text-shadow: 0px 0px 10px black;
 }
 
-.mediaBrowserListItemMeta {
+.media-browser__list-itemMeta {
     flex: 1;
     display: flex;
     flex-direction: column;
     margin-left: 10px;
 }
 
-.mediaBrowserListItemRow {
+.media-browser-item__row {
     flex: 1;
     display: flex;
     flex-direction: row;
 }
 
-.mediaBrowserListItemTitle {
+.media-browser-item__title {
     font-size: large;
+    overflow: hidden;
+
 }
 
-.mediaBrowserListItemRowComponent {
+.media-browser-item__rowComponent {
     flex: 1;
+}
+
+.media-browser__list-itemControls {
+    display: none;
+}
+
+.media-browser__list-item--file:hover .media-browser__list-itemControls {
+    display: block;
+}
+
+.media-browser__list-item--file:hover .media-browser__list-itemDetails {
+    display: none;
+}
+
+.media-browser-item__control {
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    font-size: 18px;
+    padding: 0 10px;
+}
+
+.media-browser-item__control:hover {
+    border: 1px dotted black;
 }

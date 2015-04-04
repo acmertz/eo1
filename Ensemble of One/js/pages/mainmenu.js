@@ -44,6 +44,8 @@
             }, 800);
 
             this._attachListeners();
+
+            Ensemble.Session.clearProjectSession();
         },
 
         hide: function () {
@@ -69,8 +71,6 @@
             /// <summary>Hides the Main Menu, dismisses the loading page, and then shows the Editor page.</summary>
             Ensemble.Pages.MainMenu.hide();
             window.setTimeout(function () {
-                $("#projectLoadingPageContainer").removeClass("loadingPageVisible");
-                $("#projectLoadingPageContainer").addClass("loadingPageHidden");
                 Ensemble.Pages.MainMenu.hideOpenProjectDialog();
                 Ensemble.Pages.MainMenu.hideNewProjectDialog();
                 window.setTimeout(function () {

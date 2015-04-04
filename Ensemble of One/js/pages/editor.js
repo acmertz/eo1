@@ -29,6 +29,7 @@
             Ensemble.HistoryMGR.refreshMessage();
             Ensemble.Editor.MenuMGR.init();
             Ensemble.Editor.CalloutMGR.init();
+            Ensemble.MediaBrowser.init();
 
             //Hide UI items so they can play their entrance animation
             $(Ensemble.Editor.UI.PageSections.upperHalf.entireSection).removeClass("editorUpperHalfVisible");
@@ -52,10 +53,7 @@
             Ensemble.Editor.TimelineMGR.newRulerScale();
 
             $(Ensemble.Editor.UI.PageSections.upperHalf.entireSection).addClass("editorUpperHalfVisible");
-
-            window.setTimeout(function () {
-                $(Ensemble.Editor.UI.PageSections.lowerHalf.entireSection).addClass("editorLowerHalfVisible");
-            }, 100);
+            $(Ensemble.Editor.UI.PageSections.lowerHalf.entireSection).addClass("editorLowerHalfVisible");
 
             window.setTimeout(function () {
                 $(Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit).removeClass("editorHorizontalDividerHidden");
@@ -71,7 +69,8 @@
             this.currentEffectsMenuTab = null;
             this._attachListeners();
 
-            
+            $("#projectLoadingPageContainer").removeClass("loadingPageVisible");
+            $("#projectLoadingPageContainer").addClass("loadingPageHidden");
         },
 
         unload: function () {
@@ -84,6 +83,8 @@
                 Ensemble.Pages.Editor._detachListeners();
                 console.log("Unloading project...");
 
+                Ensemble.Editor.MenuMGR.closeMenu();
+
                 Ensemble.Editor.TimelineMGR.unload();
                 Ensemble.Editor.PlaybackMGR.unload();
                 Ensemble.Editor.Renderer.unload();
@@ -91,6 +92,7 @@
                 Ensemble.HistoryMGR.unload();
                 Ensemble.Editor.SelectionMGR.unload();
                 Ensemble.Editor.CalloutMGR.unload();
+                Ensemble.MediaBrowser.unload();
 
                 window.setTimeout(function () {
                     $("#imgMainLogo").css("display", "initial");

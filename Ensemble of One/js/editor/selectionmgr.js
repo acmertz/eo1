@@ -52,6 +52,8 @@
             this.selected.push(clipId);
 
             if (needFrame) Ensemble.Editor.Renderer.requestFrame();
+
+            Ensemble.Editor.MenuMGR._reevaluateState();
         },
 
         clearSelection: function () {
@@ -72,6 +74,7 @@
             }
             this.selected = [];
             if (needFrame) Ensemble.Editor.Renderer.requestFrame();
+            Ensemble.Editor.MenuMGR._reevaluateState();
             console.log("Cleared selection.");
         },
 
