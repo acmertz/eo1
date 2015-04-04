@@ -8,34 +8,41 @@
     var activation = Windows.ApplicationModel.Activation;
 
     app.onactivated = function (args) {
+        if (Ensemble.Platform.currentPlatform == null) {
+            args.setPromise(WinJS.UI.processAll());
+            Ensemble.Platform.setCurrentPlatform("win8");
+            Ensemble.Session.setCurrentPage("mainMenu");
+            Ensemble.Editor.UI.relink();
+        }
+        if (args.detail.kind === Windows.ApplicationModel.Activation.ActivationKind.file && Ensemble.Session.projectName == null) {
+            let projectToOpen = null;
+            for (let i = 0; i < args.detail.files.length; i++) {
+                if (args.detail.files[i].fileType == ".eo1") {
+                    projectToOpen = args.detail.files[i];
+                    break;
+                }
+            }
+            Ensemble.Pages.MainMenu.showProjectLoadingPage(projectToOpen.displayName);
+            Ensemble.FileIO.loadProject(null, projectToOpen);
+        }
         if (args.detail.kind === activation.ActivationKind.launch) {
             if (args.detail.previousExecutionState !== activation.ApplicationExecutionState.terminated) {
                 // TODO: This application has been newly launched. Initialize
                 // your application here.
+                console.info("Starting Ensemble of One...");
                 var extendedSplashImage = document.getElementById("imgMainLogo");
                 extendedSplashImage.width = args.detail.splashScreen.imageLocation.width;
                 extendedSplashImage.height = args.detail.splashScreen.imageLocation.height;
 
-                Ensemble.Platform.setCurrentPlatform("win8");
-                Ensemble.Session.setCurrentPage("mainMenu");
-
                 args.detail.splashScreen.addEventListener("dismissed", function () {
-                    console.info("App started up.");
-
-                    // Load all needed resources here
-                    Ensemble.Editor.UI.relink();
-                    
-                    window.setTimeout(function () {
-                        //showMainMenuInitial();
-                        Ensemble.Pages.MainMenu.showInitial();
-                    }, 0);
+                    Ensemble.Pages.MainMenu.showInitial();
                 });
             } else {
                 // TODO: This application has been reactivated from suspension.
                 // Restore application state here.
                 // Load back into previously open project.
             }
-            args.setPromise(WinJS.UI.processAll());
+            console.info("Ensemble of One started!");
         }
     };
 

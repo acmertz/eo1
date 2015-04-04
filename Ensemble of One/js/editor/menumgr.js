@@ -58,7 +58,6 @@
             if (Ensemble.HistoryMGR.canRedo()) $(".editor-command__redo").removeClass("editor-command--disabled");
 
             $(".editor-toolbar-command--import-media").removeAttr("disabled");
-            $(".editor-toolbar-command--browse-media").removeAttr("disabled");
 
             if (Ensemble.Editor.SelectionMGR.selected.length == 1) {
                 $(".editor-command__trim-clip").removeClass("editor-command--disabled");
@@ -75,14 +74,14 @@
 
         ui: {
             clickEater: null,
-            toolbar: null
         },
 
         _refreshUI: function () {
             this.ui.clickEater = document.getElementsByClassName("editor-menu-clickeater")[0];
-            this.ui.toolbar = document.getElementsByClassName("editor-menubar__toolbar")[0];
 
             this.ui.clickEater.addEventListener("click", Ensemble.Editor.MenuMGR._listeners.clickEaterClicked);
+            document.getElementsByClassName("editor-import-menu__close-button")[0].addEventListener("click", Ensemble.Editor.MenuMGR._listeners.clickEaterClicked);
+            document.getElementsByClassName("editor-file-menu__close-button")[0].addEventListener("click", Ensemble.Editor.MenuMGR._listeners.clickEaterClicked);
 
             let menuBarButtons = document.getElementsByClassName("editor-menubar__command");
             for (let i = 0; i < menuBarButtons.length; i++) {
@@ -103,9 +102,10 @@
 
         _cleanUI: function () {
             this.ui.clickEater.removeEventListener("click", Ensemble.Editor.MenuMGR._listeners.clickEaterClicked);
+            document.getElementsByClassName("editor-import-menu__close-button")[0].removeEventListener("click", Ensemble.Editor.MenuMGR._listeners.clickEaterClicked);
+            document.getElementsByClassName("editor-file-menu__close-button")[0].removeEventListener("click", Ensemble.Editor.MenuMGR._listeners.clickEaterClicked);
 
             this.ui.clickEater = null;
-            this.ui.toolbar = null;
 
             let menuBarButtons = document.getElementsByClassName("editor-menubar__command");
             for (let i = 0; i < menuBarButtons.length; i++) {

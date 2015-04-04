@@ -165,6 +165,12 @@
 
 /* HOME MENU */
 
+#editorProjectNameDisplay {
+    display: inline-block;
+    line-height: 41px;
+    vertical-align: top;
+}
+
 .editor-project-details {
     display: flex;
     flex-direction: row;
@@ -186,7 +192,6 @@
 .mediaBrowserHeaderContainer {
     display: flex;
     justify-content: center;
-    height: 28px;
 }
 
 #editorMenuMediaBrowserFileList {
@@ -195,15 +200,18 @@
     overflow-x: hidden;
     padding: 10px;
     background: #fafafa;
-    border-top-right-radius: 5px;
-    border-top-left-radius: 5px;
+    border-radius: 5px;
+    border-top-right-radius: 0;
     border: 2px solid #e6e6e6;
 }
 
 #editorMediaBrowserLocationButtonContainer {
     display: inline-block;
-    float: left;
     font-size: large;
+    line-height: 41px;
+    height: 41px;
+    vertical-align: top;
+    margin: 0 0 0 10px;
 }
 
 #editorMediaBrowserLocationButton {
@@ -217,25 +225,18 @@
 
 #editorMediaBrowserCurrentPathContainer {
     flex: 1;
-    margin: 0 20px;
+    margin: 0 10px;
     overflow: hidden;
     white-space: nowrap;
-    font-size: large;
-}
-
-.editorMediaBrowserPathItem {
-    padding-left: 5px;
-    padding-right: 5px;
-    max-width: 200px;
-    display: inline-block;
-    overflow: hidden;
     text-overflow: ellipsis;
+    font-size: large;
+    line-height: 41px;
+    height: 41px;
 }
 
 #editorMediaBrowserFolderControlContainer {
-    display: inline-block;
-    float: right;
-    margin-right: 20px;
+    display: flex;
+    line-height: 41px;
 }
 
 .mediaBrowserFolderControl {
@@ -245,10 +246,12 @@
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     border-bottom-style: none;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-bottom: 5px;
-    padding-top: 5px;
+    padding: 0 15px;
+    margin: 0 0 0 5px;
+}
+
+.mediaBrowserFolderControl:first-of-type {
+    margin: 0;
 }
 
 .mediaBrowserFolderControl:hover {
@@ -264,22 +267,23 @@
 #editorMediaBrowserLoadingProgress {
     margin-right: 10px;
     display: none;
+    vertical-align: top;
 }
 
-.mediaBrowserListItem {
+.media-browser__list-item {
     padding: 2px;
     display: flex;
     flex-direction: row;
     height: 50px;
-    animation: mediaBrowserListItemEnter 0.3s linear;
+    animation: media-browser__list-itemEnter 0.3s linear;
     animation-fill-mode: both;
 }
 
-.mediaBrowserListItem:hover {
+.media-browser__list-item:hover {
     background-color: rgb(240,240,240);
 }
 
-@keyframes mediaBrowserListItemEnter {
+@keyframes media-browser__list-itemEnter {
     0% {
         opacity: 0;
         transform: translateX(12%);
@@ -296,7 +300,7 @@
     }
 }
 
-.mediaBrowserListItemIcon {
+.media-browser__list-itemIcon {
     /* Styling here for the icon column. */
     font-size: xx-large;
     padding-left: 5px;
@@ -311,23 +315,48 @@
     text-shadow: 0px 0px 10px black;
 }
 
-.mediaBrowserListItemMeta {
+.media-browser__list-itemMeta {
     flex: 1;
     display: flex;
     flex-direction: column;
     margin-left: 10px;
 }
 
-.mediaBrowserListItemRow {
+.media-browser-item__row {
     flex: 1;
     display: flex;
     flex-direction: row;
 }
 
-.mediaBrowserListItemTitle {
+.media-browser-item__title {
     font-size: large;
+    overflow: hidden;
+
 }
 
-.mediaBrowserListItemRowComponent {
+.media-browser-item__rowComponent {
     flex: 1;
+}
+
+.media-browser__list-itemControls {
+    display: none;
+}
+
+.media-browser__list-item--file:hover .media-browser__list-itemControls {
+    display: block;
+}
+
+.media-browser__list-item--file:hover .media-browser__list-itemDetails {
+    display: none;
+}
+
+.media-browser-item__control {
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    font-size: 18px;
+    padding: 0 10px;
+}
+
+.media-browser-item__control:hover {
+    border: 1px dotted black;
 }

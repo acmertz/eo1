@@ -7,6 +7,7 @@
 
         projectName: null,
         projectFilename: null,
+        projectFile: null,
         projectAspect: null,
         projectDuration: null,
         projectClipCount: null,
@@ -38,9 +39,17 @@
             return this._currentPage;
         },
 
-        loadProject: function (projectFileName) {
-            /// <summary>Loads the project with the given filename.</summary>
-            /// <param name="projectFileName" type="String">The filename of the project data file.</param>
+        clearProjectSession: function () {
+            /// <summary>Clears project data from the current application session.</summary>
+            this.projectName = null;
+            this.projectFilename = null;
+            this.projectFile = null;
+            this.projectAspect = null;
+            this.projectDuration = null;
+            this.projectClipCount = null;
+            this.projectTrackCount = null;
+            this.projectDateCreated = null;
+            this.projectDateModified = null;
         }
     });
 })();

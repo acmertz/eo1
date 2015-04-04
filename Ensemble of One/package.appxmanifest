@@ -30,6 +30,18 @@
         </m2:InitialRotationPreference>
         <m2:ApplicationView MinWidth="width500" />
       </m2:VisualElements>
+      <Extensions>
+        <Extension Category="windows.fileTypeAssociation">
+          <FileTypeAssociation Name="eo1-project" m2:DesiredView="default">
+            <DisplayName>Ensemble of One Project</DisplayName>
+            <InfoTip>Ensemble of One Project</InfoTip>
+            <EditFlags OpenIsSafe="true" />
+            <SupportedFileTypes>
+              <FileType ContentType="text/xml">.eo1</FileType>
+            </SupportedFileTypes>
+          </FileTypeAssociation>
+        </Extension>
+      </Extensions>
     </Application>
   </Applications>
   <Capabilities>

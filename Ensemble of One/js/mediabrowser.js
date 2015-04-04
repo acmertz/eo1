@@ -11,6 +11,14 @@
         _dragEnsembleFile: null,
         _currentPreview: null,
 
+        init: function () {
+            this._refreshUI();
+        },
+
+        unload: function () {
+            this._cleanUI();
+        },
+
         setContext: function (contextval) {
             /// <summary>Sets the context of the media browser and changes the view to the appropriate library.</summary>
             /// <param name="contextval" type="String">The type of context to enter. Must be one video, music, or picture. Defaults to video.</param>
@@ -121,15 +129,15 @@
             var element = Ensemble.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.childNodes[index];
             switch (Ensemble.MediaBrowser._mediaItems[index].eo1type) {
                 case "video":
-                    element.getElementsByClassName("mediaBrowserListItemQuality")[0].innerText = Ensemble.Utilities.FriendlyResolutionGenerator.turnFriendly(meta["width"], meta["height"]);
-                    element.getElementsByClassName("mediaBrowserListItemDuration")[0].innerText = Ensemble.Utilities.TimeConverter.convertTime(meta["duration"]);
+                    element.getElementsByClassName("media-browser__list-itemQuality")[0].innerText = Ensemble.Utilities.FriendlyResolutionGenerator.turnFriendly(meta["width"], meta["height"]);
+                    element.getElementsByClassName("media-browser__list-itemDuration")[0].innerText = Ensemble.Utilities.TimeConverter.convertTime(meta["duration"]);
                     break;
                 case "audio":
-                    element.getElementsByClassName("mediaBrowserListItemQuality")[0].innerText = meta["albumArtist"];
-                    element.getElementsByClassName("mediaBrowserListItemDuration")[0].innerText = Ensemble.Utilities.TimeConverter.convertTime(meta["duration"]);
+                    element.getElementsByClassName("media-browser__list-itemQuality")[0].innerText = meta["albumArtist"];
+                    element.getElementsByClassName("media-browser__list-itemDuration")[0].innerText = Ensemble.Utilities.TimeConverter.convertTime(meta["duration"]);
                     break;
                 case "picture":
-                    element.getElementsByClassName("mediaBrowserListItemQuality")[0].innerText = meta["width"] + " x " + meta["height"];
+                    element.getElementsByClassName("media-browser__list-itemQuality")[0].innerText = meta["width"] + " x " + meta["height"];
                     break;
             }
             
@@ -142,7 +150,7 @@
             /// <param name="thumb" type="URI">The image to set as the thumbnail.</param>
 
             var element = Ensemble.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.childNodes[index];
-            var elementIcon = element.getElementsByClassName("mediaBrowserListItemIcon")[0];
+            var elementIcon = element.getElementsByClassName("media-browser__list-itemIcon")[0];
             elementIcon.style.backgroundImage = thumb;
             $(elementIcon).addClass("mediaBrowserIconFilled");
         },
@@ -185,16 +193,16 @@
             Ensemble.MediaBrowser._mediaItems = [];
             var mediaString = "";
             for (var i = 0; i < folders.length; i++) {
-                mediaString = mediaString + '<div class="mediaBrowserListItem" id="' + "mediaBrowserListItemIndex" + i.toString() + '"><div class="mediaBrowserListItemIcon">' + folders[i].icon + '</div><div class="mediaBrowserListItemMeta"><div class="mediaBrowserListItemRow mediaBrowserListItemTitle">' + (folders[i].title || folders[i].displayName) + '</div><div class="mediaBrowserListItemRow"><div class="mediaBrowserListItemRowComponent">' + folders[i].displayType + '</div><div class="mediaBrowserListItemRowComponent"></div><div class="mediaBrowserListItemRowComponent"></div></div></div></div>';
+                mediaString = mediaString + '<div class="media-browser__list-item" id="' + "media-browser__list-itemIndex" + i.toString() + '"><div class="media-browser__list-itemIcon">' + folders[i].icon + '</div><div class="media-browser__list-itemMeta"><div class="media-browser-item__row media-browser-item__title">' + (folders[i].title || folders[i].displayName) + '</div><div class="media-browser-item__row"><div class="media-browser-item__rowComponent">' + folders[i].displayType + '</div><div class="media-browser-item__rowComponent"></div><div class="media-browser-item__rowComponent"></div></div></div></div>';
                 Ensemble.MediaBrowser._mediaItems.push(folders[i]);
             }
             for (var i = 0; i < files.length; i++) {
-                mediaString = mediaString + '<div class="mediaBrowserListItem" id="' + "mediaBrowserListItemIndex" + (i + folders.length).toString() + '"><div class="mediaBrowserListItemIcon">' + files[i].icon + '</div><div class="mediaBrowserListItemMeta"><div class="mediaBrowserListItemRow mediaBrowserListItemTitle">' + (files[i].title || files[i].displayName) + '</div><div class="mediaBrowserListItemRow"><div class="mediaBrowserListItemRowComponent">' + files[i].displayType + '</div><div class="mediaBrowserListItemRowComponent mediaBrowserListItemDuration"></div><div class="mediaBrowserListItemRowComponent mediaBrowserListItemQuality"></div></div></div></div>';
+                mediaString = mediaString + '<div class="media-browser__list-item media-browser__list-item--file" id="' + "media-browser__list-itemIndex" + (i + folders.length).toString() + '"><div class="media-browser__list-itemIcon">' + files[i].icon + '</div><div class="media-browser__list-itemMeta"><div class="media-browser-item__row media-browser-item__title">' + (files[i].title || files[i].displayName) + '</div><div class="media-browser-item__row media-browser__list-itemDetails"><div class="media-browser-item__rowComponent">' + files[i].displayType + '</div><div class="media-browser-item__rowComponent media-browser__list-itemDuration"></div><div class="media-browser-item__rowComponent media-browser__list-itemQuality"></div></div><div class="media-browser-item__row media-browser__list-itemControls"><span class="media-browser-item__control" data-media-command="import">&#57609;</span><span class="media-browser-item__control" data-media-command="preview">&#57602;</span><span class="media-browser-item__control" data-media-command="properties">&#57676;</span></div></div></div>';
                 Ensemble.MediaBrowser._mediaItems.push(files[i]);
             }
             Ensemble.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.innerHTML = mediaString;
             //Ensemble.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.addEventListener("click", Ensemble.MediaBrowser._listItemClicked, false);
-            Ensemble.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.addEventListener("mousedown", Ensemble.MediaBrowser._listItemMouseDown, false);
+            Ensemble.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.addEventListener("pointerdown", Ensemble.MediaBrowser._listItemMouseDown, false);
             Ensemble.FileIO.retrieveMediaProperties(Ensemble.MediaBrowser._mediaItems[0], 0, Ensemble.MediaBrowser._metaDataCallback);
             Ensemble.FileIO.retrieveThumbnail(Ensemble.MediaBrowser._mediaItems[0], 0, Ensemble.MediaBrowser._thumbnailCallback);
 
@@ -213,18 +221,7 @@
                     break;
             }
 
-            var pathItem = document.createElement("span");
-            pathItem.className = "editorMediaBrowserPathItem";
-            pathItem.innerText = listToUse[listToUse.length - 1].displayName;
-
-            Ensemble.Editor.UI.PageSections.menu.mediaMenu.local.pathDisplay.appendChild(pathItem);
-
-        },
-
-        pickMediaFile: function (multi) {
-            /// <summary>Shows a file picker appropriate to the current platform so the user can select a file.</summary>
-            /// <param name="multi" type="Boolean">(Optionl) Show a multi-select file picker instead of the default one.</param>
-            /// <returns type="File">The selected file. Returns null if no file was selected.</returns>
+            Ensemble.Editor.UI.PageSections.menu.mediaMenu.local.pathDisplay.innerText = listToUse[listToUse.length - 1].displayName;
         },
 
         showMediaPreview: function (ensembleFile, fileUri) {
@@ -344,24 +341,56 @@
 
         _listItemMouseDown: function (event) {
             console.log("Media browser mousedown.");
-            var closestListItem = $(event.srcElement).closest(".mediaBrowserListItem");
+            var closestListItem = $(event.srcElement).closest(".media-browser__list-item");
             if (closestListItem[0]) {
-                var itemIndex = parseInt(closestListItem[0].id.replace("mediaBrowserListItemIndex", ""));
-                if (!isNaN(itemIndex)) {
-                    
-                    Ensemble.MediaBrowser._dragEnsembleFile = Ensemble.MediaBrowser._mediaItems[itemIndex];
-                    if (Ensemble.MediaBrowser._dragEnsembleFile.eo1type != "folder") {
-                        Ensemble.MediaBrowser._dragCheck = true;
-                        Ensemble.Utilities.MouseTracker.startTracking(event.clientX, event.clientY);
-                        window.setTimeout(function (timeoutEvent) {
-                            if (Ensemble.MediaBrowser._dragCheck) {
-                                //Still dragging - start drag operation.
-                                Ensemble.MediaBrowser._listItemBeginDrag();
-                            }
-                        }, 500);
-                        
+                var itemIndex = parseInt(closestListItem[0].id.replace("media-browser__list-itemIndex", ""));
+                Ensemble.MediaBrowser._currentPreview = Ensemble.MediaBrowser._mediaItems[itemIndex];
+                if ($(event.target).hasClass("media-browser-item__control")) {
+                    console.log("Clicked a media browser control.");
+                    if (event.target.dataset.mediaCommand == "import") {
+                        var allCommands = [];
+                        for (var i = 0; i < Ensemble.Editor.TimelineMGR.tracks.length; i++) {
+                            //Create a new menu item for each track.
+                            var menuItem = new WinJS.UI.MenuCommand();
+                            menuItem.label = (i + 1) + ".) " + Ensemble.Editor.TimelineMGR.tracks[i].name;
+                            menuItem.extraClass = "mediaBrowserImportMediaToTrack" + Ensemble.Editor.TimelineMGR.tracks[i].id;
+                            menuItem.onclick = Ensemble.MediaBrowser._addPreviewToTrack;
+                            allCommands.push(menuItem);
+                        }
+                        document.getElementById("mediaBrowserAddToProjectFlyout").winControl.commands = allCommands;
+                        setTimeout(function () { document.getElementById("mediaBrowserAddToProjectFlyout").winControl.show(event.target, "auto"); }, 0);
                     }
-                    document.addEventListener("mouseup", Ensemble.MediaBrowser._listItemMouseUp, false);
+                    else if (event.target.dataset.mediaCommand == "preview") {
+                        Ensemble.FileIO.retrieveMediaPreview(Ensemble.MediaBrowser._mediaItems[itemIndex], Ensemble.MediaBrowser._listeners.retrievedMediaPreview, event);
+                    }
+                    else if (event.target.dataset.mediaCommand == "properties") {
+                        document.getElementsByClassName("media-browser-property--display-name")[0].innerText = Ensemble.MediaBrowser._mediaItems[itemIndex].title || Ensemble.MediaBrowser._mediaItems[itemIndex].displayName;
+                        document.getElementsByClassName("media-browser-property--unique-id")[0].innerText = Ensemble.MediaBrowser._mediaItems[itemIndex]._uniqueId;
+                        document.getElementsByClassName("media-browser-property--bitrate")[0].innerText = Ensemble.MediaBrowser._mediaItems[itemIndex].bitrate;
+                        document.getElementsByClassName("media-browser-property--duration")[0].innerText = Ensemble.MediaBrowser._mediaItems[itemIndex].duration;
+                        document.getElementsByClassName("media-browser-property--width")[0].innerText = Ensemble.MediaBrowser._mediaItems[itemIndex].width;
+                        document.getElementsByClassName("media-browser-property--height")[0].innerText = Ensemble.MediaBrowser._mediaItems[itemIndex].height;
+                        document.getElementsByClassName("media-browser-property--mime")[0].innerText = Ensemble.MediaBrowser._mediaItems[itemIndex].mime;
+                        document.getElementsByClassName("media-browser-property--path")[0].innerText = Ensemble.MediaBrowser._mediaItems[itemIndex].path;
+                        setTimeout(function () { Ensemble.MediaBrowser.ui.propertiesFlyout.winControl.show(event.target, "auto"); }, 0);
+                    }
+                }
+                else {
+                    if (!isNaN(itemIndex)) {
+                        Ensemble.MediaBrowser._dragEnsembleFile = Ensemble.MediaBrowser._mediaItems[itemIndex];
+                        if (Ensemble.MediaBrowser._dragEnsembleFile.eo1type != "folder") {
+                            Ensemble.MediaBrowser._dragCheck = true;
+                            Ensemble.Utilities.MouseTracker.startTracking(event.clientX, event.clientY);
+                            window.setTimeout(function (timeoutEvent) {
+                                if (Ensemble.MediaBrowser._dragCheck) {
+                                    //Still dragging - start drag operation.
+                                    Ensemble.MediaBrowser._listItemBeginDrag();
+                                }
+                            }, 500);
+
+                        }
+                        document.addEventListener("mouseup", Ensemble.MediaBrowser._listItemMouseUp, false);
+                    }
                 }
             }
         },
@@ -371,20 +400,20 @@
             if (!Ensemble.MediaBrowser._dragging) {
                 Ensemble.MediaBrowser._dragCheck = false;
 
-                var closestListItem = $(event.srcElement).closest(".mediaBrowserListItem");
+                var closestListItem = $(event.srcElement).closest(".media-browser__list-item");
                 if (closestListItem[0]) {
-                    var itemIndex = parseInt(closestListItem[0].id.replace("mediaBrowserListItemIndex", ""));
+                    var itemIndex = parseInt(closestListItem[0].id.replace("media-browser__list-itemIndex", ""));
                     if (!isNaN(itemIndex)) {
                         if (Ensemble.MediaBrowser._mediaItems[itemIndex] === Ensemble.MediaBrowser._dragEnsembleFile) {
                             if (Ensemble.MediaBrowser._mediaItems[itemIndex].eo1type == "folder") {
                                 document.removeEventListener("mouseup", Ensemble.MediaBrowser._listItemMouseUp);
                                 Ensemble.MediaBrowser.navigateToFolder(Ensemble.MediaBrowser._mediaItems[itemIndex]);
                             }
-                            else {
-                                console.info("Showing media item preview...");
-                                document.removeEventListener("mouseup", Ensemble.MediaBrowser._listItemMouseUp);
-                                Ensemble.FileIO.retrieveMediaPreview(Ensemble.MediaBrowser._mediaItems[itemIndex], Ensemble.MediaBrowser.showMediaPreview);
-                            }
+                            //else {
+                            //    console.info("Showing media item preview...");
+                            //    document.removeEventListener("mouseup", Ensemble.MediaBrowser._listItemMouseUp);
+                            //    Ensemble.FileIO.retrieveMediaPreview(Ensemble.MediaBrowser._mediaItems[itemIndex], Ensemble.MediaBrowser.showMediaPreview);
+                            //}
                         }
                     }
                 }
@@ -438,9 +467,46 @@
                     break;
             }
             Ensemble.MediaBrowser.navigateToFolder(Ensemble.MediaBrowser.currentLocation());
+        },
+
+
+
+
+        ui: {
+            previewFlyout: null,
+            propertiesFlyout: null
+        },
+
+        _refreshUI: function () {
+            this.ui.previewFlyout = document.getElementsByClassName("media-browser__preview-flyout")[0];
+            this.ui.propertiesFlyout = document.getElementsByClassName("media-browser__properties-flyout")[0];
+
+            this.ui.previewFlyout.addEventListener("afterhide", Ensemble.MediaBrowser._listeners.closedMediaPreview);
+        },
+
+        _cleanUI: function () {
+            this.ui.previewFlyout.removeEventListener("afterhide", Ensemble.MediaBrowser._listeners.closedMediaPreview);
+
+            this.ui.previewFlyout = null;
+            this.ui.propertiesFlyout = null;
+        },
+
+        _listeners: {
+            retrievedMediaPreview: function (file, uri, event) {
+                console.log("Loaded preview.");
+                $(".media-browser-preview").addClass("media-browser-preview--hidden");
+
+                let item = document.getElementsByClassName("media-browser-preview--" + file.eo1type)[0];
+                item.src = uri;
+                $(item).removeClass("media-browser-preview--hidden");
+
+                setTimeout(function () { Ensemble.MediaBrowser.ui.previewFlyout.winControl.show(event.target); }, 0);
+            },
+
+            closedMediaPreview: function () {
+                $(".media-browser-preview").attr("src", "");
+            }
         }
-
-
 
     });
 })();

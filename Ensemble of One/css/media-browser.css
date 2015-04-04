@@ -1,0 +1,14 @@
+﻿.media-browser__preview-flyout {
+    padding: 0;
+}
+
+.media-browser-preview {
+    background-color: #000;
+    width: 320px;
+    height: auto;
+    display: block;
+}
+
+.media-browser-preview--hidden {
+    display: none;
+}

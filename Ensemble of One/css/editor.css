@@ -4,10 +4,8 @@
 }
 
 #editorUpperHalf {
+    padding: 10px;
     flex: 1;
-    padding-top: 10px;
-    padding-bottom: 10px;
-
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -16,7 +14,7 @@
 
 .editorUpperHalfVisible {
     animation: editorUpperHalfEnter 0.2s ease;
-    animation-delay: 0.3s;
+    animation-delay: 0.4s;
     animation-fill-mode: backwards;
 }
 
@@ -77,10 +75,7 @@
 
 .editorPlayControlSection #editorPlaypauseButton {
     font-size: 36px;
-    padding-left: 40px;
-    padding-right: 40px;
-    padding-top: 0;
-    padding-bottom: 0;
+    padding: 0 40px;
 }
 
 .editorPlayControlSection i:active {
@@ -162,7 +157,7 @@
 
 .editorLowerHalfVisible {
     animation: editorLowerHalfEnter 0.4s ease;
-    animation-delay: 0.35s;
+    animation-delay: 0.6s;
     animation-fill-mode: backwards;
 }
 
@@ -353,7 +348,8 @@
     position: fixed;
     top: 0px;
     right: 0px;
-    padding: 10px;
+    padding: 5px 10px 0 10px;
+    line-height: 41px;
     color: #fafafa;
     z-index: 1;
 }
@@ -486,7 +482,4 @@
 }
 
 @media screen and (orientation:portrait) {
-    .portraitHidden {
-        display: none !important;
-    }
 }

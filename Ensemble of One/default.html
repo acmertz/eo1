@@ -13,6 +13,7 @@
     <link href="/css/default.css" rel="stylesheet" />
     <link rel="stylesheet" href="/css/editor.css" />
     <link rel="stylesheet" href="/css/editor-menu.css" />
+    <link rel="stylesheet" href="/css/media-browser.css" />
     <link rel="stylesheet" href="/css/timeline.css" />
     <script src="/js/default.js"></script>
 
@@ -328,12 +329,9 @@
                             <span id="editorTimeDisplay">00:00:00.000</span>
                         </div>
                         <div class="editorPlayControlSection" id="editorPlayControlsMain">
-                            <i class="portraitHidden editorGeneralButton" id="editorSkipBackButton" title="Skip backward">&#xE100;</i>
                             <i class="editorGeneralButton" id="editorPlaypauseButton" title="Play">&#xE102;</i>
-                            <i class="portraitHidden editorGeneralButton" id="editorSkipForwardButton" title="Skip forward">&#xE101;</i>
                         </div>
                         <div class="editorPlayControlSection" id="editorPlayControlsRight">
-                            <i class="editorGeneralButton" id="editorFullscreenButton" title="Full screen">&#xE1D9;</i>
                         </div>
 
                         
@@ -399,8 +397,8 @@
 
             <div class="editor-menu-container">
                 <div class="editor-menu editor-menu--file">
+                    <button class="win-backbutton editor-file-menu__close-button"></button>
                     <h2 id="editorProjectNameDisplay">Project Name Here</h2>
-                    <span>&#xE13E; Rename</span>
                     <div class="editor-project-details">
                         <div class="editor-project-details__column">
                             <img src="" alt="Project thumbnail" class="editor-project-details__thumb" />
@@ -420,14 +418,12 @@
                     </ul>
                 </div>
                 <div class="editor-menu editor-menu--import">
-                    <div>
-                        <button class="win-backbutton"></button>
-                    </div>
                     <div class="mediaBrowserHeaderContainer">
+                        <button class="win-backbutton editor-import-menu__close-button"></button>
                         <div id="editorMediaBrowserLocationButtonContainer"><span id="editorMediaBrowserLocationButton">Videos library</span><span>&nbsp;&rsaquo;</span></div>
                         <div id="editorMediaBrowserCurrentPathContainer"></div>
                         <div id="editorMediaBrowserFolderControlContainer">
-                            <progress class="win-ring" id="editorMediaBrowserLoadingProgress"></progress>
+                            <progress class="win-ring win-medium" id="editorMediaBrowserLoadingProgress"></progress>
                             <span class="mediaBrowserFolderControl" id="editorMediaBrowserHomeButton">&#xE10F;</span>
                             <span class="mediaBrowserFolderControl" id="editorMediaBrowserUpOneLevelButton">&#xE110;</span>
                             <span class="mediaBrowserFolderControl" id="editorMediaBrowserRefreshButton">&#xE117;</span>
@@ -490,8 +486,6 @@
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMediaBrowserLocationVideosLibrary',label:'Videos library'}"></button>
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMediaBrowserLocationMusicLibrary',label:'Music library'}"></button>
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMediaBrowserLocationPicturesLibrary',label:'Pictures library'}"></button>
-            <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'separator',type:'separator'}" />
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'forwardMenuItem',label:'Browse...'}"></button>
         </div>
         <div id="editorMoveTrackFlyout" data-win-control="WinJS.UI.Menu">
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMoveTrackTop',label:'Move to top'}"></button>
@@ -510,6 +504,21 @@
             <button id="remove-track-confirmation__button">Remove</button>
         </div>
         <div id="mediaBrowserAddToProjectFlyout" data-win-control="WinJS.UI.Menu"></div>
+        <div class="media-browser__preview-flyout" data-win-control="WinJS.UI.Flyout" aria-label="{Preview clip}">
+            <video class="media-browser-preview media-browser-preview--video" autoplay></video>
+            <audio class="media-browser-preview media-browser-preview--audio" autoplay controls></audio>
+            <img class="media-browser-preview media-browser-preview--picture" />
+        </div>
+        <div class="media-browser__properties-flyout" data-win-control="WinJS.UI.Flyout" aria-label="{Clip properties}">
+            <h3 class="media-browser-property media-browser-property--display-name">[Display name here]</h3>
+            <span class="bold">Folder-unique ID: </span><span class="media-browser-property media-browser-property--unique-id"></span><br />
+            <span class="bold">Path: </span><span class="media-browser-property media-browser-property--path"></span><br />
+            <span class="bold">Mime: </span><span class="media-browser-property media-browser-property--mime"></span><br />
+            <span class="bold">Width: </span><span class="media-browser-property media-browser-property--width"></span><br />
+            <span class="bold">Height: </span><span class="media-browser-property media-browser-property--height"></span><br />
+            <span class="bold">Duration: </span><span class="media-browser-property media-browser-property--duration"></span><br />
+            <span class="bold">Bitrate: </span><span class="media-browser-property media-browser-property--bitrate"></span>       
+        </div>
         <div id="clip-selected-contextmenu" data-win-control="WinJS.UI.Menu">
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Copy'}"></button>
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Cut'}"></button>

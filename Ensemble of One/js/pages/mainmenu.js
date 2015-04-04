@@ -44,6 +44,8 @@
             }, 800);
 
             this._attachListeners();
+
+            Ensemble.Session.clearProjectSession();
         },
 
         hide: function () {

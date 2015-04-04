@@ -58,6 +58,7 @@
     </AppxManifest>
     <Content Include="css\editor-menu.css" />
     <Content Include="css\editor.css" />
+    <Content Include="css\media-browser.css" />
     <Content Include="css\timeline.css" />
     <Content Include="default.html" />
     <None Include="Ensemble of One_TemporaryKey.pfx" />

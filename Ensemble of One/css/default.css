@@ -1,4 +1,8 @@
-﻿#splashScreen {
+﻿.bold {
+    font-weight: bold;
+}
+
+#splashScreen {
     position: fixed;
     top: 0px;
     left: 0px;
@@ -1078,7 +1082,7 @@
 }
 
 .loadingPage progress {
-    position: fixed;
+    position: absolute;
     top: 75%;
     left: 50%;
     transform: translate(-50%, -50%);
