@@ -8,7 +8,8 @@
 
         init: function () {
             this._refreshUI();
-            this.setMenuState(this.menuState.defaultMenu);
+            this._reevaluateState();
+            $(".editor-toolbar--home").removeClass("editor-toolbar--hidden").addClass("editor-toolbar--visible");
         },
 
         unload: function () {
@@ -17,15 +18,6 @@
             this.currentMenu = null;
             this.currentState = "none";
             $(".editor-menu").removeClass(".editor-menu--visible");
-        },
-
-        setMenuState: function (state) {
-            /// <summary>Sets the state of the menu items to reflect which commands are currently valid.</summary>
-            /// <param name="state" type="String">The state to set.</param>
-            if (state in this.menuState) {
-                this.currentState = state;
-                this._reevaluateState();
-            }
         },
 
         showMenu: function (menuElement, menubarCommand) {
@@ -134,29 +126,29 @@
 
         _listeners: {
             menubarButtonClicked: function (event) {
-                let menuId = event.currentTarget.dataset.ensembleMenu;
-                if (menuId == "file") {
+                let targetToolbarId = event.currentTarget.dataset.ensembleMenu;
+                let targetToolbar = document.getElementsByClassName("editor-toolbar--" + event.currentTarget.dataset.ensembleMenu)[0];
+                if (targetToolbarId == "file") {
                     console.log("Show file menu.");
-                    let targetMenu = document.getElementsByClassName("editor-menu--" + event.currentTarget.dataset.ensembleMenu)[0];
-                    $(targetMenu).addClass("editor-menu--visible");
+                    $(".editor-menu--file").addClass("editor-menu--visible");
                     Ensemble.Editor.MenuMGR.menuOpen = true;
                     $(Ensemble.Editor.MenuMGR.ui.clickEater).addClass("editor-menu-clickeater--active");
                     Ensemble.KeyboardMGR.editorMenu();
                 }
                 else {
-                    Ensemble.Editor.MenuMGR.ui.toolbar;
-
-
-                    let targetMenu = document.getElementsByClassName("editor-menu--" + event.currentTarget.dataset.ensembleMenu)[0];
-                    if (Ensemble.Editor.MenuMGR.currentMenu == targetMenu) {
-                        Ensemble.Editor.MenuMGR.closeMenu();
+                    let activeToolbar = document.getElementsByClassName("editor-toolbar--visible")[0];
+                    let activeToolbarId = null;
+                    if (activeToolbar) {
+                        activeToolbarId = activeToolbar.dataset.ensembleMenu;
+                        $(activeToolbar).removeClass("editor-toolbar--visible").addClass("editor-toolbar--hidden");
+                        $(".editor-menubar__command--" + activeToolbarId).removeClass("editor-menubar__command--active");
                     }
-                    else {
-                        Ensemble.Editor.MenuMGR.showMenu(targetMenu, event.currentTarget);
-                        Ensemble.Editor.MenuMGR.menuOpen = true;
-                        $(Ensemble.Editor.MenuMGR.ui.clickEater).addClass("editor-menu-clickeater--active");
-                        Ensemble.KeyboardMGR.editorMenu();
+                    
+                    if (targetToolbarId != activeToolbarId) {
+                        $(targetToolbar).removeClass("editor-toolbar--hidden").addClass("editor-toolbar--visible");
+                        $(".editor-menubar__command--" + targetToolbarId).addClass("editor-menubar__command--active");
                     }
+                    Ensemble.Pages.Editor.viewResized();
                 }
             },
 
@@ -236,10 +228,5 @@
                 Ensemble.MediaBrowser.refresh();
             }
         },
-
-        menuState: {
-            defaultMenu: "defaultMenu",
-            clipSelected: "clipSelected"
-        }
     });
 })();

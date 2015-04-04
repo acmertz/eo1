@@ -71,7 +71,8 @@
             this.currentEffectsMenuTab = null;
             this._attachListeners();
 
-            
+            $("#projectLoadingPageContainer").removeClass("loadingPageVisible");
+            $("#projectLoadingPageContainer").addClass("loadingPageHidden");
         },
 
         unload: function () {

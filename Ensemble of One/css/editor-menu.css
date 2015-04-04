@@ -12,11 +12,11 @@
     list-style: none;
     margin: 0;
     padding: 0;
+    display: flex;
 }
 
 .editor-menubar__command {
     height: 40px;
-    width: 50px;
     text-align: center;
     display: inline-block;
     line-height: 40px;
@@ -25,10 +25,7 @@
     color: #fafafa;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
-}
-
-.editor-menubar__command:first-child {
-    margin: 0 0 0 10px;
+    margin: 0 0 0 5px;
 }
 
 .editor-menubar__command:last-child {
@@ -56,14 +53,29 @@
     color: #dc143c;
 }
 
+.editor-menubar__command--file {
+}
+
 .editor-menubar__toolbar {
     border-bottom: 1px solid #dc143c;
+    display: none;
 }
 
 .editor-menubar__toolbar .win-toolbar-actionarea {
     -ms-flex-pack: start;
     -webkit-justify-content: flex-start;
     justify-content: flex-start;
+}
+
+.editor-toolbar--visible {
+    display: block;
+    visibility: visible;
+}
+
+.editor-toolbar--hidden {
+    display: block;
+    position: absolute;
+    visibility: hidden;
 }
 
 .editor-menu {
@@ -73,20 +85,21 @@
     width: 616px;
     max-width: 100%;
     max-height: 100%;
-    padding: 110px 10px 10px 10px;
+    padding: 10px;
     border: 1px solid #d3d3d3;
     border-top: 0;
     border-left: 0;
     border-bottom-right-radius: 3px;
     box-sizing: border-box;
     background-color: #fafafa;
-    transform: translateY(-100%);
+    transform: translateX(-100%);
     transition: transform 0.4s ease;
     overflow-y: auto;
+    z-index: 100;
 }
 
 .editor-menu--visible {
-    transform: translateY(0%);
+    transform: translateX(0);
 }
 
 .editor-menu--import {
@@ -127,6 +140,10 @@
     border-color: #d3d3d3
 }
 
+.editor-menubar__command--file {
+    font-family: "Segoe MDL2 Assets", "Symbols";
+}
+
 .editor-menu__divider {
     margin: 10px 0;
     border-top: 5px solid #d3d3d3;
@@ -139,6 +156,7 @@
     left: 0;
     width: 100%;
     height: 100%;
+    z-index: 99;
 }
 
 .editor-menu-clickeater--active {
@@ -180,7 +198,6 @@
     border-top-right-radius: 5px;
     border-top-left-radius: 5px;
     border: 2px solid #e6e6e6;
-    z-index: 2;
 }
 
 #editorMediaBrowserLocationButtonContainer {
@@ -219,7 +236,6 @@
     display: inline-block;
     float: right;
     margin-right: 20px;
-    z-index: 1;
 }
 
 .mediaBrowserFolderControl {

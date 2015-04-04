@@ -225,11 +225,13 @@
         <div class="pageContainer pageContainerHidden" id="editorPageContainer">
             <nav class="editor-menubar">
                 <div class="editor-menubar__command-list">
-                    <span class="editor-menubar__command editor-menubar__command--file" data-ensemble-menu="file">File</span>
-                    <span class="editor-menubar__command editor-menubar__command--active editor-menubar__command--home" data-ensemble-menu="home">Home</span>
-                    <!--<span class="editor-menubar__command editor-menubar__command--import" data-ensemble-menu="import">Import</span>-->
+                    <span class="editor-menubar__command editor-menubar__command--file" data-ensemble-menu="file">&#59136;</span>
+                    <span class="editor-menubar__command editor-menubar__command--home editor-menubar__command--active" data-ensemble-menu="home">Home</span>
+                    <span class="editor-menubar__command editor-menubar__command--record" data-ensemble-menu="record">Record</span>
+                    <span class="editor-menubar__command editor-menubar__command--effects" data-ensemble-menu="effects">Animations</span>
+                    <span class="editor-menubar__command editor-menubar__command--export" data-ensemble-menu="export">Export</span>
                 </div>
-                <div data-win-control="WinJS.UI.ToolBar" class="editor-menubar__toolbar editor-toolbar--home">
+                <div data-win-control="WinJS.UI.ToolBar" class="editor-menubar__toolbar editor-toolbar--home" data-ensemble-menu="home">
                     <button data-editor-command="show-library" class="editor-toolbar-command editor-toolbar-command--import-media" data-win-control="WinJS.UI.Command" data-win-options="{
                         label:'Import',
                         section:'primary',
@@ -263,6 +265,57 @@
                         section:'primary',
                         type:'button',
                         icon: 'clearselection'}"></button>
+                </div>
+                <div data-win-control="WinJS.UI.ToolBar" class="editor-menubar__toolbar editor-toolbar--record" data-ensemble-menu="record">
+                    <button data-editor-command="record-video" class="editor-toolbar-command editor-toolbar-command--record-video" data-win-control="WinJS.UI.Command" data-win-options="{
+                        label:'Video',
+                        section:'primary',
+                        type:'button',
+                        icon: 'video'}"></button>
+                    <button data-editor-command="record-audio" class="editor-toolbar-command editor-toolbar-command--record-audio" data-win-control="WinJS.UI.Command" data-win-options="{
+                        label:'Audio',
+                        section:'primary',
+                        type:'button',
+                        icon: 'microphone'}"></button>
+                    <button data-editor-command="record-photo" class="editor-toolbar-command editor-toolbar-command--record-photo" data-win-control="WinJS.UI.Command" data-win-options="{
+                        label:'Photo',
+                        section:'primary',
+                        type:'button',
+                        icon: 'camera'}"></button>
+                </div>
+                <div data-win-control="WinJS.UI.ToolBar" class="editor-menubar__toolbar editor-toolbar--effects" data-ensemble-menu="effects">
+                    <button data-editor-command="create-title" class="editor-toolbar-command editor-toolbar-command--create-title" data-win-control="WinJS.UI.Command" data-win-options="{
+                        label:'Title',
+                        section:'primary',
+                        type:'button',
+                        icon: 'previewlink'}"></button>
+                    <button data-editor-command="create-filter" class="editor-toolbar-command editor-toolbar-command--create-filter" data-win-control="WinJS.UI.Command" data-win-options="{
+                        label:'Filter',
+                        section:'primary',
+                        type:'button',
+                        icon: 'favorite'}"></button>
+                    <button data-editor-command="edit-animation" class="editor-toolbar-command editor-toolbar-command--edit-animation" data-win-control="WinJS.UI.Command" data-win-options="{
+                        label:'Animation',
+                        section:'primary',
+                        type:'button',
+                        icon: 'list'}"></button>
+                </div>
+                <div data-win-control="WinJS.UI.ToolBar" class="editor-menubar__toolbar editor-toolbar--export" data-ensemble-menu="export">
+                    <button data-editor-command="export-video" class="editor-toolbar-command editor-toolbar-command--export-video" data-win-control="WinJS.UI.Command" data-win-options="{
+                        label:'Video',
+                        section:'primary',
+                        type:'button',
+                        icon: 'videochat'}"></button>
+                    <button data-editor-command="export-audio" class="editor-toolbar-command editor-toolbar-command--export-audio" data-win-control="WinJS.UI.Command" data-win-options="{
+                        label:'Audio',
+                        section:'primary',
+                        type:'button',
+                        icon: 'audio'}"></button>
+                    <button data-editor-command="export-photo" class="editor-toolbar-command editor-toolbar-command--export-photo" data-win-control="WinJS.UI.Command" data-win-options="{
+                        label:'Photo',
+                        section:'primary',
+                        type:'button',
+                        icon: 'pictures'}"></button>
                 </div>
             </nav>
             <div id="editorUpperHalf">
@@ -367,6 +420,9 @@
                     </ul>
                 </div>
                 <div class="editor-menu editor-menu--import">
+                    <div>
+                        <button class="win-backbutton"></button>
+                    </div>
                     <div class="mediaBrowserHeaderContainer">
                         <div id="editorMediaBrowserLocationButtonContainer"><span id="editorMediaBrowserLocationButton">Videos library</span><span>&nbsp;&rsaquo;</span></div>
                         <div id="editorMediaBrowserCurrentPathContainer"></div>
