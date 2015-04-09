@@ -160,16 +160,55 @@
                 if (Ensemble.Editor.TimelineMGR._clipIndex.length > 0) {
                     let scaledX = event.offsetX / Ensemble.Editor.Renderer._scale;
                     let scaledY = event.offsetY / Ensemble.Editor.Renderer._scale;
-                    let found = -1;
+                    let found = null;
                     for (let i = 0; i < Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList.length; i++) {
                         if (Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList[i].containsPoint(scaledX, scaledY)) {
-                            found = Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList[i].id;
+                            found = Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList[i];
                             break;
                         }
                     }
-                    if (found > -1) Ensemble.Editor.SelectionMGR.replaceHovering(found);
+                    if (found) {
+                        // top (left), right (top), bottom (right), left (bottom)
+                        Ensemble.Editor.SelectionMGR.replaceHovering(found.id);
+                        Ensemble.Editor.Renderer.ui.playbackCanvas.style.cursor = "pointer";
+                        let resizeThreshold = 10 / Ensemble.Editor.Renderer._scale;
+                        if (found.selected) {
+                            Ensemble.Editor.Renderer.ui.playbackCanvas.style.cursor = "move";
+                            let corner = false;
+                            if (found.ycoord <= scaledY && scaledY <= found.ycoord + resizeThreshold) {
+                                if (found.xcoord <= scaledX && scaledX <= found.xcoord + resizeThreshold) {
+                                    Ensemble.Editor.Renderer.ui.playbackCanvas.style.cursor = "nwse-resize";
+                                    corner = true;
+                                }
+                                else Ensemble.Editor.Renderer.ui.playbackCanvas.style.cursor = "ns-resize";
+                            }
+                            if ((found.xcoord + found.width) - resizeThreshold <= scaledX && scaledX <= found.xcoord + found.width && !corner) {
+                                if (found.ycoord <= scaledY && scaledY <= found.ycoord + resizeThreshold) {
+                                    Ensemble.Editor.Renderer.ui.playbackCanvas.style.cursor = "nesw-resize";
+                                    corner = true;
+                                }
+                                else Ensemble.Editor.Renderer.ui.playbackCanvas.style.cursor = "ew-resize";
+                            }
+                            if ((found.ycoord + found.height) - resizeThreshold <= scaledY && scaledY <= found.ycoord + found.height && !corner) {
+                                if ((found.xcoord + found.width) - resizeThreshold <= scaledX && scaledX <= found.xcoord + found.width && !corner) {
+                                    Ensemble.Editor.Renderer.ui.playbackCanvas.style.cursor = "nwse-resize";
+                                    corner = true;
+                                }
+                                else Ensemble.Editor.Renderer.ui.playbackCanvas.style.cursor = "ns-resize";
+                            }
+                            if (found.xcoord <= scaledX && scaledX <= found.xcoord + resizeThreshold && !corner) {
+                                if ((found.ycoord + found.height) - resizeThreshold <= scaledY && scaledY <= found.ycoord + found.height && !corner) {
+                                    Ensemble.Editor.Renderer.ui.playbackCanvas.style.cursor = "nesw-resize";
+                                    corner = true;
+                                }
+                                else Ensemble.Editor.Renderer.ui.playbackCanvas.style.cursor = "ew-resize";
+                            }
+                            
+                        }
+                    }
                     else {
                         Ensemble.Editor.SelectionMGR.clearHovering();
+                        Ensemble.Editor.Renderer.ui.playbackCanvas.style.cursor = "default";
                     }
                 }
             },
@@ -187,6 +226,7 @@
                 if (Ensemble.Editor.SelectionMGR.hovering.length > 0) {
                     // select the clip that is hovering
                     Ensemble.Editor.SelectionMGR.replaceSelection(Ensemble.Editor.SelectionMGR.hovering[0]);
+                    Ensemble.Editor.Renderer.ui.playbackCanvas.style.cursor = "move";
                     Ensemble.Editor.Renderer._clipDragPrimeTimer = setTimeout(Ensemble.Editor.Renderer._listeners.clipDragStart, 100);
 
                     Ensemble.Editor.Renderer.disableStandardInteraction();
