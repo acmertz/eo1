@@ -11,6 +11,8 @@
         _clipDragCurrentLeft: 0,
         _clipDragCurrentTop: 0,
 
+        _currentCursor: "",
+
         _draggedClips: [],
 
         init: function () {
@@ -160,6 +162,7 @@
                 if (Ensemble.Editor.TimelineMGR._clipIndex.length > 0) {
                     let scaledX = event.offsetX / Ensemble.Editor.Renderer._scale;
                     let scaledY = event.offsetY / Ensemble.Editor.Renderer._scale;
+                    let cursor = "default";
                     let found = null;
                     for (let i = 0; i < Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList.length; i++) {
                         if (Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList[i].containsPoint(scaledX, scaledY)) {
@@ -168,47 +171,29 @@
                         }
                     }
                     if (found) {
-                        // top (left), right (top), bottom (right), left (bottom)
+                        cursor = "pointer";
                         Ensemble.Editor.SelectionMGR.replaceHovering(found.id);
-                        Ensemble.Editor.Renderer.ui.playbackCanvas.style.cursor = "pointer";
-                        let resizeThreshold = 10 / Ensemble.Editor.Renderer._scale;
+
                         if (found.selected) {
-                            Ensemble.Editor.Renderer.ui.playbackCanvas.style.cursor = "move";
-                            let corner = false;
-                            if (found.ycoord <= scaledY && scaledY <= found.ycoord + resizeThreshold) {
-                                if (found.xcoord <= scaledX && scaledX <= found.xcoord + resizeThreshold) {
-                                    Ensemble.Editor.Renderer.ui.playbackCanvas.style.cursor = "nwse-resize";
-                                    corner = true;
-                                }
-                                else Ensemble.Editor.Renderer.ui.playbackCanvas.style.cursor = "ns-resize";
+                            cursor = "move";
+                            let bound = found.getClickedBound(scaledX, scaledY);
+                            if (bound.corner >= 0) {
+                                if (bound.corner == 0 || bound.corner == 2) cursor = "nwse-resize";
+                                else cursor = "nesw-resize";
                             }
-                            if ((found.xcoord + found.width) - resizeThreshold <= scaledX && scaledX <= found.xcoord + found.width && !corner) {
-                                if (found.ycoord <= scaledY && scaledY <= found.ycoord + resizeThreshold) {
-                                    Ensemble.Editor.Renderer.ui.playbackCanvas.style.cursor = "nesw-resize";
-                                    corner = true;
-                                }
-                                else Ensemble.Editor.Renderer.ui.playbackCanvas.style.cursor = "ew-resize";
+                            else if (bound.edge >= 0) {
+                                if (bound.edge == 0 || bound.edge == 2) cursor = "ns-resize";
+                                else cursor = "ew-resize";
                             }
-                            if ((found.ycoord + found.height) - resizeThreshold <= scaledY && scaledY <= found.ycoord + found.height && !corner) {
-                                if ((found.xcoord + found.width) - resizeThreshold <= scaledX && scaledX <= found.xcoord + found.width && !corner) {
-                                    Ensemble.Editor.Renderer.ui.playbackCanvas.style.cursor = "nwse-resize";
-                                    corner = true;
-                                }
-                                else Ensemble.Editor.Renderer.ui.playbackCanvas.style.cursor = "ns-resize";
-                            }
-                            if (found.xcoord <= scaledX && scaledX <= found.xcoord + resizeThreshold && !corner) {
-                                if ((found.ycoord + found.height) - resizeThreshold <= scaledY && scaledY <= found.ycoord + found.height && !corner) {
-                                    Ensemble.Editor.Renderer.ui.playbackCanvas.style.cursor = "nesw-resize";
-                                    corner = true;
-                                }
-                                else Ensemble.Editor.Renderer.ui.playbackCanvas.style.cursor = "ew-resize";
-                            }
-                            
                         }
                     }
                     else {
                         Ensemble.Editor.SelectionMGR.clearHovering();
-                        Ensemble.Editor.Renderer.ui.playbackCanvas.style.cursor = "default";
+                    }
+
+                    if (cursor != Ensemble.Editor.Renderer._currentCursor) {
+                        Ensemble.Editor.Renderer._currentCursor = cursor;
+                        Ensemble.Editor.Renderer.ui.playbackCanvas.style.cursor = cursor;
                     }
                 }
             },
@@ -225,15 +210,45 @@
             playbackCanvasPointerDown: function (event) {
                 if (Ensemble.Editor.SelectionMGR.hovering.length > 0) {
                     // select the clip that is hovering
-                    Ensemble.Editor.SelectionMGR.replaceSelection(Ensemble.Editor.SelectionMGR.hovering[0]);
-                    Ensemble.Editor.Renderer.ui.playbackCanvas.style.cursor = "move";
-                    Ensemble.Editor.Renderer._clipDragPrimeTimer = setTimeout(Ensemble.Editor.Renderer._listeners.clipDragStart, 100);
+                    let dragDelay = 100;
+                    let cursor = "move";
+                    let boundResize = false;
 
-                    Ensemble.Editor.Renderer.disableStandardInteraction();
-                    Ensemble.Editor.Renderer._clipDragCurrentLeft = event.clientX;
-                    Ensemble.Editor.Renderer._clipDragCurrentTop = event.clientY;
-                    document.addEventListener("pointerup", Ensemble.Editor.Renderer._listeners.preventClipDragStart);
-                    document.addEventListener("pointermove", Ensemble.Editor.Renderer._listeners.updatePointerPosition);
+                    if (Ensemble.Editor.SelectionMGR.selected.indexOf(Ensemble.Editor.SelectionMGR.hovering[0]) > -1) dragDelay = 0;
+                    Ensemble.Editor.SelectionMGR.replaceSelection(Ensemble.Editor.SelectionMGR.hovering[0]);
+                    
+                    if (dragDelay == 0) {
+                        let found = Ensemble.Editor.TimelineMGR.getClipById(Ensemble.Editor.SelectionMGR.hovering[0]);
+                        let scaledX = event.offsetX / Ensemble.Editor.Renderer._scale;
+                        let scaledY = event.offsetY / Ensemble.Editor.Renderer._scale;
+                        
+                        let bound = found.getClickedBound(scaledX, scaledY);
+                        if (bound.corner >= 0) {
+                            if (bound.corner == 0 || bound.corner == 2) cursor = "nwse-resize";
+                            else cursor = "nesw-resize";
+                            boundResize = true;
+                            console.log("Begin corner resize.");
+                        }
+                        else if (bound.edge >= 0) {
+                            if (bound.edge == 0 || bound.edge == 2) cursor = "ns-resize";
+                            else cursor = "ew-resize";
+                            boundResize = true;
+                            console.log("Begin edge resize.");
+                        }
+                    }
+                    if (!boundResize) {
+                        Ensemble.Editor.Renderer._clipDragPrimeTimer = setTimeout(Ensemble.Editor.Renderer._listeners.clipDragStart, dragDelay);
+                        Ensemble.Editor.Renderer.disableStandardInteraction();
+                        Ensemble.Editor.Renderer._clipDragCurrentLeft = event.clientX;
+                        Ensemble.Editor.Renderer._clipDragCurrentTop = event.clientY;
+                        document.addEventListener("pointerup", Ensemble.Editor.Renderer._listeners.preventClipDragStart);
+                        document.addEventListener("pointermove", Ensemble.Editor.Renderer._listeners.updatePointerPosition);
+                    }
+
+                    if (cursor != Ensemble.Editor.Renderer._currentCursor) {
+                        Ensemble.Editor.Renderer._currentCursor = cursor;
+                        Ensemble.Editor.Renderer.ui.playbackCanvas.style.cursor = cursor;
+                    }
                 }
                 else Ensemble.Editor.SelectionMGR.clearSelection();
             },

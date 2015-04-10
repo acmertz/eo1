@@ -148,6 +148,43 @@
                 return false;
             },
 
+            getClickedBound: function (xcoord, ycoord) {
+                /// <summary>Returns the corner number, starting with 0 for the top left and incrementing clockwise, that contains the given coordinates. Returns -1 if no corner was clicked.</summary>
+                /// <param name="xcoord" type="Number">The X coordinate.</param>
+                /// <param name="ycoord" type="Number">The Y coordinate.</param>
+                let resizeThreshold = 10 / Ensemble.Editor.Renderer._scale;
+                let corner = -1;
+                let edge = -1;
+                if (this.ycoord <= ycoord && ycoord <= this.ycoord + resizeThreshold) {
+                    if (this.xcoord <= xcoord && xcoord <= this.xcoord + resizeThreshold) {
+                        corner = 0;
+                    }
+                    else edge = 0;
+                }
+                if ((this.xcoord + this.width) - resizeThreshold <= xcoord && xcoord <= this.xcoord + this.width && 0 > corner) {
+                    if (this.ycoord <= ycoord && ycoord <= this.ycoord + resizeThreshold) {
+                        corner = 1;
+                    }
+                    else edge = 1;
+                }
+                if ((this.ycoord + this.height) - resizeThreshold <= ycoord && ycoord <= this.ycoord + this.height && 0 > corner) {
+                    if ((this.xcoord + this.width) - resizeThreshold <= xcoord && xcoord <= this.xcoord + this.width) {
+                        corner = 2;
+                    }
+                    else edge = 2;
+                }
+                if (this.xcoord <= xcoord && xcoord <= this.xcoord + resizeThreshold && 0 > corner) {
+                    if ((this.ycoord + this.height) - resizeThreshold <= ycoord && ycoord <= this.ycoord + this.height) {
+                        corner = 3;
+                    }
+                    else edge = 3;
+                }
+                return {
+                    corner: corner,
+                    edge: edge
+                };
+            },
+
             unload: function () {
                 /// <summary>Unloads the clip and turns its file reference into a stub.</summary>
                 this._player.src = null;
