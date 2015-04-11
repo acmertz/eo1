@@ -14,6 +14,9 @@
         _currentCursor: "",
 
         _draggedClips: [],
+        _resizedClips: [],
+        _resizedBound: {},
+        _resizedStatus: {},
 
         init: function () {
             this._refreshUI();
@@ -62,8 +65,72 @@
                         context.closePath();
                         context.fill();
 
-                        context.drawImage(clip._player, (clip.xcoord * scale) + xdif, (clip.ycoord * scale) + ydif, clip.width * scale, clip.height * scale);
+                        context.drawImage(clip._player, xcoord, ycoord, xwidth, yheight);
                         context.globalAlpha = 1;
+                    }
+                    if (Ensemble.Editor.Renderer._resizedClips.indexOf(Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList[k].id) > -1) {
+                        let clip = Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList[k];
+                        let scale = Ensemble.Editor.Renderer._scale;
+                        let context = Ensemble.Editor.Renderer._playbackCanvasContext;
+                        let xdif = Ensemble.Editor.Renderer._clipDragCurrentLeft - Ensemble.Editor.Renderer._clipDragOriginalLeft;
+                        let ydif = Ensemble.Editor.Renderer._clipDragCurrentTop - Ensemble.Editor.Renderer._clipDragOriginalTop;
+                        let bound = Ensemble.Editor.Renderer._resizedBound;
+
+                        let xcoord = clip.xcoord * scale;
+                        let ycoord = clip.ycoord * scale;
+                        let xwidth = (clip.width * scale) + xdif;
+                        let yheight = (clip.height * scale) + ydif;
+
+                        if (bound.corner >= 0) {
+
+                        }
+                        else if (bound.edge >= 0) {
+                            switch (bound.edge) {
+                                case 0:
+                                    ycoord = (clip.ycoord * scale) + ydif;
+                                    yheight = (clip.height * scale) - ydif;
+                                    xwidth = clip.width * scale;
+                                    break;
+                                case 1:
+                                    xwidth = (clip.width * scale) + xdif;
+                                    yheight = clip.height * scale;
+                                    break;
+                                case 2:
+                                    yheight = (clip.height * scale) + ydif;
+                                    xwidth = clip.width * scale;
+                                    break;
+                                case 3:
+                                    xcoord = (clip.xcoord * scale) + xdif;
+                                    xwidth = (clip.width * scale) - xdif;
+                                    yheight = clip.height * scale;
+                                    break;
+                            }
+                        }
+
+                        if (1 > xwidth) {
+                            xwidth = 1;
+                            xcoord = (clip.xcoord * scale) + (clip.width * scale) - 1;
+                        }
+                        if (1 > yheight) {
+                            yheight = 1;
+                            ycoord = (clip.ycoord * scale) + (clip.height * scale) - 1;
+                        }
+
+                        context.globalAlpha = 0.75;
+                        context.beginPath();
+                        context.fillStyle = "lightgray";
+                        context.rect(xcoord, ycoord, xwidth, yheight);
+                        context.closePath();
+                        context.fill();
+
+                        context.drawImage(clip._player, xcoord, ycoord, xwidth, yheight);
+                        context.globalAlpha = 1;
+                        Ensemble.Editor.Renderer._resizedStatus = {
+                            xcoord: xcoord,
+                            ycoord: ycoord,
+                            width: xwidth,
+                            height: yheight
+                        }
                     }
                 }
             }
@@ -218,6 +285,7 @@
                     Ensemble.Editor.SelectionMGR.replaceSelection(Ensemble.Editor.SelectionMGR.hovering[0]);
                     
                     if (dragDelay == 0) {
+                        // clip is already selected.
                         let found = Ensemble.Editor.TimelineMGR.getClipById(Ensemble.Editor.SelectionMGR.hovering[0]);
                         let scaledX = event.offsetX / Ensemble.Editor.Renderer._scale;
                         let scaledY = event.offsetY / Ensemble.Editor.Renderer._scale;
@@ -233,7 +301,7 @@
                             if (bound.edge == 0 || bound.edge == 2) cursor = "ns-resize";
                             else cursor = "ew-resize";
                             boundResize = true;
-                            console.log("Begin edge resize.");
+                            Ensemble.Editor.Renderer._listeners.clipResizeStart(event, bound);
                         }
                     }
                     if (!boundResize) {
@@ -319,6 +387,48 @@
 
                 console.log("Finish dragging.");
                 Ensemble.Editor.Renderer._draggedClips = [];
+                Ensemble.Editor.Renderer.enableStandardInteraction();
+            },
+
+            clipResizeStart: function (event, bound) {
+                console.log("Start resizing.");
+                Ensemble.Editor.Renderer.disableStandardInteraction();
+                Ensemble.Editor.Renderer._resizedBound = bound;
+                Ensemble.Editor.Renderer._resizedClips = Ensemble.Editor.SelectionMGR.selected;
+                Ensemble.Editor.Renderer._clipDragCurrentLeft = event.clientX;
+                Ensemble.Editor.Renderer._clipDragCurrentTop = event.clientY;
+                Ensemble.Editor.Renderer._clipDragOriginalLeft = Ensemble.Editor.Renderer._clipDragCurrentLeft;
+                Ensemble.Editor.Renderer._clipDragOriginalTop = Ensemble.Editor.Renderer._clipDragCurrentTop;
+                document.addEventListener("pointermove", Ensemble.Editor.Renderer._listeners.updatePointerPosition);
+                document.addEventListener("pointerup", Ensemble.Editor.Renderer._listeners.clipResizeFinish);
+                Ensemble.Editor.Renderer.start();
+            },
+
+            clipResizeFinish: function (event) {
+                console.log("Finish resizing the clip.");
+                document.removeEventListener("pointermove", Ensemble.Editor.Renderer._listeners.updatePointerPosition);
+                document.removeEventListener("pointerup", Ensemble.Editor.Renderer._listeners.clipResizeFinish);
+                Ensemble.Editor.Renderer.stop();
+
+                let scale = Ensemble.Editor.Renderer._scale;
+                let clip = Ensemble.Editor.TimelineMGR.getClipById(Ensemble.Editor.Renderer._resizedClips[0]);
+                let resizeAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.positionClip, {
+                    clipIds: [clip.id],
+                    oldX: [clip.xcoord],
+                    oldY: [clip.ycoord],
+                    oldWidth: [clip.width],
+                    oldHeight: [clip.height],
+                    newX: [Math.round(Ensemble.Editor.Renderer._resizedStatus.xcoord / scale)],
+                    newY: [Math.round(Ensemble.Editor.Renderer._resizedStatus.ycoord / scale)],
+                    newWidth: [Math.round(Ensemble.Editor.Renderer._resizedStatus.width / scale)],
+                    newHeight: [Math.round(Ensemble.Editor.Renderer._resizedStatus.height / scale)]
+                });
+
+                Ensemble.HistoryMGR.performAction(resizeAction);
+
+                Ensemble.Editor.Renderer._resizedBound = {};
+                Ensemble.Editor.Renderer._resizedClips = [];
+                Ensemble.Editor.Renderer._resizedStatus = {};
                 Ensemble.Editor.Renderer.enableStandardInteraction();
             }
         }
