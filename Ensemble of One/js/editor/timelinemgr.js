@@ -1376,7 +1376,7 @@
             },
 
             timelineScrolled: function (event) {
-                Ensemble.Editor.TimelineMGR.ui.timeRuler.scrollLeft = Ensemble.Editor.TimelineMGR.ui.scrollableContainer.scrollLeft;
+                if (!Ensemble.Editor.Renderer._active) Ensemble.Editor.Renderer.requestFrame();
             },
 
             mouseClipPreventDirectDragStart: function (event) {

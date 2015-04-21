@@ -396,6 +396,7 @@
             xml.Attrib("ycoord", clip.ycoord.toString());
             xml.Attrib("width", clip.width.toString());
             xml.Attrib("height", clip.height.toString());
+            xml.Attrib("aspect", Ensemble.Utilities.AspectGenerator.calcAspect(clip.width, clip.height).toString());
             xml.Attrib("path", clip.file.path);
             xml.EndNode();
             return xml;
@@ -1088,6 +1089,7 @@
             createdClip.ycoord = parseInt(xmlClip.getAttribute("ycoord"), 10);
             createdClip.width = parseInt(xmlClip.getAttribute("width"), 10);
             createdClip.height = parseInt(xmlClip.getAttribute("height"), 10);
+            createdClip.aspect = xmlClip.getAttribute("aspect") || "";
             createdClip.file = { path: xmlClip.getAttribute("path") };
             createdClip.preExisting = true;
             return createdClip;

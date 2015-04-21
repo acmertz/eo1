@@ -134,6 +134,7 @@
                     }
                 }
             }
+            Ensemble.Editor.TimelineMGR.ui.timeRuler.scrollLeft = Ensemble.Editor.TimelineMGR.ui.scrollableContainer.scrollLeft;
             Ensemble.Editor.Renderer.ui.timerDisplay.innerText = Ensemble.Editor.PlaybackMGR.lastTimeFriendly;
             Ensemble.Editor.TimelineMGR.newCursorUpdate(Ensemble.Editor.PlaybackMGR.lastTime);
         },
@@ -342,7 +343,7 @@
             clipDragFinish: function (event) {
                 document.removeEventListener("pointermove", Ensemble.Editor.Renderer._listeners.updatePointerPosition);
                 document.removeEventListener("pointerup", Ensemble.Editor.Renderer._listeners.clipDragFinish);
-                Ensemble.Editor.Renderer.stop();
+                if (!Ensemble.Editor.PlaybackMGR.playing) Ensemble.Editor.Renderer.stop();
 
                 let scale = Ensemble.Editor.Renderer._scale;
                 let xdif = Ensemble.Editor.Renderer._clipDragCurrentLeft - Ensemble.Editor.Renderer._clipDragOriginalLeft;
@@ -408,7 +409,7 @@
                 console.log("Finish resizing the clip.");
                 document.removeEventListener("pointermove", Ensemble.Editor.Renderer._listeners.updatePointerPosition);
                 document.removeEventListener("pointerup", Ensemble.Editor.Renderer._listeners.clipResizeFinish);
-                Ensemble.Editor.Renderer.stop();
+                if (!Ensemble.Editor.PlaybackMGR.playing) Ensemble.Editor.Renderer.stop();
 
                 let scale = Ensemble.Editor.Renderer._scale;
                 let clip = Ensemble.Editor.TimelineMGR.getClipById(Ensemble.Editor.Renderer._resizedClips[0]);

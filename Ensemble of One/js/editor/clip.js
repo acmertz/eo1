@@ -16,6 +16,7 @@
             this.volume = 1;
             this.width = 0;
             this.height = 0;
+            this.aspect = "";
             this.xcoord = 0;
             this.ycoord = 0;
             this.preExisting = true;
@@ -36,6 +37,7 @@
             volume: null,
             width: null,
             height: null,
+            aspect: null,
             xcoord: null,
             ycoord: null,
             type: null,
