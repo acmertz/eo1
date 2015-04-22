@@ -16,6 +16,23 @@
             /// <param name=height" type="Number">The height to use in the calculation.</param>
             var splitAspect = aspect.split(":");
             return Math.ceil(parseInt(splitAspect[0]) / parseInt(splitAspect[1]) * height);
+        },
+
+        calcAspect: function (width, height) {
+            /// <summary>Given a width and height, returns the aspect ratio.</summary>
+            /// <param name="width" type="Number">The width.</param>
+            /// <param name="height" type="Number">The height.</param>
+            /// <returns type="String">The aspect ratio of the given dimensions; for example, "16:9"</returns>
+            let g = Ensemble.Utilities.AspectGenerator.gcd(width, height);
+            return width / g + ":" + height / g;
+        },
+
+        gcd: function (a, b) {
+            /// <summary>Returns the greatest common denominator of the given numbers.</summary>
+            /// <param name="a" type="Number"></param>
+            /// <param name="b" type="Number"></param>
+            /// <returns type="Number"></returns>
+            return (b == 0) ? a : Ensemble.Utilities.AspectGenerator.gcd (b, a%b);
         }
     });
 })();

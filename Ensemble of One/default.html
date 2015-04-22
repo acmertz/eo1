@@ -329,12 +329,10 @@
                             <span id="editorTimeDisplay">00:00:00.000</span>
                         </div>
                         <div class="editorPlayControlSection" id="editorPlayControlsMain">
-                            <i class="editorGeneralButton" id="editorPlaypauseButton" title="Play">&#xE102;</i>
+                            <button id="editorPlaypauseButton" title="Play">&#xE102;</button>
                         </div>
                         <div class="editorPlayControlSection" id="editorPlayControlsRight">
                         </div>
-
-                        
                     </div>
                 </div>
 
@@ -505,7 +503,7 @@
         </div>
         <div id="mediaBrowserAddToProjectFlyout" data-win-control="WinJS.UI.Menu"></div>
         <div class="media-browser__preview-flyout" data-win-control="WinJS.UI.Flyout" aria-label="{Preview clip}">
-            <video class="media-browser-preview media-browser-preview--video" autoplay></video>
+            <video class="media-browser-preview media-browser-preview--video" autoplay controls></video>
             <audio class="media-browser-preview media-browser-preview--audio" autoplay controls></audio>
             <img class="media-browser-preview media-browser-preview--picture" />
         </div>

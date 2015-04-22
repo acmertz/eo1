@@ -200,6 +200,20 @@
             Ensemble.Editor.PlaybackMGR.sync();
         },
 
+        positionClip: function (clipId, xcoord, ycoord, width, height) {
+            /// <summary>Positions the clip with the given ID according to the specified coordinates and dimensions.</summary>
+            /// <param name="clipId" type="Number">The clip's ID.</param>
+            /// <param name="xcoord" type="Number">The new x-coordinate.</param>
+            /// <param name="ycoord" type="Number">The new y-coordinate.</param>
+            /// <param name="width" type="Number">The new width.</param>
+            /// <param name="height" type="Number">The new height.</param>
+            let clipObj = Ensemble.Editor.TimelineMGR.getClipById(clipId);
+            clipObj.xcoord = xcoord;
+            clipObj.ycoord = ycoord;
+            clipObj.width = width || clipObj.width;
+            clipObj.height = height || clipObj.height;
+        },
+
         removeClip: function (clipId) {
             /// <summary>Removes the clip with the given ID.</summary>
             /// <returns type="Object">An object containing Clip "clip" and Number "trackId"</returns>
@@ -1362,11 +1376,12 @@
             },
 
             timelineScrolled: function (event) {
-                Ensemble.Editor.TimelineMGR.ui.timeRuler.scrollLeft = Ensemble.Editor.TimelineMGR.ui.scrollableContainer.scrollLeft;
+                if (!Ensemble.Editor.Renderer._active) Ensemble.Editor.Renderer.requestFrame();
             },
 
             mouseClipPreventDirectDragStart: function (event) {
                 clearTimeout(Ensemble.Editor.TimelineMGR._clipDragPrimeTimer);
+                document.removeEventListener("pointerup", Ensemble.Editor.TimelineMGR._listeners.mouseClipPreventDirectDragStart);
             },
 
             mouseClipDirectDragStart: function () {

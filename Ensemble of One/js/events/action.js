@@ -102,6 +102,19 @@
                     this._payload.newIds = Ensemble.Editor.TimelineMGR.splitClip(this._payload.clipIds, this._payload.time, this._payload.newIds);
                 }
 
+                else if (this._type == Ensemble.Events.Action.ActionType.positionClip) {
+                    let ids = this._payload.clipIds;
+                    let newX = this._payload.newX;
+                    let newY = this._payload.newY;
+                    let newWidth = this._payload.newWidth;
+                    let newHeight = this._payload.newHeight;
+
+                    for (let i = 0; i < ids.length; i++) {
+                        Ensemble.Editor.TimelineMGR.positionClip(ids[i], newX[i], newY[i], newWidth[i], newHeight[i]);
+                    }
+                    Ensemble.Editor.Renderer.requestFrame();
+                }
+
                 else console.error("Unknown Action!");
             },
 
@@ -166,6 +179,19 @@
 
                 else if (this._type == Ensemble.Events.Action.ActionType.splitClip) {
                     Ensemble.Editor.TimelineMGR.concatClip(this._payload.clipIds, this._payload.newIds);
+                }
+
+                else if (this._type == Ensemble.Events.Action.ActionType.positionClip) {
+                    let ids = this._payload.clipIds;
+                    let oldX = this._payload.oldX;
+                    let oldY = this._payload.oldY;
+                    let oldWidth = this._payload.oldWidth;
+                    let oldHeight = this._payload.oldHeight;
+
+                    for (let i = 0; i < ids.length; i++) {
+                        Ensemble.Editor.TimelineMGR.positionClip(ids[i], oldX[i], oldY[i], oldWidth[i], oldHeight[i]);
+                    }
+                    Ensemble.Editor.Renderer.requestFrame();
                 }
 
                 else console.error("Unknown Action!");
@@ -270,6 +296,9 @@
                 else if (this._type == Ensemble.Events.Action.ActionType.splitClip) {
                     return "Split clip.";
                 }
+                else if (this._type == Ensemble.Events.Action.ActionType.positionClip) {
+                    return "Positioned/resized clip.";
+                }
                 else {
                     return "Unknown action";
                 }
@@ -287,7 +316,8 @@
                 removeClip: "removeClip",
                 moveClip: "moveClip",
                 trimClip: "trimClip",
-                splitClip: "splitClip"
+                splitClip: "splitClip",
+                positionClip: "positionClip"
             }
         }
     );

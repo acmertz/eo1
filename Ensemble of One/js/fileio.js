@@ -173,6 +173,33 @@
                         }
                     }
 
+                    else if (Ensemble.HistoryMGR._backStack[i]._type == Ensemble.Events.Action.ActionType.positionClip) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
+                        let ids = Ensemble.HistoryMGR._backStack[i]._payload.clipIds;
+                        let newX = Ensemble.HistoryMGR._backStack[i]._payload.newX;
+                        let newY = Ensemble.HistoryMGR._backStack[i]._payload.newY;
+                        let newWidth = Ensemble.HistoryMGR._backStack[i]._payload.newWidth;
+                        let newHeight = Ensemble.HistoryMGR._backStack[i]._payload.newHeight;
+                        let oldX = Ensemble.HistoryMGR._backStack[i]._payload.oldX;
+                        let oldY = Ensemble.HistoryMGR._backStack[i]._payload.oldY;
+                        let oldWidth = Ensemble.HistoryMGR._backStack[i]._payload.oldWidth;
+                        let oldHeight = Ensemble.HistoryMGR._backStack[i]._payload.oldHeight;
+
+                        for (let k = 0; k < ids.length; k++) {
+                            xml.BeginNode("PositionedClip");
+                            xml.Attrib("clipId", ids[k].toString());
+                            xml.Attrib("newX", newX[k].toString());
+                            xml.Attrib("newY", newY[k].toString());
+                            xml.Attrib("newWidth", newWidth[k].toString());
+                            xml.Attrib("newHeight", newHeight[k].toString());
+                            xml.Attrib("oldX", oldX[k].toString());
+                            xml.Attrib("oldY", oldY[k].toString());
+                            xml.Attrib("oldWidth", oldWidth[k].toString());
+                            xml.Attrib("oldHeight", oldHeight[k].toString());
+                            xml.EndNode();
+                        }
+                    }
+
                     else console.error("Unable to save History Action to disk - unknown type.");
                     xml.EndNode();
                 }
@@ -273,6 +300,33 @@
                         }
                     }
 
+                    else if (Ensemble.HistoryMGR._forwardStack[i]._type == Ensemble.Events.Action.ActionType.positionClip) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
+                        let ids = Ensemble.HistoryMGR._forwardStack[i]._payload.clipIds;
+                        let newX = Ensemble.HistoryMGR._forwardStack[i]._payload.newX;
+                        let newY = Ensemble.HistoryMGR._forwardStack[i]._payload.newY;
+                        let newWidth = Ensemble.HistoryMGR._forwardStack[i]._payload.newWidth;
+                        let newHeight = Ensemble.HistoryMGR._forwardStack[i]._payload.newHeight;
+                        let oldX = Ensemble.HistoryMGR._forwardStack[i]._payload.oldX;
+                        let oldY = Ensemble.HistoryMGR._forwardStack[i]._payload.oldY;
+                        let oldWidth = Ensemble.HistoryMGR._forwardStack[i]._payload.oldWidth;
+                        let oldHeight = Ensemble.HistoryMGR._forwardStack[i]._payload.oldHeight;
+
+                        for (let k = 0; k < ids.length; k++) {
+                            xml.BeginNode("PositionedClip");
+                            xml.Attrib("clipId", ids[k].toString());
+                            xml.Attrib("newX", newX[k].toString());
+                            xml.Attrib("newY", newY[k].toString());
+                            xml.Attrib("newWidth", newWidth[k].toString());
+                            xml.Attrib("newHeight", newHeight[k].toString());
+                            xml.Attrib("oldX", oldX[k].toString());
+                            xml.Attrib("oldY", oldY[k].toString());
+                            xml.Attrib("oldWidth", oldWidth[k].toString());
+                            xml.Attrib("oldHeight", oldHeight[k].toString());
+                            xml.EndNode();
+                        }
+                    }
+
                     else {
                         console.error("Unable to save History Action to disk - unknown type.");
                     }
@@ -342,6 +396,7 @@
             xml.Attrib("ycoord", clip.ycoord.toString());
             xml.Attrib("width", clip.width.toString());
             xml.Attrib("height", clip.height.toString());
+            xml.Attrib("aspect", Ensemble.Utilities.AspectGenerator.calcAspect(clip.width, clip.height).toString());
             xml.Attrib("path", clip.file.path);
             xml.EndNode();
             return xml;
@@ -636,6 +691,43 @@
                             time: time
                         }));
                     }
+                    else if (actionType === Ensemble.Events.Action.ActionType.positionClip) {
+                        let positionedClips = undoActions[i].getElementsByTagName("PositionedClip");
+                        let ids = [];
+                        let newX = [];
+                        let newY = [];
+                        let newWidth = [];
+                        let newHeight = [];
+
+                        let oldX = [];
+                        let oldY = [];
+                        let oldWidth = [];
+                        let oldHeight = [];
+
+                        for (let k = 0; k < positionedClips.length; k++) {
+                            ids.push(parseInt(positionedClips[k].getAttribute("clipId"), 10));
+                            oldX.push(parseInt(positionedClips[k].getAttribute("oldX"), 10));
+                            oldY.push(parseInt(positionedClips[k].getAttribute("oldY"), 10));
+                            oldWidth.push(parseInt(positionedClips[k].getAttribute("oldWidth"), 10));
+                            oldHeight.push(parseInt(positionedClips[k].getAttribute("oldHeight"), 10));
+                            newX.push(parseInt(positionedClips[k].getAttribute("newX"), 10));
+                            newY.push(parseInt(positionedClips[k].getAttribute("newY"), 10));
+                            newWidth.push(parseInt(positionedClips[k].getAttribute("newWidth"), 10));
+                            newHeight.push(parseInt(positionedClips[k].getAttribute("newHeight"), 10));
+                        }
+
+                        Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.positionClip, {
+                            clipIds: ids,
+                            oldX: oldX,
+                            oldY: oldY,
+                            oldWidth: oldWidth,
+                            oldHeight: oldHeight,
+                            newX: newX,
+                            newY: newY,
+                            newWidth: newWidth,
+                            newHeight: newHeight
+                        }));
+                    }
                     else {
                         console.error("Unable to load History Action from disk - unknown type.");
                     }
@@ -760,6 +852,43 @@
                             clipIds: ids,
                             newIds: newids,
                             time: time
+                        }));
+                    }
+                    else if (actionType === Ensemble.Events.Action.ActionType.positionClip) {
+                        let positionedClips = redoActions[i].getElementsByTagName("PositionedClip");
+                        let ids = [];
+                        let newX = [];
+                        let newY = [];
+                        let newWidth = [];
+                        let newHeight = [];
+
+                        let oldX = [];
+                        let oldY = [];
+                        let oldWidth = [];
+                        let oldHeight = [];
+
+                        for (let k = 0; k < positionedClips.length; k++) {
+                            ids.push(parseInt(positionedClips[k].getAttribute("clipId"), 10));
+                            oldX.push(parseInt(positionedClips[k].getAttribute("oldX"), 10));
+                            oldY.push(parseInt(positionedClips[k].getAttribute("oldY"), 10));
+                            oldWidth.push(parseInt(positionedClips[k].getAttribute("oldWidth"), 10));
+                            oldHeight.push(parseInt(positionedClips[k].getAttribute("oldHeight"), 10));
+                            newX.push(parseInt(positionedClips[k].getAttribute("newX"), 10));
+                            newY.push(parseInt(positionedClips[k].getAttribute("newY"), 10));
+                            newWidth.push(parseInt(positionedClips[k].getAttribute("newWidth"), 10));
+                            newHeight.push(parseInt(positionedClips[k].getAttribute("newHeight"), 10));
+                        }
+
+                        Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.positionClip, {
+                            clipIds: ids,
+                            oldX: oldX,
+                            oldY: oldY,
+                            oldWidth: oldWidth,
+                            oldHeight: oldHeight,
+                            newX: newX,
+                            newY: newY,
+                            newWidth: newWidth,
+                            newHeight: newHeight
                         }));
                     }
                     else {
@@ -960,6 +1089,7 @@
             createdClip.ycoord = parseInt(xmlClip.getAttribute("ycoord"), 10);
             createdClip.width = parseInt(xmlClip.getAttribute("width"), 10);
             createdClip.height = parseInt(xmlClip.getAttribute("height"), 10);
+            createdClip.aspect = xmlClip.getAttribute("aspect") || "";
             createdClip.file = { path: xmlClip.getAttribute("path") };
             createdClip.preExisting = true;
             return createdClip;
