@@ -17,6 +17,7 @@
         _resizedClips: [],
         _resizedBound: {},
         _resizedStatus: {},
+        _resizedRatio: {},
 
         init: function () {
             this._refreshUI();
@@ -82,7 +83,28 @@
                         let yheight = (clip.height * scale) + ydif;
 
                         if (bound.corner >= 0) {
-
+                            switch (bound.corner) {
+                                case 0:
+                                    xcoord = (clip.xcoord * scale) + xdif;
+                                    ycoord = (clip.ycoord * scale) + ydif;
+                                    yheight = (clip.height * scale) - ydif;
+                                    xwidth = (clip.width * scale) - xdif;
+                                    break;
+                                case 1:
+                                    xwidth = (clip.width * scale) + xdif;
+                                    yheight = (clip.height * scale) - ydif;
+                                    ycoord = (clip.ycoord * scale) + ydif;
+                                    break;
+                                case 2:
+                                    yheight = (clip.height * scale) + ydif;
+                                    xwidth = (clip.width * scale) + xdif;
+                                    break;
+                                case 3:
+                                    xcoord = (clip.xcoord * scale) + xdif;
+                                    xwidth = (clip.width * scale) - xdif;
+                                    yheight = (clip.height * scale) + ydif;
+                                    break;
+                            }
                         }
                         else if (bound.edge >= 0) {
                             switch (bound.edge) {
@@ -297,6 +319,7 @@
                             else cursor = "nesw-resize";
                             boundResize = true;
                             console.log("Begin corner resize.");
+                            Ensemble.Editor.Renderer._listeners.clipResizeStart(event, bound);
                         }
                         else if (bound.edge >= 0) {
                             if (bound.edge == 0 || bound.edge == 2) cursor = "ns-resize";
@@ -400,6 +423,19 @@
                 Ensemble.Editor.Renderer._clipDragCurrentTop = event.clientY;
                 Ensemble.Editor.Renderer._clipDragOriginalLeft = Ensemble.Editor.Renderer._clipDragCurrentLeft;
                 Ensemble.Editor.Renderer._clipDragOriginalTop = Ensemble.Editor.Renderer._clipDragCurrentTop;
+
+                for (let i = 0; i < Ensemble.Editor.Renderer._resizedClips.length; i++) {
+                    let tempClip = Ensemble.Editor.TimelineMGR.getClipById(Ensemble.Editor.Renderer._resizedClips[i]);
+                    if (1 > tempClip.aspect.length) {
+                        tempClip.aspect = Ensemble.Utilities.AspectGenerator.calcAspect(tempClip.width, tempClip.height);
+                    }
+                    let splitAspect = tempClip.aspect.split(":");
+                    tempClip._intAspect = {
+                        width: parseInt(splitAspect[0], 10),
+                        height: parseInt(splitAspect[1], 10)
+                    };
+                }
+
                 document.addEventListener("pointermove", Ensemble.Editor.Renderer._listeners.updatePointerPosition);
                 document.addEventListener("pointerup", Ensemble.Editor.Renderer._listeners.clipResizeFinish);
                 Ensemble.Editor.Renderer.start();

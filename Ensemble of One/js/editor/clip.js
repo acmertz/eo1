@@ -44,6 +44,7 @@
             preExisting: null,
 
             _player: null,
+            _intAspect: null,
             selected: null,
             hovering: null,
 
