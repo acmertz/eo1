@@ -14,7 +14,8 @@
         projectTrackCount: null,
         projectDateCreated: null,
         projectDateModified: null,
-        maxResolution: [2560, 1440],
+        projectThumb: null,
+        projectResolution: {width: 0, height: 0},
         refreshRate: 0,
         //projectLoading: false,
 
