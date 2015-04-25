@@ -32,6 +32,11 @@
             xml.WriteString(Ensemble.Session.projectName);
             xml.EndNode();
 
+            xml.BeginNode("ProjectThumb");
+            Ensemble.Editor.Renderer.updateThumb();
+            xml.WriteString(Ensemble.Session.projectThumb);
+            xml.EndNode();
+
             xml.BeginNode("TimelineZoom");
             xml.WriteString(Ensemble.Editor.TimelineZoomMGR.currentLevel.toString());
             xml.EndNode();
@@ -52,13 +57,9 @@
             xml.WriteString(Ensemble.Session.projectAspect);
             xml.EndNode();
 
-            xml.BeginNode("MaxResolution");
-            xml.BeginNode("Width");
-            xml.WriteString(Ensemble.Session.maxResolution[0].toString());
-            xml.EndNode();
-            xml.BeginNode("Height");
-            xml.WriteString(Ensemble.Session.maxResolution[1].toString());
-            xml.EndNode();
+            xml.BeginNode("Resolution");
+            xml.Attrib("width", Ensemble.Session.projectResolution.width.toString());
+            xml.Attrib("height", Ensemble.Session.projectResolution.height.toString());
             xml.EndNode();
 
             xml.BeginNode("ProjectLength");
@@ -407,7 +408,7 @@
             /// <param name="name" type="String">The name of the project.</param>
             /// <param name="location" type="String">The location of the project. Values other than "local" or "cloud" will generate an exception.</param>
             /// <param name="aspect" type="String">The aspect ratio of the project (16:9, 4:3, etc.).</param>
-
+            let projectRes = Ensemble.Settings.getDefaultResolution(aspect);
             switch (Ensemble.Platform.currentPlatform) {
                 case "win8":
                     Windows.Storage.ApplicationData.current.localFolder.createFolderAsync("Projects", Windows.Storage.CreationCollisionOption.openIfExists).then(function (projectDir) {
@@ -419,6 +420,17 @@
                             xml.BeginNode("ProjectName");
                             xml.WriteString(name);
                             xml.EndNode();
+
+                            let tempCanvas = document.createElement("canvas");
+                            tempCanvas.width = projectRes.width * 0.25;
+                            tempCanvas.height = projectRes.height * 0.25;
+                            let tempContext = tempCanvas.getContext("2d");
+                            tempContext.fillStyle = "#000";
+                            tempContext.fillRect(0, 0, projectRes.width * 0.25, projectRes.height * 0.25);
+                            xml.BeginNode("ProjectThumb");
+                            xml.WriteString(tempCanvas.toDataURL("image/png"));
+                            xml.EndNode();
+
                             xml.BeginNode("TimelineZoom");
                             xml.WriteString(Ensemble.Editor.TimelineZoomMGR.currentLevel.toString());
                             xml.EndNode();
@@ -437,13 +449,9 @@
                             xml.BeginNode("AspectRatio");
                             xml.WriteString(aspect);
                             xml.EndNode();
-                            xml.BeginNode("MaxResolution");
-                            xml.BeginNode("Width");
-                            xml.WriteString(Ensemble.Session.maxResolution[0].toString());
-                            xml.EndNode();
-                            xml.BeginNode("Height");
-                            xml.WriteString(Ensemble.Session.maxResolution[1].toString());
-                            xml.EndNode();
+                            xml.BeginNode("Resolution");
+                            xml.Attrib("width", projectRes.width.toString());
+                            xml.Attrib("height", projectRes.height.toString());
                             xml.EndNode();
                             xml.BeginNode("ProjectLength");
                             xml.WriteString("0");
@@ -472,23 +480,15 @@
                             //Generate a thumbnail.
                             console.log("Creating save files...");
                             Windows.Storage.FileIO.writeTextAsync(projectFile, xml.ToString()).then(function () {
-                                var saveaspect = aspect.replace(":", "");
-                                saveaspect = saveaspect.replace(".", "")
-                                Windows.Storage.StorageFile.getFileFromApplicationUriAsync(new Windows.Foundation.Uri("ms-appx:///img/projectThumbnails/" + saveaspect + ".jpg")).then(function (defaultThumb) {
-                                    defaultThumb.copyAsync(projectDir, projectFile.name + ".jpg").done(function () {
-                                        console.log("Project finished creating.");
+                                console.log("Project finished creating.");
 
-                                        window.setTimeout(function () {
-                                            Ensemble.Pages.MainMenu.showProjectLoadingPage(name);
+                                window.setTimeout(function () {
+                                    Ensemble.Pages.MainMenu.showProjectLoadingPage(name);
 
-                                            window.setTimeout(function () {
-                                                Ensemble.FileIO.loadProject(projectFile.name);
-                                            }, 500);
-                                        }, 1000);
-                                    });
-                                }, function (error) {
-                                    console.log("Error retrieving the thumbnail.");
-                                });
+                                    window.setTimeout(function () {
+                                        Ensemble.FileIO.loadProject(projectFile.name);
+                                    }, 500);
+                                }, 1000);
                             });
                         });
                     });
@@ -539,12 +539,18 @@
             var projectName = xmlDoc.getElementsByTagName("ProjectName")[0].childNodes[0].nodeValue;
             console.log("Loading project \"" + projectName + "...\"");
 
+            let projectThumb = xmlDoc.getElementsByTagName("ProjectThumb")[0].childNodes[0].nodeValue;
+
             var zoomLevel = parseInt(xmlDoc.getElementsByTagName("TimelineZoom")[0].childNodes[0].nodeValue, 10);
 
             var dateModified = new Date(parseInt(xmlDoc.getElementsByTagName("DateModified")[0].childNodes[0].nodeValue, 10));
             var dateCreated = new Date(parseInt(xmlDoc.getElementsByTagName("DateCreated")[0].childNodes[0].nodeValue, 10));
             var numberOfClips = parseInt(xmlDoc.getElementsByTagName("NumberOfClips")[0].childNodes[0].nodeValue, 10);
             var aspectRatio = xmlDoc.getElementsByTagName("AspectRatio")[0].childNodes[0].nodeValue;
+            let resolution = {
+                width: parseInt(xmlDoc.getElementsByTagName("Resolution")[0].getAttribute("width"), 10),
+                height: parseInt(xmlDoc.getElementsByTagName("Resolution")[0].getAttribute("height"), 10)
+            };
             var duration = parseInt(xmlDoc.getElementsByTagName("ProjectLength")[0].childNodes[0].nodeValue, 10);
             var thumbnailPath = "ms-appdata:///local/Projects/" + filename + ".jpg";
 
@@ -557,8 +563,10 @@
             var redoParent = historyParent.getElementsByTagName("Redo")[0];
 
             Ensemble.Session.projectAspect = aspectRatio;
+            Ensemble.Session.projectResolution = resolution;
             Ensemble.Session.projectFilename = filename;
             Ensemble.Session.projectName = projectName;
+            Ensemble.Session.projectThumb = projectThumb;
             Ensemble.Session.projectDuration = duration;
             Ensemble.Session.projectDateModified = dateModified;
             Ensemble.Session.projectDateCreated = dateCreated;
@@ -1231,16 +1239,14 @@
                                             console.log("Found project \"" + loadedProjectName + "\" in the Projects directory!");
                                             try {
                                                 var loadedDateModified = new Date(parseInt(xmlDoc.getElementsByTagName("DateModified")[0].childNodes[0].nodeValue, 10));
-                                                //loadedDateModified = loadedDateModified.customFormat("#MMM# #DD#, #YYYY# #h#:#mm##ampm#");
                                             }
                                             catch (exception) {
                                                 var loadedDateModified = "Unknown";
                                             }
                                             var loadedAspectRatio = xmlDoc.getElementsByTagName("AspectRatio")[0].childNodes[0].nodeValue;
                                             var loadedNumberOfClips = xmlDoc.getElementsByTagName("MediaClip").length;
-                                            //var loadedFilename = xmlDoc.getElementsByTagName("ProjectFilename")[0].childNodes[0].nodeValue;
                                             var loadedProjectLength = xmlDoc.getElementsByTagName("ProjectLength")[0].childNodes[0].nodeValue;
-                                            var loadedThumbnailPath = "ms-appdata:///local/Projects/" + loadedFilename + ".jpg";
+                                            let loadedThumbnailPath = xmlDoc.getElementsByTagName("ProjectThumb")[0].childNodes[0].nodeValue;
 
                                             dataArray.push(new Ensemble.Editor.ProjectFile(loadedProjectName, loadedFilename, loadedDateModified, loadedNumberOfClips, loadedAspectRatio, loadedProjectLength, loadedThumbnailPath));
 

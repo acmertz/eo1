@@ -102,6 +102,10 @@
     transform: translateX(0);
 }
 
+.editor-menu--file {
+    height: 100%;
+}
+
 .editor-menu--import {
     height: 100%;
     display: flex;

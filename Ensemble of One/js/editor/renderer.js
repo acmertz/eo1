@@ -170,7 +170,7 @@
         canvasResized: function (event) {
             this.ui.playbackCanvas.setAttribute("width", this.ui.playbackCanvas.clientWidth);
             this.ui.playbackCanvas.setAttribute("height", this.ui.playbackCanvas.clientHeight);
-            this._scale = this.ui.playbackCanvas.height / Ensemble.Session.maxResolution[1];
+            this._scale = this.ui.playbackCanvas.height / Ensemble.Session.projectResolution.height;
 
             this._playbackCanvasContext = this.ui.playbackCanvas.getContext("2d");
             try {
@@ -188,16 +188,16 @@
             /// <param name="height" type="Number">The height of the clip.</param>
             /// <returns type="Object">An object containing the dimensions and position to place the clip.</returns>
 
-            let testWidth = Ensemble.Session.maxResolution[0];
+            let testWidth = Ensemble.Session.projectResolution.width;
             let testHeight = Math.floor(testWidth * (height / width));
 
-            if (testHeight > Ensemble.Session.maxResolution[1]) {
-                testHeight = Ensemble.Session.maxResolution[1];
+            if (testHeight > Ensemble.Session.projectResolution.height) {
+                testHeight = Ensemble.Session.projectResolution.height;
                 testWidth = Math.floor(testHeight * (width / height));
             }
 
-            let offsetLeft = Math.floor(0.5 * (Ensemble.Session.maxResolution[0] - testWidth));
-            let offsetTop = Math.floor(0.5 * (Ensemble.Session.maxResolution[1] - testHeight));
+            let offsetLeft = Math.floor(0.5 * (Ensemble.Session.projectResolution.width - testWidth));
+            let offsetTop = Math.floor(0.5 * (Ensemble.Session.projectResolution.height - testHeight));
 
             return {
                 width: testWidth,
@@ -217,6 +217,24 @@
             Ensemble.Editor.Renderer.ui.playbackCanvas.addEventListener("pointermove", this._listeners.playbackCanvasPointerMoved);
             Ensemble.Editor.Renderer.ui.playbackCanvas.addEventListener("pointerleave", this._listeners.playbackCanvasPointerLeave);
             Ensemble.Editor.Renderer.ui.playbackCanvas.addEventListener("pointerdown", this._listeners.playbackCanvasPointerDown);
+        },
+
+        updateThumb: function () {
+            /// <summary>Updates the thumbnail data URI to match the current frame of the project.</summary>
+            let tempCanvas = document.createElement("canvas");
+            tempCanvas.width = Ensemble.Session.projectResolution.width * 0.25;
+            tempCanvas.height = Ensemble.Session.projectResolution.height * 0.25;
+            let tempContext = tempCanvas.getContext("2d");
+            if (Ensemble.Editor.TimelineMGR._clipIndex.length > 0) {
+                for (let k = Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList.length - 1; k > -1; k--) {
+                    Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList[k].drawToCanvas(tempContext, 0.25);
+                }
+            }
+            else {
+                tempContext.fillStyle = "#000";
+                tempContext.fillRect(0, 0, Ensemble.Session.projectResolution.width * 0.25, Ensemble.Session.projectResolution.height * 0.25);
+            }
+            Ensemble.Session.projectThumb = tempCanvas.toDataURL("image/png");
         },
 
         _processAnimationFrame: function () {

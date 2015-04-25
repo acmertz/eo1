@@ -54,6 +54,38 @@
 
             if ((returnVal == null) || (returnVal == undefined)) returnVal = 0.5;
             return returnVal;
+        },
+
+        getDefaultResolution: function (aspect) {
+            /// <summary>Returns an object in the form of {width, height} containing the default project dimensions for a project with the given aspect ratio.</summary>
+            /// <param name="aspect" type="String">The aspect ratio.</param>
+            /// <returns type="Object">An object containing the width and height of the default project.</returns>
+            switch (aspect) {
+                case "16:9":
+                    return {
+                        width: 2560,
+                        height: 1440
+                    }
+                    break;
+                case "16:10":
+                    return {
+                        width: 2560,
+                        height: 1600
+                    }
+                    break;
+                case "2.39:1":
+                    return {
+                        width: 3824,
+                        height: 1600
+                    }
+                    break;
+                case "4:3":
+                    return {
+                        width: 2560,
+                        height: 1920
+                    }
+                    break;
+            }
         }
     });
 })();

@@ -20,17 +20,6 @@
             $(".editor-menu").removeClass(".editor-menu--visible");
         },
 
-        showMenu: function (menuElement, menubarCommand) {
-            /// <summary>Shows the given menu.</summary>
-            /// <param name="menuElement" type="Element">The HTML element representing the menu.</param>
-            //this.hideMenus();
-            this._reevaluateState();
-            if (menubarCommand.dataset.ensembleMenu == "import") menuElement.addEventListener("transitionend", Ensemble.Editor.MenuMGR._listeners.importMenuTransitioned);
-            $(menuElement).addClass("editor-menu--visible");
-            //$(menubarCommand).addClass("editor-menubar__command--active");
-            this.currentMenu = menuElement;
-        },
-
         hideMenus: function () {
             /// <summary>Hides any active menus, but keeps the menu in the "Open" state. Useful for swapping menues.</summary>
             if (this.currentMenu) this.currentMenu.removeEventListener("transitionend", Ensemble.Editor.MenuMGR._listeners.importMenuTransitioned);
@@ -74,10 +63,12 @@
 
         ui: {
             clickEater: null,
+            projectThumb: null
         },
 
         _refreshUI: function () {
             this.ui.clickEater = document.getElementsByClassName("editor-menu-clickeater")[0];
+            this.ui.projectThumb = document.getElementsByClassName("editor-project-details__thumb")[0];
 
             this.ui.clickEater.addEventListener("click", Ensemble.Editor.MenuMGR._listeners.clickEaterClicked);
             document.getElementsByClassName("editor-import-menu__close-button")[0].addEventListener("click", Ensemble.Editor.MenuMGR._listeners.clickEaterClicked);
@@ -106,6 +97,7 @@
             document.getElementsByClassName("editor-file-menu__close-button")[0].removeEventListener("click", Ensemble.Editor.MenuMGR._listeners.clickEaterClicked);
 
             this.ui.clickEater = null;
+            this.ui.projectThumb = null;
 
             let menuBarButtons = document.getElementsByClassName("editor-menubar__command");
             for (let i = 0; i < menuBarButtons.length; i++) {
@@ -130,6 +122,7 @@
                 let targetToolbar = document.getElementsByClassName("editor-toolbar--" + event.currentTarget.dataset.ensembleMenu)[0];
                 if (targetToolbarId == "file") {
                     console.log("Show file menu.");
+                    Ensemble.Editor.MenuMGR.ui.projectThumb.src = Ensemble.Session.projectThumb;
                     $(".editor-menu--file").addClass("editor-menu--visible");
                     Ensemble.Editor.MenuMGR.menuOpen = true;
                     $(Ensemble.Editor.MenuMGR.ui.clickEater).addClass("editor-menu-clickeater--active");
