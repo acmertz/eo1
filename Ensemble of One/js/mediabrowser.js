@@ -287,7 +287,6 @@
         //Private methods
 
         _addPreviewToProject: function (event) {
-            //console.log("Add the preview to the project: " + Ensemble.MediaBrowser._currentPreview);
             var allCommands = [];
             for (var i = 0; i < Ensemble.Editor.TimelineMGR.tracks.length; i++) {
                 //Create a new menu item for each track.
@@ -299,14 +298,17 @@
                
             }
             document.getElementById("mediaBrowserAddToProjectFlyout").winControl.commands = allCommands;
-            document.getElementById("mediaBrowserAddToProjectFlyout").winControl.show(event.currentTarget, "auto");
+            setTimeout(function () { document.getElementById("mediaBrowserAddToProjectFlyout").winControl.show(event.currentTarget, "auto") }, 100);
         },
 
         _addPreviewToTrack: function (event) {
             var trackId = parseInt(event.currentTarget.className.match(/\d+$/));
 
             var newClip = new Ensemble.Editor.Clip(null);
-            newClip.file = { path: Ensemble.MediaBrowser._currentPreview.path };
+            newClip.file = {
+                path: Ensemble.MediaBrowser._currentPreview.path,
+                token: Ensemble.MediaBrowser._currentPreview.token
+            };
             newClip.preExisting = false;
 
             let clipImportAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.importClip,
