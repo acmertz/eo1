@@ -378,7 +378,7 @@
             var targetTrack = this.getTrackById(trackId);
             var fits = targetTrack.clipCollisionAt(destinationTime, clipObj.duration);
             if (fits.collision) {
-                let offendingClip = targetTrack.getClipById(fits.offending);
+                let offendingClip = targetTrack.getClipById(fits.offending[0]);
                 let slotsAfter = targetTrack.freeSlotsAfter(offendingClip, clipObj);
                 clipObj.startTime = slotsAfter[0];
             }

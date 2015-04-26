@@ -47,6 +47,7 @@
             if (Ensemble.HistoryMGR.canRedo()) $(".editor-command__redo").removeClass("editor-command--disabled");
 
             $(".editor-toolbar-command--import-media").removeAttr("disabled");
+            $(".editor-toolbar-command--browse-media").removeAttr("disabled");
 
             if (Ensemble.Editor.SelectionMGR.selected.length == 1) {
                 $(".editor-command__trim-clip").removeClass("editor-command--disabled");
@@ -180,8 +181,14 @@
                     Ensemble.KeyboardMGR.editorMenu();
                 }
 
+                else if (command == "browse-media") {
+                    Ensemble.FileIO.showMediaFilePicker(Ensemble.Editor.MenuMGR._listeners.browseMediaReturned, {
+                        currentTarget: event.currentTarget
+                    });
+                }
+
                 // HOME
-                if (command == "undo") setTimeout(function () { Ensemble.HistoryMGR.undoLast() }, 0);
+                else if (command == "undo") setTimeout(function () { Ensemble.HistoryMGR.undoLast() }, 0);
                 else if (command == "redo") setTimeout(function () { Ensemble.HistoryMGR.redoNext() }, 0);
                 else if (command == "exit") setTimeout(function () { Ensemble.Pages.Editor.unload() }, 0);
 
@@ -219,6 +226,11 @@
             importMenuTransitioned: function (event) {
                 event.currentTarget.removeEventListener("transitionend", Ensemble.Editor.MenuMGR._listeners.importMenuTransitioned);
                 Ensemble.MediaBrowser.refresh();
+            },
+
+            browseMediaReturned: function (file, payload) {
+                Ensemble.MediaBrowser._currentPreview = file;
+                Ensemble.MediaBrowser._addPreviewToProject(payload);
             }
         },
     });

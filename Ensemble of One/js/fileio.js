@@ -2,9 +2,9 @@
     WinJS.Namespace.define("Ensemble.FileIO", {
         /// <summary>Provides platform-agnostic interfaces for accessing the host device's file system.</summary>
 
-        _win8_supportedVideoTypes: [".3g2", ".3gp2", ".3gp", ".3gpp", ".m4v", ".mp4v", ".mp4", ".mov", ".m2ts", ".asf", ".wm", ".wmv", ".avi"],
-        _win8_supportedAudioTypes: [".m4a", ".wma", ".aac", ".adt", ".adts", ".mp3", ".wav", ".ac3", ".ec3"],
-        _win8_supportedImageTypes: [".jpg", ".jpeg", ".png", ".gif", ".bmp"],
+        supportedVideoTypes: [".3g2", ".3gp2", ".3gp", ".3gpp", ".m4v", ".mp4v", ".mp4", ".mov", ".m2ts", ".asf", ".wm", ".wmv", ".avi"],
+        supportedAudioTypes: [".m4a", ".wma", ".aac", ".adt", ".adts", ".mp3", ".wav", ".ac3", ".ec3"],
+        supportedImageTypes: [".jpg", ".jpeg", ".png", ".gif", ".bmp"],
 
         _clipLoadBuffer: {},
 
@@ -399,6 +399,7 @@
             xml.Attrib("height", clip.height.toString());
             xml.Attrib("aspect", Ensemble.Utilities.AspectGenerator.calcAspect(clip.width, clip.height).toString());
             xml.Attrib("path", clip.file.path);
+            xml.Attrib("token", clip.file.token);
             xml.EndNode();
             return xml;
         },
@@ -980,40 +981,29 @@
                 let continueLoad = loadClip;
                 switch (Ensemble.Platform.currentPlatform) {
                     case "win8":
-                        Windows.Storage.StorageFile.getFileFromPathAsync(clipObj.file.path).done(function (loadedFile) {
-                            console.log("Loading file stub for clip with ID " + payloadObj + "...");
-                            let newFile = new Ensemble.EnsembleFile(loadedFile);
-                            newFile.mime = loadedFile.contentType;
-                            newFile.dateCreated = loadedFile.dateCreated;
-                            newFile.displayName = loadedFile.displayName;
-                            newFile.displayType = loadedFile.displayType;
-                            newFile.fileType = loadedFile.fileType.toLowerCase();
-                            newFile._uniqueId = loadedFile.folderRelativeId;
-                            newFile._winProperties = loadedFile.properties;
-                            newFile.fullName = loadedFile.name;
-                            newFile.path = loadedFile.path;
-                            if (newFile.mime.indexOf("audio") > -1) {
-                                newFile.icon = "&#xE189;";
-                                newFile.eo1type = "audio";
-                            }
-                            else if (newFile.mime.indexOf("video") > -1) {
-                                newFile.icon = "&#xE116;";
-                                newFile.eo1type = "video";
-                            }
-                            else if (newFile.mime.indexOf("image") > -1) {
-                                newFile.icon = "&#xE114;";
-                                newFile.eo1type = "picture";
-                            }
-                            else {
-                                console.log("File is of invalid MIME type.");
-                            }
-                            clipObj.file = newFile;
+                        if (clipObj.file.token.length > 0) {
+                            Windows.Storage.AccessCache.StorageApplicationPermissions.futureAccessList.getFileAsync(clipObj.file.token).done(function (loadedFile) {
+                                console.log("Loading file stub for clip with ID " + payloadObj + "...");
+                                let newFile = Ensemble.FileIO._mergeFileStub(loadedFile);
+                                clipObj.file = newFile;
+                                if (continueLoad) {
+                                    Ensemble.FileIO.loadClip(clipObj.file, clipObj, cb, null, null, true);
+                                }
+                                else cb(clipObj, payloadObj);
+                            });
+                        }
+                        else {
+                            Windows.Storage.StorageFile.getFileFromPathAsync(clipObj.file.path).done(function (loadedFile) {
+                                console.log("Loading file stub for clip with ID " + payloadObj + "...");
+                                let newFile = Ensemble.FileIO._mergeFileStub(loadedFile);
+                                clipObj.file = newFile;
 
-                            if (continueLoad) {
-                                Ensemble.FileIO.loadClip(clipObj.file, clipObj, cb, null, null, true);
-                            }
-                            else cb(clipObj, payloadObj);
-                        });
+                                if (continueLoad) {
+                                    Ensemble.FileIO.loadClip(clipObj.file, clipObj, cb, null, null, true);
+                                }
+                                else cb(clipObj, payloadObj);
+                            });
+                        }
                         break;
                     case "android":
                         break;
@@ -1021,6 +1011,36 @@
                         break;
                 }
             })();            
+        },
+
+        _mergeFileStub: function (loadedFile) {
+            let newFile = new Ensemble.EnsembleFile(loadedFile);
+            newFile.mime = loadedFile.contentType;
+            newFile.dateCreated = loadedFile.dateCreated;
+            newFile.displayName = loadedFile.displayName;
+            newFile.displayType = loadedFile.displayType;
+            newFile.fileType = loadedFile.fileType.toLowerCase();
+            newFile._uniqueId = loadedFile.folderRelativeId;
+            newFile._winProperties = loadedFile.properties;
+            newFile.fullName = loadedFile.name;
+            newFile.path = loadedFile.path;
+            newFile.token = loadedFile.token;
+            if (newFile.mime.indexOf("audio") > -1) {
+                newFile.icon = "&#xE189;";
+                newFile.eo1type = "audio";
+            }
+            else if (newFile.mime.indexOf("video") > -1) {
+                newFile.icon = "&#xE116;";
+                newFile.eo1type = "video";
+            }
+            else if (newFile.mime.indexOf("image") > -1) {
+                newFile.icon = "&#xE114;";
+                newFile.eo1type = "picture";
+            }
+            else {
+                console.log("File is of invalid MIME type.");
+            }
+            return newFile;
         },
 
         _projectFileStubLoaded: function (clip, payload) {
@@ -1098,7 +1118,10 @@
             createdClip.width = parseInt(xmlClip.getAttribute("width"), 10);
             createdClip.height = parseInt(xmlClip.getAttribute("height"), 10);
             createdClip.aspect = xmlClip.getAttribute("aspect") || "";
-            createdClip.file = { path: xmlClip.getAttribute("path") };
+            createdClip.file = {
+                path: xmlClip.getAttribute("path"),
+                token: xmlClip.getAttribute("token")
+            };
             createdClip.preExisting = true;
             return createdClip;
         },
@@ -1280,58 +1303,18 @@
                         folder._src.getFilesAsync().then(function (containedFiles) {
                             console.log("Got a list of media files in the current folder.");
                             for (var i = 0; i < containedFolders.length; i++) {
-                                var newFolder = new Ensemble.EnsembleFile(containedFolders[i]);
-                                newFolder.dateCreated = containedFolders[i].dateCreated;
-                                newFolder.displayName = containedFolders[i].displayName;
-                                newFolder.displayType = containedFolders[i].displayType;
-                                newFolder._uniqueId = containedFolders[i].folderRelativeId;
-                                newFolder._winProperties = containedFolders[i].properties;
-                                newFolder.fullName = containedFolders[i].name;
-                                newFolder.path = containedFolders[i].path;
-
-                                newFolder.icon = "&#xE188;";
-                                newFolder.eo1type = "folder";
-
+                                var newFolder = Ensemble.FileIO._createFolderFromSrc(containedFolders[i]);
                                 Ensemble.FileIO._pickItemsTempFolders.push(newFolder);
                             }
                             console.log("Finished adding folders to the array to display.");
                             for (var i = 0; i < containedFiles.length; i++) {
-                                var newFile = new Ensemble.EnsembleFile(containedFiles[i]);
-                                newFile.mime = containedFiles[i].contentType;
-                                newFile.dateCreated = containedFiles[i].dateCreated;
-                                newFile.displayName = containedFiles[i].displayName;
-                                newFile.displayType = containedFiles[i].displayType;
-                                newFile.fileType = containedFiles[i].fileType.toLowerCase();
-                                newFile._uniqueId = containedFiles[i].folderRelativeId;
-                                newFile._winProperties = containedFiles[i].properties;
-                                newFile.fullName = containedFiles[i].name;
-                                newFile.path = containedFiles[i].path;
-
-
+                                var newFile = Ensemble.FileIO._createFileFromSrc(containedFiles[i]);
                                 //Check that the file is supported.
                                 if (newFile.mime.indexOf("audio") > -1 || newFile.mime.indexOf("video") > -1 || newFile.mime.indexOf("image") > -1) {
-                                    if (Ensemble.FileIO._win8_supportedAudioTypes.indexOf(newFile.fileType) > -1 || Ensemble.FileIO._win8_supportedVideoTypes.indexOf(newFile.fileType) > -1 || Ensemble.FileIO._win8_supportedImageTypes.indexOf(newFile.fileType) > -1) {
-                                        //File is of supported media type and extension.
-                                        if (newFile.mime.indexOf("audio") > -1) {
-                                            newFile.icon = "&#xE189;";
-                                            newFile.eo1type = "audio";
-                                        }
-                                        else if (newFile.mime.indexOf("video") > -1) {
-                                            newFile.icon = "&#xE116;";
-                                            newFile.eo1type = "video";
-                                        }
-                                        else if (newFile.mime.indexOf("image") > -1) {
-                                            newFile.icon = "&#xE114;";
-                                            newFile.eo1type = "picture";
-                                        }
-                                        else {
-                                            console.log("File is of invalid MIME type.");
-                                        }
+                                    if (Ensemble.FileIO.supportedAudioTypes.indexOf(newFile.fileType) > -1 || Ensemble.FileIO.supportedVideoTypes.indexOf(newFile.fileType) > -1 || Ensemble.FileIO.supportedImageTypes.indexOf(newFile.fileType) > -1) {
                                         Ensemble.FileIO._pickItemsTempFiles.push(newFile);
                                     }
-                                }
-                                
-                                
+                                } 
                             }
                             console.log("Finished adding media files to the array to display.");
                             //Now that all files and folders have been added up, pull media information.
@@ -1344,6 +1327,54 @@
                 case "android":
                     break;
             }
+        },
+
+        _createFileFromSrc: function (file) {
+            /// <returns type="Ensemble.EnsembleFile">An EnsembleFile representing the platform-dependent source.</returns>
+            var newFile = new Ensemble.EnsembleFile(file);
+            newFile.mime = file.contentType;
+            newFile.dateCreated = file.dateCreated;
+            newFile.displayName = file.displayName;
+            newFile.displayType = file.displayType;
+            newFile.fileType = file.fileType.toLowerCase();
+            newFile._uniqueId = file.folderRelativeId;
+            newFile._winProperties = file.properties;
+            newFile.fullName = file.name;
+            newFile.path = file.path;
+
+            if (newFile.mime.indexOf("audio") > -1) {
+                newFile.icon = "&#xE189;";
+                newFile.eo1type = "audio";
+            }
+            else if (newFile.mime.indexOf("video") > -1) {
+                newFile.icon = "&#xE116;";
+                newFile.eo1type = "video";
+            }
+            else if (newFile.mime.indexOf("image") > -1) {
+                newFile.icon = "&#xE114;";
+                newFile.eo1type = "picture";
+            }
+            else {
+                console.log("File is of invalid MIME type.");
+            }
+
+            return newFile;
+        },
+
+        _createFolderFromSrc: function (folder) {
+            /// <returns type="Ensemble.EnsembleFile">An EnsembleFile representing the platform-dependent folder.</returns>
+            var newFolder = new Ensemble.EnsembleFile(folder);
+            newFolder.dateCreated = folder.dateCreated;
+            newFolder.displayName = folder.displayName;
+            newFolder.displayType = folder.displayType;
+            newFolder._uniqueId = folder.folderRelativeId;
+            newFolder._winProperties = folder.properties;
+            newFolder.fullName = folder.name;
+            newFolder.path = folder.path;
+
+            newFolder.icon = "&#xE188;";
+            newFolder.eo1type = "folder";
+            return newFolder;
         },
 
         retrieveMediaProperties: function (ensembleFile, index, callback) {
@@ -1562,6 +1593,17 @@
             }
         },
 
+        _generateAccessToken: function (file, callback, payload) {
+            Windows.Storage.StorageFile.getFileFromPathAsync(file.path).done(function (complete) {
+                //No token necessary - the file is accessible via path (is in a known library).
+                callback(file, payload);
+            }, function (error) {
+                console.log("Cannot access the file via path - must generate token.");
+                file.token = Windows.Storage.AccessCache.StorageApplicationPermissions.futureAccessList.add(file._src);
+                callback(file, payload);
+            })
+        },
+
         getHomeDirectory: function (directoryName) {
             /// <summary>Returns the home directory of the given media type.</summary>
             /// <param name="directoryName" type="String">The string representing the home directory name. Must be one of the following: "video" "music" "picture"</param>
@@ -1656,6 +1698,30 @@
                 case "ios":
                     break;
             }
+        },
+
+        showMediaFilePicker: function (callback, payload) {
+            let openPicker = new Windows.Storage.Pickers.FileOpenPicker();
+            openPicker.viewMode = Windows.Storage.Pickers.PickerViewMode.list;
+            openPicker.suggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.videosLibrary;
+            openPicker.fileTypeFilter.replaceAll(Ensemble.FileIO.supportedAudioTypes.concat(Ensemble.FileIO.supportedImageTypes).concat(Ensemble.FileIO.supportedVideoTypes));
+            openPicker.pickSingleFileAsync().then(function (file) {
+                if (file) {
+                    let newFile = Ensemble.FileIO._createFileFromSrc(file);
+                    Ensemble.FileIO.retrieveMediaProperties(newFile, newFile, function (index, returnVal, uniqueId) {
+                        console.log("Picked a file.");
+                        for (prop in returnVal) {
+                            index[prop] = returnVal[prop];
+                        }
+
+                        Ensemble.FileIO._generateAccessToken(index, function (fileWithToken, filePayload) {
+                            callback(fileWithToken, filePayload);
+                        }, payload);
+                    });
+                } else {
+                    console.log("Did not pick a file.");
+                }
+            });
         }
     });
 })();

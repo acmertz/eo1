@@ -16,6 +16,7 @@
             this._winProperties = null;
             this.fullName = "";
             this.path = "";
+            this.token = "";
 
             this.eo1type = "file";
 
@@ -45,6 +46,7 @@
             _winProperties: null,
             fullName: "",
             path: "",
+            token: "",
 
             //One of "video", "audio", "picture", "file", or "folder"
             eo1type: "",
