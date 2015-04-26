@@ -985,6 +985,7 @@
                             Windows.Storage.AccessCache.StorageApplicationPermissions.futureAccessList.getFileAsync(clipObj.file.token).done(function (loadedFile) {
                                 console.log("Loading file stub for clip with ID " + payloadObj + "...");
                                 let newFile = Ensemble.FileIO._mergeFileStub(loadedFile);
+                                newFile.token = clipObj.file.token;
                                 clipObj.file = newFile;
                                 if (continueLoad) {
                                     Ensemble.FileIO.loadClip(clipObj.file, clipObj, cb, null, null, true);
@@ -1024,7 +1025,6 @@
             newFile._winProperties = loadedFile.properties;
             newFile.fullName = loadedFile.name;
             newFile.path = loadedFile.path;
-            newFile.token = loadedFile.token;
             if (newFile.mime.indexOf("audio") > -1) {
                 newFile.icon = "&#xE189;";
                 newFile.eo1type = "audio";
@@ -1598,10 +1598,25 @@
                 //No token necessary - the file is accessible via path (is in a known library).
                 callback(file, payload);
             }, function (error) {
-                console.log("Cannot access the file via path - must generate token.");
-                file.token = Windows.Storage.AccessCache.StorageApplicationPermissions.futureAccessList.add(file._src);
+                if (Windows.Storage.AccessCache.StorageApplicationPermissions.futureAccessList.entries.length == Windows.Storage.AccessCache.StorageApplicationPermissions.futureAccessList.maximumItemsAllowed) {
+                    Ensemble.FileIO._removeOldestAccessToken();
+                }
+                file.token = Windows.Storage.AccessCache.StorageApplicationPermissions.futureAccessList.add(file._src, new Date().getTime());
                 callback(file, payload);
             })
+        },
+
+        _removeOldestAccessToken: function () {
+            /// <summary>Removes the oldest file access token from the Windows FutureAccessList.</summary>
+            let min = Infinity;
+            let token = null;
+            for (let i = 0; i < Windows.Storage.AccessCache.StorageApplicationPermissions.futureAccessList.entries.length; i++) {
+                if (min > parseInt(Windows.Storage.AccessCache.StorageApplicationPermissions.futureAccessList.entries[i].metadata, 10)) {
+                    min = parseInt(Windows.Storage.AccessCache.StorageApplicationPermissions.futureAccessList.entries[i].metadata, 10)
+                    token = Windows.Storage.AccessCache.StorageApplicationPermissions.futureAccessList.entries[i].token;
+                }
+            }
+            Windows.Storage.AccessCache.StorageApplicationPermissions.futureAccessList.remove(token);
         },
 
         getHomeDirectory: function (directoryName) {
