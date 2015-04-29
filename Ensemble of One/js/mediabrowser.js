@@ -151,7 +151,8 @@
 
             var element = Ensemble.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.childNodes[index];
             var elementIcon = element.getElementsByClassName("media-browser__list-itemIcon")[0];
-            elementIcon.style.backgroundImage = thumb;
+            elementIcon.style.backgroundImage = 'url(' + URL.createObjectURL(thumb, { oneTimeOnly: true }) + ')';
+            Ensemble.MediaBrowser._mediaItems[index].thumb = thumb;
             $(elementIcon).addClass("mediaBrowserIconFilled");
         },
 
@@ -388,7 +389,7 @@
                                     //Still dragging - start drag operation.
                                     Ensemble.MediaBrowser._listItemBeginDrag();
                                 }
-                            }, 500);
+                            }, 100);
 
                         }
                         document.addEventListener("mouseup", Ensemble.MediaBrowser._listItemMouseUp, false);
@@ -411,11 +412,6 @@
                                 document.removeEventListener("mouseup", Ensemble.MediaBrowser._listItemMouseUp);
                                 Ensemble.MediaBrowser.navigateToFolder(Ensemble.MediaBrowser._mediaItems[itemIndex]);
                             }
-                            //else {
-                            //    console.info("Showing media item preview...");
-                            //    document.removeEventListener("mouseup", Ensemble.MediaBrowser._listItemMouseUp);
-                            //    Ensemble.FileIO.retrieveMediaPreview(Ensemble.MediaBrowser._mediaItems[itemIndex], Ensemble.MediaBrowser.showMediaPreview);
-                            //}
                         }
                     }
                 }
@@ -424,6 +420,10 @@
 
         _listItemBeginDrag: function () {
             console.log("Media browser beginning drag.");
+            let previewContent = document.getElementById("editorDraggedPreviewContent");
+            document.getElementsByClassName("media-browser-dragdrop__title")[0].innerText = Ensemble.MediaBrowser._dragEnsembleFile.title || Ensemble.MediaBrowser._dragEnsembleFile.displayName;
+            previewContent.style.backgroundImage = 'url(' + URL.createObjectURL(Ensemble.MediaBrowser._dragEnsembleFile.thumb, { oneTimeOnly: true }) + ')';
+
             Ensemble.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.style.overflowY = "hidden";
             document.removeEventListener("mouseup", Ensemble.MediaBrowser._listItemMouseUp);
             Ensemble.MediaBrowser._dragging = true;
@@ -433,7 +433,10 @@
             $(Ensemble.Editor.UI.Popups.mediaBrowserPreviewDrag).addClass("editorDraggedPreviewVisible");
             window.requestAnimationFrame(Ensemble.MediaBrowser._listItemDragUpdate);
             document.addEventListener("mouseup", Ensemble.MediaBrowser._listItemEndDrag, false);
-            },
+
+            Ensemble.Editor.MenuMGR.closeMenu();
+            Ensemble.Editor.Renderer.disableStandardInteraction();
+        },
 
         _listItemDragUpdate: function (event) {
             // Update the item's position.
@@ -448,6 +451,7 @@
             document.removeEventListener("mouseup", Ensemble.MediaBrowser._listItemEndDrag);
             $(Ensemble.Editor.UI.Popups.mediaBrowserPreviewDrag).removeClass("editorDraggedPreviewVisible");
             $(Ensemble.Editor.UI.Popups.mediaBrowserPreviewDrag).addClass("editorDraggedPreviewHidden");
+            Ensemble.Editor.Renderer.enableStandardInteraction();
         },
 
         _disableMediaFolderListeners: function () {

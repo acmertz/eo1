@@ -57,7 +57,7 @@
                         let xwidth = clip.width * scale;
                         let yheight = clip.height * scale;
 
-                        context.globalAlpha = 0.75;
+                        context.globalAlpha = 0.5;
                         context.beginPath();
                         context.strokeStyle = "lightblue";
                         context.fillStyle = "lightgray";

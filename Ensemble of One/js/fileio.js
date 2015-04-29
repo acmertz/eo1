@@ -1455,9 +1455,9 @@
                                 callback(index, null, ensembleFile._uniqueId);
                                 break;
                             default:
-                                ensembleFile._src.getScaledImageAsThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.listView, 50).done(function (success) {
+                                ensembleFile._src.getScaledImageAsThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.listView, 200).done(function (success) {
                                     try {
-                                        callback(index, 'url(' + URL.createObjectURL(success, { oneTimeOnly: true }) + ')', ensembleFile._uniqueId);
+                                        callback(index, success, ensembleFile._uniqueId);
                                     }
                                     catch (exception) {
                                         //Item does not have a thumbnail.
