@@ -30,7 +30,6 @@
     background-color: rgba(200,200,200, 0.8);
     opacity: 0;
     background-size: 100% auto;
-    transition: height 0.2s ease, width 0.2s ease;
 }
 
 .media-browser-dragdrop__title {
@@ -38,7 +37,9 @@
 }
 
 .editorDraggedPreviewContent--track {
-    background: rgba(255, 255, 255, 0.75) !important;
+    background: rgba(255, 255, 255, 0.85) !important;
+    border: 1px solid #d3d3d3;
+    box-sizing: border-box;
 }
 
 .editorDraggedPreviewContent--track .media-browser-dragdrop__title {
