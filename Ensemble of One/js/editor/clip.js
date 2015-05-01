@@ -208,7 +208,8 @@
                 this._player.src = null;
                 this._player = null;
                 this.file = {
-                    path: this.file.path
+                    path: this.file.path,
+                    token: this.file.token
                 }
             }
 

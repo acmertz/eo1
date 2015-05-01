@@ -431,18 +431,22 @@
 
         _listItemBeginDrag: function () {
             console.log("Media browser beginning drag.");
-            let previewContent = document.getElementById("editorDraggedPreviewContent");
-            previewContent.style.backgroundImage = 'url(' + URL.createObjectURL(Ensemble.MediaBrowser._dragEnsembleFile.thumb, { oneTimeOnly: true }) + ')';
-
+            Ensemble.MediaBrowser.ui.dragPreview.style.backgroundImage = 'url(' + URL.createObjectURL(Ensemble.MediaBrowser._dragEnsembleFile.thumb, { oneTimeOnly: true }) + ')';
             Ensemble.Editor.TimelineMGR.ui.dropPreview.innerText = Ensemble.MediaBrowser._dragEnsembleFile.title || Ensemble.MediaBrowser._dragEnsembleFile.displayName;
 
             Ensemble.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.style.overflowY = "hidden";
             document.removeEventListener("mouseup", Ensemble.MediaBrowser._listItemMouseUp);
             Ensemble.MediaBrowser._dragging = true;
             Ensemble.MediaBrowser._dragCheck = false;
-            Ensemble.Editor.UI.Popups.mediaBrowserPreviewDrag.style.transform = "translate(" + Ensemble.Utilities.MouseTracker.x + "px," + Ensemble.Utilities.MouseTracker.y + "px)";
-            $(Ensemble.Editor.UI.Popups.mediaBrowserPreviewDrag).removeClass("editorDraggedPreviewHidden");
-            $(Ensemble.Editor.UI.Popups.mediaBrowserPreviewDrag).addClass("editorDraggedPreviewVisible");
+
+            //Ensemble.Editor.UI.Popups.mediaBrowserPreviewDrag.style.transform = "translate(" + Ensemble.Utilities.MouseTracker.x + "px," + Ensemble.Utilities.MouseTracker.y + "px)";
+            Ensemble.MediaBrowser.ui.dragPreview.style.left = Ensemble.Utilities.MouseTracker.x + "px";
+            Ensemble.MediaBrowser.ui.dragPreview.style.top = Ensemble.Utilities.MouseTracker.y + "px";
+
+            //$(Ensemble.Editor.UI.Popups.mediaBrowserPreviewDrag).removeClass("editorDraggedPreviewHidden");
+            //$(Ensemble.Editor.UI.Popups.mediaBrowserPreviewDrag).addClass("editorDraggedPreviewVisible");
+            $(Ensemble.MediaBrowser.ui.dragPreview).removeClass("media-browser__drag-preview--hidden").addClass("media-browser__drag-preview--visible");
+
             window.requestAnimationFrame(Ensemble.MediaBrowser._listItemDragUpdate);
             document.addEventListener("mouseup", Ensemble.MediaBrowser._listItemEndDrag, false);
 
@@ -455,19 +459,17 @@
 
         _listItemDragUpdate: function (event) {
             // Update the item's position.
-            Ensemble.Editor.UI.Popups.mediaBrowserPreviewDrag.style.transform = "translate(" + Ensemble.Utilities.MouseTracker.x + "px," + Ensemble.Utilities.MouseTracker.y + "px)";
+            //Ensemble.Editor.UI.Popups.mediaBrowserPreviewDrag.style.transform = "translate(" + Ensemble.Utilities.MouseTracker.x + "px," + Ensemble.Utilities.MouseTracker.y + "px)";
             if (Ensemble.MediaBrowser._dragTimeline) {
                 let zoomRatio = Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel].ratio;
                 let offsetX = Ensemble.Utilities.MouseTracker.x - Ensemble.MediaBrowser._dragOffset.left;
                 let offsetY = Ensemble.Utilities.MouseTracker.y - Ensemble.MediaBrowser._dragOffset.top;
                 
                 let trackDragIndex = Math.floor(offsetY / Ensemble.Editor.TimelineMGR._currentTrackHeight) - Ensemble.Editor.TimelineMGR._currentScrollIndex;
-                let dragTime = offsetX * zoomRatio;
+                let dragTime = (offsetX + Ensemble.Editor.TimelineMGR.ui.scrollableContainer.scrollLeft) * zoomRatio;
 
                 if (0 > trackDragIndex) trackDragIndex = 0;
                 else if (trackDragIndex >= Ensemble.Editor.TimelineMGR.tracks.length) trackDragIndex = Ensemble.Editor.TimelineMGR.tracks.length - 1;
-                console.log("Drag time: " + dragTime);
-                console.log("Drag track: " + trackDragIndex);
 
                 let replacementY = Ensemble.Editor.TimelineMGR._currentTrackHeight * trackDragIndex;
                 let replacementTime = Ensemble.Editor.TimelineMGR.tracks[trackDragIndex].closestFreeSlot(dragTime, Ensemble.MediaBrowser._dragEnsembleFile.duration, -1); //time, duration, omit, skipBefore, skipAfter
@@ -478,16 +480,22 @@
                 Ensemble.Editor.TimelineMGR.ui.dropPreview.style.left = (replacementTime / zoomRatio) + "px";
                 Ensemble.Editor.TimelineMGR.ui.dropPreview.style.top = replacementY + "px";
             }
+            else {
+                Ensemble.MediaBrowser.ui.dragPreview.style.left = Ensemble.Utilities.MouseTracker.x + "px";
+                Ensemble.MediaBrowser.ui.dragPreview.style.top = Ensemble.Utilities.MouseTracker.y + "px";
+            }
             if (Ensemble.MediaBrowser._dragging) window.requestAnimationFrame(Ensemble.MediaBrowser._listItemDragUpdate);
         },
 
         _listItemEndDrag: function (event) {
-            console.log("Media browser ending drag.");
             Ensemble.MediaBrowser._dragging = false;
             Ensemble.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.style.overflowY = "";
             document.removeEventListener("mouseup", Ensemble.MediaBrowser._listItemEndDrag);
-            $(Ensemble.Editor.UI.Popups.mediaBrowserPreviewDrag).removeClass("editorDraggedPreviewVisible");
-            $(Ensemble.Editor.UI.Popups.mediaBrowserPreviewDrag).addClass("editorDraggedPreviewHidden");
+
+            //$(Ensemble.Editor.UI.Popups.mediaBrowserPreviewDrag).removeClass("editorDraggedPreviewVisible");
+            //$(Ensemble.Editor.UI.Popups.mediaBrowserPreviewDrag).addClass("editorDraggedPreviewHidden");
+            $(Ensemble.MediaBrowser.ui.dragPreview).removeClass("media-browser__drag-preview--visible").addClass("media-browser__drag-preview--hidden");
+
             Ensemble.Editor.Renderer.enableStandardInteraction();
 
             Ensemble.Editor.TimelineMGR.ui.scrollableContainer.removeEventListener("pointerenter", Ensemble.MediaBrowser._listeners.draggedClipEnteredTimeline);
@@ -513,7 +521,8 @@
                 Ensemble.HistoryMGR.performAction(clipImportAction);
             }
 
-            Ensemble.MediaBrowser._listeners.draggedClipLeftTimeline();
+            $(Ensemble.Editor.TimelineMGR.ui.dropPreview).removeClass("timeline__drop-preview--visible").addClass("timeline__drop-preview--hidden");
+            Ensemble.MediaBrowser._dragTimeline = false;
         },
 
         _disableMediaFolderListeners: function () {
@@ -542,12 +551,14 @@
 
         ui: {
             previewFlyout: null,
-            propertiesFlyout: null
+            propertiesFlyout: null,
+            dragPreview: null
         },
 
         _refreshUI: function () {
             this.ui.previewFlyout = document.getElementsByClassName("media-browser__preview-flyout")[0];
             this.ui.propertiesFlyout = document.getElementsByClassName("media-browser__properties-flyout")[0];
+            this.ui.dragPreview = document.getElementsByClassName("media-browser__drag-preview")[0];
 
             this.ui.previewFlyout.addEventListener("afterhide", Ensemble.MediaBrowser._listeners.closedMediaPreview);
         },
@@ -557,6 +568,7 @@
 
             this.ui.previewFlyout = null;
             this.ui.propertiesFlyout = null;
+            this.ui.dragPreview = null;
         },
 
         _listeners: {
@@ -576,37 +588,25 @@
             },
 
             draggedClipEnteredTimeline: function (event) {
+                Ensemble.MediaBrowser._dragTimeline = true;
+
                 let myOffset = $(event.currentTarget).offset();
                 Ensemble.MediaBrowser._dragOffset.left = myOffset.left;
                 Ensemble.MediaBrowser._dragOffset.top = myOffset.top;
                 
-                let dragWidth = Ensemble.MediaBrowser._dragEnsembleFile.duration / Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel].ratio;
-                let dragHeight = Ensemble.Editor.TimelineMGR._currentTrackHeight;
+                Ensemble.Editor.TimelineMGR.ui.dropPreview.style.width = (Ensemble.MediaBrowser._dragEnsembleFile.duration / Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel].ratio) + "px";
+                Ensemble.Editor.TimelineMGR.ui.dropPreview.style.height = Ensemble.Editor.TimelineMGR._currentTrackHeight + "px";
 
-                console.log("Pointer entered timeline scrollable area");
-                //$("#editorDraggedPreviewContent").addClass("editorDraggedPreviewContent--track");
-                //$("#editorDraggedPreviewContent").css("width", dragWidth + "px");
-                //$("#editorDraggedPreviewContent").css("height", dragHeight + "px");
-                $("#editorDraggedPreviewContent").css("visibility", "hidden");
-
-                Ensemble.Editor.TimelineMGR.ui.dropPreview.style.width = dragWidth + "px";
-                Ensemble.Editor.TimelineMGR.ui.dropPreview.style.height = dragHeight + "px";
+                $(Ensemble.MediaBrowser.ui.dragPreview).removeClass("media-browser__drag-preview--visible").addClass("media-browser__drag-preview--hidden");
                 $(Ensemble.Editor.TimelineMGR.ui.dropPreview).removeClass("timeline__drop-preview--hidden").addClass("timeline__drop-preview--visible");
 
-                Ensemble.MediaBrowser._dragTimeline = true;
+                
             },
 
             draggedClipLeftTimeline: function (event) {
-                console.log("Pointer left timeline scrollable area");
-                //$("#editorDraggedPreviewContent").removeClass("editorDraggedPreviewContent--track");
-                //$("#editorDraggedPreviewContent").css("width", "");
-                //$("#editorDraggedPreviewContent").css("height", "");
-
-                $("#editorDraggedPreviewContent").css("visibility", "");
-
-                $(Ensemble.Editor.TimelineMGR.ui.dropPreview).removeClass("timeline__drop-preview--visible").addClass("timeline__drop-preview--hidden");
-
                 Ensemble.MediaBrowser._dragTimeline = false;
+                $(Ensemble.Editor.TimelineMGR.ui.dropPreview).removeClass("timeline__drop-preview--visible").addClass("timeline__drop-preview--hidden");
+                $(Ensemble.MediaBrowser.ui.dragPreview).removeClass("media-browser__drag-preview--hidden").addClass("media-browser__drag-preview--visible");
             }
         }
 
