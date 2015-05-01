@@ -113,14 +113,29 @@
                 /// <summary>Draws the clip to the specified canvas at the given scale.</summary>
                 /// <param name="canvas" type="Canvas">The canvas to use as a rendering target.</param>
                 /// <param name="scale" type="Number">A scale multiplier to use when drawing.</param>
-                context.drawImage(this._player, this.xcoord * scale, this.ycoord * scale, this.width * scale, this.height * scale);
+                let drawX = this.xcoord * scale;
+                let drawY = this.ycoord * scale;
+                let drawWidth = this.width * scale;
+                let drawHeight = this.height * scale;
+                context.drawImage(this._player, drawX, drawY, drawWidth, drawHeight);
 
-                
-                if (this.hovering) {
+                context.strokeStyle = "lightblue";
+                if (this.selected) {
+                    context.strokeStyle = "blue";
                     context.beginPath();
-                    context.strokeStyle = "lightblue";
+                    context.moveTo(drawX, drawY);
+                    context.lineTo(drawX + drawWidth, drawY + drawHeight);
+                    context.stroke();
+                    context.beginPath();
+                    context.moveTo(drawX + drawWidth, drawY);
+                    context.lineTo(drawX, drawY + drawHeight);
+                    context.stroke();
+                }
+                
+                if (this.hovering || this.selected) {
+                    context.beginPath();
                     context.lineWidth = "1";
-                    context.rect(this.xcoord * scale, this.ycoord * scale, this.width * scale, this.height * scale);
+                    context.rect(drawX, drawY, drawWidth, drawHeight);
                     context.closePath();
                     context.stroke();
                 }
@@ -193,7 +208,8 @@
                 this._player.src = null;
                 this._player = null;
                 this.file = {
-                    path: this.file.path
+                    path: this.file.path,
+                    token: this.file.token
                 }
             }
 

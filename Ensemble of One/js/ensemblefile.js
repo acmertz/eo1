@@ -17,6 +17,7 @@
             this.fullName = "";
             this.path = "";
             this.token = "";
+            this.thumb = "";
 
             this.eo1type = "file";
 
@@ -47,6 +48,7 @@
             fullName: "",
             path: "",
             token: "",
+            thumb: "",
 
             //One of "video", "audio", "picture", "file", or "folder"
             eo1type: "",

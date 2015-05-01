@@ -59,11 +59,10 @@
         unload: function () {
             /// <summary>Clears the timeline, unloads all the clips stored within it, and resets all values back to their defaults.</summary>
             this.ui.timeCursor.style.left = "";
-            let timelineCursor = this.ui.timeCursor.outerHTML;
 
             Ensemble.Editor.UI.PageSections.lowerHalf.timelineHeaders.innerHTML = "";
             Ensemble.Editor.UI.PageSections.lowerHalf.timelineDetails.innerHTML = "";
-            Ensemble.Editor.UI.PageSections.lowerHalf.timelineTracks.innerHTML = timelineCursor;
+            Ensemble.Editor.UI.PageSections.lowerHalf.timelineTracks.innerHTML = Ensemble.Editor.TimelineMGR.ui.timeCursor.outerHTML + Ensemble.Editor.TimelineMGR.ui.dropPreview.outerHTML;
 
             this.tracks = [];
             this._clipIndex = [];
@@ -376,6 +375,7 @@
             /// <param name="trackId" type="Number">The ID of the track in which to place the clip. In case of a collision, the TimelineMGR searches forward from the requested time for the first available empty slot large enough to contain the clip.</param>
             /// <param name="destinationTime" type="Number">The project time at which to insert the clip.</param>
             var targetTrack = this.getTrackById(trackId);
+            clipObj.startTime = destinationTime;
             var fits = targetTrack.clipCollisionAt(destinationTime, clipObj.duration);
             if (fits.collision) {
                 let offendingClip = targetTrack.getClipById(fits.offending[0]);
@@ -1128,7 +1128,8 @@
             timeRulerInner: null,
             timeRulerFlag: null,
             timelineSelectionCallout: null,
-            timelineSelectionContextMenu: null
+            timelineSelectionContextMenu: null,
+            dropPreview: null
         },
 
         _refreshUI: function () {
@@ -1146,6 +1147,7 @@
             this.ui.timeRulerFlag = document.getElementsByClassName("timeline-ruler__flag")[0];
             this.ui.timelineSelectionCallout = document.getElementsByClassName("timeline-selection-callout")[0];
             this.ui.timelineSelectionContextMenu = document.getElementById("clip-selected-contextmenu");
+            this.ui.dropPreview = document.getElementsByClassName("timeline__drop-preview")[0];
 
             this.ui.buttonScrollUp.addEventListener("click", this._listeners.buttonScrollUp);
             this.ui.buttonScrollDown.addEventListener("click", this._listeners.buttonScrollDown);
@@ -1182,6 +1184,7 @@
             this.ui.timeRulerFlag = null;
             this.ui.timelineSelectionCallout = null;
             this.ui.timelineSelectionContextMenu = null;
+            this.ui.dropPreview = null;
         },
 
         _rebuildIndex: function () {

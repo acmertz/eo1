@@ -204,7 +204,7 @@
             //Other
             $(Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit).mousedown(this._topBottomSplitMouseDown);
 
-            window.addEventListener("resize", this.viewResized, false);
+            window.addEventListener("resize", Ensemble.Pages.Editor.viewResized);
 
             Ensemble.KeyboardMGR.editorDefault();
         },
@@ -222,7 +222,7 @@
             //Other
             $(Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit).unbind("mousedown");
 
-            window.addEventListener("resize", this.viewResized, false);
+            window.removeEventListener("resize", Ensemble.Pages.Editor.viewResized);
 
             Ensemble.KeyboardMGR.off();
         },

@@ -12,3 +12,26 @@
 .media-browser-preview--hidden {
     display: none;
 }
+
+.media-browser__drag-preview {
+    width: 100px;
+    height: 100px;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    background-color: rgba(200,200,200, 0.8);
+    background-size: 100% auto;
+    display: none;
+    position: fixed;
+    margin: -50px 0 0 -50px;
+    pointer-events: none;
+    z-index: 101;
+}
+
+.media-browser__drag-preview--visible {
+    display: block;
+}
+
+.media-browser__drag-preview--hidden {
+    display: none;
+}
