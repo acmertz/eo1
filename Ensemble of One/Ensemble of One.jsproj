@@ -51,6 +51,8 @@
     <DefaultLanguage>en-US</DefaultLanguage>
     <PackageCertificateKeyFile>Ensemble of One_TemporaryKey.pfx</PackageCertificateKeyFile>
     <PackageCertificateThumbprint>EBB4B040F1C5DA93A7983751A3E82327B74F433D</PackageCertificateThumbprint>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <AppxBundlePlatforms>neutral</AppxBundlePlatforms>
   </PropertyGroup>
   <ItemGroup>
     <AppxManifest Include="package.appxmanifest">
