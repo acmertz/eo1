@@ -1,9 +1,8 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.22823.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{262852C6-CD72-467D-83FE-5EEB1973A190}") = "Ensemble of One Win10", "Ensemble of One Win10\Ensemble of One Win10.jsproj", "{598FF490-5ACE-4855-ABD4-97FF16D90B12}"
+Project("{262852C6-CD72-467D-83FE-5EEB1973A190}") = "Ensemble of One", "Ensemble of One\Ensemble of One.jsproj", "{598FF490-5ACE-4855-ABD4-97FF16D90B12}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
