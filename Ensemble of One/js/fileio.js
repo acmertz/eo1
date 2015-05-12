@@ -504,7 +504,7 @@
         loadProject: function (filename, fileobj) {
             /// <summary>Loads a previously saved project from storage. You may pass either a file name (internal app storage) or a loaded file object (external storage).</summary>
             /// <param name="filename" type="String">The name of the project to be loaded.</param>
-            /// <param name="fileobj" type="Windows.Storage.StorageFile">
+            /// <param name="fileobj" type="Windows.Storage.StorageFile"></param>
 
             switch (Ensemble.Platform.currentPlatform) {
                 case "win8":
@@ -922,7 +922,8 @@
             }
             if (Ensemble.Session.projectClipCount == 0) {
                 //Fire callback. Project is empty (no tracks or media).
-                Ensemble.Pages.MainMenu.navigateToEditor();
+                //Ensemble.Pages.MainMenu.navigateToEditor();
+                Ensemble.MainMenu._listeners.projectFinishedLoading();
             }
         },
 
@@ -1083,7 +1084,8 @@
                 if (Ensemble.FileIO._projectClipsFullyLoaded === Ensemble.Session.projectClipCount) {
                     console.info("Finished loading all clips!");
                     requestAnimationFrame(function () {
-                        Ensemble.Pages.MainMenu.navigateToEditor();
+                        //Ensemble.Pages.MainMenu.navigateToEditor();
+                        Ensemble.MainMenu._listeners.projectFinishedLoading();
                     });
                 }
             })();
@@ -1239,7 +1241,6 @@
         enumerateProjects: function (callback) {
             /// <summary>Enumerates all available projects in the project directory.</summary>
             /// <param name="callback" type="Function">The callback to be fired after all projects have been enumerated.</param>
-            console.info("Enumerating all saved projects...");
             switch (Ensemble.Platform.currentPlatform) {
                 case "win8":
                     var dataArray = [];
@@ -1259,7 +1260,6 @@
                                             var ensembleProject = xmlDoc.firstChild;
 
                                             var loadedProjectName = xmlDoc.getElementsByTagName("ProjectName")[0].childNodes[0].nodeValue;
-                                            console.log("Found project \"" + loadedProjectName + "\" in the Projects directory!");
                                             try {
                                                 var loadedDateModified = new Date(parseInt(xmlDoc.getElementsByTagName("DateModified")[0].childNodes[0].nodeValue, 10));
                                             }

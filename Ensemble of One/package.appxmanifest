@@ -1,53 +1,66 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest">
-  <Identity Name="PlaceholderSoftware.Eo1" Version="0.4.0.0" Publisher="CN=Aaron" />
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  IgnorableNamespaces="uap mp">
+
+  <Identity
+    Name="PlaceholderSoftware.Eo1"
+    Version="0.4.1.0"
+    Publisher="CN=Aaron" />
+
+  <mp:PhoneIdentity PhoneProductId="598ff490-5ace-4855-abd4-97ff16d90b12" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+
   <Properties>
     <DisplayName>Ensemble of One</DisplayName>
     <PublisherDisplayName>[Placeholder] Software</PublisherDisplayName>
     <Logo>img\packaging\logo_store.png</Logo>
   </Properties>
-  <Prerequisites>
-    <OSMinVersion>6.3.0</OSMinVersion>
-    <OSMaxVersionTested>6.3.0</OSMaxVersionTested>
-  </Prerequisites>
+
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.10069.0" MaxVersionTested="10.0.10069.0" />
+  </Dependencies>
+
   <Resources>
     <Resource Language="x-generate" />
   </Resources>
+
   <Applications>
-    <Application Id="App" StartPage="default.html">
-      <m2:VisualElements DisplayName="Ensemble of One" Description="Edit videos with ease from the comfort of your Windows 8 device. Ensemble of One is the most powerful video editor on the tablet market, offering a fully-featured timeline and a range of titles, transitions, and effects for you to include in your video projects. Customize the UI just the way you like it with Ensemble of One's support for hotkeys, and if you get stuck in a rut don't be afraid to use the &quot;Undo&quot; button - it goes back as far as the first edit you made! Export your finished project in all of the formats supported natively by Windows 8 (MP4, WMV, AVI, MPG, MP3, WAV, WMA) with an encoder that takes full advantage of multi-core machines. With the ability to create as many overlay tracks as you can imagine, the sky is truly the limit for what you can make with Ensemble of One. Our free trial includes all the functionality of the paid version - if you like what you see, please support us by buying the paid version (we'll remove the ads if you do). Send us your feedback from within the app and we'll do our very best to address your concerns." ForegroundText="light" BackgroundColor="#dc143c" Square150x150Logo="img\packaging\logo_sq150.png" Square30x30Logo="img\packaging\logo_sq30.png" ToastCapable="false">
-        <m2:DefaultTile DefaultSize="square150x150Logo" ShortName="Eo1" Square70x70Logo="img\packaging\logo_sq70.png">
-          <m2:ShowNameOnTiles>
-            <m2:ShowOn Tile="square150x150Logo" />
-          </m2:ShowNameOnTiles>
-        </m2:DefaultTile>
-        <m2:SplashScreen Image="img\packaging\splashScreen.png" BackgroundColor="#dc143c" />
-        <m2:InitialRotationPreference>
-          <m2:Rotation Preference="portrait" />
-          <m2:Rotation Preference="landscape" />
-          <m2:Rotation Preference="portraitFlipped" />
-          <m2:Rotation Preference="landscapeFlipped" />
-        </m2:InitialRotationPreference>
-        <m2:ApplicationView MinWidth="width500" />
-      </m2:VisualElements>
+    <Application
+      Id="App"
+      StartPage="default.html">
+
+      <uap:VisualElements
+        DisplayName="Ensemble of One"
+        Description="A no-nonsense, desktop-grade video editor built for Windows universal devices"
+        BackgroundColor="#dc143c"
+        Square150x150Logo="img\packaging\logo_sq150.png"
+        Square44x44Logo="img\packaging\logo_sq44.png">
+
+        <uap:SplashScreen Image="img\packaging\splashScreen.png" />
+
+      </uap:VisualElements>
       <Extensions>
-        <Extension Category="windows.fileTypeAssociation">
-          <FileTypeAssociation Name="eo1-project" m2:DesiredView="default">
-            <DisplayName>Ensemble of One Project</DisplayName>
-            <Logo>img\packaging\logo_sq150.png</Logo>
-            <InfoTip>Ensemble of One Project</InfoTip>
-            <EditFlags OpenIsSafe="true" />
-            <SupportedFileTypes>
-              <FileType ContentType="text/xml">.eo1</FileType>
-            </SupportedFileTypes>
-          </FileTypeAssociation>
-        </Extension>
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="eo1-project">
+            <uap:SupportedFileTypes>
+              <uap:FileType ContentType="text/xml">.eo1</uap:FileType>
+            </uap:SupportedFileTypes>
+            <uap:DisplayName>Ensemble of One Project</uap:DisplayName>
+            <uap:Logo>img\packaging\logo_sq150.png</uap:Logo>
+            <uap:InfoTip>An Ensemble of One video project</uap:InfoTip>
+            <uap:EditFlags OpenIsSafe="true"/>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
       </Extensions>
     </Application>
   </Applications>
+
   <Capabilities>
-    <Capability Name="musicLibrary" />
-    <Capability Name="picturesLibrary" />
-    <Capability Name="videosLibrary" />
+    <uap:Capability Name="videosLibrary"/>
+    <uap:Capability Name="musicLibrary"/>
+    <uap:Capability Name="picturesLibrary"/>
   </Capabilities>
+
 </Package>

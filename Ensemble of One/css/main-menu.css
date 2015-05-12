@@ -1,0 +1,157 @@
+﻿.app-page--main-menu {
+    display: flex;
+    flex-direction: row;
+}
+
+.main-menu__nav-container {
+    width: 320px;
+    flex-shrink: 0;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #dc143c;
+}
+
+.main-menu__content-container {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.main-menu__content-section--visible {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+
+.main-menu__content-section--hidden {
+    display: none;
+}
+
+.main-menu__app-logo {
+    color: #fff;
+    padding: 20px;
+}
+
+.main-menu__nav-section {
+    flex: 1;
+}
+
+.main-menu__nav-section--primary {
+}
+
+.main-menu__nav-section--secondary {
+    flex: none;
+}
+
+.main-menu__nav-item {
+    display: block;
+    color: #fff;
+    padding: 20px;
+    font-size: 24px;
+}
+
+.main-menu__nav-item:hover {
+    color: #fff;
+    background-color: #df2b4f;
+}
+
+.main-menu__nav-item:active, .main-menu__nav-item--active {
+    color: #dc143c;
+    background-color: #fff;
+}
+
+.main-menu__nav-item--active:hover {
+    color: #dc143c;
+    background-color: #fff;
+}
+
+.home-menu__quick-start-container {
+    margin: 20px 0 0 0;
+}
+
+.home-menu__quick-start-item {
+    background-color: #ececec;
+    position: relative;
+    width: 256px;
+    margin: 0 10px 20px 0;
+    display: inline-block;
+    vertical-align: top;
+    box-sizing: border-box;
+    border: 1px solid #d3d3d3;
+    color: #000;
+}
+
+.home-menu__quick-start-item:hover {
+    border-color: #b2b2b2;
+    color: #000;
+}
+
+.home-menu__quick-start-item:after {
+    content: "\E0C5";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.home-menu__quick-start-item--16-9:before {
+    content: "";
+    display: block;
+    padding-top: 56.25%;
+}
+
+.home-menu__quick-start-item--4-3:before {
+    content: "";
+    display: block;
+    padding-top: 75%;
+}
+
+.home-menu__quick-start-item--16-10:before {
+    content: "";
+    display: block;
+    padding-top: 62.5%;
+}
+
+.home-menu__quick-start-item--239-1:before {
+    content: "";
+    display: block;
+    padding-top: 41.84%;
+}
+
+
+
+
+
+
+
+.open-menu__local-projects {
+    list-style: none;
+    padding: 0;
+}
+
+.open-menu__project-item {
+    padding: 10px;
+    cursor: pointer;
+    clear: both;
+    height: 50px;
+    border: 1px solid transparent;
+}
+
+.open-menu__project-item:hover {
+    border-color: #d3d3d3;
+}
+
+.open-menu__project-item:active {
+    background-color: #ececec;
+}
+
+
+.open-menu__item-thumb {
+    width: auto;
+    height: 100%;
+    background-color: #000;
+    float: left;
+    margin: 0 10px 0 0;
+}

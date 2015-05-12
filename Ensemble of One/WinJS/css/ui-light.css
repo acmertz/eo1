@@ -1,4 +1,4 @@
-/* Copyright (c) Microsoft Corporation.  All Rights Reserved. Licensed under the MIT License. See License.txt in the project root for license information. */
+﻿/* Copyright (c) Microsoft Open Technologies, Inc.  All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information. */
 @keyframes WinJS-node-inserted {
   from {
     outline-color: #000;
@@ -415,6 +415,38 @@
     -webkit-transform: none;
   }
 }
+@-webkit-keyframes WinJS-selectionMode-shiftRight {
+  from {
+    -webkit-transform: none;
+  }
+  to {
+    -webkit-transform: translateX(40px);
+  }
+}
+@-webkit-keyframes WinJS-selectionMode-shiftRight-rtl {
+  from {
+    -webkit-transform: none;
+  }
+  to {
+    -webkit-transform: translateX(-40px);
+  }
+}
+@-webkit-keyframes WinJS-selectionMode-shiftLeft {
+  from {
+    -webkit-transform: translateX(40px);
+  }
+  to {
+    -webkit-transform: none;
+  }
+}
+@-webkit-keyframes WinJS-selectionMode-shiftLeft-rtl {
+  from {
+    -webkit-transform: translateX(40px);
+  }
+  to {
+    -webkit-transform: none;
+  }
+}
 @font-face {
   font-family: "Segoe UI Command";
   src: local("Segoe UI Symbol");
@@ -793,6 +825,11 @@ select,
 option {
   font-family: "Segoe UI", "Segoe WP", "sans-serif", "Segoe UI Symbol", "Symbols";
 }
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  padding: 0;
+  border: 0;
+}
 input[type=text],
 input[type=password],
 input[type=email],
@@ -805,7 +842,6 @@ textarea,
   -ms-user-select: element;
   border-style: solid;
   border-width: 2px;
-  border-radius: 0;
   margin: 8px 0px;
   width: 296px;
   min-width: 64px;
@@ -882,9 +918,6 @@ button[type=submit] {
   padding: 4px 8px;
   border-width: 2px;
   background-clip: border-box;
-  border-radius: 0;
-  touch-action: manipulation;
-  -webkit-appearance: none;
   font-size: 15px;
   font-weight: 400;
   line-height: 1.333;
@@ -896,7 +929,6 @@ input::-ms-reveal {
   margin-left: 2px;
   margin-top: -8px;
   margin-bottom: -8px;
-  width: 30px;
   height: 32px;
 }
 input:lang(ar)::-ms-clear,
@@ -976,16 +1008,14 @@ input[type=file]::-ms-browse {
   line-height: 1.333;
 }
 select {
-  min-width: 56px;
-  max-width: 368px;
+  min-width: 296px;
   min-height: 32px;
   margin: 8px 0;
+  outline: 0;
   border-style: solid;
   border-width: 2px;
   background-clip: border-box;
-  background-image: none;
   box-sizing: border-box;
-  border-radius: 0;
   font-size: 15px;
   font-weight: 400;
   line-height: 1.333;
@@ -1003,7 +1033,6 @@ select::-ms-expand {
 }
 select[multiple] {
   padding: 0 0 0 12px;
-  vertical-align: bottom;
 }
 option {
   font-size: 15px;
@@ -1013,10 +1042,8 @@ option {
 progress {
   width: 180px;
   height: 4px;
-  -webkit-appearance: none;
-}
-progress:not(:indeterminate) {
   border-style: none;
+  -webkit-appearance: none;
 }
 progress::-ms-fill {
   border-style: none;
@@ -1089,8 +1116,6 @@ input[type=range] {
   -webkit-appearance: none;
   width: 280px;
   height: 22px;
-  padding-top: 17px;
-  padding-bottom: 32px;
 }
 input[type=range]::-ms-track {
   height: 2px;
@@ -1153,9 +1178,8 @@ input[type=range].win-vertical:lang(qps-plocm) {
   writing-mode: bt-rl;
 }
 a {
-  text-decoration: underline;
+  text-decoration: none;
   cursor: pointer;
-  touch-action: manipulation;
 }
 img {
   border-style: none;
@@ -1175,7 +1199,7 @@ legend {
 code,
 pre,
 samp {
-  font-family: "Consolas", "Menlo", "Monaco", "Courier New", monospace;
+  font-family: "Consolas";
   font-size: 15px;
   font-weight: 400;
   line-height: 1.333;
@@ -1366,10 +1390,10 @@ h6 {
 }
 .win-listview .win-focusedoutline,
 .win-itemcontainer .win-focusedoutline {
-  width: calc(100% - 4px);
-  height: calc(100% - 4px);
-  left: 2px;
-  top: 2px;
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  left: -2px;
+  top: -2px;
   position: absolute;
   z-index: 5;
   pointer-events: none;
@@ -1417,15 +1441,15 @@ html.win-hoverable .win-itemcontainer.win-itembox.win-selected:hover::before {
   touch-action: pan-x pan-y pinch-zoom;
   overflow: hidden;
 }
-.win-listview .win-horizontal .win-headercontainer,
-.win-listview .win-horizontal .win-footercontainer {
+.win-listview .win-horizontal .win-listheadercontainer,
+.win-listview .win-horizontal .win-listfootercontainer {
   height: 100%;
   display: inline-block;
   overflow: hidden;
   white-space: normal;
 }
-.win-listview .win-vertical .win-headercontainer,
-.win-listview .win-vertical .win-footercontainer {
+.win-listview .win-vertical .win-listheadercontainer,
+.win-listview .win-vertical .win-listfootercontainer {
   width: 100%;
   display: block;
   overflow: hidden;
@@ -1506,20 +1530,15 @@ html.win-hoverable .win-itemcontainer.win-itembox.win-selected:hover::before {
   border-bottom-width: 3px;
   border-style: solid;
   z-index: 3;
-  display: none;
 }
 .win-listview.win-rtl .win-selectioncheckmarkbackground,
 .win-itemcontainer.win-rtl .win-selectioncheckmarkbackground {
   left: 2px;
   right: auto;
 }
-.win-selectionmode.win-itemcontainer .win-selectioncheckmarkbackground,
-.win-selectionmode.win-itemcontainer.win-selectionmode .win-selectioncheckmark,
-.win-selectionmode .win-itemcontainer .win-selectioncheckmarkbackground,
-.win-selectionmode .win-itemcontainer.win-selectionmode .win-selectioncheckmark,
-.win-listview .win-selectionmode .win-selectioncheckmarkbackground,
-.win-listview .win-selectionmode .win-selectioncheckmark {
-  display: block;
+.win-listview.win-selectionstylefilled .win-surface .win-selectioncheckmarkbackground,
+.win-listview.win-selectionstylefilled .win-surface .win-selectioncheckmark {
+  display: none;
 }
 .win-selectioncheckmark {
   position: absolute;
@@ -1530,7 +1549,6 @@ html.win-hoverable .win-itemcontainer.win-itembox.win-selected:hover::before {
   font-family: "Segoe UI Symbol", "Symbols";
   font-size: 14px;
   z-index: 4;
-  display: none;
 }
 .win-rtl .win-selectioncheckmark {
   right: auto;
@@ -1559,28 +1577,24 @@ html.win-hoverable .win-itemcontainer.win-itembox.win-selected:hover::before {
   left: 2px;
 }
 .win-listview.win-selectionstylefilled .win-surface.win-selectionmode .win-item {
-  transition: transform 250ms cubic-bezier(0.17, 0.79, 0.215, 1.0025);
-  -webkit-transition: -webkit-transform 250ms cubic-bezier(0.17, 0.79, 0.215, 1.0025);
+  animation: WinJS-selectionMode-shiftRight 250ms cubic-bezier(0.17, 0.79, 0.215, 1.0025);
+  -webkit-animation: WinJS-selectionMode-shiftRight 250ms cubic-bezier(0.17, 0.79, 0.215, 1.0025);
   transform: translate(40px, 0px);
-  -webkit-transform: translate(40px, 0px);
 }
 .win-listview.win-rtl.win-selectionstylefilled .win-surface.win-selectionmode .win-item {
-  transition: transform 250ms cubic-bezier(0.17, 0.79, 0.215, 1.0025);
-  -webkit-transition: -webkit-transform 250ms cubic-bezier(0.17, 0.79, 0.215, 1.0025);
+  animation: WinJS-selectionMode-shiftRight-rtl 250ms cubic-bezier(0.17, 0.79, 0.215, 1.0025);
+  -webkit-animation: WinJS-selectionMode-shiftRight-rtl 250ms cubic-bezier(0.17, 0.79, 0.215, 1.0025);
   transform: translate(-40px, 0px);
-  -webkit-transform: translate(-40px, 0px);
 }
 .win-listview.win-selectionstylefilled .win-surface.win-hidingselectionmode .win-item {
-  transition: transform 250ms cubic-bezier(0.17, 0.79, 0.215, 1.0025);
-  -webkit-transition: -webkit-transform 250ms cubic-bezier(0.17, 0.79, 0.215, 1.0025);
+  animation: WinJS-selectionMode-shiftLeft 250ms cubic-bezier(0.17, 0.79, 0.215, 1.0025);
+  -webkit-animation: WinJS-selectionMode-shiftLeft 250ms cubic-bezier(0.17, 0.79, 0.215, 1.0025);
   transform: none;
-  -webkit-transform: none;
 }
 .win-listview.win-rtl.win-selectionstylefilled .win-surface.win-hideselectionmode .win-item {
-  transition: transform 250ms cubic-bezier(0.17, 0.79, 0.215, 1.0025);
-  -webkit-transition: -webkit-transform 250ms cubic-bezier(0.17, 0.79, 0.215, 1.0025);
+  animation: WinJS-selectionMode-shiftLeft-rtl 250ms cubic-bezier(0.17, 0.79, 0.215, 1.0025);
+  -webkit-animation: WinJS-selectionMode-shiftLeft-rtl 250ms cubic-bezier(0.17, 0.79, 0.215, 1.0025);
   transform: none;
-  -webkit-transform: none;
 }
 .win-listview.win-selectionstylefilled .win-surface.win-selectionmode .win-itembox::after {
   left: 12px;
@@ -1624,7 +1638,7 @@ html.win-hoverable .win-itemcontainer.win-itembox.win-selected:hover::before {
 .win-selectionmode .win-itemcontainer.win-selectionstylefilled.win-container .win-itembox.win-selected::after,
 .win-itemcontainer.win-selectionmode.win-selectionstylefilled.win-container .win-itembox.win-selected::after,
 .win-listview.win-selectionstylefilled .win-surface.win-selectionmode .win-itembox.win-nonselectable::after,
-.win-listview .win-surface.win-selectionmode .win-itembox.win-selected::after {
+.win-listview.win-selectionstylefilled .win-surface.win-selectionmode .win-itembox.win-selected::after {
   display: none;
 }
 .win-listview .win-progress {
@@ -1683,8 +1697,7 @@ html.win-hoverable .win-itemcontainer.win-itembox.win-selected:hover::before {
 .win-listview .win-horizontal .win-structuralnodes.win-single-itemsblock.win-listlayout .win-itemscontainer.win-laidout .win-itemscontainer-padder,
 .win-listview .win-vertical .win-structuralnodes.win-single-itemsblock.win-gridlayout .win-uniformgridlayout.win-itemscontainer.win-laidout .win-itemscontainer-padder,
 .win-listview .win-horizontal .win-structuralnodes.win-single-itemsblock.win-gridlayout .win-uniformgridlayout.win-itemscontainer.win-laidout .win-itemscontainer-padder {
-  height: 0;
-  width: 0;
+  display: none;
 }
 .win-listview.win-groups .win-vertical .win-listlayout.win-headerpositionleft .win-itemscontainer,
 .win-listview.win-groups .win-vertical .win-listlayout.win-headerpositionleft .win-groupheadercontainer,
@@ -2832,7 +2845,6 @@ button.win-navigation-backbutton:enabled:hover:active {
   width: 100%;
   overflow: hidden;
   -ms-scroll-limit-x-max: 0px;
-  touch-action: manipulation;
 }
 .win-pivot .win-pivot-navbutton {
   position: absolute;
@@ -2897,7 +2909,6 @@ button.win-navigation-backbutton:enabled:hover:active {
   height: 48px;
   touch-action: none;
   -ms-touch-action: none;
-  outline: 0;
 }
 .win-pivot .win-pivot-header {
   font-size: 15px;
@@ -2910,7 +2921,6 @@ button.win-navigation-backbutton:enabled:hover:active {
   height: 30px;
   border: 0;
   padding: 0;
-  outline: 0;
   margin: 13px 12px 15px 12px;
 }
 .win-pivot button.win-pivot-header,
@@ -3030,7 +3040,6 @@ html.win-hoverable .win-pivot .win-pivot-navbutton:hover {
   height: 100%;
   width: 100%;
   -ms-scroll-snap-type: proximity;
-  -webkit-overflow-scrolling: touch;
 }
 .win-hub-horizontal .win-hub-viewport {
   overflow-x: auto;
@@ -3044,37 +3053,31 @@ html.win-hoverable .win-pivot .win-pivot-navbutton:hover {
 }
 .win-hub-surface {
   display: inline-block;
+  padding-top: 52px;
 }
 .win-hub-vertical .win-hub-surface {
   width: 100%;
-  padding: 15px 0;
 }
 .win-hub-horizontal .win-hub-surface {
   height: 100%;
-  padding: 0 80px;
 }
 .win-hub-section {
   display: inline-block;
-  padding: 0 40px;
+  padding: 16px 12px 0 12px;
   vertical-align: top;
   white-space: normal;
 }
 .win-hub-horizontal .win-hub-section {
   height: 100%;
 }
-.win-hub-horizontal .win-hub-section-header {
-  margin-top: 129px;
-}
 .win-hub-vertical .win-hub-section {
-  width: calc(100% - 80px);
-  padding: 14px 40px;
-}
-.win-hub-vertical .win-hub-section-header {
-  margin-top: 1px;
+  width: calc(100% - (@hubSectionPadding * 2));
 }
 .win-hub-section-header {
-  margin: 4px 0;
-  font-size: 20pt;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: 7px;
   text-align: left;
   height: 51px;
 }
@@ -3310,11 +3313,7 @@ button:lang(ur),
 button:lang(qps-plocm) {
   writing-mode: rl-tb;
 }
-/*
-Always hide the outline, not just when :focus is applied.
-https://github.com/winjs/winjs/issues/859
-*/
-button.win-command {
+button.win-command:focus {
   outline: none;
 }
 /*
@@ -3698,13 +3697,12 @@ AppBar commands layout
   padding-left: 32px;
 }
 /*
-AppBar menu layout
+AppBar menu layout 
 */
 .win-menulayout .win-appbar-menu {
   position: absolute;
   right: 0;
   top: 0;
-  overflow: hidden;
 }
 .win-menulayout .win-appbar-menu:lang(ar),
 .win-menulayout .win-appbar-menu:lang(dv),
@@ -3722,11 +3720,17 @@ AppBar menu layout
   left: 0;
   right: auto;
 }
-.win-menulayout.win-bottom .win-appbar-menu {
+.win-menulayout .win-appbar-toolbarcontainer {
+  overflow: hidden;
+}
+.win-menulayout.win-bottom .win-appbar-toolbarcontainer {
   overflow: visible;
 }
 .win-menulayout .win-toolbar {
   max-width: 100vw;
+}
+.win-menulayout .win-toolbar:not(.win-toolbar-empty) .win-toolbar-actionarea {
+  min-height: 48px;
 }
 .win-menulayout.win-appbar-compact button.win-command .win-label {
   display: none;
@@ -3872,7 +3876,6 @@ Menu commands.
   -webkit-align-items: center;
   align-items: center;
   width: 100%;
-  position: relative;
 }
 .win-menu button.win-command .win-menucommand-liner .win-toggleicon,
 .win-menu button.win-command .win-menucommand-liner .win-flyouticon {
@@ -4269,12 +4272,6 @@ Settings Pane
   -webkit-align-items: flex-start;
   align-items: flex-start;
 }
-.win-toolbar .win-toolbar-actionarea .win-toolbar-spacer {
-  visibility: hidden;
-  height: 48px;
-  /* height of a primary command with no label */
-  width: 0px;
-}
 .win-toolbar .win-toolbar-actionarea .win-command,
 .win-toolbar .win-toolbar-actionarea .win-toolbar-overflowbutton {
   -ms-flex: 0 0 auto;
@@ -4290,9 +4287,6 @@ Settings Pane
 }
 .win-toolbar.win-toolbar-showndisplayfull {
   min-width: 320px;
-}
-.win-toolbar.win-toolbar-showndisplayfull .win-toolbar-actionarea .win-toolbar-overflowbutton {
-  visibility: hidden;
 }
 .win-toolbar.win-toolbar-showndisplayfull .win-toolbar-overflowarea {
   display: -ms-flexbox;
@@ -4332,12 +4326,18 @@ Settings Pane
   height: 2px;
   margin: 6px 12px 4px 12px;
 }
+.win-toolbar.win-toolbar-showndisplayfull .win-toolbar-overflowbutton {
+  min-height: 24px;
+  visibility: hidden;
+}
 .win-toolbar.win-toolbar-empty .win-toolbar-overflowbutton {
   display: none;
 }
 .win-toolbar .win-toolbar-overflowbutton {
   width: 32px;
   /* 30px + 2px border */
+  min-height: 48px;
+  /* height of a command without labels */
   margin: 0px;
   padding: 0px;
   border: 1px dotted;
@@ -4393,7 +4393,7 @@ Settings Pane
   top: 100%;
   width: 100%;
   z-index: 100;
-  max-height: 374px;
+  max-height: 242px;
   min-height: 44px;
   overflow: auto;
   -ms-scroll-chaining: none;
@@ -4651,7 +4651,7 @@ Hide clear button in search box control.
   position: absolute;
   right: 0;
   top: 0;
-  width: 32px;
+  width: 28px;
   font-family: "Segoe UI Symbol", "Symbols";
   font-size: 15pt;
   border-style: none;
@@ -4676,10 +4676,6 @@ Hide clear button in search box control.
 }
 .win-searchbox-button.win-searchbox-button:before {
   content: "\E094";
-  position: absolute;
-  left: 6px;
-  top: 6px;
-  line-height: 100%;
 }
 @media (-ms-high-contrast) {
   .win-searchbox-button {
@@ -4759,7 +4755,6 @@ Hide clear button in search box control.
   max-height: 216px;
   -ms-overflow-style: -ms-autohiding-scrollbar;
   touch-action: pan-y;
-  -webkit-overflow-scrolling: touch;
 }
 .win-navbarcontainer-horizontal .win-navbarcontainer-surface {
   display: -ms-flexbox;
@@ -4827,7 +4822,6 @@ Hide clear button in search box control.
   -ms-flex: 0 0 auto;
   -webkit-flex: 0 0 auto;
   flex: 0 0 auto;
-  touch-action: manipulation;
 }
 .win-navbarcontainer-horizontal .win-navbarcommand {
   margin: 4px;
@@ -5083,6 +5077,8 @@ Hide clear button in search box control.
   display: flex;
 }
 .win-contentdialog .win-contentdialog-backgroundoverlay {
+  z-index: -1;
+  /* Put backgroundoverlay behind the dialog's body */
   position: absolute;
   top: 0;
   left: 0;
@@ -5099,8 +5095,6 @@ Hide clear button in search box control.
   -ms-flex: 1 1 auto;
   -webkit-flex: 1 1 auto;
   flex: 1 1 auto;
-  z-index: 1;
-  /* Put the dialog's body above the backgroundoverlay */
   outline-style: solid;
   outline-width: 1px;
   box-sizing: border-box;
@@ -5186,18 +5180,6 @@ Hide clear button in search box control.
   /* 4px of space between each command */
   white-space: nowrap;
 }
-.win-clickeater {
-  background-color: transparent;
-  width: 110%;
-  height: 110%;
-  left: -5%;
-  top: -5%;
-  position: fixed;
-  touch-action: none;
-  outline: 1px solid Purple;
-  /*Necessary to block passthrough over webviews*/
-  -ms-high-contrast-adjust: none;
-}
 .win-splitview {
   position: relative;
   width: 100%;
@@ -5220,9 +5202,7 @@ Hide clear button in search box control.
   flex-direction: column;
 }
 .win-splitview .win-splitview-panewrapper {
-  position: relative;
   z-index: 1;
-  outline: none;
   -ms-flex: 0 0 auto;
   -webkit-flex: 0 0 auto;
   flex: 0 0 auto;
@@ -5238,18 +5218,12 @@ Hide clear button in search box control.
   flex: 0 0 auto;
   overflow: hidden;
 }
-.win-splitview .win-splitview-contentwrapper {
-  position: relative;
-  z-index: 0;
-  -ms-flex: 1 1 0%;
-  -webkit-flex: 1 1 0%;
-  flex: 1 1 0%;
-  overflow: hidden;
-}
 .win-splitview .win-splitview-content {
-  position: absolute;
-  width: 100%;
-  height: 100%;
+  z-index: 0;
+  -ms-flex: 1 1 auto;
+  -webkit-flex: 1 1 auto;
+  flex: 1 1 auto;
+  overflow: hidden;
 }
 .win-splitview.win-splitview-pane-shown.win-splitview-placementleft .win-splitview-pane,
 .win-splitview.win-splitview-pane-shown.win-splitview-placementright .win-splitview-pane {
@@ -5340,137 +5314,17 @@ Hide clear button in search box control.
 .win-splitview.win-splitview-showndisplayinline .win-splitview-paneplaceholder {
   display: none;
 }
-.win-commandingsurface {
-  width: 100%;
-  outline: none;
-  min-width: 68px;
-  /* enough for one primary command */
-}
-.win-commandingsurface .win-commandingsurface-actionarea {
-  width: 100%;
-  min-height: 24px;
-  vertical-align: top;
-  display: -ms-inline-flexbox;
-  display: -webkit-inline-flex;
-  display: inline-flex;
-  -ms-flex-pack: end;
-  -webkit-justify-content: flex-end;
-  justify-content: flex-end;
-  -ms-flex-align: start;
-  -webkit-align-items: flex-start;
-  align-items: flex-start;
-}
-.win-commandingsurface .win-commandingsurface-actionarea .win-commandingsurface-spacer {
-  visibility: hidden;
-  height: 48px;
-  /* height of a primary command with no label */
-  width: 0px;
-}
-.win-commandingsurface .win-commandingsurface-actionarea .win-command,
-.win-commandingsurface .win-commandingsurface-actionarea .win-commandingsurface-overflowbutton {
-  -ms-flex: 0 0 auto;
-  -webkit-flex: 0 0 auto;
-  flex: 0 0 auto;
-}
-.win-commandingsurface.win-commandingsurface-empty .win-commandingsurface-overflowbutton {
-  display: none;
-}
-.win-commandingsurface .win-commandingsurface-overflowbutton {
-  width: 32px;
-  /* 30px + 2px border */
-  margin: 0px;
-  padding: 0px;
-  border: 1px dotted;
-  min-width: 0px;
-  position: relative;
-  outline: none;
-  -ms-flex-item-align: stretch;
-  -webkit-align-self: stretch;
-  align-self: stretch;
-  box-sizing: border-box;
-  background-clip: border-box;
-}
-.win-commandingsurface .win-commandingsurface-overflowbutton .win-commandingsurface-ellipsis {
-  width: 32px;
-  right: 0px;
-  top: 12px;
-  line-height: 24px;
-  position: absolute;
-  display: inline-block;
-  font-size: 14px;
-  text-align: center;
-  font-family: "Segoe UI Symbol", "Symbols";
-}
-.win-commandingsurface .win-commandingsurface-overflowbutton .win-commandingsurface-ellipsis::before {
-  content: "\E10C";
-  position: relative;
-}
-.win-commandingsurface .win-commandingsurface-overflowarea {
-  display: -ms-flexbox;
-  display: -webkit-flex;
-  display: flex;
-  -ms-flex-direction: column;
-  -webkit-flex-direction: column;
-  flex-direction: column;
-  min-width: 320px;
-  min-height: 0;
-  max-height: 198px;
-  /* 4.5 * 44px */
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 0;
-}
-.win-commandingsurface .win-commandingsurface-overflowarea.win-menu {
-  max-width: inherit;
-  /* Turn off max-width styles from .win-menu */
-}
-.win-commandingsurface .win-commandingsurface-overflowarea button.win-command {
-  -ms-flex: 0 0 auto;
-  -webkit-flex: 0 0 auto;
-  flex: 0 0 auto;
-  border: 1px dotted transparent;
-  padding: 10px 11px 12px 11px;
-  font-size: 15px;
-  font-weight: 400;
-  line-height: 1.333;
-  white-space: nowrap;
-  overflow: hidden;
-  width: auto;
-}
-.win-commandingsurface .win-commandingsurface-overflowarea hr.win-command {
-  -ms-flex: 0 0 auto;
-  -webkit-flex: 0 0 auto;
-  flex: 0 0 auto;
-  height: 2px;
-  margin: 6px 12px 4px 12px;
-}
-.win-commandingsurface:lang(ar) .win-commandingsurface-overflowbutton .win-commandingsurface-ellipsis,
-.win-commandingsurface:lang(dv) .win-commandingsurface-overflowbutton .win-commandingsurface-ellipsis,
-.win-commandingsurface:lang(fa) .win-commandingsurface-overflowbutton .win-commandingsurface-ellipsis,
-.win-commandingsurface:lang(he) .win-commandingsurface-overflowbutton .win-commandingsurface-ellipsis,
-.win-commandingsurface:lang(ku-Arab) .win-commandingsurface-overflowbutton .win-commandingsurface-ellipsis,
-.win-commandingsurface:lang(pa-Arab) .win-commandingsurface-overflowbutton .win-commandingsurface-ellipsis,
-.win-commandingsurface:lang(prs) .win-commandingsurface-overflowbutton .win-commandingsurface-ellipsis,
-.win-commandingsurface:lang(ps) .win-commandingsurface-overflowbutton .win-commandingsurface-ellipsis,
-.win-commandingsurface:lang(sd-Arab) .win-commandingsurface-overflowbutton .win-commandingsurface-ellipsis,
-.win-commandingsurface:lang(syr) .win-commandingsurface-overflowbutton .win-commandingsurface-ellipsis,
-.win-commandingsurface:lang(ug) .win-commandingsurface-overflowbutton .win-commandingsurface-ellipsis,
-.win-commandingsurface:lang(ur) .win-commandingsurface-overflowbutton .win-commandingsurface-ellipsis,
-.win-commandingsurface:lang(qps-plocm) .win-commandingsurface-overflowbutton .win-commandingsurface-ellipsis {
-  right: auto;
-  left: 0px;
-}
 body {
-  background-color: #000000;
-  color: #ffffff;
-}
-.win-ui-dark {
-  background-color: #000000;
-  color: #ffffff;
+  background-color: #ffffff;
+  color: #000000;
 }
 .win-ui-light {
   background-color: #ffffff;
   color: #000000;
+}
+.win-ui-dark {
+  background-color: #000000;
+  color: #ffffff;
 }
 ::selection {
   background-color: #0078d7;
@@ -5480,82 +5334,79 @@ a {
   color: #0078d7;
 }
 a:hover {
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(0, 0, 0, 0.6);
 }
 a:active {
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(0, 0, 0, 0.4);
 }
 a[disabled] {
-  color: rgba(255, 255, 255, 0.2);
+  color: rgba(0, 0, 0, 0.2);
 }
 input[type=checkbox]::-ms-check {
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.8);
+  color: #000000;
+  border-color: rgba(0, 0, 0, 0.8);
   background-color: transparent;
 }
 input[type=checkbox]:indeterminate::-ms-check {
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(0, 0, 0, 0.8);
   border-color: #0078d7;
 }
 input[type=checkbox]:checked::-ms-check {
-  color: #fff;
   background-color: #0078d7;
   border-color: transparent;
 }
 input[type=checkbox]:hover::-ms-check {
-  border-color: #ffffff;
+  border-color: #000000;
 }
 input[type=checkbox]:hover:indeterminate::-ms-check {
-  color: #ffffff;
+  color: #000000;
   border-color: #0078d7;
 }
 input[type=checkbox]:active::-ms-check {
   border-color: transparent;
-  background-color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(0, 0, 0, 0.6);
 }
 input[type=checkbox]:indeterminate:active::-ms-check {
-  color: rgba(255, 255, 255, 0.6);
-  border-color: rgba(255, 255, 255, 0.8);
+  color: rgba(0, 0, 0, 0.6);
+  border-color: rgba(0, 0, 0, 0.8);
   background-color: transparent;
 }
 input[type=checkbox]:disabled::-ms-check,
 input[type=checkbox]:indeterminate:disabled::-ms-check {
-  color: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(0, 0, 0, 0.2);
+  border-color: rgba(0, 0, 0, 0.2);
   background-color: transparent;
 }
 input[type=radio]::-ms-check {
-  color: rgba(255, 255, 255, 0.8);
-  border-color: rgba(255, 255, 255, 0.8);
+  color: rgba(0, 0, 0, 0.8);
+  border-color: rgba(0, 0, 0, 0.8);
   background-color: transparent;
 }
 input[type=radio]:hover::-ms-check {
-  border-color: #ffffff;
+  border-color: #000000;
 }
 input[type=radio]:checked::-ms-check {
   border-color: #0078d7;
 }
 input[type=radio]:hover::-ms-check {
-  color: #ffffff;
+  color: #000000;
 }
 input[type=radio]:active::-ms-check {
-  color: rgba(255, 255, 255, 0.6);
-  border-color: rgba(255, 255, 255, 0.6);
+  color: rgba(0, 0, 0, 0.6);
+  border-color: rgba(0, 0, 0, 0.6);
 }
 input[type=radio]:disabled::-ms-check {
-  color: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(0, 0, 0, 0.2);
+  border-color: rgba(0, 0, 0, 0.2);
 }
 progress {
   color: #0078d7;
-}
-progress:not(:indeterminate) {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(0, 0, 0, 0.2);
 }
 progress::-webkit-progress-value {
   background-color: #0078d7;
 }
-progress:not(:indeterminate)::-moz-progress-bar {
+progress::-moz-progress-bar {
   background-color: #0078d7;
 }
 progress.win-ring {
@@ -5569,8 +5420,8 @@ input[type=button],
 input[type=reset],
 input[type=submit],
 button[type=submit] {
-  color: #ffffff;
-  background-color: rgba(255, 255, 255, 0.2);
+  color: #000000;
+  background-color: rgba(0, 0, 0, 0.2);
   border-color: transparent;
 }
 button:hover,
@@ -5578,53 +5429,49 @@ input[type=button]:hover,
 input[type=reset]:hover,
 input[type=submit]:hover,
 button[type=submit]:hover {
-  border-color: rgba(255, 255, 255, 0.4);
+  border-color: rgba(0, 0, 0, 0.4);
 }
 button:active,
 input[type=button]:active,
 input[type=reset]:active,
 input[type=submit]:active,
 button[type=submit]:active {
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: rgba(0, 0, 0, 0.4);
 }
 button:disabled,
 input[type=button]:disabled,
 input[type=reset]:disabled,
 input[type=submit]:disabled,
 button[type=submit]:disabled {
-  color: rgba(255, 255, 255, 0.2);
-  background-color: rgba(255, 255, 255, 0.2);
+  color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.2);
   border-color: transparent;
 }
 input[type=submit],
 button[type=submit] {
-  color: #fff;
   background-color: #0078d7;
 }
 select {
-  color: #ffffff;
-  background-color: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.4);
+  color: #000000;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-color: rgba(0, 0, 0, 0.4);
 }
 select::-ms-expand {
-  color: rgba(255, 255, 255, 0.8);
+  color: #000000;
   background-color: transparent;
 }
 select:hover {
-  background-color: #2b2b2b;
-  border-color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(0, 0, 0, 0.4);
 }
 select:disabled {
-  color: rgba(255, 255, 255, 0.2);
-  background-color: rgba(255, 255, 255, 0.2);
+  color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.2);
 }
 select:disabled::-ms-expand {
-  color: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(0, 0, 0, 0.2);
 }
 option {
-  color: #ffffff;
-  background-color: #2b2b2b;
+  color: #000000;
 }
 option:checked {
   color: #ffffff;
@@ -5633,24 +5480,17 @@ option:checked {
 option:hover,
 option:active {
   background-color: rgba(0, 0, 0, 0.2);
-  color: #ffffff;
-}
-optgroup {
-  color: #ffffff;
-  background-color: #2b2b2b;
-}
-optgroup:disabled {
-  color: rgba(255, 255, 255, 0.2);
+  color: #000000;
 }
 select[multiple] {
   border: none;
-  background-color: #2b2b2b;
+  background-color: #e6e6e6;
 }
 select[multiple] option {
-  color: #ffffff;
+  color: #000000;
 }
 select[multiple] option:hover {
-  color: #ffffff;
+  color: #000000;
 }
 select[multiple] option:checked {
   color: #ffffff;
@@ -5669,73 +5509,73 @@ input[type=range]::-moz-range-thumb {
   background: #0078d7;
 }
 input[type=range]:hover::-ms-thumb {
-  background: #f9f9f9;
+  background: #1f1f1f;
 }
 input[type=range]:hover::-webkit-slider-thumb {
-  background: #f9f9f9;
+  background: #1f1f1f;
 }
 input[type=range]:hover::-moz-range-thumb {
-  background: #f9f9f9;
+  background: #1f1f1f;
 }
 input[type=range]:active::-ms-thumb {
-  background: #767676;
+  background: #cccccc;
 }
 input[type=range]:active::-webkit-slider-thumb {
-  background: #767676;
+  background: #cccccc;
 }
 input[type=range]:active::-moz-range-thumb {
-  background: #767676;
+  background: #cccccc;
 }
 input[type=range]:disabled::-ms-thumb {
-  background: #333333;
+  background: #cccccc;
 }
 input[type=range]:disabled::-webkit-slider-thumb {
-  background: #333333;
+  background: #cccccc;
 }
 input[type=range]:disabled::-moz-range-thumb {
-  background: #333333;
+  background: #cccccc;
 }
 input[type=range]::-ms-fill-lower {
   background: #0078d7;
 }
 input[type=range]:disabled::-ms-fill-lower {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.2);
 }
 input[type=range]::-ms-fill-upper {
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.4);
 }
 input[type=range]::-webkit-slider-runnable-track {
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.4);
 }
 input[type=range]::-moz-range-track {
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.4);
 }
 input[type=range]:hover::-ms-fill-upper {
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(0, 0, 0, 0.6);
 }
 input[type=range]:hover::-webkit-slider-runnable-track {
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(0, 0, 0, 0.6);
 }
 input[type=range]:hover::-moz-range-track {
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(0, 0, 0, 0.6);
 }
 input[type=range]:active::-ms-fill-upper {
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.4);
 }
 input[type=range]:active::-webkit-slider-runnable-track {
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.4);
 }
 input[type=range]:active::-moz-range-track {
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.4);
 }
 input[type=range]:disabled::-ms-fill-upper {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.2);
 }
 input[type=range]:disabled::-webkit-slider-runnable-track {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.2);
 }
 input[type=range]:disabled::-moz-range-track {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.2);
 }
 input[type=range]::-ms-track {
   color: transparent;
@@ -5743,7 +5583,7 @@ input[type=range]::-ms-track {
 }
 input[type=range]::-ms-ticks-before,
 input[type=range]::-ms-ticks-after {
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(0, 0, 0, 0.4);
 }
 input[type=text],
 input[type=password],
@@ -5754,9 +5594,9 @@ input[type=url],
 input[type=search],
 textarea,
 .win-textarea {
-  color: #ffffff;
-  background-color: rgba(0, 0, 0, 0.4);
-  border-color: rgba(255, 255, 255, 0.4);
+  color: #000000;
+  background-color: rgba(255, 255, 255, 0.4);
+  border-color: rgba(0, 0, 0, 0.4);
 }
 input[type=text]:-ms-input-placeholder,
 input[type=password]:-ms-input-placeholder,
@@ -5767,7 +5607,7 @@ input[type=url]:-ms-input-placeholder,
 input[type=search]:-ms-input-placeholder,
 textarea:-ms-input-placeholder,
 .win-textarea:-ms-input-placeholder {
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(0, 0, 0, 0.6);
 }
 input[type=text]::-webkit-input-placeholder,
 input[type=password]::-webkit-input-placeholder,
@@ -5778,7 +5618,7 @@ input[type=url]::-webkit-input-placeholder,
 input[type=search]::-webkit-input-placeholder,
 textarea::-webkit-input-placeholder,
 .win-textarea::-webkit-input-placeholder {
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(0, 0, 0, 0.6);
 }
 input[type=text]::-moz-input-placeholder,
 input[type=password]::-moz-input-placeholder,
@@ -5789,7 +5629,7 @@ input[type=url]::-moz-input-placeholder,
 input[type=search]::-moz-input-placeholder,
 textarea::-moz-input-placeholder,
 .win-textarea::-moz-input-placeholder {
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(0, 0, 0, 0.6);
 }
 input[type=text]:hover,
 input[type=password]:hover,
@@ -5800,8 +5640,8 @@ input[type=url]:hover,
 input[type=search]:hover,
 textarea:hover,
 .win-textarea:hover {
-  background-color: rgba(0, 0, 0, 0.6);
-  border-color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(255, 255, 255, 0.6);
+  border-color: rgba(0, 0, 0, 0.6);
 }
 input[type=text]:focus,
 input[type=password]:focus,
@@ -5833,11 +5673,11 @@ input::-ms-reveal:active {
 .win-selectionmode .win-itemcontainer.win-container .win-itembox::after,
 .win-itemcontainer.win-selectionmode.win-container .win-itembox::after,
 .win-listview .win-surface.win-selectionmode .win-itembox::after {
-  border-color: #ffffff;
-  background-color: #393939;
+  border-color: #000000;
+  background-color: #e6e6e6;
 }
 .win-selectioncheckmark {
-  color: #ffffff;
+  color: #000000;
 }
 .win-listview:not(.win-selectionstylefilled) .win-selectioncheckmarkbackground,
 .win-itemcontainer:not(.win-selectionstylefilled) .win-selectioncheckmarkbackground {
@@ -5856,114 +5696,114 @@ html.win-hoverable .win-listview.win-selectionstylefilled .win-container.win-pre
 html.win-hoverable .win-itemcontainer.win-selectionstylefilled.win-container .win-itembox,
 html.win-hoverable .win-listview.win-selectionstylefilled .win-container .win-itembox.win-pressed,
 html.win-hoverable .win-itemcontainer.win-selectionstylefilled.win-container .win-itembox.win-pressed {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(0, 0, 0, 0.2);
 }
 .win-listview .win-itembox,
 .win-itemcontainer .win-itembox {
-  background-color: #1d1d1d;
+  background-color: #ffffff;
 }
 .win-listview .win-container.win-backdrop {
   background-color: rgba(155, 155, 155, 0.23);
 }
 .win-listview .win-groupheader {
-  outline-color: #ffffff;
+  outline-color: #000000;
 }
 .win-listview .win-focusedoutline,
 .win-itemcontainer .win-focusedoutline {
-  outline: #ffffff dashed 2px;
+  outline: #000000 solid 2px;
 }
 .win-listview .win-container.win-selected .win-selectionborder,
 .win-itemcontainer.win-container.win-selected .win-selectionborder,
 .win-listview.win-selectionstylefilled .win-selected .win-selectionbackground,
 .win-itemcontainer.win-selectionstylefilled.win-selected .win-selectionbackground {
-  opacity: 0.6;
+  opacity: 0.4;
 }
 .win-flipview .win-navbutton {
-  background-color: rgba(255, 255, 255, 0.4);
-  color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.4);
+  color: rgba(255, 255, 255, 0.8);
 }
 .win-flipview .win-navbutton:hover:active {
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(0, 0, 0, 0.8);
 }
 html.win-hoverable .win-flipview .win-navbutton:hover {
-  background-color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(0, 0, 0, 0.6);
 }
 .win-backbutton,
 .win-back,
 .win-navigation-backbutton {
   background-color: transparent;
   border: none;
-  color: #ffffff;
+  color: #000000;
 }
 .win-backbutton:hover,
 .win-navigation-backbutton:hover .win-back {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(0, 0, 0, 0.1);
 }
 .win-backbutton:active,
 .win-navigation-backbutton:active .win-back {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(0, 0, 0, 0.2);
 }
 .win-backbutton:disabled,
 .win-backbutton:disabled:active,
 .win-navigation-backbutton:disabled,
 .win-navigation-backbutton:disabled .win-back,
 .win-navigation-backbutton:disabled:active .win-back {
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(0, 0, 0, 0.4);
   background-color: transparent;
 }
 .win-backbutton:focus,
 .win-navigation-backbutton:focus .win-back {
-  outline-color: #ffffff;
+  outline-color: #000000;
 }
 .win-tooltip {
-  color: #ffffff;
-  border-color: #767676;
-  background-color: #2b2b2b;
+  color: #000000;
+  border-color: #cccccc;
+  background-color: #e6e6e6;
 }
 .win-rating .win-star.win-user.win-full,
 .win-rating .win-star.win-user.win-full.win-disabled {
   color: #0078d7;
 }
 .win-rating .win-star.win-tentative.win-full {
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(0, 0, 0, 0.8);
 }
 .win-rating .win-star.win-average.win-full,
 .win-rating .win-star.win-average.win-full.win-disabled {
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(0, 0, 0, 0.4);
 }
 .win-rating .win-star.win-empty {
-  color: rgba(255, 255, 255, 0.2);
+  color: rgba(0, 0, 0, 0.2);
 }
 .win-toggleswitch-header {
-  color: #ffffff;
+  color: #000000;
 }
 .win-toggleswitch-value {
-  color: #ffffff;
+  color: #000000;
 }
 .win-toggleswitch-thumb {
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(0, 0, 0, 0.8);
 }
 .win-toggleswitch-on .win-toggleswitch-track {
   border-color: #0078d7;
 }
 .win-toggleswitch-off .win-toggleswitch-track {
-  border-color: rgba(255, 255, 255, 0.8);
+  border-color: rgba(0, 0, 0, 0.8);
 }
 .win-toggleswitch-pressed .win-toggleswitch-track {
-  border-color: rgba(255, 255, 255, 0.6);
+  border-color: rgba(0, 0, 0, 0.6);
 }
 .win-toggleswitch-pressed .win-toggleswitch-thumb {
-  background-color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(0, 0, 0, 0.6);
 }
 .win-toggleswitch-disabled .win-toggleswitch-track {
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(0, 0, 0, 0.2);
 }
 .win-toggleswitch-disabled .win-toggleswitch-thumb {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(0, 0, 0, 0.2);
 }
 .win-toggleswitch-disabled .win-toggleswitch-header,
 .win-toggleswitch-disabled .win-toggleswitch-value {
-  color: rgba(255, 255, 255, 0.2);
+  color: rgba(0, 0, 0, 0.2);
 }
 .win-semanticzoom-button {
   background-color: rgba(216, 216, 216, 0.33);
@@ -5971,41 +5811,41 @@ html.win-hoverable .win-flipview .win-navbutton:hover {
 }
 button.win-semanticzoom-button.win-semanticzoom-button:active,
 button.win-semanticzoom-button.win-semanticzoom-button:hover:active {
-  background-color: #ffffff;
+  background-color: #000000;
 }
 .win-pivot .win-pivot-navbutton {
-  background-color: rgba(255, 255, 255, 0.4);
-  color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.4);
+  color: rgba(255, 255, 255, 0.8);
 }
 .win-pivot .win-pivot-navbutton.win-pivot-navbutton:hover:active {
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(0, 0, 0, 0.8);
 }
 .win-pivot button.win-pivot-header,
 .win-pivot button.win-pivot-header:focus,
 .win-pivot button.win-pivot-header.win-pivot-header:hover:active {
-  color: #ffffff;
+  color: #000000;
 }
 button.win-hub-section-header-tabstop,
 button.win-hub-section-header-tabstop:hover:active {
-  color: #ffffff;
+  color: #000000;
 }
 button.win-hub-section-header-tabstop.win-keyboard:focus {
-  outline: 1px dotted #ffffff;
+  outline: 1px dotted #000000;
 }
 button.win-hub-section-header-tabstop:-ms-keyboard-active {
-  color: #ffffff;
+  color: #000000;
 }
 button.win-hub-section-header-tabstop.win-hub-section-header-interactive.win-hub-section-header-interactive:hover:active {
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(0, 0, 0, 0.4);
 }
 button.win-hub-section-header-tabstop.win-hub-section-header-interactive:-ms-keyboard-active {
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(0, 0, 0, 0.4);
 }
 .win-overlay {
   outline: none;
 }
 hr.win-command {
-  background-color: rgba(255, 255, 255, 0.4);
+  background-color: rgba(0, 0, 0, 0.4);
 }
 div.win-command,
 button.win-command {
@@ -6020,38 +5860,39 @@ button:enabled.win-command.win-keyboard:focus,
 div.win-command.win-keyboard:focus,
 button:enabled.win-command.win-command.win-keyboard:hover:focus,
 div.win-command.win-command.win-keyboard:hover:focus {
-  border-color: #ffffff;
+  border-color: #000000;
 }
 .win-commandimage {
-  color: #ffffff;
+  color: #000000;
 }
 button.win-command.win-command:enabled:hover:active,
 button.win-command.win-command:enabled:active {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.2);
+  color: #000000;
 }
 button:enabled:hover:active .win-commandimage,
 button:enabled:active .win-commandimage {
-  color: #ffffff;
+  color: #000000;
 }
 button:disabled .win-commandimage,
 button:disabled:active .win-commandimage {
-  color: rgba(255, 255, 255, 0.2);
+  color: rgba(0, 0, 0, 0.2);
 }
 button[aria-checked=true]:enabled .win-label,
 button[aria-checked=true]:enabled .win-commandimage,
 button[aria-checked=true]:enabled:hover:active .win-commandimage.win-commandimage {
-  color: #ffffff;
+  color: #000000;
 }
 button[aria-checked=true]:-ms-keyboard-active .win-commandimage {
-  color: #ffffff;
+  color: #000000;
 }
-button[aria-checked=true].win-command:before {
+button[aria-checked=true].win-command:after {
   position: absolute;
   height: 100%;
   width: 100%;
   background-color: #0078d7;
-  opacity: 0.6;
+  opacity: 0.4;
+  z-index: -1;
   box-sizing: content-box;
   content: "";
   /* We want this pseudo element to cover the border of its parent. */
@@ -6061,8 +5902,8 @@ button[aria-checked=true].win-command:before {
   left: -1px;
 }
 button.win-command:enabled:-ms-keyboard-active {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.2);
+  color: #000000;
 }
 button[aria-checked=true].win-command:enabled:hover:active {
   background-color: transparent;
@@ -6074,15 +5915,17 @@ button.win-command:disabled:hover:active {
 }
 button.win-command:disabled .win-label,
 button.win-command:disabled:active .win-label {
-  color: rgba(255, 255, 255, 0.2);
+  color: rgba(0, 0, 0, 0.2);
 }
 .win-appbar,
 .win-appbar {
-  background-color: #393939;
-  border-color: #393939;
+  background-color: #e6e6e6;
+  border-color: #e6e6e6;
 }
 .win-appbar.win-menulayout .win-appbar-menu,
 .win-appbar.win-menulayout .win-appbar-menu,
+.win-appbar.win-menulayout .win-appbar-toolbarcontainer,
+.win-appbar.win-menulayout .win-appbar-toolbarcontainer,
 .win-appbar.win-menulayout .win-toolbar,
 .win-appbar.win-menulayout .win-toolbar {
   background-color: inherit;
@@ -6099,11 +5942,11 @@ button.win-command:disabled:active .win-label {
 }
 .win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:enabled .win-appbar-ellipsis,
 .win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:enabled .win-appbar-ellipsis {
-  color: #ffffff;
+  color: #000000;
 }
 .win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:enabled.win-keyboard:focus,
 .win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:enabled.win-keyboard:focus {
-  border-color: #ffffff;
+  border-color: #000000;
 }
 .win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:disabled:active,
 .win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:disabled:active,
@@ -6113,7 +5956,7 @@ button.win-command:disabled:active .win-label {
 }
 .win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:disabled .win-appbar-ellipsis,
 .win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:disabled .win-appbar-ellipsis {
-  color: rgba(255, 255, 255, 0.2);
+  color: rgba(0, 0, 0, 0.2);
 }
 .win-appbar.win-appbar-hiding button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active,
 .win-appbar.win-appbar-hiding button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active,
@@ -6123,7 +5966,7 @@ button.win-command:disabled:active .win-label {
 .win-appbar.win-appbar-showing button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active,
 .win-appbar.win-appbar-shown button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active,
 .win-appbar.win-appbar-shown button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(0, 0, 0, 0.2);
 }
 .win-appbar.win-appbar-hiding button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active .win-appbar-ellipsis,
 .win-appbar.win-appbar-hiding button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active .win-appbar-ellipsis,
@@ -6133,15 +5976,15 @@ button.win-command:disabled:active .win-label {
 .win-appbar.win-appbar-showing button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active .win-appbar-ellipsis,
 .win-appbar.win-appbar-shown button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active .win-appbar-ellipsis,
 .win-appbar.win-appbar-shown button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active .win-appbar-ellipsis {
-  color: #ffffff;
+  color: #000000;
 }
 .win-flyout,
 .win-flyout {
   border-color: #0078d7;
-  background-color: #000000;
+  background-color: #ffffff;
 }
 .win-settingsflyout {
-  background-color: #000000;
+  background-color: #ffffff;
 }
 .win-settingsflyout,
 .win-settingsflyout {
@@ -6150,21 +5993,22 @@ button.win-command:disabled:active .win-label {
 .win-menu button,
 .win-menu button {
   background-color: transparent;
-  color: #ffffff;
+  color: #000000;
 }
 .win-menu button.win-command.win-command:enabled:hover:active,
 .win-menu button[aria-checked=true].win-command.win-command:enabled:hover:active {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.2);
+  color: #000000;
 }
-.win-menu button.win-command-flyout-activated:before,
-.win-menu button.win-command-flyout-activated:before {
+.win-menu button.win-command-flyout-activated:after,
+.win-menu button.win-command-flyout-activated:after {
   position: absolute;
   height: 100%;
   width: 100%;
   background-color: #0078d7;
-  opacity: 0.6;
+  opacity: 0.4;
   content: "";
+  z-index: -1;
   box-sizing: content-box;
   /* We want this pseudo element to cover the border of its parent. */
   /* Put a 1px border on this element to make it larger and then set its top/left to -1px.*/
@@ -6172,8 +6016,8 @@ button.win-command:disabled:active .win-label {
   top: -1px;
   left: -1px;
 }
-.win-menu button[aria-checked=true].win-command:before,
-.win-menu button[aria-checked=true].win-command:before {
+.win-menu button[aria-checked=true].win-command:after,
+.win-menu button[aria-checked=true].win-command:after {
   background-color: transparent;
   border-color: transparent;
 }
@@ -6182,11 +6026,11 @@ button.win-command:disabled:active .win-label {
 .win-menu button:disabled:active,
 .win-menu button:disabled:active {
   background-color: transparent;
-  color: rgba(255, 255, 255, 0.2);
+  color: rgba(0, 0, 0, 0.2);
 }
 .win-toolbar,
 .win-toolbar {
-  background-color: #2b2b2b;
+  background-color: #e6e6e6;
 }
 .win-toolbar button.win-toolbar-overflowbutton,
 .win-toolbar button.win-toolbar-overflowbutton {
@@ -6199,20 +6043,20 @@ button.win-command:disabled:active .win-label {
 }
 .win-toolbar button.win-toolbar-overflowbutton:enabled .win-toolbar-ellipsis,
 .win-toolbar button.win-toolbar-overflowbutton:enabled .win-toolbar-ellipsis {
-  color: #ffffff;
+  color: #000000;
 }
 .win-toolbar button.win-toolbar-overflowbutton.win-keyboard:focus,
 .win-toolbar button.win-toolbar-overflowbutton.win-keyboard:focus {
-  border-color: #ffffff;
+  border-color: #000000;
 }
 .win-toolbar button.win-toolbar-overflowbutton.win-toolbar-overflowbutton:hover:active,
 .win-toolbar button.win-toolbar-overflowbutton.win-toolbar-overflowbutton:hover:active {
-  background-color: #808080;
+  background-color: #8a8a8a;
 }
 .win-toolbar .win-toolbar-overflowarea button:enabled.win-command:hover:active,
 .win-toolbar .win-toolbar-overflowarea button:enabled.win-command:hover:active {
-  color: #ffffff;
-  background-color: #808080;
+  color: #000000;
+  background-color: #8a8a8a;
 }
 .win-autosuggestbox-flyout-highlighttext {
   color: #4617b4;
@@ -6227,21 +6071,21 @@ button.win-command:disabled:active .win-label {
   color: #a38bda;
 }
 .win-autosuggestbox-flyout {
-  background-color: #2b2b2b;
-  color: #ffffff;
+  background-color: #e6e6e6;
+  color: #000000;
 }
 .win-autosuggestbox-suggestion-selected {
-  background-color: rgba(0, 120, 215, 0.6);
+  background-color: rgba(0, 120, 215, 0.4);
 }
 .win-autosuggestbox-suggestion-result:hover:active,
 .win-autosuggestbox-suggestion-query:hover:active {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(0, 0, 0, 0.2);
 }
 .win-autosuggestbox-suggestion-selected.win-autosuggestbox-suggestion-selected:hover:active {
-  background-color: rgba(0, 120, 215, 0.9);
+  background-color: rgba(0, 120, 215, 0.7);
 }
 .win-searchbox-button {
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(0, 0, 0, 0.4);
 }
 .win-searchbox-button-input-focus {
   color: rgba(0, 0, 0, 0.4);
@@ -6254,32 +6098,32 @@ button.win-command:disabled:active .win-label {
   color: #ffffff;
 }
 .win-navbarcontainer-pageindicator {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(0, 0, 0, 0.2);
 }
 .win-navbarcontainer-pageindicator-current {
-  background-color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(0, 0, 0, 0.6);
 }
 .win-navbarcontainer-navarrow {
-  background-color: rgba(255, 255, 255, 0.4);
-  color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.4);
+  color: rgba(255, 255, 255, 0.8);
 }
 .win-navbarcontainer-navarrow.win-navbarcontainer-navarrow:hover:active {
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(0, 0, 0, 0.8);
 }
 .win-navbarcommand-button,
 .win-navbarcommand-splitbutton {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.1);
+  color: #000000;
 }
 .win-navbarcommand-button.win-pressed,
 .win-navbarcommand-splitbutton.win-pressed {
-  background-color: rgba(255, 255, 255, 0.28);
+  background-color: rgba(0, 0, 0, 0.28);
 }
 .win-navbarcommand-splitbutton.win-navbarcommand-splitbutton-opened {
-  background-color: rgba(0, 120, 215, 0.6);
+  background-color: rgba(0, 120, 215, 0.4);
 }
 .win-navbarcommand-splitbutton.win-navbarcommand-splitbutton-opened.win-pressed {
-  background-color: rgba(0, 120, 215, 0.9);
+  background-color: rgba(0, 120, 215, 0.7);
 }
 .win-navbarcommand-button.win-keyboard:focus::before {
   content: "";
@@ -6290,95 +6134,65 @@ button.win-command:disabled:active .win-label {
   left: 0;
   height: 100%;
   width: 100%;
-  border: 1px dotted #ffffff;
+  border: 1px dotted #000000;
 }
 .win-navbarcommand-splitbutton.win-keyboard:focus::before {
-  border-color: #ffffff;
+  border-color: #000000;
 }
 .win-contentdialog-dialog {
-  background-color: #2b2b2b;
+  background-color: #e6e6e6;
   outline-color: #0078d7;
 }
 .win-contentdialog-title {
-  color: #ffffff;
+  color: #000000;
 }
 .win-contentdialog-content {
-  color: #ffffff;
+  color: #000000;
 }
 .win-contentdialog-backgroundoverlay {
-  background-color: #000000;
+  background-color: #ffffff;
   opacity: 0.6;
 }
 .win-splitview-pane {
-  background-color: #171717;
-}
-.win-commandingsurface,
-.win-commandingsurface {
-  background-color: #2b2b2b;
-}
-.win-commandingsurface button.win-commandingsurface-overflowbutton,
-.win-commandingsurface button.win-commandingsurface-overflowbutton {
-  background-color: transparent;
-  border-color: transparent;
-}
-.win-commandingsurface button.win-commandingsurface-overflowbutton:enabled:-ms-keyboard-active,
-.win-commandingsurface button.win-commandingsurface-overflowbutton:enabled:-ms-keyboard-active {
-  background-color: transparent;
-}
-.win-commandingsurface button.win-commandingsurface-overflowbutton:enabled .win-commandingsurface-ellipsis,
-.win-commandingsurface button.win-commandingsurface-overflowbutton:enabled .win-commandingsurface-ellipsis {
-  color: #ffffff;
-}
-.win-commandingsurface button.win-commandingsurface-overflowbutton.win-keyboard:focus,
-.win-commandingsurface button.win-commandingsurface-overflowbutton.win-keyboard:focus {
-  border-color: #ffffff;
-}
-.win-commandingsurface button.win-commandingsurface-overflowbutton.win-commandingsurface-overflowbutton:hover:active,
-.win-commandingsurface button.win-commandingsurface-overflowbutton.win-commandingsurface-overflowbutton:hover:active {
-  background-color: #808080;
-}
-.win-commandingsurface .win-commandingsurface-overflowarea button:enabled.win-command:hover:active,
-.win-commandingsurface .win-commandingsurface-overflowarea button:enabled.win-command:hover:active {
-  color: #ffffff;
-  background-color: #808080;
+  background-color: #f2f2f2;
 }
 html.win-hoverable {
   /* Appbar control colors */
 }
 html.win-hoverable .win-selectionstylefilled .win-container:hover .win-itembox,
 html.win-hoverable .win-selectionstylefilled.win-container:hover .win-itembox {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(0, 0, 0, 0.1);
 }
 html.win-hoverable .win-listview .win-itembox:hover::before,
 html.win-hoverable .win-itemcontainer .win-itembox:hover::before {
-  border-color: #ffffff;
+  border-color: #000000;
 }
 html.win-hoverable .win-listview .win-container.win-selected:hover .win-selectionborder,
 html.win-hoverable .win-itemcontainer.win-container.win-selected:hover .win-selectionborder,
 html.win-hoverable .win-listview.win-selectionstylefilled .win-selected:hover .win-selectionbackground,
 html.win-hoverable .win-itemcontainer.win-selectionstylefilled.win-selected:hover .win-selectionbackground {
-  opacity: 0.8;
+  opacity: 0.6;
 }
 html.win-hoverable .win-toggleswitch-off:not(.win-toggleswitch-disabled):not(.win-toggleswitch-pressed) .win-toggleswitch-clickregion:hover .win-toggleswitch-track {
-  border-color: #ffffff;
+  border-color: #000000;
 }
 html.win-hoverable .win-toggleswitch:not(.win-toggleswitch-disabled):not(.win-toggleswitch-pressed) .win-toggleswitch-clickregion:hover .win-toggleswitch-thumb {
-  background-color: #ffffff;
+  background-color: #000000;
 }
 html.win-hoverable button:hover.win-semanticzoom-button {
   background-color: #d8d8d8;
 }
 html.win-hoverable .win-pivot .win-pivot-navbutton:hover {
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(0, 0, 0, 0.6);
 }
 html.win-hoverable .win-pivot button.win-pivot-header:hover {
-  color: #ffffff;
+  color: #000000;
 }
 html.win-hoverable button.win-hub-section-header-tabstop:hover {
-  color: #ffffff;
+  color: #000000;
 }
 html.win-hoverable button.win-hub-section-header-tabstop.win-hub-section-header-interactive:hover {
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(0, 0, 0, 0.8);
 }
 html.win-hoverable.win-appbar button.win-appbar-invokebutton:enabled:hover,
 html.win-hoverable .win-appbar button.win-appbar-invokebutton:enabled:hover,
@@ -6390,62 +6204,62 @@ html.win-hoverable.win-appbar.win-appbar-showing button.win-appbar-invokebutton:
 html.win-hoverable .win-appbar.win-appbar-showing button.win-appbar-invokebutton:enabled:hover,
 html.win-hoverable.win-appbar.win-appbar-shown button.win-appbar-invokebutton:enabled:hover,
 html.win-hoverable .win-appbar.win-appbar-shown button.win-appbar-invokebutton:enabled:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(0, 0, 0, 0.1);
 }
 html.win-hoverable.win-appbar.win-appbar-showing button.win-appbar-invokebutton:enabled:hover .win-appbar-ellipsis,
 html.win-hoverable .win-appbar.win-appbar-showing button.win-appbar-invokebutton:enabled:hover .win-appbar-ellipsis,
 html.win-hoverable.win-appbar.win-appbar-shown button.win-appbar-invokebutton:enabled:hover .win-appbar-ellipsis,
 html.win-hoverable .win-appbar.win-appbar-shown button.win-appbar-invokebutton:enabled:hover .win-appbar-ellipsis {
-  color: #ffffff;
+  color: #000000;
 }
 html.win-hoverable.win-appbar.win-appbar-hiding button.win-appbar-invokebutton:enabled:hover,
 html.win-hoverable .win-appbar.win-appbar-hiding button.win-appbar-invokebutton:enabled:hover,
 html.win-hoverable.win-appbar.win-appbar-hidden button.win-appbar-invokebutton:enabled:hover,
 html.win-hoverable .win-appbar.win-appbar-hidden button.win-appbar-invokebutton:enabled:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(0, 0, 0, 0.1);
 }
 html.win-hoverable.win-appbar.win-appbar-hiding button.win-appbar-invokebutton:enabled:hover .win-appbar-ellipsis,
 html.win-hoverable .win-appbar.win-appbar-hiding button.win-appbar-invokebutton:enabled:hover .win-appbar-ellipsis,
 html.win-hoverable.win-appbar.win-appbar-hidden button.win-appbar-invokebutton:enabled:hover .win-appbar-ellipsis,
 html.win-hoverable .win-appbar.win-appbar-hidden button.win-appbar-invokebutton:enabled:hover .win-appbar-ellipsis {
-  color: #ffffff;
+  color: #000000;
 }
 html.win-hoverable button.win-command:enabled:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.1);
+  color: #000000;
 }
 html.win-hoverable button.win-command:enabled:hover .win-commandglyph {
-  color: #ffffff;
+  color: #000000;
 }
 html.win-hoverable .win-menu button.win-command:enabled:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.1);
+  color: #000000;
 }
 html.win-hoverable button[aria-checked=true].win-command:hover {
   background-color: transparent;
 }
-html.win-hoverable button:enabled[aria-checked=true].win-command:hover:before {
-  opacity: 0.8;
+html.win-hoverable button:enabled[aria-checked=true].win-command:hover:after {
+  opacity: 0.6;
 }
-html.win-hoverable button:enabled[aria-checked=true].win-command:hover:active:before {
-  opacity: 0.9;
+html.win-hoverable button:enabled[aria-checked=true].win-command:hover:active:after {
+  opacity: 0.7;
 }
 html.win-hoverable.win-toolbar button.win-toolbar-overflowbutton:hover,
 html.win-hoverable .win-toolbar button.win-toolbar-overflowbutton:hover,
 html.win-hoverable.win-toolbar .win-toolbar-overflowarea button.win-command:hover,
 html.win-hoverable .win-toolbar .win-toolbar-overflowarea button.win-command:hover {
-  background-color: #555555;
+  background-color: #b8b8b8;
 }
 html.win-hoverable.win-toolbar button.win-toolbar-overflowbutton:hover .win-toolbar-ellipsis,
 html.win-hoverable .win-toolbar button.win-toolbar-overflowbutton:hover .win-toolbar-ellipsis {
-  color: #ffffff;
+  color: #000000;
 }
 html.win-hoverable .win-autosuggestbox-suggestion-result:hover,
 html.win-hoverable .win-autosuggestbox-suggestion-query:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(0, 0, 0, 0.1);
 }
 html.win-hoverable .win-autosuggestbox-suggestion-selected:hover {
-  background-color: rgba(0, 120, 215, 0.8);
+  background-color: rgba(0, 120, 215, 0.6);
 }
 html.win-hoverable .win-searchbox-button:not(.win-searchbox-button-disabled):hover {
   color: #0078d7;
@@ -6455,624 +6269,601 @@ html.win-hoverable .win-searchbox-button:not(.win-searchbox-button-disabled):hov
   color: #ffffff;
 }
 html.win-hoverable .win-navbarcontainer-navarrow:hover {
-  background-color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(0, 0, 0, 0.6);
 }
 html.win-hoverable .win-navbarcommand-button:hover,
 html.win-hoverable .win-navbarcommand-splitbutton:hover {
-  background-color: rgba(255, 255, 255, 0.19);
+  background-color: rgba(0, 0, 0, 0.19);
 }
 html.win-hoverable .win-navbarcommand-button:hover.win-pressed,
 html.win-hoverable .win-navbarcommand-splitbutton:hover.win-pressed {
-  background-color: rgba(255, 255, 255, 0.28);
+  background-color: rgba(0, 0, 0, 0.28);
 }
 html.win-hoverable .win-navbarcommand-splitbutton.win-navbarcommand-splitbutton-opened:hover {
-  background-color: rgba(0, 120, 215, 0.8);
+  background-color: rgba(0, 120, 215, 0.6);
 }
 html.win-hoverable .win-navbarcommand-splitbutton.win-navbarcommand-splitbutton-opened:hover.win-pressed {
-  background-color: rgba(0, 120, 215, 0.9);
+  background-color: rgba(0, 120, 215, 0.7);
 }
-html.win-hoverable.win-commandingsurface button.win-commandingsurface-overflowbutton:hover,
-html.win-hoverable .win-commandingsurface button.win-commandingsurface-overflowbutton:hover,
-html.win-hoverable.win-commandingsurface .win-commandingsurface-overflowarea button.win-command:hover,
-html.win-hoverable .win-commandingsurface .win-commandingsurface-overflowarea button.win-command:hover {
-  background-color: #555555;
-}
-html.win-hoverable.win-commandingsurface button.win-commandingsurface-overflowbutton:hover .win-commandingsurface-ellipsis,
-html.win-hoverable .win-commandingsurface button.win-commandingsurface-overflowbutton:hover .win-commandingsurface-ellipsis {
-  color: #ffffff;
-}
-.win-ui-light body {
-  background-color: #ffffff;
-  color: #000000;
-}
-.win-ui-light .win-ui-light {
-  background-color: #ffffff;
-  color: #000000;
-}
-.win-ui-light .win-ui-dark {
+.win-ui-dark body {
   background-color: #000000;
   color: #ffffff;
 }
-.win-ui-light ::selection {
+.win-ui-dark .win-ui-dark {
+  background-color: #000000;
+  color: #ffffff;
+}
+.win-ui-dark .win-ui-light {
+  background-color: #ffffff;
+  color: #000000;
+}
+.win-ui-dark ::selection {
   background-color: #0078d7;
   color: #fff;
 }
-.win-ui-light a {
+.win-ui-dark a {
   color: #0078d7;
 }
-.win-ui-light a:hover {
-  color: rgba(0, 0, 0, 0.6);
+.win-ui-dark a:hover {
+  color: rgba(255, 255, 255, 0.6);
 }
-.win-ui-light a:active {
-  color: rgba(0, 0, 0, 0.4);
+.win-ui-dark a:active {
+  color: rgba(255, 255, 255, 0.4);
 }
-.win-ui-light a[disabled] {
-  color: rgba(0, 0, 0, 0.2);
+.win-ui-dark a[disabled] {
+  color: rgba(255, 255, 255, 0.2);
 }
-.win-ui-light input[type=checkbox]::-ms-check {
-  color: #000000;
-  border-color: rgba(0, 0, 0, 0.8);
+.win-ui-dark input[type=checkbox]::-ms-check {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.8);
   background-color: transparent;
 }
-.win-ui-light input[type=checkbox]:indeterminate::-ms-check {
-  color: rgba(0, 0, 0, 0.8);
+.win-ui-dark input[type=checkbox]:indeterminate::-ms-check {
+  color: rgba(255, 255, 255, 0.8);
   border-color: #0078d7;
 }
-.win-ui-light input[type=checkbox]:checked::-ms-check {
-  color: #fff;
+.win-ui-dark input[type=checkbox]:checked::-ms-check {
   background-color: #0078d7;
   border-color: transparent;
 }
-.win-ui-light input[type=checkbox]:hover::-ms-check {
-  border-color: #000000;
+.win-ui-dark input[type=checkbox]:hover::-ms-check {
+  border-color: #ffffff;
 }
-.win-ui-light input[type=checkbox]:hover:indeterminate::-ms-check {
-  color: #000000;
+.win-ui-dark input[type=checkbox]:hover:indeterminate::-ms-check {
+  color: #ffffff;
   border-color: #0078d7;
 }
-.win-ui-light input[type=checkbox]:active::-ms-check {
+.win-ui-dark input[type=checkbox]:active::-ms-check {
   border-color: transparent;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(255, 255, 255, 0.6);
 }
-.win-ui-light input[type=checkbox]:indeterminate:active::-ms-check {
-  color: rgba(0, 0, 0, 0.6);
-  border-color: rgba(0, 0, 0, 0.8);
+.win-ui-dark input[type=checkbox]:indeterminate:active::-ms-check {
+  color: rgba(255, 255, 255, 0.6);
+  border-color: rgba(255, 255, 255, 0.8);
   background-color: transparent;
 }
-.win-ui-light input[type=checkbox]:disabled::-ms-check,
-.win-ui-light input[type=checkbox]:indeterminate:disabled::-ms-check {
-  color: rgba(0, 0, 0, 0.2);
-  border-color: rgba(0, 0, 0, 0.2);
+.win-ui-dark input[type=checkbox]:disabled::-ms-check,
+.win-ui-dark input[type=checkbox]:indeterminate:disabled::-ms-check {
+  color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.2);
   background-color: transparent;
 }
-.win-ui-light input[type=radio]::-ms-check {
-  color: rgba(0, 0, 0, 0.8);
-  border-color: rgba(0, 0, 0, 0.8);
+.win-ui-dark input[type=radio]::-ms-check {
+  color: rgba(255, 255, 255, 0.8);
+  border-color: rgba(255, 255, 255, 0.8);
   background-color: transparent;
 }
-.win-ui-light input[type=radio]:hover::-ms-check {
-  border-color: #000000;
+.win-ui-dark input[type=radio]:hover::-ms-check {
+  border-color: #ffffff;
 }
-.win-ui-light input[type=radio]:checked::-ms-check {
+.win-ui-dark input[type=radio]:checked::-ms-check {
   border-color: #0078d7;
 }
-.win-ui-light input[type=radio]:hover::-ms-check {
-  color: #000000;
+.win-ui-dark input[type=radio]:hover::-ms-check {
+  color: #ffffff;
 }
-.win-ui-light input[type=radio]:active::-ms-check {
-  color: rgba(0, 0, 0, 0.6);
-  border-color: rgba(0, 0, 0, 0.6);
+.win-ui-dark input[type=radio]:active::-ms-check {
+  color: rgba(255, 255, 255, 0.6);
+  border-color: rgba(255, 255, 255, 0.6);
 }
-.win-ui-light input[type=radio]:disabled::-ms-check {
-  color: rgba(0, 0, 0, 0.2);
-  border-color: rgba(0, 0, 0, 0.2);
+.win-ui-dark input[type=radio]:disabled::-ms-check {
+  color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.2);
 }
-.win-ui-light progress {
+.win-ui-dark progress {
   color: #0078d7;
+  background-color: rgba(255, 255, 255, 0.2);
 }
-.win-ui-light progress:not(:indeterminate) {
-  background-color: rgba(0, 0, 0, 0.2);
-}
-.win-ui-light progress::-webkit-progress-value {
+.win-ui-dark progress::-webkit-progress-value {
   background-color: #0078d7;
 }
-.win-ui-light progress:not(:indeterminate)::-moz-progress-bar {
+.win-ui-dark progress::-moz-progress-bar {
   background-color: #0078d7;
 }
-.win-ui-light progress.win-ring {
+.win-ui-dark progress.win-ring {
   background-color: transparent;
 }
-.win-ui-light progress::-webkit-progress-bar {
+.win-ui-dark progress::-webkit-progress-bar {
   background-color: transparent;
 }
-.win-ui-light button,
-.win-ui-light input[type=button],
-.win-ui-light input[type=reset],
-.win-ui-light input[type=submit],
-.win-ui-light button[type=submit] {
-  color: #000000;
-  background-color: rgba(0, 0, 0, 0.2);
+.win-ui-dark button,
+.win-ui-dark input[type=button],
+.win-ui-dark input[type=reset],
+.win-ui-dark input[type=submit],
+.win-ui-dark button[type=submit] {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.2);
   border-color: transparent;
 }
-.win-ui-light button:hover,
-.win-ui-light input[type=button]:hover,
-.win-ui-light input[type=reset]:hover,
-.win-ui-light input[type=submit]:hover,
-.win-ui-light button[type=submit]:hover {
-  border-color: rgba(0, 0, 0, 0.4);
+.win-ui-dark button:hover,
+.win-ui-dark input[type=button]:hover,
+.win-ui-dark input[type=reset]:hover,
+.win-ui-dark input[type=submit]:hover,
+.win-ui-dark button[type=submit]:hover {
+  border-color: rgba(255, 255, 255, 0.4);
 }
-.win-ui-light button:active,
-.win-ui-light input[type=button]:active,
-.win-ui-light input[type=reset]:active,
-.win-ui-light input[type=submit]:active,
-.win-ui-light button[type=submit]:active {
-  background-color: rgba(0, 0, 0, 0.4);
+.win-ui-dark button:active,
+.win-ui-dark input[type=button]:active,
+.win-ui-dark input[type=reset]:active,
+.win-ui-dark input[type=submit]:active,
+.win-ui-dark button[type=submit]:active {
+  background-color: rgba(255, 255, 255, 0.4);
 }
-.win-ui-light button:disabled,
-.win-ui-light input[type=button]:disabled,
-.win-ui-light input[type=reset]:disabled,
-.win-ui-light input[type=submit]:disabled,
-.win-ui-light button[type=submit]:disabled {
-  color: rgba(0, 0, 0, 0.2);
-  background-color: rgba(0, 0, 0, 0.2);
+.win-ui-dark button:disabled,
+.win-ui-dark input[type=button]:disabled,
+.win-ui-dark input[type=reset]:disabled,
+.win-ui-dark input[type=submit]:disabled,
+.win-ui-dark button[type=submit]:disabled {
+  color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.2);
   border-color: transparent;
 }
-.win-ui-light input[type=submit],
-.win-ui-light button[type=submit] {
-  color: #fff;
+.win-ui-dark input[type=submit],
+.win-ui-dark button[type=submit] {
   background-color: #0078d7;
 }
-.win-ui-light select {
-  color: #000000;
-  background-color: rgba(0, 0, 0, 0.2);
-  border-color: rgba(0, 0, 0, 0.4);
+.win-ui-dark select {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
 }
-.win-ui-light select::-ms-expand {
-  color: rgba(0, 0, 0, 0.8);
+.win-ui-dark select::-ms-expand {
+  color: #ffffff;
   background-color: transparent;
 }
-.win-ui-light select:hover {
-  background-color: #f2f2f2;
-  border-color: rgba(0, 0, 0, 0.6);
+.win-ui-dark select:hover {
+  background-color: rgba(255, 255, 255, 0.4);
 }
-.win-ui-light select:disabled {
-  color: rgba(0, 0, 0, 0.2);
-  background-color: rgba(0, 0, 0, 0.2);
+.win-ui-dark select:disabled {
+  color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.2);
 }
-.win-ui-light select:disabled::-ms-expand {
-  color: rgba(0, 0, 0, 0.2);
-  border-color: rgba(0, 0, 0, 0.2);
+.win-ui-dark select:disabled::-ms-expand {
+  color: rgba(255, 255, 255, 0.2);
 }
-.win-ui-light option {
+.win-ui-dark option {
   color: #000000;
-  background-color: #f2f2f2;
 }
-.win-ui-light option:checked {
+.win-ui-dark option:checked {
   color: #ffffff;
   background-color: #0078d7;
 }
-.win-ui-light option:hover,
-.win-ui-light option:active {
+.win-ui-dark option:hover,
+.win-ui-dark option:active {
   background-color: rgba(0, 0, 0, 0.2);
   color: #000000;
 }
-.win-ui-light optgroup {
-  color: #000000;
-  background-color: #f2f2f2;
-}
-.win-ui-light optgroup:disabled {
-  color: rgba(0, 0, 0, 0.2);
-}
-.win-ui-light select[multiple] {
+.win-ui-dark select[multiple] {
   border: none;
-  background-color: #f2f2f2;
+  background-color: #1f1f1f;
 }
-.win-ui-light select[multiple] option {
-  color: #000000;
+.win-ui-dark select[multiple] option {
+  color: #ffffff;
 }
-.win-ui-light select[multiple] option:hover {
-  color: #000000;
+.win-ui-dark select[multiple] option:hover {
+  color: #ffffff;
 }
-.win-ui-light select[multiple] option:checked {
+.win-ui-dark select[multiple] option:checked {
   color: #ffffff;
   background-color: #0078d7;
 }
-.win-ui-light input[type=range] {
+.win-ui-dark input[type=range] {
   background-color: transparent;
 }
-.win-ui-light input[type=range]::-ms-thumb {
+.win-ui-dark input[type=range]::-ms-thumb {
   background: #0078d7;
 }
-.win-ui-light input[type=range]::-webkit-slider-thumb {
+.win-ui-dark input[type=range]::-webkit-slider-thumb {
   background: #0078d7;
 }
-.win-ui-light input[type=range]::-moz-range-thumb {
+.win-ui-dark input[type=range]::-moz-range-thumb {
   background: #0078d7;
 }
-.win-ui-light input[type=range]:hover::-ms-thumb {
-  background: #1f1f1f;
+.win-ui-dark input[type=range]:hover::-ms-thumb {
+  background: #f9f9f9;
 }
-.win-ui-light input[type=range]:hover::-webkit-slider-thumb {
-  background: #1f1f1f;
+.win-ui-dark input[type=range]:hover::-webkit-slider-thumb {
+  background: #f9f9f9;
 }
-.win-ui-light input[type=range]:hover::-moz-range-thumb {
-  background: #1f1f1f;
+.win-ui-dark input[type=range]:hover::-moz-range-thumb {
+  background: #f9f9f9;
 }
-.win-ui-light input[type=range]:active::-ms-thumb {
-  background: #cccccc;
+.win-ui-dark input[type=range]:active::-ms-thumb {
+  background: #767676;
 }
-.win-ui-light input[type=range]:active::-webkit-slider-thumb {
-  background: #cccccc;
+.win-ui-dark input[type=range]:active::-webkit-slider-thumb {
+  background: #767676;
 }
-.win-ui-light input[type=range]:active::-moz-range-thumb {
-  background: #cccccc;
+.win-ui-dark input[type=range]:active::-moz-range-thumb {
+  background: #767676;
 }
-.win-ui-light input[type=range]:disabled::-ms-thumb {
-  background: #cccccc;
+.win-ui-dark input[type=range]:disabled::-ms-thumb {
+  background: #333333;
 }
-.win-ui-light input[type=range]:disabled::-webkit-slider-thumb {
-  background: #cccccc;
+.win-ui-dark input[type=range]:disabled::-webkit-slider-thumb {
+  background: #333333;
 }
-.win-ui-light input[type=range]:disabled::-moz-range-thumb {
-  background: #cccccc;
+.win-ui-dark input[type=range]:disabled::-moz-range-thumb {
+  background: #333333;
 }
-.win-ui-light input[type=range]::-ms-fill-lower {
+.win-ui-dark input[type=range]::-ms-fill-lower {
   background: #0078d7;
 }
-.win-ui-light input[type=range]:disabled::-ms-fill-lower {
-  background: rgba(0, 0, 0, 0.2);
+.win-ui-dark input[type=range]:disabled::-ms-fill-lower {
+  background: rgba(255, 255, 255, 0.2);
 }
-.win-ui-light input[type=range]::-ms-fill-upper {
-  background: rgba(0, 0, 0, 0.4);
+.win-ui-dark input[type=range]::-ms-fill-upper {
+  background: rgba(255, 255, 255, 0.4);
 }
-.win-ui-light input[type=range]::-webkit-slider-runnable-track {
-  background: rgba(0, 0, 0, 0.4);
+.win-ui-dark input[type=range]::-webkit-slider-runnable-track {
+  background: rgba(255, 255, 255, 0.4);
 }
-.win-ui-light input[type=range]::-moz-range-track {
-  background: rgba(0, 0, 0, 0.4);
+.win-ui-dark input[type=range]::-moz-range-track {
+  background: rgba(255, 255, 255, 0.4);
 }
-.win-ui-light input[type=range]:hover::-ms-fill-upper {
-  background: rgba(0, 0, 0, 0.6);
+.win-ui-dark input[type=range]:hover::-ms-fill-upper {
+  background: rgba(255, 255, 255, 0.6);
 }
-.win-ui-light input[type=range]:hover::-webkit-slider-runnable-track {
-  background: rgba(0, 0, 0, 0.6);
+.win-ui-dark input[type=range]:hover::-webkit-slider-runnable-track {
+  background: rgba(255, 255, 255, 0.6);
 }
-.win-ui-light input[type=range]:hover::-moz-range-track {
-  background: rgba(0, 0, 0, 0.6);
+.win-ui-dark input[type=range]:hover::-moz-range-track {
+  background: rgba(255, 255, 255, 0.6);
 }
-.win-ui-light input[type=range]:active::-ms-fill-upper {
-  background: rgba(0, 0, 0, 0.4);
+.win-ui-dark input[type=range]:active::-ms-fill-upper {
+  background: rgba(255, 255, 255, 0.4);
 }
-.win-ui-light input[type=range]:active::-webkit-slider-runnable-track {
-  background: rgba(0, 0, 0, 0.4);
+.win-ui-dark input[type=range]:active::-webkit-slider-runnable-track {
+  background: rgba(255, 255, 255, 0.4);
 }
-.win-ui-light input[type=range]:active::-moz-range-track {
-  background: rgba(0, 0, 0, 0.4);
+.win-ui-dark input[type=range]:active::-moz-range-track {
+  background: rgba(255, 255, 255, 0.4);
 }
-.win-ui-light input[type=range]:disabled::-ms-fill-upper {
-  background: rgba(0, 0, 0, 0.2);
+.win-ui-dark input[type=range]:disabled::-ms-fill-upper {
+  background: rgba(255, 255, 255, 0.2);
 }
-.win-ui-light input[type=range]:disabled::-webkit-slider-runnable-track {
-  background: rgba(0, 0, 0, 0.2);
+.win-ui-dark input[type=range]:disabled::-webkit-slider-runnable-track {
+  background: rgba(255, 255, 255, 0.2);
 }
-.win-ui-light input[type=range]:disabled::-moz-range-track {
-  background: rgba(0, 0, 0, 0.2);
+.win-ui-dark input[type=range]:disabled::-moz-range-track {
+  background: rgba(255, 255, 255, 0.2);
 }
-.win-ui-light input[type=range]::-ms-track {
+.win-ui-dark input[type=range]::-ms-track {
   color: transparent;
   background-color: transparent;
 }
-.win-ui-light input[type=range]::-ms-ticks-before,
-.win-ui-light input[type=range]::-ms-ticks-after {
-  color: rgba(0, 0, 0, 0.4);
+.win-ui-dark input[type=range]::-ms-ticks-before,
+.win-ui-dark input[type=range]::-ms-ticks-after {
+  color: rgba(255, 255, 255, 0.4);
 }
-.win-ui-light input[type=text],
-.win-ui-light input[type=password],
-.win-ui-light input[type=email],
-.win-ui-light input[type=number],
-.win-ui-light input[type=tel],
-.win-ui-light input[type=url],
-.win-ui-light input[type=search],
-.win-ui-light textarea,
-.win-ui-light .win-textarea {
-  color: #000000;
-  background-color: rgba(255, 255, 255, 0.4);
-  border-color: rgba(0, 0, 0, 0.4);
+.win-ui-dark input[type=text],
+.win-ui-dark input[type=password],
+.win-ui-dark input[type=email],
+.win-ui-dark input[type=number],
+.win-ui-dark input[type=tel],
+.win-ui-dark input[type=url],
+.win-ui-dark input[type=search],
+.win-ui-dark textarea,
+.win-ui-dark .win-textarea {
+  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.4);
 }
-.win-ui-light input[type=text]:-ms-input-placeholder,
-.win-ui-light input[type=password]:-ms-input-placeholder,
-.win-ui-light input[type=email]:-ms-input-placeholder,
-.win-ui-light input[type=number]:-ms-input-placeholder,
-.win-ui-light input[type=tel]:-ms-input-placeholder,
-.win-ui-light input[type=url]:-ms-input-placeholder,
-.win-ui-light input[type=search]:-ms-input-placeholder,
-.win-ui-light textarea:-ms-input-placeholder,
-.win-ui-light .win-textarea:-ms-input-placeholder {
-  color: rgba(0, 0, 0, 0.6);
+.win-ui-dark input[type=text]:-ms-input-placeholder,
+.win-ui-dark input[type=password]:-ms-input-placeholder,
+.win-ui-dark input[type=email]:-ms-input-placeholder,
+.win-ui-dark input[type=number]:-ms-input-placeholder,
+.win-ui-dark input[type=tel]:-ms-input-placeholder,
+.win-ui-dark input[type=url]:-ms-input-placeholder,
+.win-ui-dark input[type=search]:-ms-input-placeholder,
+.win-ui-dark textarea:-ms-input-placeholder,
+.win-ui-dark .win-textarea:-ms-input-placeholder {
+  color: rgba(255, 255, 255, 0.6);
 }
-.win-ui-light input[type=text]::-webkit-input-placeholder,
-.win-ui-light input[type=password]::-webkit-input-placeholder,
-.win-ui-light input[type=email]::-webkit-input-placeholder,
-.win-ui-light input[type=number]::-webkit-input-placeholder,
-.win-ui-light input[type=tel]::-webkit-input-placeholder,
-.win-ui-light input[type=url]::-webkit-input-placeholder,
-.win-ui-light input[type=search]::-webkit-input-placeholder,
-.win-ui-light textarea::-webkit-input-placeholder,
-.win-ui-light .win-textarea::-webkit-input-placeholder {
-  color: rgba(0, 0, 0, 0.6);
+.win-ui-dark input[type=text]::-webkit-input-placeholder,
+.win-ui-dark input[type=password]::-webkit-input-placeholder,
+.win-ui-dark input[type=email]::-webkit-input-placeholder,
+.win-ui-dark input[type=number]::-webkit-input-placeholder,
+.win-ui-dark input[type=tel]::-webkit-input-placeholder,
+.win-ui-dark input[type=url]::-webkit-input-placeholder,
+.win-ui-dark input[type=search]::-webkit-input-placeholder,
+.win-ui-dark textarea::-webkit-input-placeholder,
+.win-ui-dark .win-textarea::-webkit-input-placeholder {
+  color: rgba(255, 255, 255, 0.6);
 }
-.win-ui-light input[type=text]::-moz-input-placeholder,
-.win-ui-light input[type=password]::-moz-input-placeholder,
-.win-ui-light input[type=email]::-moz-input-placeholder,
-.win-ui-light input[type=number]::-moz-input-placeholder,
-.win-ui-light input[type=tel]::-moz-input-placeholder,
-.win-ui-light input[type=url]::-moz-input-placeholder,
-.win-ui-light input[type=search]::-moz-input-placeholder,
-.win-ui-light textarea::-moz-input-placeholder,
-.win-ui-light .win-textarea::-moz-input-placeholder {
-  color: rgba(0, 0, 0, 0.6);
+.win-ui-dark input[type=text]::-moz-input-placeholder,
+.win-ui-dark input[type=password]::-moz-input-placeholder,
+.win-ui-dark input[type=email]::-moz-input-placeholder,
+.win-ui-dark input[type=number]::-moz-input-placeholder,
+.win-ui-dark input[type=tel]::-moz-input-placeholder,
+.win-ui-dark input[type=url]::-moz-input-placeholder,
+.win-ui-dark input[type=search]::-moz-input-placeholder,
+.win-ui-dark textarea::-moz-input-placeholder,
+.win-ui-dark .win-textarea::-moz-input-placeholder {
+  color: rgba(255, 255, 255, 0.6);
 }
-.win-ui-light input[type=text]:hover,
-.win-ui-light input[type=password]:hover,
-.win-ui-light input[type=email]:hover,
-.win-ui-light input[type=number]:hover,
-.win-ui-light input[type=tel]:hover,
-.win-ui-light input[type=url]:hover,
-.win-ui-light input[type=search]:hover,
-.win-ui-light textarea:hover,
-.win-ui-light .win-textarea:hover {
-  background-color: rgba(255, 255, 255, 0.6);
-  border-color: rgba(0, 0, 0, 0.6);
+.win-ui-dark input[type=text]:hover,
+.win-ui-dark input[type=password]:hover,
+.win-ui-dark input[type=email]:hover,
+.win-ui-dark input[type=number]:hover,
+.win-ui-dark input[type=tel]:hover,
+.win-ui-dark input[type=url]:hover,
+.win-ui-dark input[type=search]:hover,
+.win-ui-dark textarea:hover,
+.win-ui-dark .win-textarea:hover {
+  background-color: rgba(0, 0, 0, 0.6);
+  border-color: rgba(255, 255, 255, 0.6);
 }
-.win-ui-light input[type=text]:focus,
-.win-ui-light input[type=password]:focus,
-.win-ui-light input[type=email]:focus,
-.win-ui-light input[type=number]:focus,
-.win-ui-light input[type=tel]:focus,
-.win-ui-light input[type=url]:focus,
-.win-ui-light input[type=search]:focus,
-.win-ui-light textarea:focus,
-.win-ui-light .win-textarea:focus {
+.win-ui-dark input[type=text]:focus,
+.win-ui-dark input[type=password]:focus,
+.win-ui-dark input[type=email]:focus,
+.win-ui-dark input[type=number]:focus,
+.win-ui-dark input[type=tel]:focus,
+.win-ui-dark input[type=url]:focus,
+.win-ui-dark input[type=search]:focus,
+.win-ui-dark textarea:focus,
+.win-ui-dark .win-textarea:focus {
   color: #000000;
   background-color: #ffffff;
   border-color: #0078d7;
 }
-.win-ui-light input::-ms-clear,
-.win-ui-light input::-ms-reveal {
+.win-ui-dark input::-ms-clear,
+.win-ui-dark input::-ms-reveal {
   display: block;
   color: rgba(0, 0, 0, 0.6);
 }
-.win-ui-light input::-ms-clear:hover,
-.win-ui-light input::-ms-reveal:hover {
+.win-ui-dark input::-ms-clear:hover,
+.win-ui-dark input::-ms-reveal:hover {
   color: #0078d7;
 }
-.win-ui-light input::-ms-clear:active,
-.win-ui-light input::-ms-reveal:active {
+.win-ui-dark input::-ms-clear:active,
+.win-ui-dark input::-ms-reveal:active {
   color: #ffffff;
   background-color: #0078d7;
 }
-.win-ui-light .win-selectionmode .win-itemcontainer.win-container .win-itembox::after,
-.win-ui-light .win-itemcontainer.win-selectionmode.win-container .win-itembox::after,
-.win-ui-light .win-listview .win-surface.win-selectionmode .win-itembox::after {
-  border-color: #000000;
-  background-color: #e6e6e6;
+.win-ui-dark .win-selectionmode .win-itemcontainer.win-container .win-itembox::after,
+.win-ui-dark .win-itemcontainer.win-selectionmode.win-container .win-itembox::after,
+.win-ui-dark .win-listview .win-surface.win-selectionmode .win-itembox::after {
+  border-color: #ffffff;
+  background-color: #1f1f1f;
 }
-.win-ui-light .win-selectioncheckmark {
-  color: #000000;
+.win-ui-dark .win-selectioncheckmark {
+  color: #ffffff;
 }
-.win-ui-light .win-listview:not(.win-selectionstylefilled) .win-selectioncheckmarkbackground,
-.win-ui-light .win-itemcontainer:not(.win-selectionstylefilled) .win-selectioncheckmarkbackground {
+.win-ui-dark .win-listview:not(.win-selectionstylefilled) .win-selectioncheckmarkbackground,
+.win-ui-dark .win-itemcontainer:not(.win-selectionstylefilled) .win-selectioncheckmarkbackground {
   border-color: #0078d7;
   background-color: #0078d7;
 }
-.win-ui-light .win-listview:not(.win-selectionstylefilled) .win-container.win-selected .win-selectionborder,
-.win-ui-light .win-itemcontainer:not(.win-selectionstylefilled).win-container.win-selected .win-selectionborder {
+.win-ui-dark .win-listview:not(.win-selectionstylefilled) .win-container.win-selected .win-selectionborder,
+.win-ui-dark .win-itemcontainer:not(.win-selectionstylefilled).win-container.win-selected .win-selectionborder {
   border-color: #0078d7;
 }
-.win-ui-light .win-listview.win-selectionstylefilled .win-selected .win-selectionbackground,
-.win-ui-light .win-itemcontainer.win-selectionstylefilled.win-selected .win-selectionbackground {
+.win-ui-dark .win-listview.win-selectionstylefilled .win-selected .win-selectionbackground,
+.win-ui-dark .win-itemcontainer.win-selectionstylefilled.win-selected .win-selectionbackground {
   background-color: #0078d7;
 }
-.win-ui-light html.win-hoverable .win-listview.win-selectionstylefilled .win-container.win-pressed .win-itembox,
-.win-ui-light html.win-hoverable .win-itemcontainer.win-selectionstylefilled.win-container .win-itembox,
-.win-ui-light html.win-hoverable .win-listview.win-selectionstylefilled .win-container .win-itembox.win-pressed,
-.win-ui-light html.win-hoverable .win-itemcontainer.win-selectionstylefilled.win-container .win-itembox.win-pressed {
-  background-color: rgba(0, 0, 0, 0.2);
+.win-ui-dark html.win-hoverable .win-listview.win-selectionstylefilled .win-container.win-pressed .win-itembox,
+.win-ui-dark html.win-hoverable .win-itemcontainer.win-selectionstylefilled.win-container .win-itembox,
+.win-ui-dark html.win-hoverable .win-listview.win-selectionstylefilled .win-container .win-itembox.win-pressed,
+.win-ui-dark html.win-hoverable .win-itemcontainer.win-selectionstylefilled.win-container .win-itembox.win-pressed {
+  background-color: rgba(255, 255, 255, 0.2);
 }
-.win-ui-light .win-listview .win-itembox,
-.win-ui-light .win-itemcontainer .win-itembox {
-  background-color: #ffffff;
+.win-ui-dark .win-listview .win-itembox,
+.win-ui-dark .win-itemcontainer .win-itembox {
+  background-color: #1d1d1d;
 }
-.win-ui-light .win-listview .win-container.win-backdrop {
+.win-ui-dark .win-listview .win-container.win-backdrop {
   background-color: rgba(155, 155, 155, 0.23);
 }
-.win-ui-light .win-listview .win-groupheader {
-  outline-color: #000000;
+.win-ui-dark .win-listview .win-groupheader {
+  outline-color: #ffffff;
 }
-.win-ui-light .win-listview .win-focusedoutline,
-.win-ui-light .win-itemcontainer .win-focusedoutline {
-  outline: #000000 dashed 2px;
+.win-ui-dark .win-listview .win-focusedoutline,
+.win-ui-dark .win-itemcontainer .win-focusedoutline {
+  outline: #ffffff solid 2px;
 }
-.win-ui-light .win-listview .win-container.win-selected .win-selectionborder,
-.win-ui-light .win-itemcontainer.win-container.win-selected .win-selectionborder,
-.win-ui-light .win-listview.win-selectionstylefilled .win-selected .win-selectionbackground,
-.win-ui-light .win-itemcontainer.win-selectionstylefilled.win-selected .win-selectionbackground {
-  opacity: 0.4;
+.win-ui-dark .win-listview .win-container.win-selected .win-selectionborder,
+.win-ui-dark .win-itemcontainer.win-container.win-selected .win-selectionborder,
+.win-ui-dark .win-listview.win-selectionstylefilled .win-selected .win-selectionbackground,
+.win-ui-dark .win-itemcontainer.win-selectionstylefilled.win-selected .win-selectionbackground {
+  opacity: 0.6;
 }
-.win-ui-light .win-flipview .win-navbutton {
-  background-color: rgba(0, 0, 0, 0.4);
-  color: rgba(255, 255, 255, 0.8);
-}
-.win-ui-light .win-flipview .win-navbutton:hover:active {
-  background-color: rgba(0, 0, 0, 0.8);
-}
-.win-ui-light html.win-hoverable .win-flipview .win-navbutton:hover {
-  background-color: rgba(0, 0, 0, 0.6);
-}
-.win-ui-light .win-backbutton,
-.win-ui-light .win-back,
-.win-ui-light .win-navigation-backbutton {
-  background-color: transparent;
-  border: none;
-  color: #000000;
-}
-.win-ui-light .win-backbutton:hover,
-.win-ui-light .win-navigation-backbutton:hover .win-back {
-  background-color: rgba(0, 0, 0, 0.1);
-}
-.win-ui-light .win-backbutton:active,
-.win-ui-light .win-navigation-backbutton:active .win-back {
-  background-color: rgba(0, 0, 0, 0.2);
-}
-.win-ui-light .win-backbutton:disabled,
-.win-ui-light .win-backbutton:disabled:active,
-.win-ui-light .win-navigation-backbutton:disabled,
-.win-ui-light .win-navigation-backbutton:disabled .win-back,
-.win-ui-light .win-navigation-backbutton:disabled:active .win-back {
-  color: rgba(0, 0, 0, 0.4);
-  background-color: transparent;
-}
-.win-ui-light .win-backbutton:focus,
-.win-ui-light .win-navigation-backbutton:focus .win-back {
-  outline-color: #000000;
-}
-.win-ui-light .win-tooltip {
-  color: #000000;
-  border-color: #cccccc;
-  background-color: #f2f2f2;
-}
-.win-ui-light .win-rating .win-star.win-user.win-full,
-.win-ui-light .win-rating .win-star.win-user.win-full.win-disabled {
-  color: #0078d7;
-}
-.win-ui-light .win-rating .win-star.win-tentative.win-full {
+.win-ui-dark .win-flipview .win-navbutton {
+  background-color: rgba(255, 255, 255, 0.4);
   color: rgba(0, 0, 0, 0.8);
 }
-.win-ui-light .win-rating .win-star.win-average.win-full,
-.win-ui-light .win-rating .win-star.win-average.win-full.win-disabled {
-  color: rgba(0, 0, 0, 0.4);
+.win-ui-dark .win-flipview .win-navbutton:hover:active {
+  background-color: rgba(255, 255, 255, 0.8);
 }
-.win-ui-light .win-rating .win-star.win-empty {
-  color: rgba(0, 0, 0, 0.2);
+.win-ui-dark html.win-hoverable .win-flipview .win-navbutton:hover {
+  background-color: rgba(255, 255, 255, 0.6);
 }
-.win-ui-light .win-toggleswitch-header {
-  color: #000000;
+.win-ui-dark .win-backbutton,
+.win-ui-dark .win-back,
+.win-ui-dark .win-navigation-backbutton {
+  background-color: transparent;
+  border: none;
+  color: #ffffff;
 }
-.win-ui-light .win-toggleswitch-value {
-  color: #000000;
+.win-ui-dark .win-backbutton:hover,
+.win-ui-dark .win-navigation-backbutton:hover .win-back {
+  background-color: rgba(255, 255, 255, 0.1);
 }
-.win-ui-light .win-toggleswitch-thumb {
-  background-color: rgba(0, 0, 0, 0.8);
+.win-ui-dark .win-backbutton:active,
+.win-ui-dark .win-navigation-backbutton:active .win-back {
+  background-color: rgba(255, 255, 255, 0.2);
 }
-.win-ui-light .win-toggleswitch-on .win-toggleswitch-track {
+.win-ui-dark .win-backbutton:disabled,
+.win-ui-dark .win-backbutton:disabled:active,
+.win-ui-dark .win-navigation-backbutton:disabled,
+.win-ui-dark .win-navigation-backbutton:disabled .win-back,
+.win-ui-dark .win-navigation-backbutton:disabled:active .win-back {
+  color: rgba(255, 255, 255, 0.4);
+  background-color: transparent;
+}
+.win-ui-dark .win-backbutton:focus,
+.win-ui-dark .win-navigation-backbutton:focus .win-back {
+  outline-color: #ffffff;
+}
+.win-ui-dark .win-tooltip {
+  color: #ffffff;
+  border-color: #767676;
+  background-color: #1f1f1f;
+}
+.win-ui-dark .win-rating .win-star.win-user.win-full,
+.win-ui-dark .win-rating .win-star.win-user.win-full.win-disabled {
+  color: #0078d7;
+}
+.win-ui-dark .win-rating .win-star.win-tentative.win-full {
+  color: rgba(255, 255, 255, 0.8);
+}
+.win-ui-dark .win-rating .win-star.win-average.win-full,
+.win-ui-dark .win-rating .win-star.win-average.win-full.win-disabled {
+  color: rgba(255, 255, 255, 0.4);
+}
+.win-ui-dark .win-rating .win-star.win-empty {
+  color: rgba(255, 255, 255, 0.2);
+}
+.win-ui-dark .win-toggleswitch-header {
+  color: #ffffff;
+}
+.win-ui-dark .win-toggleswitch-value {
+  color: #ffffff;
+}
+.win-ui-dark .win-toggleswitch-thumb {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+.win-ui-dark .win-toggleswitch-on .win-toggleswitch-track {
   border-color: #0078d7;
 }
-.win-ui-light .win-toggleswitch-off .win-toggleswitch-track {
-  border-color: rgba(0, 0, 0, 0.8);
+.win-ui-dark .win-toggleswitch-off .win-toggleswitch-track {
+  border-color: rgba(255, 255, 255, 0.8);
 }
-.win-ui-light .win-toggleswitch-pressed .win-toggleswitch-track {
-  border-color: rgba(0, 0, 0, 0.6);
+.win-ui-dark .win-toggleswitch-pressed .win-toggleswitch-track {
+  border-color: rgba(255, 255, 255, 0.6);
 }
-.win-ui-light .win-toggleswitch-pressed .win-toggleswitch-thumb {
-  background-color: rgba(0, 0, 0, 0.6);
+.win-ui-dark .win-toggleswitch-pressed .win-toggleswitch-thumb {
+  background-color: rgba(255, 255, 255, 0.6);
 }
-.win-ui-light .win-toggleswitch-disabled .win-toggleswitch-track {
-  border-color: rgba(0, 0, 0, 0.2);
+.win-ui-dark .win-toggleswitch-disabled .win-toggleswitch-track {
+  border-color: rgba(255, 255, 255, 0.2);
 }
-.win-ui-light .win-toggleswitch-disabled .win-toggleswitch-thumb {
-  background-color: rgba(0, 0, 0, 0.2);
+.win-ui-dark .win-toggleswitch-disabled .win-toggleswitch-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
 }
-.win-ui-light .win-toggleswitch-disabled .win-toggleswitch-header,
-.win-ui-light .win-toggleswitch-disabled .win-toggleswitch-value {
-  color: rgba(0, 0, 0, 0.2);
+.win-ui-dark .win-toggleswitch-disabled .win-toggleswitch-header,
+.win-ui-dark .win-toggleswitch-disabled .win-toggleswitch-value {
+  color: rgba(255, 255, 255, 0.2);
 }
-.win-ui-light .win-semanticzoom-button {
+.win-ui-dark .win-semanticzoom-button {
   background-color: rgba(216, 216, 216, 0.33);
   border-color: transparent;
 }
-.win-ui-light button.win-semanticzoom-button.win-semanticzoom-button:active,
-.win-ui-light button.win-semanticzoom-button.win-semanticzoom-button:hover:active {
-  background-color: #000000;
+.win-ui-dark button.win-semanticzoom-button.win-semanticzoom-button:active,
+.win-ui-dark button.win-semanticzoom-button.win-semanticzoom-button:hover:active {
+  background-color: #ffffff;
 }
-.win-ui-light .win-pivot .win-pivot-navbutton {
-  background-color: rgba(0, 0, 0, 0.4);
-  color: rgba(255, 255, 255, 0.8);
-}
-.win-ui-light .win-pivot .win-pivot-navbutton.win-pivot-navbutton:hover:active {
+.win-ui-dark .win-pivot .win-pivot-navbutton {
+  background-color: rgba(255, 255, 255, 0.4);
   color: rgba(0, 0, 0, 0.8);
 }
-.win-ui-light .win-pivot button.win-pivot-header,
-.win-ui-light .win-pivot button.win-pivot-header:focus,
-.win-ui-light .win-pivot button.win-pivot-header.win-pivot-header:hover:active {
-  color: #000000;
+.win-ui-dark .win-pivot .win-pivot-navbutton.win-pivot-navbutton:hover:active {
+  color: rgba(255, 255, 255, 0.8);
 }
-.win-ui-light button.win-hub-section-header-tabstop,
-.win-ui-light button.win-hub-section-header-tabstop:hover:active {
-  color: #000000;
+.win-ui-dark .win-pivot button.win-pivot-header,
+.win-ui-dark .win-pivot button.win-pivot-header:focus,
+.win-ui-dark .win-pivot button.win-pivot-header.win-pivot-header:hover:active {
+  color: #ffffff;
 }
-.win-ui-light button.win-hub-section-header-tabstop.win-keyboard:focus {
-  outline: 1px dotted #000000;
+.win-ui-dark button.win-hub-section-header-tabstop,
+.win-ui-dark button.win-hub-section-header-tabstop:hover:active {
+  color: #ffffff;
 }
-.win-ui-light button.win-hub-section-header-tabstop:-ms-keyboard-active {
-  color: #000000;
+.win-ui-dark button.win-hub-section-header-tabstop.win-keyboard:focus {
+  outline: 1px dotted #ffffff;
 }
-.win-ui-light button.win-hub-section-header-tabstop.win-hub-section-header-interactive.win-hub-section-header-interactive:hover:active {
-  color: rgba(0, 0, 0, 0.4);
+.win-ui-dark button.win-hub-section-header-tabstop:-ms-keyboard-active {
+  color: #ffffff;
 }
-.win-ui-light button.win-hub-section-header-tabstop.win-hub-section-header-interactive:-ms-keyboard-active {
-  color: rgba(0, 0, 0, 0.4);
+.win-ui-dark button.win-hub-section-header-tabstop.win-hub-section-header-interactive.win-hub-section-header-interactive:hover:active {
+  color: rgba(255, 255, 255, 0.4);
 }
-.win-ui-light .win-overlay {
+.win-ui-dark button.win-hub-section-header-tabstop.win-hub-section-header-interactive:-ms-keyboard-active {
+  color: rgba(255, 255, 255, 0.4);
+}
+.win-ui-dark .win-overlay {
   outline: none;
 }
-.win-ui-light hr.win-command {
-  background-color: rgba(0, 0, 0, 0.4);
+.win-ui-dark hr.win-command {
+  background-color: rgba(255, 255, 255, 0.4);
 }
-.win-ui-light div.win-command,
-.win-ui-light button.win-command {
+.win-ui-dark div.win-command,
+.win-ui-dark button.win-command {
   border-color: transparent;
   background-color: transparent;
 }
-.win-ui-light div.win-command:hover:active,
-.win-ui-light button.win-command:hover:active {
+.win-ui-dark div.win-command:hover:active,
+.win-ui-dark button.win-command:hover:active {
   border-color: transparent;
 }
-.win-ui-light button:enabled.win-command.win-keyboard:focus,
-.win-ui-light div.win-command.win-keyboard:focus,
-.win-ui-light button:enabled.win-command.win-command.win-keyboard:hover:focus,
-.win-ui-light div.win-command.win-command.win-keyboard:hover:focus {
-  border-color: #000000;
+.win-ui-dark button:enabled.win-command.win-keyboard:focus,
+.win-ui-dark div.win-command.win-keyboard:focus,
+.win-ui-dark button:enabled.win-command.win-command.win-keyboard:hover:focus,
+.win-ui-dark div.win-command.win-command.win-keyboard:hover:focus {
+  border-color: #ffffff;
 }
-.win-ui-light .win-commandimage {
-  color: #000000;
+.win-ui-dark .win-commandimage {
+  color: #ffffff;
 }
-.win-ui-light button.win-command.win-command:enabled:hover:active,
-.win-ui-light button.win-command.win-command:enabled:active {
-  background-color: rgba(0, 0, 0, 0.2);
-  color: #000000;
+.win-ui-dark button.win-command.win-command:enabled:hover:active,
+.win-ui-dark button.win-command.win-command:enabled:active {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
 }
-.win-ui-light button:enabled:hover:active .win-commandimage,
-.win-ui-light button:enabled:active .win-commandimage {
-  color: #000000;
+.win-ui-dark button:enabled:hover:active .win-commandimage,
+.win-ui-dark button:enabled:active .win-commandimage {
+  color: #ffffff;
 }
-.win-ui-light button:disabled .win-commandimage,
-.win-ui-light button:disabled:active .win-commandimage {
-  color: rgba(0, 0, 0, 0.2);
+.win-ui-dark button:disabled .win-commandimage,
+.win-ui-dark button:disabled:active .win-commandimage {
+  color: rgba(255, 255, 255, 0.2);
 }
-.win-ui-light button[aria-checked=true]:enabled .win-label,
-.win-ui-light button[aria-checked=true]:enabled .win-commandimage,
-.win-ui-light button[aria-checked=true]:enabled:hover:active .win-commandimage.win-commandimage {
-  color: #000000;
+.win-ui-dark button[aria-checked=true]:enabled .win-label,
+.win-ui-dark button[aria-checked=true]:enabled .win-commandimage,
+.win-ui-dark button[aria-checked=true]:enabled:hover:active .win-commandimage.win-commandimage {
+  color: #ffffff;
 }
-.win-ui-light button[aria-checked=true]:-ms-keyboard-active .win-commandimage {
-  color: #000000;
+.win-ui-dark button[aria-checked=true]:-ms-keyboard-active .win-commandimage {
+  color: #ffffff;
 }
-.win-ui-light button[aria-checked=true].win-command:before {
+.win-ui-dark button[aria-checked=true].win-command:after {
   position: absolute;
   height: 100%;
   width: 100%;
   background-color: #0078d7;
-  opacity: 0.4;
+  opacity: 0.6;
+  z-index: -1;
   box-sizing: content-box;
   content: "";
   /* We want this pseudo element to cover the border of its parent. */
@@ -7081,111 +6872,114 @@ html.win-hoverable .win-commandingsurface button.win-commandingsurface-overflowb
   top: -1px;
   left: -1px;
 }
-.win-ui-light button.win-command:enabled:-ms-keyboard-active {
-  background-color: rgba(0, 0, 0, 0.2);
-  color: #000000;
+.win-ui-dark button.win-command:enabled:-ms-keyboard-active {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
 }
-.win-ui-light button[aria-checked=true].win-command:enabled:hover:active {
+.win-ui-dark button[aria-checked=true].win-command:enabled:hover:active {
   background-color: transparent;
 }
-.win-ui-light button.win-command:disabled,
-.win-ui-light button.win-command:disabled:hover:active {
+.win-ui-dark button.win-command:disabled,
+.win-ui-dark button.win-command:disabled:hover:active {
   background-color: transparent;
   border-color: transparent;
 }
-.win-ui-light button.win-command:disabled .win-label,
-.win-ui-light button.win-command:disabled:active .win-label {
-  color: rgba(0, 0, 0, 0.2);
+.win-ui-dark button.win-command:disabled .win-label,
+.win-ui-dark button.win-command:disabled:active .win-label {
+  color: rgba(255, 255, 255, 0.2);
 }
-.win-ui-light.win-appbar,
-.win-ui-light .win-appbar {
-  background-color: #e6e6e6;
-  border-color: #e6e6e6;
+.win-ui-dark.win-appbar,
+.win-ui-dark .win-appbar {
+  background-color: #1f1f1f;
+  border-color: #1f1f1f;
 }
-.win-ui-light.win-appbar.win-menulayout .win-appbar-menu,
-.win-ui-light .win-appbar.win-menulayout .win-appbar-menu,
-.win-ui-light.win-appbar.win-menulayout .win-toolbar,
-.win-ui-light .win-appbar.win-menulayout .win-toolbar {
+.win-ui-dark.win-appbar.win-menulayout .win-appbar-menu,
+.win-ui-dark .win-appbar.win-menulayout .win-appbar-menu,
+.win-ui-dark.win-appbar.win-menulayout .win-appbar-toolbarcontainer,
+.win-ui-dark .win-appbar.win-menulayout .win-appbar-toolbarcontainer,
+.win-ui-dark.win-appbar.win-menulayout .win-toolbar,
+.win-ui-dark .win-appbar.win-menulayout .win-toolbar {
   background-color: inherit;
 }
-.win-ui-light.win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton,
-.win-ui-light .win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton {
+.win-ui-dark.win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton,
+.win-ui-dark .win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton {
   background-color: transparent;
   outline: none;
   border-color: transparent;
 }
-.win-ui-light.win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:-ms-keyboard-active,
-.win-ui-light .win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:-ms-keyboard-active {
+.win-ui-dark.win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:-ms-keyboard-active,
+.win-ui-dark .win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:-ms-keyboard-active {
   background-color: transparent;
 }
-.win-ui-light.win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:enabled .win-appbar-ellipsis,
-.win-ui-light .win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:enabled .win-appbar-ellipsis {
-  color: #000000;
+.win-ui-dark.win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:enabled .win-appbar-ellipsis,
+.win-ui-dark .win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:enabled .win-appbar-ellipsis {
+  color: #ffffff;
 }
-.win-ui-light.win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:enabled.win-keyboard:focus,
-.win-ui-light .win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:enabled.win-keyboard:focus {
-  border-color: #000000;
+.win-ui-dark.win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:enabled.win-keyboard:focus,
+.win-ui-dark .win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:enabled.win-keyboard:focus {
+  border-color: #ffffff;
 }
-.win-ui-light.win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:disabled:active,
-.win-ui-light .win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:disabled:active,
-.win-ui-light.win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:disabled:hover:active,
-.win-ui-light .win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:disabled:hover:active {
+.win-ui-dark.win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:disabled:active,
+.win-ui-dark .win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:disabled:active,
+.win-ui-dark.win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:disabled:hover:active,
+.win-ui-dark .win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:disabled:hover:active {
   background-color: transparent;
 }
-.win-ui-light.win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:disabled .win-appbar-ellipsis,
-.win-ui-light .win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:disabled .win-appbar-ellipsis {
-  color: rgba(0, 0, 0, 0.2);
+.win-ui-dark.win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:disabled .win-appbar-ellipsis,
+.win-ui-dark .win-appbar button.win-appbar-invokebutton.win-appbar-invokebutton:disabled .win-appbar-ellipsis {
+  color: rgba(255, 255, 255, 0.2);
 }
-.win-ui-light.win-appbar.win-appbar-hiding button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active,
-.win-ui-light .win-appbar.win-appbar-hiding button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active,
-.win-ui-light.win-appbar.win-appbar-hidden button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active,
-.win-ui-light .win-appbar.win-appbar-hidden button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active,
-.win-ui-light.win-appbar.win-appbar-showing button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active,
-.win-ui-light .win-appbar.win-appbar-showing button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active,
-.win-ui-light.win-appbar.win-appbar-shown button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active,
-.win-ui-light .win-appbar.win-appbar-shown button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active {
-  background-color: rgba(0, 0, 0, 0.2);
+.win-ui-dark.win-appbar.win-appbar-hiding button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active,
+.win-ui-dark .win-appbar.win-appbar-hiding button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active,
+.win-ui-dark.win-appbar.win-appbar-hidden button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active,
+.win-ui-dark .win-appbar.win-appbar-hidden button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active,
+.win-ui-dark.win-appbar.win-appbar-showing button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active,
+.win-ui-dark .win-appbar.win-appbar-showing button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active,
+.win-ui-dark.win-appbar.win-appbar-shown button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active,
+.win-ui-dark .win-appbar.win-appbar-shown button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active {
+  background-color: rgba(255, 255, 255, 0.2);
 }
-.win-ui-light.win-appbar.win-appbar-hiding button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active .win-appbar-ellipsis,
-.win-ui-light .win-appbar.win-appbar-hiding button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active .win-appbar-ellipsis,
-.win-ui-light.win-appbar.win-appbar-hidden button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active .win-appbar-ellipsis,
-.win-ui-light .win-appbar.win-appbar-hidden button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active .win-appbar-ellipsis,
-.win-ui-light.win-appbar.win-appbar-showing button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active .win-appbar-ellipsis,
-.win-ui-light .win-appbar.win-appbar-showing button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active .win-appbar-ellipsis,
-.win-ui-light.win-appbar.win-appbar-shown button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active .win-appbar-ellipsis,
-.win-ui-light .win-appbar.win-appbar-shown button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active .win-appbar-ellipsis {
-  color: #000000;
+.win-ui-dark.win-appbar.win-appbar-hiding button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active .win-appbar-ellipsis,
+.win-ui-dark .win-appbar.win-appbar-hiding button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active .win-appbar-ellipsis,
+.win-ui-dark.win-appbar.win-appbar-hidden button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active .win-appbar-ellipsis,
+.win-ui-dark .win-appbar.win-appbar-hidden button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active .win-appbar-ellipsis,
+.win-ui-dark.win-appbar.win-appbar-showing button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active .win-appbar-ellipsis,
+.win-ui-dark .win-appbar.win-appbar-showing button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active .win-appbar-ellipsis,
+.win-ui-dark.win-appbar.win-appbar-shown button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active .win-appbar-ellipsis,
+.win-ui-dark .win-appbar.win-appbar-shown button.win-appbar-invokebutton.win-appbar-invokebutton:enabled:hover:active .win-appbar-ellipsis {
+  color: #ffffff;
 }
-.win-ui-light.win-flyout,
-.win-ui-light .win-flyout {
+.win-ui-dark.win-flyout,
+.win-ui-dark .win-flyout {
   border-color: #0078d7;
-  background-color: #ffffff;
+  background-color: #000000;
 }
-.win-ui-light .win-settingsflyout {
-  background-color: #ffffff;
+.win-ui-dark .win-settingsflyout {
+  background-color: #000000;
 }
-.win-ui-light.win-settingsflyout,
-.win-ui-light .win-settingsflyout {
+.win-ui-dark.win-settingsflyout,
+.win-ui-dark .win-settingsflyout {
   border-color: #0078d7;
 }
-.win-ui-light.win-menu button,
-.win-ui-light .win-menu button {
+.win-ui-dark.win-menu button,
+.win-ui-dark .win-menu button {
   background-color: transparent;
-  color: #000000;
+  color: #ffffff;
 }
-.win-ui-light .win-menu button.win-command.win-command:enabled:hover:active,
-.win-ui-light .win-menu button[aria-checked=true].win-command.win-command:enabled:hover:active {
-  background-color: rgba(0, 0, 0, 0.2);
-  color: #000000;
+.win-ui-dark .win-menu button.win-command.win-command:enabled:hover:active,
+.win-ui-dark .win-menu button[aria-checked=true].win-command.win-command:enabled:hover:active {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
 }
-.win-ui-light.win-menu button.win-command-flyout-activated:before,
-.win-ui-light .win-menu button.win-command-flyout-activated:before {
+.win-ui-dark.win-menu button.win-command-flyout-activated:after,
+.win-ui-dark .win-menu button.win-command-flyout-activated:after {
   position: absolute;
   height: 100%;
   width: 100%;
   background-color: #0078d7;
-  opacity: 0.4;
+  opacity: 0.6;
   content: "";
+  z-index: -1;
   box-sizing: content-box;
   /* We want this pseudo element to cover the border of its parent. */
   /* Put a 1px border on this element to make it larger and then set its top/left to -1px.*/
@@ -7193,116 +6987,116 @@ html.win-hoverable .win-commandingsurface button.win-commandingsurface-overflowb
   top: -1px;
   left: -1px;
 }
-.win-ui-light.win-menu button[aria-checked=true].win-command:before,
-.win-ui-light .win-menu button[aria-checked=true].win-command:before {
+.win-ui-dark.win-menu button[aria-checked=true].win-command:after,
+.win-ui-dark .win-menu button[aria-checked=true].win-command:after {
   background-color: transparent;
   border-color: transparent;
 }
-.win-ui-light.win-menu button:disabled,
-.win-ui-light .win-menu button:disabled,
-.win-ui-light.win-menu button:disabled:active,
-.win-ui-light .win-menu button:disabled:active {
+.win-ui-dark.win-menu button:disabled,
+.win-ui-dark .win-menu button:disabled,
+.win-ui-dark.win-menu button:disabled:active,
+.win-ui-dark .win-menu button:disabled:active {
   background-color: transparent;
-  color: rgba(0, 0, 0, 0.2);
+  color: rgba(255, 255, 255, 0.2);
 }
-.win-ui-light.win-toolbar,
-.win-ui-light .win-toolbar {
-  background-color: #e6e6e6;
+.win-ui-dark.win-toolbar,
+.win-ui-dark .win-toolbar {
+  background-color: #2b2b2b;
 }
-.win-ui-light.win-toolbar button.win-toolbar-overflowbutton,
-.win-ui-light .win-toolbar button.win-toolbar-overflowbutton {
+.win-ui-dark.win-toolbar button.win-toolbar-overflowbutton,
+.win-ui-dark .win-toolbar button.win-toolbar-overflowbutton {
   background-color: transparent;
   border-color: transparent;
 }
-.win-ui-light.win-toolbar button.win-toolbar-overflowbutton:enabled:-ms-keyboard-active,
-.win-ui-light .win-toolbar button.win-toolbar-overflowbutton:enabled:-ms-keyboard-active {
+.win-ui-dark.win-toolbar button.win-toolbar-overflowbutton:enabled:-ms-keyboard-active,
+.win-ui-dark .win-toolbar button.win-toolbar-overflowbutton:enabled:-ms-keyboard-active {
   background-color: transparent;
 }
-.win-ui-light.win-toolbar button.win-toolbar-overflowbutton:enabled .win-toolbar-ellipsis,
-.win-ui-light .win-toolbar button.win-toolbar-overflowbutton:enabled .win-toolbar-ellipsis {
-  color: #000000;
+.win-ui-dark.win-toolbar button.win-toolbar-overflowbutton:enabled .win-toolbar-ellipsis,
+.win-ui-dark .win-toolbar button.win-toolbar-overflowbutton:enabled .win-toolbar-ellipsis {
+  color: #ffffff;
 }
-.win-ui-light.win-toolbar button.win-toolbar-overflowbutton.win-keyboard:focus,
-.win-ui-light .win-toolbar button.win-toolbar-overflowbutton.win-keyboard:focus {
-  border-color: #000000;
+.win-ui-dark.win-toolbar button.win-toolbar-overflowbutton.win-keyboard:focus,
+.win-ui-dark .win-toolbar button.win-toolbar-overflowbutton.win-keyboard:focus {
+  border-color: #ffffff;
 }
-.win-ui-light.win-toolbar button.win-toolbar-overflowbutton.win-toolbar-overflowbutton:hover:active,
-.win-ui-light .win-toolbar button.win-toolbar-overflowbutton.win-toolbar-overflowbutton:hover:active {
-  background-color: #8a8a8a;
+.win-ui-dark.win-toolbar button.win-toolbar-overflowbutton.win-toolbar-overflowbutton:hover:active,
+.win-ui-dark .win-toolbar button.win-toolbar-overflowbutton.win-toolbar-overflowbutton:hover:active {
+  background-color: #808080;
 }
-.win-ui-light.win-toolbar .win-toolbar-overflowarea button:enabled.win-command:hover:active,
-.win-ui-light .win-toolbar .win-toolbar-overflowarea button:enabled.win-command:hover:active {
-  color: #000000;
-  background-color: #8a8a8a;
+.win-ui-dark.win-toolbar .win-toolbar-overflowarea button:enabled.win-command:hover:active,
+.win-ui-dark .win-toolbar .win-toolbar-overflowarea button:enabled.win-command:hover:active {
+  color: #ffffff;
+  background-color: #808080;
 }
-.win-ui-light .win-autosuggestbox-flyout-highlighttext {
+.win-ui-dark .win-autosuggestbox-flyout-highlighttext {
   color: #4617b4;
 }
-.win-ui-light .win-autosuggestbox-suggestion-separator {
+.win-ui-dark .win-autosuggestbox-suggestion-separator {
   color: #7a7a7a;
 }
-.win-ui-light .win-autosuggestbox-suggestion-separator hr {
+.win-ui-dark .win-autosuggestbox-suggestion-separator hr {
   border-color: #7a7a7a;
 }
-.win-ui-light .win-autosuggestbox-suggestion-selected .win-autosuggestbox-flyout-highlighttext {
+.win-ui-dark .win-autosuggestbox-suggestion-selected .win-autosuggestbox-flyout-highlighttext {
   color: #a38bda;
 }
-.win-ui-light .win-autosuggestbox-flyout {
-  background-color: #f2f2f2;
-  color: #000000;
+.win-ui-dark .win-autosuggestbox-flyout {
+  background-color: #1f1f1f;
+  color: #ffffff;
 }
-.win-ui-light .win-autosuggestbox-suggestion-selected {
-  background-color: rgba(0, 120, 215, 0.4);
+.win-ui-dark .win-autosuggestbox-suggestion-selected {
+  background-color: rgba(0, 120, 215, 0.6);
 }
-.win-ui-light .win-autosuggestbox-suggestion-result:hover:active,
-.win-ui-light .win-autosuggestbox-suggestion-query:hover:active {
-  background-color: rgba(0, 0, 0, 0.2);
+.win-ui-dark .win-autosuggestbox-suggestion-result:hover:active,
+.win-ui-dark .win-autosuggestbox-suggestion-query:hover:active {
+  background-color: rgba(255, 255, 255, 0.2);
 }
-.win-ui-light .win-autosuggestbox-suggestion-selected.win-autosuggestbox-suggestion-selected:hover:active {
-  background-color: rgba(0, 120, 215, 0.7);
+.win-ui-dark .win-autosuggestbox-suggestion-selected.win-autosuggestbox-suggestion-selected:hover:active {
+  background-color: rgba(0, 120, 215, 0.9);
 }
-.win-ui-light .win-searchbox-button {
+.win-ui-dark .win-searchbox-button {
+  color: rgba(255, 255, 255, 0.4);
+}
+.win-ui-dark .win-searchbox-button-input-focus {
   color: rgba(0, 0, 0, 0.4);
 }
-.win-ui-light .win-searchbox-button-input-focus {
-  color: rgba(0, 0, 0, 0.4);
-}
-.win-ui-light .win-searchbox-button.win-searchbox-button:not(.win-searchbox-button-disabled):hover {
+.win-ui-dark .win-searchbox-button.win-searchbox-button:not(.win-searchbox-button-disabled):hover {
   color: #0078d7;
 }
-.win-ui-light .win-searchbox-button.win-searchbox-button:not(.win-searchbox-button-disabled):hover:active {
+.win-ui-dark .win-searchbox-button.win-searchbox-button:not(.win-searchbox-button-disabled):hover:active {
   background-color: #0078d7;
   color: #ffffff;
 }
-.win-ui-light .win-navbarcontainer-pageindicator {
-  background-color: rgba(0, 0, 0, 0.2);
+.win-ui-dark .win-navbarcontainer-pageindicator {
+  background-color: rgba(255, 255, 255, 0.2);
 }
-.win-ui-light .win-navbarcontainer-pageindicator-current {
-  background-color: rgba(0, 0, 0, 0.6);
+.win-ui-dark .win-navbarcontainer-pageindicator-current {
+  background-color: rgba(255, 255, 255, 0.6);
 }
-.win-ui-light .win-navbarcontainer-navarrow {
-  background-color: rgba(0, 0, 0, 0.4);
-  color: rgba(255, 255, 255, 0.8);
+.win-ui-dark .win-navbarcontainer-navarrow {
+  background-color: rgba(255, 255, 255, 0.4);
+  color: rgba(0, 0, 0, 0.8);
 }
-.win-ui-light .win-navbarcontainer-navarrow.win-navbarcontainer-navarrow:hover:active {
-  background-color: rgba(0, 0, 0, 0.8);
+.win-ui-dark .win-navbarcontainer-navarrow.win-navbarcontainer-navarrow:hover:active {
+  background-color: rgba(255, 255, 255, 0.8);
 }
-.win-ui-light .win-navbarcommand-button,
-.win-ui-light .win-navbarcommand-splitbutton {
-  background-color: rgba(0, 0, 0, 0.1);
-  color: #000000;
+.win-ui-dark .win-navbarcommand-button,
+.win-ui-dark .win-navbarcommand-splitbutton {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
 }
-.win-ui-light .win-navbarcommand-button.win-pressed,
-.win-ui-light .win-navbarcommand-splitbutton.win-pressed {
-  background-color: rgba(0, 0, 0, 0.28);
+.win-ui-dark .win-navbarcommand-button.win-pressed,
+.win-ui-dark .win-navbarcommand-splitbutton.win-pressed {
+  background-color: rgba(255, 255, 255, 0.28);
 }
-.win-ui-light .win-navbarcommand-splitbutton.win-navbarcommand-splitbutton-opened {
-  background-color: rgba(0, 120, 215, 0.4);
+.win-ui-dark .win-navbarcommand-splitbutton.win-navbarcommand-splitbutton-opened {
+  background-color: rgba(0, 120, 215, 0.6);
 }
-.win-ui-light .win-navbarcommand-splitbutton.win-navbarcommand-splitbutton-opened.win-pressed {
-  background-color: rgba(0, 120, 215, 0.7);
+.win-ui-dark .win-navbarcommand-splitbutton.win-navbarcommand-splitbutton-opened.win-pressed {
+  background-color: rgba(0, 120, 215, 0.9);
 }
-.win-ui-light .win-navbarcommand-button.win-keyboard:focus::before {
+.win-ui-dark .win-navbarcommand-button.win-keyboard:focus::before {
   content: "";
   pointer-events: none;
   position: absolute;
@@ -7311,196 +7105,156 @@ html.win-hoverable .win-commandingsurface button.win-commandingsurface-overflowb
   left: 0;
   height: 100%;
   width: 100%;
-  border: 1px dotted #000000;
+  border: 1px dotted #ffffff;
 }
-.win-ui-light .win-navbarcommand-splitbutton.win-keyboard:focus::before {
-  border-color: #000000;
+.win-ui-dark .win-navbarcommand-splitbutton.win-keyboard:focus::before {
+  border-color: #ffffff;
 }
-.win-ui-light .win-contentdialog-dialog {
-  background-color: #f2f2f2;
+.win-ui-dark .win-contentdialog-dialog {
+  background-color: #1f1f1f;
   outline-color: #0078d7;
 }
-.win-ui-light .win-contentdialog-title {
-  color: #000000;
+.win-ui-dark .win-contentdialog-title {
+  color: #ffffff;
 }
-.win-ui-light .win-contentdialog-content {
-  color: #000000;
+.win-ui-dark .win-contentdialog-content {
+  color: #ffffff;
 }
-.win-ui-light .win-contentdialog-backgroundoverlay {
-  background-color: #ffffff;
+.win-ui-dark .win-contentdialog-backgroundoverlay {
+  background-color: #000000;
   opacity: 0.6;
 }
-.win-ui-light .win-splitview-pane {
-  background-color: #f2f2f2;
+.win-ui-dark .win-splitview-pane {
+  background-color: #171717;
 }
-.win-ui-light.win-commandingsurface,
-.win-ui-light .win-commandingsurface {
-  background-color: #e6e6e6;
-}
-.win-ui-light.win-commandingsurface button.win-commandingsurface-overflowbutton,
-.win-ui-light .win-commandingsurface button.win-commandingsurface-overflowbutton {
-  background-color: transparent;
-  border-color: transparent;
-}
-.win-ui-light.win-commandingsurface button.win-commandingsurface-overflowbutton:enabled:-ms-keyboard-active,
-.win-ui-light .win-commandingsurface button.win-commandingsurface-overflowbutton:enabled:-ms-keyboard-active {
-  background-color: transparent;
-}
-.win-ui-light.win-commandingsurface button.win-commandingsurface-overflowbutton:enabled .win-commandingsurface-ellipsis,
-.win-ui-light .win-commandingsurface button.win-commandingsurface-overflowbutton:enabled .win-commandingsurface-ellipsis {
-  color: #000000;
-}
-.win-ui-light.win-commandingsurface button.win-commandingsurface-overflowbutton.win-keyboard:focus,
-.win-ui-light .win-commandingsurface button.win-commandingsurface-overflowbutton.win-keyboard:focus {
-  border-color: #000000;
-}
-.win-ui-light.win-commandingsurface button.win-commandingsurface-overflowbutton.win-commandingsurface-overflowbutton:hover:active,
-.win-ui-light .win-commandingsurface button.win-commandingsurface-overflowbutton.win-commandingsurface-overflowbutton:hover:active {
-  background-color: #8a8a8a;
-}
-.win-ui-light.win-commandingsurface .win-commandingsurface-overflowarea button:enabled.win-command:hover:active,
-.win-ui-light .win-commandingsurface .win-commandingsurface-overflowarea button:enabled.win-command:hover:active {
-  color: #000000;
-  background-color: #8a8a8a;
-}
-html.win-hoverable .win-ui-light {
+html.win-hoverable .win-ui-dark {
   /* Appbar control colors */
 }
-html.win-hoverable .win-ui-light .win-selectionstylefilled .win-container:hover .win-itembox,
-html.win-hoverable .win-ui-light .win-selectionstylefilled.win-container:hover .win-itembox {
-  background-color: rgba(0, 0, 0, 0.1);
+html.win-hoverable .win-ui-dark .win-selectionstylefilled .win-container:hover .win-itembox,
+html.win-hoverable .win-ui-dark .win-selectionstylefilled.win-container:hover .win-itembox {
+  background-color: rgba(255, 255, 255, 0.1);
 }
-html.win-hoverable .win-ui-light .win-listview .win-itembox:hover::before,
-html.win-hoverable .win-ui-light .win-itemcontainer .win-itembox:hover::before {
-  border-color: #000000;
+html.win-hoverable .win-ui-dark .win-listview .win-itembox:hover::before,
+html.win-hoverable .win-ui-dark .win-itemcontainer .win-itembox:hover::before {
+  border-color: #ffffff;
 }
-html.win-hoverable .win-ui-light .win-listview .win-container.win-selected:hover .win-selectionborder,
-html.win-hoverable .win-ui-light .win-itemcontainer.win-container.win-selected:hover .win-selectionborder,
-html.win-hoverable .win-ui-light .win-listview.win-selectionstylefilled .win-selected:hover .win-selectionbackground,
-html.win-hoverable .win-ui-light .win-itemcontainer.win-selectionstylefilled.win-selected:hover .win-selectionbackground {
-  opacity: 0.6;
+html.win-hoverable .win-ui-dark .win-listview .win-container.win-selected:hover .win-selectionborder,
+html.win-hoverable .win-ui-dark .win-itemcontainer.win-container.win-selected:hover .win-selectionborder,
+html.win-hoverable .win-ui-dark .win-listview.win-selectionstylefilled .win-selected:hover .win-selectionbackground,
+html.win-hoverable .win-ui-dark .win-itemcontainer.win-selectionstylefilled.win-selected:hover .win-selectionbackground {
+  opacity: 0.8;
 }
-html.win-hoverable .win-ui-light .win-toggleswitch-off:not(.win-toggleswitch-disabled):not(.win-toggleswitch-pressed) .win-toggleswitch-clickregion:hover .win-toggleswitch-track {
-  border-color: #000000;
+html.win-hoverable .win-ui-dark .win-toggleswitch-off:not(.win-toggleswitch-disabled):not(.win-toggleswitch-pressed) .win-toggleswitch-clickregion:hover .win-toggleswitch-track {
+  border-color: #ffffff;
 }
-html.win-hoverable .win-ui-light .win-toggleswitch:not(.win-toggleswitch-disabled):not(.win-toggleswitch-pressed) .win-toggleswitch-clickregion:hover .win-toggleswitch-thumb {
-  background-color: #000000;
+html.win-hoverable .win-ui-dark .win-toggleswitch:not(.win-toggleswitch-disabled):not(.win-toggleswitch-pressed) .win-toggleswitch-clickregion:hover .win-toggleswitch-thumb {
+  background-color: #ffffff;
 }
-html.win-hoverable .win-ui-light button:hover.win-semanticzoom-button {
+html.win-hoverable .win-ui-dark button:hover.win-semanticzoom-button {
   background-color: #d8d8d8;
 }
-html.win-hoverable .win-ui-light .win-pivot .win-pivot-navbutton:hover {
-  color: rgba(0, 0, 0, 0.6);
+html.win-hoverable .win-ui-dark .win-pivot .win-pivot-navbutton:hover {
+  color: rgba(255, 255, 255, 0.6);
 }
-html.win-hoverable .win-ui-light .win-pivot button.win-pivot-header:hover {
-  color: #000000;
+html.win-hoverable .win-ui-dark .win-pivot button.win-pivot-header:hover {
+  color: #ffffff;
 }
-html.win-hoverable .win-ui-light button.win-hub-section-header-tabstop:hover {
-  color: #000000;
+html.win-hoverable .win-ui-dark button.win-hub-section-header-tabstop:hover {
+  color: #ffffff;
 }
-html.win-hoverable .win-ui-light button.win-hub-section-header-tabstop.win-hub-section-header-interactive:hover {
-  color: rgba(0, 0, 0, 0.8);
+html.win-hoverable .win-ui-dark button.win-hub-section-header-tabstop.win-hub-section-header-interactive:hover {
+  color: rgba(255, 255, 255, 0.8);
 }
-html.win-hoverable .win-ui-light.win-appbar button.win-appbar-invokebutton:enabled:hover,
-html.win-hoverable .win-ui-light .win-appbar button.win-appbar-invokebutton:enabled:hover,
-html.win-hoverable .win-ui-light.win-appbar button.win-appbar-invokebutton:disabled:hover,
-html.win-hoverable .win-ui-light .win-appbar button.win-appbar-invokebutton:disabled:hover {
+html.win-hoverable .win-ui-dark.win-appbar button.win-appbar-invokebutton:enabled:hover,
+html.win-hoverable .win-ui-dark .win-appbar button.win-appbar-invokebutton:enabled:hover,
+html.win-hoverable .win-ui-dark.win-appbar button.win-appbar-invokebutton:disabled:hover,
+html.win-hoverable .win-ui-dark .win-appbar button.win-appbar-invokebutton:disabled:hover {
   background-color: transparent;
 }
-html.win-hoverable .win-ui-light.win-appbar.win-appbar-showing button.win-appbar-invokebutton:enabled:hover,
-html.win-hoverable .win-ui-light .win-appbar.win-appbar-showing button.win-appbar-invokebutton:enabled:hover,
-html.win-hoverable .win-ui-light.win-appbar.win-appbar-shown button.win-appbar-invokebutton:enabled:hover,
-html.win-hoverable .win-ui-light .win-appbar.win-appbar-shown button.win-appbar-invokebutton:enabled:hover {
-  background-color: rgba(0, 0, 0, 0.1);
+html.win-hoverable .win-ui-dark.win-appbar.win-appbar-showing button.win-appbar-invokebutton:enabled:hover,
+html.win-hoverable .win-ui-dark .win-appbar.win-appbar-showing button.win-appbar-invokebutton:enabled:hover,
+html.win-hoverable .win-ui-dark.win-appbar.win-appbar-shown button.win-appbar-invokebutton:enabled:hover,
+html.win-hoverable .win-ui-dark .win-appbar.win-appbar-shown button.win-appbar-invokebutton:enabled:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
-html.win-hoverable .win-ui-light.win-appbar.win-appbar-showing button.win-appbar-invokebutton:enabled:hover .win-appbar-ellipsis,
-html.win-hoverable .win-ui-light .win-appbar.win-appbar-showing button.win-appbar-invokebutton:enabled:hover .win-appbar-ellipsis,
-html.win-hoverable .win-ui-light.win-appbar.win-appbar-shown button.win-appbar-invokebutton:enabled:hover .win-appbar-ellipsis,
-html.win-hoverable .win-ui-light .win-appbar.win-appbar-shown button.win-appbar-invokebutton:enabled:hover .win-appbar-ellipsis {
-  color: #000000;
+html.win-hoverable .win-ui-dark.win-appbar.win-appbar-showing button.win-appbar-invokebutton:enabled:hover .win-appbar-ellipsis,
+html.win-hoverable .win-ui-dark .win-appbar.win-appbar-showing button.win-appbar-invokebutton:enabled:hover .win-appbar-ellipsis,
+html.win-hoverable .win-ui-dark.win-appbar.win-appbar-shown button.win-appbar-invokebutton:enabled:hover .win-appbar-ellipsis,
+html.win-hoverable .win-ui-dark .win-appbar.win-appbar-shown button.win-appbar-invokebutton:enabled:hover .win-appbar-ellipsis {
+  color: #ffffff;
 }
-html.win-hoverable .win-ui-light.win-appbar.win-appbar-hiding button.win-appbar-invokebutton:enabled:hover,
-html.win-hoverable .win-ui-light .win-appbar.win-appbar-hiding button.win-appbar-invokebutton:enabled:hover,
-html.win-hoverable .win-ui-light.win-appbar.win-appbar-hidden button.win-appbar-invokebutton:enabled:hover,
-html.win-hoverable .win-ui-light .win-appbar.win-appbar-hidden button.win-appbar-invokebutton:enabled:hover {
-  background-color: rgba(0, 0, 0, 0.1);
+html.win-hoverable .win-ui-dark.win-appbar.win-appbar-hiding button.win-appbar-invokebutton:enabled:hover,
+html.win-hoverable .win-ui-dark .win-appbar.win-appbar-hiding button.win-appbar-invokebutton:enabled:hover,
+html.win-hoverable .win-ui-dark.win-appbar.win-appbar-hidden button.win-appbar-invokebutton:enabled:hover,
+html.win-hoverable .win-ui-dark .win-appbar.win-appbar-hidden button.win-appbar-invokebutton:enabled:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
-html.win-hoverable .win-ui-light.win-appbar.win-appbar-hiding button.win-appbar-invokebutton:enabled:hover .win-appbar-ellipsis,
-html.win-hoverable .win-ui-light .win-appbar.win-appbar-hiding button.win-appbar-invokebutton:enabled:hover .win-appbar-ellipsis,
-html.win-hoverable .win-ui-light.win-appbar.win-appbar-hidden button.win-appbar-invokebutton:enabled:hover .win-appbar-ellipsis,
-html.win-hoverable .win-ui-light .win-appbar.win-appbar-hidden button.win-appbar-invokebutton:enabled:hover .win-appbar-ellipsis {
-  color: #000000;
+html.win-hoverable .win-ui-dark.win-appbar.win-appbar-hiding button.win-appbar-invokebutton:enabled:hover .win-appbar-ellipsis,
+html.win-hoverable .win-ui-dark .win-appbar.win-appbar-hiding button.win-appbar-invokebutton:enabled:hover .win-appbar-ellipsis,
+html.win-hoverable .win-ui-dark.win-appbar.win-appbar-hidden button.win-appbar-invokebutton:enabled:hover .win-appbar-ellipsis,
+html.win-hoverable .win-ui-dark .win-appbar.win-appbar-hidden button.win-appbar-invokebutton:enabled:hover .win-appbar-ellipsis {
+  color: #ffffff;
 }
-html.win-hoverable .win-ui-light button.win-command:enabled:hover {
-  background-color: rgba(0, 0, 0, 0.1);
-  color: #000000;
+html.win-hoverable .win-ui-dark button.win-command:enabled:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
 }
-html.win-hoverable .win-ui-light button.win-command:enabled:hover .win-commandglyph {
-  color: #000000;
+html.win-hoverable .win-ui-dark button.win-command:enabled:hover .win-commandglyph {
+  color: #ffffff;
 }
-html.win-hoverable .win-ui-light .win-menu button.win-command:enabled:hover {
-  background-color: rgba(0, 0, 0, 0.1);
-  color: #000000;
+html.win-hoverable .win-ui-dark .win-menu button.win-command:enabled:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
 }
-html.win-hoverable .win-ui-light button[aria-checked=true].win-command:hover {
+html.win-hoverable .win-ui-dark button[aria-checked=true].win-command:hover {
   background-color: transparent;
 }
-html.win-hoverable .win-ui-light button:enabled[aria-checked=true].win-command:hover:before {
-  opacity: 0.6;
+html.win-hoverable .win-ui-dark button:enabled[aria-checked=true].win-command:hover:after {
+  opacity: 0.8;
 }
-html.win-hoverable .win-ui-light button:enabled[aria-checked=true].win-command:hover:active:before {
-  opacity: 0.7;
+html.win-hoverable .win-ui-dark button:enabled[aria-checked=true].win-command:hover:active:after {
+  opacity: 0.9;
 }
-html.win-hoverable .win-ui-light.win-toolbar button.win-toolbar-overflowbutton:hover,
-html.win-hoverable .win-ui-light .win-toolbar button.win-toolbar-overflowbutton:hover,
-html.win-hoverable .win-ui-light.win-toolbar .win-toolbar-overflowarea button.win-command:hover,
-html.win-hoverable .win-ui-light .win-toolbar .win-toolbar-overflowarea button.win-command:hover {
-  background-color: #b8b8b8;
+html.win-hoverable .win-ui-dark.win-toolbar button.win-toolbar-overflowbutton:hover,
+html.win-hoverable .win-ui-dark .win-toolbar button.win-toolbar-overflowbutton:hover,
+html.win-hoverable .win-ui-dark.win-toolbar .win-toolbar-overflowarea button.win-command:hover,
+html.win-hoverable .win-ui-dark .win-toolbar .win-toolbar-overflowarea button.win-command:hover {
+  background-color: #555555;
 }
-html.win-hoverable .win-ui-light.win-toolbar button.win-toolbar-overflowbutton:hover .win-toolbar-ellipsis,
-html.win-hoverable .win-ui-light .win-toolbar button.win-toolbar-overflowbutton:hover .win-toolbar-ellipsis {
-  color: #000000;
+html.win-hoverable .win-ui-dark.win-toolbar button.win-toolbar-overflowbutton:hover .win-toolbar-ellipsis,
+html.win-hoverable .win-ui-dark .win-toolbar button.win-toolbar-overflowbutton:hover .win-toolbar-ellipsis {
+  color: #ffffff;
 }
-html.win-hoverable .win-ui-light .win-autosuggestbox-suggestion-result:hover,
-html.win-hoverable .win-ui-light .win-autosuggestbox-suggestion-query:hover {
-  background-color: rgba(0, 0, 0, 0.1);
+html.win-hoverable .win-ui-dark .win-autosuggestbox-suggestion-result:hover,
+html.win-hoverable .win-ui-dark .win-autosuggestbox-suggestion-query:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
-html.win-hoverable .win-ui-light .win-autosuggestbox-suggestion-selected:hover {
-  background-color: rgba(0, 120, 215, 0.6);
+html.win-hoverable .win-ui-dark .win-autosuggestbox-suggestion-selected:hover {
+  background-color: rgba(0, 120, 215, 0.8);
 }
-html.win-hoverable .win-ui-light .win-searchbox-button:not(.win-searchbox-button-disabled):hover {
+html.win-hoverable .win-ui-dark .win-searchbox-button:not(.win-searchbox-button-disabled):hover {
   color: #0078d7;
 }
-html.win-hoverable .win-ui-light .win-searchbox-button:not(.win-searchbox-button-disabled):hover:active {
+html.win-hoverable .win-ui-dark .win-searchbox-button:not(.win-searchbox-button-disabled):hover:active {
   background-color: #0078d7;
   color: #ffffff;
 }
-html.win-hoverable .win-ui-light .win-navbarcontainer-navarrow:hover {
-  background-color: rgba(0, 0, 0, 0.6);
+html.win-hoverable .win-ui-dark .win-navbarcontainer-navarrow:hover {
+  background-color: rgba(255, 255, 255, 0.6);
 }
-html.win-hoverable .win-ui-light .win-navbarcommand-button:hover,
-html.win-hoverable .win-ui-light .win-navbarcommand-splitbutton:hover {
-  background-color: rgba(255, 255, 255, 0.19);
+html.win-hoverable .win-ui-dark .win-navbarcommand-button:hover,
+html.win-hoverable .win-ui-dark .win-navbarcommand-splitbutton:hover {
+  background-color: rgba(0, 0, 0, 0.19);
 }
-html.win-hoverable .win-ui-light .win-navbarcommand-button:hover.win-pressed,
-html.win-hoverable .win-ui-light .win-navbarcommand-splitbutton:hover.win-pressed {
-  background-color: rgba(255, 255, 255, 0.28);
+html.win-hoverable .win-ui-dark .win-navbarcommand-button:hover.win-pressed,
+html.win-hoverable .win-ui-dark .win-navbarcommand-splitbutton:hover.win-pressed {
+  background-color: rgba(0, 0, 0, 0.28);
 }
-html.win-hoverable .win-ui-light .win-navbarcommand-splitbutton.win-navbarcommand-splitbutton-opened:hover {
-  background-color: rgba(0, 120, 215, 0.8);
+html.win-hoverable .win-ui-dark .win-navbarcommand-splitbutton.win-navbarcommand-splitbutton-opened:hover {
+  background-color: rgba(0, 120, 215, 0.6);
 }
-html.win-hoverable .win-ui-light .win-navbarcommand-splitbutton.win-navbarcommand-splitbutton-opened:hover.win-pressed {
-  background-color: rgba(0, 120, 215, 0.9);
-}
-html.win-hoverable .win-ui-light.win-commandingsurface button.win-commandingsurface-overflowbutton:hover,
-html.win-hoverable .win-ui-light .win-commandingsurface button.win-commandingsurface-overflowbutton:hover,
-html.win-hoverable .win-ui-light.win-commandingsurface .win-commandingsurface-overflowarea button.win-command:hover,
-html.win-hoverable .win-ui-light .win-commandingsurface .win-commandingsurface-overflowarea button.win-command:hover {
-  background-color: #b8b8b8;
-}
-html.win-hoverable .win-ui-light.win-commandingsurface button.win-commandingsurface-overflowbutton:hover .win-commandingsurface-ellipsis,
-html.win-hoverable .win-ui-light .win-commandingsurface button.win-commandingsurface-overflowbutton:hover .win-commandingsurface-ellipsis {
-  color: #000000;
+html.win-hoverable .win-ui-dark .win-navbarcommand-splitbutton.win-navbarcommand-splitbutton-opened:hover.win-pressed {
+  background-color: rgba(0, 120, 215, 0.7);
 }
 @media (-ms-high-contrast) {
   .win-overlay {
@@ -7548,12 +7302,13 @@ html.win-hoverable .win-ui-light .win-commandingsurface button.win-commandingsur
   button[aria-checked=true]:-ms-keyboard-active .win-commandimage {
     color: ButtonFace;
   }
-  button[aria-checked=true].win-command:before {
+  button[aria-checked=true].win-command:after {
     position: absolute;
     height: 100%;
     width: 100%;
     background-color: ButtonText;
     opacity: 1;
+    z-index: -1;
     box-sizing: content-box;
     content: "";
     /* We want this pseudo element to cover the border of its parent. */
@@ -7585,6 +7340,8 @@ html.win-hoverable .win-ui-light .win-commandingsurface button.win-commandingsur
   }
   .win-appbar.win-menulayout .win-appbar-menu,
   .win-appbar.win-menulayout .win-appbar-menu,
+  .win-appbar.win-menulayout .win-appbar-toolbarcontainer,
+  .win-appbar.win-menulayout .win-appbar-toolbarcontainer,
   .win-appbar.win-menulayout .win-toolbar,
   .win-appbar.win-menulayout .win-toolbar {
     background-color: inherit;
@@ -7659,14 +7416,15 @@ html.win-hoverable .win-ui-light .win-commandingsurface button.win-commandingsur
     background-color: ButtonText;
     color: ButtonFace;
   }
-  .win-menu button.win-command-flyout-activated:before,
-  .win-menu button.win-command-flyout-activated:before {
+  .win-menu button.win-command-flyout-activated:after,
+  .win-menu button.win-command-flyout-activated:after {
     position: absolute;
     height: 100%;
     width: 100%;
     background-color: ButtonText;
-    opacity: 0.6;
+    opacity: 0.4;
     content: "";
+    z-index: -1;
     box-sizing: content-box;
     /* We want this pseudo element to cover the border of its parent. */
     /* Put a 1px border on this element to make it larger and then set its top/left to -1px.*/
@@ -7674,8 +7432,8 @@ html.win-hoverable .win-ui-light .win-commandingsurface button.win-commandingsur
     top: -1px;
     left: -1px;
   }
-  .win-menu button[aria-checked=true].win-command:before,
-  .win-menu button[aria-checked=true].win-command:before {
+  .win-menu button[aria-checked=true].win-command:after,
+  .win-menu button[aria-checked=true].win-command:after {
     background-color: transparent;
     border-color: transparent;
   }
@@ -7713,36 +7471,6 @@ html.win-hoverable .win-ui-light .win-commandingsurface button.win-commandingsur
   }
   .win-toolbar .win-toolbar-overflowarea button:enabled.win-command:hover:active,
   .win-toolbar .win-toolbar-overflowarea button:enabled.win-command:hover:active {
-    color: ButtonFace;
-    background-color: ButtonText;
-  }
-  .win-commandingsurface,
-  .win-commandingsurface {
-    background-color: ButtonFace;
-  }
-  .win-commandingsurface button.win-commandingsurface-overflowbutton,
-  .win-commandingsurface button.win-commandingsurface-overflowbutton {
-    background-color: ButtonFace;
-    border-color: transparent;
-  }
-  .win-commandingsurface button.win-commandingsurface-overflowbutton:enabled:-ms-keyboard-active,
-  .win-commandingsurface button.win-commandingsurface-overflowbutton:enabled:-ms-keyboard-active {
-    background-color: ButtonFace;
-  }
-  .win-commandingsurface button.win-commandingsurface-overflowbutton:enabled .win-commandingsurface-ellipsis,
-  .win-commandingsurface button.win-commandingsurface-overflowbutton:enabled .win-commandingsurface-ellipsis {
-    color: ButtonText;
-  }
-  .win-commandingsurface button.win-commandingsurface-overflowbutton.win-keyboard:focus,
-  .win-commandingsurface button.win-commandingsurface-overflowbutton.win-keyboard:focus {
-    border-color: ButtonText;
-  }
-  .win-commandingsurface button.win-commandingsurface-overflowbutton.win-commandingsurface-overflowbutton:hover:active,
-  .win-commandingsurface button.win-commandingsurface-overflowbutton.win-commandingsurface-overflowbutton:hover:active {
-    background-color: Highlight;
-  }
-  .win-commandingsurface .win-commandingsurface-overflowarea button:enabled.win-command:hover:active,
-  .win-commandingsurface .win-commandingsurface-overflowarea button:enabled.win-command:hover:active {
     color: ButtonFace;
     background-color: ButtonText;
   }
@@ -7793,10 +7521,10 @@ html.win-hoverable .win-ui-light .win-commandingsurface button.win-commandingsur
   html.win-hoverable button[aria-checked=true].win-command:hover {
     background-color: transparent;
   }
-  html.win-hoverable button:enabled[aria-checked=true].win-command:hover:before {
+  html.win-hoverable button:enabled[aria-checked=true].win-command:hover:after {
     opacity: 1;
   }
-  html.win-hoverable button:enabled[aria-checked=true].win-command:hover:active:before {
+  html.win-hoverable button:enabled[aria-checked=true].win-command:hover:active:after {
     opacity: 1;
   }
   html.win-hoverable.win-toolbar button.win-toolbar-overflowbutton:hover,
@@ -7807,16 +7535,6 @@ html.win-hoverable .win-ui-light .win-commandingsurface button.win-commandingsur
   }
   html.win-hoverable.win-toolbar button.win-toolbar-overflowbutton:hover .win-toolbar-ellipsis,
   html.win-hoverable .win-toolbar button.win-toolbar-overflowbutton:hover .win-toolbar-ellipsis {
-    color: HighlightText;
-  }
-  html.win-hoverable.win-commandingsurface button.win-commandingsurface-overflowbutton:hover,
-  html.win-hoverable .win-commandingsurface button.win-commandingsurface-overflowbutton:hover,
-  html.win-hoverable.win-commandingsurface .win-commandingsurface-overflowarea button.win-command:hover,
-  html.win-hoverable .win-commandingsurface .win-commandingsurface-overflowarea button.win-command:hover {
-    background-color: Highlight;
-  }
-  html.win-hoverable.win-commandingsurface button.win-commandingsurface-overflowbutton:hover .win-commandingsurface-ellipsis,
-  html.win-hoverable .win-commandingsurface button.win-commandingsurface-overflowbutton:hover .win-commandingsurface-ellipsis {
     color: HighlightText;
   }
 }

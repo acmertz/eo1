@@ -1,5 +1,21 @@
-﻿.bold {
+﻿#appContainer {
+    display: none;
+}
+
+select {
+    background-color: #fff;
+}
+
+select:hover {
+    background-color: #ececec;
+}
+
+.bold {
     font-weight: bold;
+}
+
+.icon {
+    font-family: "Symbols";
 }
 
 #splashScreen {
