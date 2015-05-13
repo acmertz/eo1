@@ -31,13 +31,6 @@
             Ensemble.Editor.CalloutMGR.init();
             Ensemble.MediaBrowser.init();
 
-            //Hide UI items so they can play their entrance animation
-            $(Ensemble.Editor.UI.PageSections.upperHalf.entireSection).removeClass("editorUpperHalfVisible");
-            $(Ensemble.Editor.UI.PageSections.lowerHalf.entireSection).removeClass("editorLowerHalfVisible");
-            $(Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit).addClass("editorHorizontalDividerHidden");
-            $(Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit).removeClass();
-            $(Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit).addClass("editorHorizontalDividerHidden");
-
             //Perform UI setup operations (project name, thumbnail, etc.)
             var projectSubmenu = Ensemble.Editor.UI.PageSections.menu.actionMenu.project;
             projectSubmenu.nameDisplay.innerText = Ensemble.Session.projectName;
@@ -50,16 +43,7 @@
 
             //Update the Editor with the current settings
             this.layoutInterfaceToSplitpoint(Ensemble.Settings.getEditorDividerPosition() * window.innerHeight);
-            Ensemble.Editor.TimelineMGR.newRulerScale();
-
-            $(Ensemble.Editor.UI.PageSections.upperHalf.entireSection).addClass("editorUpperHalfVisible");
-            $(Ensemble.Editor.UI.PageSections.lowerHalf.entireSection).addClass("editorLowerHalfVisible");
-
-            window.setTimeout(function () {
-                $(Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit).removeClass("editorHorizontalDividerHidden");
-                $(Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit).addClass("editorHorizontalDividerVisible")
-            }, 500);
-            
+            Ensemble.Editor.TimelineMGR.newRulerScale();            
 
             this.currentActionMenuItem = document.getElementById("editorMenuContentProject");
             this.currentActionMenuTab = document.getElementById("editorMenuTabProject");
@@ -69,8 +53,8 @@
             this.currentEffectsMenuTab = null;
             this._attachListeners();
 
-            $("#projectLoadingPageContainer").removeClass("loadingPageVisible");
-            $("#projectLoadingPageContainer").addClass("loadingPageHidden");
+            //$("#projectLoadingPageContainer").removeClass("loadingPageVisible");
+            //$("#projectLoadingPageContainer").addClass("loadingPageHidden");
         },
 
         unload: function () {

@@ -336,7 +336,7 @@
 
         _addPreviewToLayerLoadFinished: function (clipObj) {
             /// <param name="clipObj" type="Object">The loaded Clip, ready for playback and rendering.</param>
-            Ensemble.MediaBrowser.closeMediaPreview();
+            //Ensemble.MediaBrowser.closeMediaPreview();
             Ensemble.Editor.MenuMGR.closeMenu();
         },
 

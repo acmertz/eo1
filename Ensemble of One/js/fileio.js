@@ -1187,7 +1187,9 @@
                     continueLoad: continueLoad
                 };
                 srcElement.setAttribute("data-eo1-uniqueid", clipUniqueImportId);
+                srcElement.className = "editor-media-item";
                 console.log("Setting src for EnsembleFile with uniqueId " + clipUniqueImportId + "...");
+                document.getElementsByClassName("editor-media-container")[0].appendChild(srcElement);
                 srcElement.src = fileURI;
             })();
         },
