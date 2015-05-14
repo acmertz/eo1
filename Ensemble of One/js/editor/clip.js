@@ -205,8 +205,10 @@
 
             unload: function () {
                 /// <summary>Unloads the clip and turns its file reference into a stub.</summary>
+                let domPlayer = document.getElementById(this._player.id);
                 this._player.src = null;
                 this._player = null;
+                domPlayer.parentNode.removeChild(domPlayer);
                 this.file = {
                     path: this.file.path,
                     token: this.file.token

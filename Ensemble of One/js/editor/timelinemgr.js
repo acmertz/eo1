@@ -64,6 +64,12 @@
             Ensemble.Editor.UI.PageSections.lowerHalf.timelineDetails.innerHTML = "";
             Ensemble.Editor.UI.PageSections.lowerHalf.timelineTracks.innerHTML = Ensemble.Editor.TimelineMGR.ui.timeCursor.outerHTML + Ensemble.Editor.TimelineMGR.ui.dropPreview.outerHTML;
 
+            for (let i = 0; i < Ensemble.Editor.TimelineMGR.tracks.length; i++) {
+                for (let k = 0; k < Ensemble.Editor.TimelineMGR.tracks[i].clips.length; k++) {
+                    Ensemble.Editor.TimelineMGR.tracks[i].clips[k].unload();
+                }
+            }
+
             this.tracks = [];
             this._clipIndex = [];
             this._clipIndexPosition = 0;

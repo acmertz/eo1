@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="/css/app-page.css" />
     <link rel="stylesheet" href="/css/editor.css" />
     <link rel="stylesheet" href="/css/editor-menu.css" />
+    <link rel="stylesheet" href="/css/editor-new.css" />
     <link rel="stylesheet" href="/css/main-menu.css" />
     <link rel="stylesheet" href="/css/media-browser.css" />
     <link rel="stylesheet" href="/css/timeline.css" />
@@ -233,62 +234,65 @@
                     icon: 'pictures'}"></button>
             </div>
         </nav>
-        <div id="editorUpperHalf">
-            <div id="editorCanvasContainer">
-                <div id="editorCanvasContent">
-                    <canvas id="editorCanvas" class="videoPlaybackSurface"></canvas>
-                </div>
-                <div id="editorPlayControls">
-                    <div class="editorPlayControlSection" id="editorPlayControlsLeft">
-                        <span id="editorTimeDisplay">00:00:00.000</span>
+        <main class="editor-content">
+            <section id="editorUpperHalf">
+                <div id="editorCanvasContainer">
+                    <div id="editorCanvasContent">
+                        <canvas id="editorCanvas" class="videoPlaybackSurface"></canvas>
                     </div>
-                    <div class="editorPlayControlSection" id="editorPlayControlsMain">
-                        <button id="editorPlaypauseButton" title="Play">&#xE102;</button>
-                    </div>
-                    <div class="editorPlayControlSection" id="editorPlayControlsRight">
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <div id="editorHorizontalDivider"></div>
-
-        <div id="editorLowerHalf">
-            <div id="editorTimelineRulerContainer">
-                <div class="editorTimelineRulerButtonPlaceholder"></div>
-                <div id="editorTimelineHeaderPlaceholder"></div>
-                <div id="editorTimelineDetailsPlaceholder"></div>
-                <div id="editorTimelineRulerContent">
-                    <div class="timeline-ruler__flag"></div>
-                    <div class="timeline-ruler__inner"></div>
-                </div>
-                <div class="editorTimelineRulerButtonPlaceholder"></div>
-            </div>
-            <div id="editorTimelineContainer">
-                <div class="editorTimelineSideControls">
-                    <i class="editorGeneralButton" id="editorTimelineAddTrackButton" title="New track">&#xE109;</i>
-                    <div class="spacer"></div>
-                </div>
-                <div id="timeline-track-container">
-                    <div id="editorTimelineHeaders" class="timeline-scrollable-container"></div>
-                    <div id="editorTimelineDetails" class="timeline-scrollable-container"></div>
-                    <div class="timeline-track-container-wrap">
-                        <div id="editorTimelineTracks" class="timeline-scrollable-container">
-                            <div class="timeline__cursor"></div>
-                            <div class="timeline__drop-preview"></div>
+                    <div id="editorPlayControls">
+                        <div class="editorPlayControlSection" id="editorPlayControlsLeft">
+                            <span id="editorTimeDisplay">00:00:00.000</span>
+                        </div>
+                        <div class="editorPlayControlSection" id="editorPlayControlsMain">
+                            <button id="editorPlaypauseButton" title="Play">&#xE102;</button>
+                        </div>
+                        <div class="editorPlayControlSection" id="editorPlayControlsRight">
                         </div>
                     </div>
                 </div>
-                <div class="editorTimelineSideControls">
-                    <i class="editorGeneralButton" id="editorTimelineZoomInButton" title="Zoom in">&#xE12E;</i>
-                    <i class="editorGeneralButton" id="editorTimelineZoomOutButton" title="Zoom out">&#xE1A4;</i>
-                    <div class="spacer"></div>
-                    <i class="fa-rotate-270 editorGeneralButton" id="editorTimelineScrollUpButton" title="Scroll up">&#xE111;</i>
-                    <i class="fa-rotate-270 editorGeneralButton" id="editorTimelineScrollDownButton" title="Scroll down">&#xE112;</i>
+
+            </section>
+
+            <!--<div id="editorHorizontalDivider"></div>-->
+
+            <section id="editorLowerHalf">
+                <div id="editorTimelineRulerContainer">
+                    <div class="editorTimelineRulerButtonPlaceholder"></div>
+                    <div id="editorTimelineHeaderPlaceholder"></div>
+                    <div id="editorTimelineDetailsPlaceholder"></div>
+                    <div id="editorTimelineRulerContent">
+                        <div class="timeline-ruler__flag"></div>
+                        <div class="timeline-ruler__inner"></div>
+                    </div>
+                    <div class="editorTimelineRulerButtonPlaceholder"></div>
                 </div>
-            </div>
-        </div>
+                <div id="editorTimelineContainer">
+                    <div class="editorTimelineSideControls">
+                        <i class="editorGeneralButton" id="editorTimelineAddTrackButton" title="New track">&#xE109;</i>
+                        <div class="spacer"></div>
+                    </div>
+                    <div id="timeline-track-container">
+                        <div id="editorTimelineHeaders" class="timeline-scrollable-container"></div>
+                        <div id="editorTimelineDetails" class="timeline-scrollable-container"></div>
+                        <div class="timeline-track-container-wrap">
+                            <div id="editorTimelineTracks" class="timeline-scrollable-container">
+                                <div class="timeline__cursor"></div>
+                                <div class="timeline__drop-preview"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="editorTimelineSideControls">
+                        <i class="editorGeneralButton" id="editorTimelineZoomInButton" title="Zoom in">&#xE12E;</i>
+                        <i class="editorGeneralButton" id="editorTimelineZoomOutButton" title="Zoom out">&#xE1A4;</i>
+                        <div class="spacer"></div>
+                        <i class="fa-rotate-270 editorGeneralButton" id="editorTimelineScrollUpButton" title="Scroll up">&#xE111;</i>
+                        <i class="fa-rotate-270 editorGeneralButton" id="editorTimelineScrollDownButton" title="Scroll down">&#xE112;</i>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
 
         <div id="editor-history-msg">Placeholder history message.</div>
 
