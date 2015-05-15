@@ -12,6 +12,7 @@
     <!-- Ensemble_of_One_Win10 references -->
     <link rel="stylesheet" href="/css/default.css" />
     <link rel="stylesheet" href="/css/app-page.css" />
+    <link rel="stylesheet" href="/css/buttons.css" />
     <link rel="stylesheet" href="/css/editor.css" />
     <link rel="stylesheet" href="/css/editor-menu.css" />
     <link rel="stylesheet" href="/css/editor-new.css" />
@@ -114,12 +115,12 @@
                 </select>
                 <p>Decide what shape you want your video to be. HDTVs usually have a ratio of 16:9, so in most cases this'll probably be your best shot.</p>
 
-                <p><button>Create</button></p>
+                <p><button class="eo1-btn">Create</button></p>
             </section>
             <section class="main-menu__content-section main-menu__content-section--open-project main-menu__content-section--hidden">
                 <h2>Open project</h2>
                 <p>
-                    <button disabled>Browse...</button>
+                    <button disabled class="eo1-btn">Browse...</button>
                 </p>
                 <h3>Local projects</h3>
                 <ul class="open-menu__local-projects"></ul>
@@ -235,26 +236,17 @@
             </div>
         </nav>
         <main class="editor-content">
-            <section id="editorUpperHalf">
-                <div id="editorCanvasContainer">
-                    <div id="editorCanvasContent">
-                        <canvas id="editorCanvas" class="videoPlaybackSurface"></canvas>
-                    </div>
-                    <div id="editorPlayControls">
-                        <div class="editorPlayControlSection" id="editorPlayControlsLeft">
-                            <span id="editorTimeDisplay">00:00:00.000</span>
-                        </div>
-                        <div class="editorPlayControlSection" id="editorPlayControlsMain">
-                            <button id="editorPlaypauseButton" title="Play">&#xE102;</button>
-                        </div>
-                        <div class="editorPlayControlSection" id="editorPlayControlsRight">
-                        </div>
+            <section class="editor-section editor-section--upper">
+                <div class="editor-canvas-container">
+                    <canvas class="editor-canvas"></canvas>
+                </div>
+                <div class="editor-playback-widget">
+                    <div class="editor-time-display">00:00:00.000</div>
+                    <div>
+                        <button class="eo1-btn eo1-btn--editor-playpause" title="Play">&#xE102;</button>
                     </div>
                 </div>
-
             </section>
-
-            <!--<div id="editorHorizontalDivider"></div>-->
 
             <section id="editorLowerHalf">
                 <div id="editorTimelineRulerContainer">
@@ -385,7 +377,6 @@
 
         <div class="media-browser__drag-preview"></div>
 
-        <div id="topBottomSplitpointClickEater" class="editorClickEater editorClickEaterFaded"></div>
         <div id="editorTimelineEWClickEater" class="editorClickEater editorClickEaterFaded"></div>
     </div>
 

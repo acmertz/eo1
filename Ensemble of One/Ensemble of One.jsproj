@@ -58,6 +58,7 @@
       <SubType>Designer</SubType>
     </AppxManifest>
     <Content Include="css\app-page.css" />
+    <Content Include="css\buttons.css" />
     <Content Include="css\editor-menu.css" />
     <Content Include="css\editor-new.css" />
     <Content Include="css\editor.css" />

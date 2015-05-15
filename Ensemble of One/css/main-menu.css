@@ -57,7 +57,11 @@
     background-color: #df2b4f;
 }
 
-.main-menu__nav-item:active, .main-menu__nav-item--active {
+.main-menu__nav-item:active {
+    background-color: #e65a76;
+}
+
+.main-menu__nav-item--active {
     color: #dc143c;
     background-color: #fff;
 }

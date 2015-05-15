@@ -4,10 +4,9 @@
         relink: function () {
             /// <summary>Renews all UI references and makes sure they're alive.</summary>
 
-            this.PageSections.upperHalf.entireSection = document.getElementById("editorUpperHalf");
+            this.PageSections.upperHalf.entireSection = document.getElementsByClassName("editor-section--upper")[0];
             this.PageSections.upperHalf.canvasAndControls = document.getElementById("editorCanvasContainer");
-            this.PageSections.upperHalf.canvasContainer = document.getElementById("editorCanvasContent");
-            this.PageSections.upperHalf.controlContainer = document.getElementById("editorPlayControls");
+            this.PageSections.upperHalf.canvasContainer = document.getElementsByClassName("editor-canvas-container")[0];
 
             this.PageSections.lowerHalf.entireSection = document.getElementById("editorLowerHalf");
             this.PageSections.lowerHalf.timeline = document.getElementById("timeline-track-container");
@@ -36,7 +35,7 @@
             this.Graphics.mediaBrowserPreviewMusic = document.getElementById("mediaBrowserPreviewAudio");
             this.Graphics.mediaBrowserPreviewPic = document.getElementById("mediaBrowserPreviewPicture");
 
-            this.RenderSurfaces.mainCanvas = document.getElementById("editorCanvas");
+            this.RenderSurfaces.mainCanvas = document.getElementsByClassName("editor-canvas")[0];
 
             this.UserInput.Buttons.mediaBrowserLocation = document.getElementById("editorMediaBrowserLocationButton");
             this.UserInput.Buttons.mediaBrowserHome = document.getElementById("editorMediaBrowserHomeButton");
@@ -53,7 +52,6 @@
 
             this.UserInput.Boundaries.topBottomSplit = document.getElementById("editorHorizontalDivider");
 
-            this.UserInput.ClickEaters.splitpoint = document.getElementById("topBottomSplitpointClickEater");
             this.UserInput.ClickEaters.mediaPreview = document.getElementById("editorMediaBrowserPreviewClickEater");
 
             this.UserInput.Flyouts.mediaBrowserLocation = document.getElementById("editorMediaBrowserLocationFlyout");
@@ -71,8 +69,7 @@
                 //The entire upper half of the page.
                 entireSection: null,
                 canvasAndControls: null,
-                canvasContainer: null,
-                controlContainer: null
+                canvasContainer: null
             },
             lowerHalf: {
                 //The entire lower half of the page.
@@ -149,7 +146,6 @@
                 topBottomSplit: null
             },
             ClickEaters: {
-                splitpoint: null,
                 mediaPreview: null
             },
             Flyouts: {

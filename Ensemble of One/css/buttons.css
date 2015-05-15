@@ -1,0 +1,15 @@
+﻿.eo1-btn {
+    background: #dc143c;
+    border: 1px solid #dc143c;
+    border-radius: 3px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.eo1-btn:hover {
+    background: #df2b4f;
+}
+
+.eo1-btn:active {
+    background: #e65a76;
+}

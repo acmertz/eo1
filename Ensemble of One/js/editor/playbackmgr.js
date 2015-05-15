@@ -82,8 +82,8 @@
         },
 
         _refreshUI: function () {
-            this.ui.buttonPlayPause = document.getElementById("editorPlaypauseButton");
-            this.ui.timerDisplay = document.getElementById("editorTimeDisplay");
+            this.ui.buttonPlayPause = document.getElementsByClassName("eo1-btn--editor-playpause")[0];
+            this.ui.timerDisplay = document.getElementsByClassName("editor-time-display")[0];
 
             this.ui.buttonPlayPause.addEventListener("click", this._listeners.buttonPlayPause);
         },

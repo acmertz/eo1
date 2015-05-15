@@ -248,8 +248,8 @@
         },
 
         _refreshUI: function () {
-            this.ui.playbackCanvas = document.getElementById("editorCanvas");
-            this.ui.timerDisplay = document.getElementById("editorTimeDisplay");
+            this.ui.playbackCanvas = document.getElementsByClassName("editor-canvas")[0];
+            this.ui.timerDisplay = document.getElementsByClassName("editor-time-display")[0];
 
             this.ui.playbackCanvas.addEventListener("pointermove", this._listeners.playbackCanvasPointerMoved);
             this.ui.playbackCanvas.addEventListener("pointerleave", this._listeners.playbackCanvasPointerLeave);

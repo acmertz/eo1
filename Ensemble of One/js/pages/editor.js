@@ -110,62 +110,13 @@
                 finalWidth = Ensemble.Utilities.AspectGenerator.generateWidth(Ensemble.Session.projectAspect, finalHeight);
             }
 
-            Ensemble.Editor.UI.PageSections.upperHalf.canvasAndControls.style.width = finalWidth + "px";
+            //Ensemble.Editor.UI.PageSections.upperHalf.canvasAndControls.style.width = finalWidth + "px";
+            Ensemble.Editor.UI.PageSections.upperHalf.canvasContainer.style.width = finalWidth + "px";
             Ensemble.Editor.UI.RenderSurfaces.mainCanvas.style.height = finalHeight + "px";
             try { Ensemble.Editor.Renderer.canvasResized(); }
             catch (exception) { }
             Ensemble.Editor.TimelineMGR.updateTrackSizing();
         },
-
-        //uiSplitpointDragBegin: function (screenOffsetY, splitpointOffsetY) {
-        //    /// <summary>Begins a drag operation on the main UI splitpoint.</summary>
-        //    /// <param name="screenOffsetY" type="Number">The offset in pixels from the top of the screen that the mousedown occurred.</param>
-        //    /// <param name="splitpointOffsetY" type="Number">The offset in pixels from the top of the splitpoint element that the mousedown occurred.</param>
-        //    this._screenClickOffsetY = screenOffsetY;
-        //    this._uiSplitpointMousedownOffsetY = splitpointOffsetY;
-        //    $(Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit).addClass("zIndexTop");
-        //    $(Ensemble.Editor.UI.UserInput.ClickEaters.splitpoint).removeClass("editorClickEaterFaded");
-        //    Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit.removeEventListener("mousedown", this._topBottomSplitMouseDown, false);
-        //    document.addEventListener("mousemove", this._topBottomSplitDragMove, false);
-        //    document.addEventListener("mouseup", this._topBottomSplitDragEnd, false);
-        //    this.uiSplitpointDraggedTo(screenOffsetY);
-        //},
-
-        //uiSplitpointDraggedTo: function (yPosition) {
-        //    /// <summary>Begins a drag operation on the main UI splitpoint.</summary>
-        //    /// <param name="yPosition" type="Number">The new Y coordinate of the splitpoint.</param>
-
-        //    // TODO: support vendor-specific transform functions
-        //    Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit.style.transform = "translateY(" + (yPosition - this._screenClickOffsetY - this._uiSplitpointMousedownOffsetY) + "px)";
-        //},
-
-        //uiSplitpointDragEnd: function (yPosition) {
-        //    /// <summary>Finshes a drag operation on the main UI splitpoint.</summary>
-        //    /// <param name="yPosition" type="Number">The final Y coordinate of the splitpoint.</param>
-        //    document.removeEventListener("mousemove", this._topBottomSplitDragMove, false);
-        //    document.removeEventListener("mouseup", this._topBottomSplitDragEnd, false);
-        //    Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit.addEventListener("mousedown", this._topBottomSplitMouseDown, false);
-
-        //    $(Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit).removeClass("zIndexTop");
-        //    $(Ensemble.Editor.UI.UserInput.ClickEaters.splitpoint).addClass("editorClickEaterFaded");
-
-        //    this.layoutInterfaceToSplitpoint(yPosition);
-        //    Ensemble.Settings.setEditorDividerPosition(yPosition / window.innerHeight);
-        //},
-
-        //layoutInterfaceToSplitpoint: function (yPosition) {
-        //    /// <summary>Sets the UI splitpoint to the specified position and lays out the UI around it.</summary>
-        //    /// <param name="yPosition" type="Number">The Y coordinate in pixels representing the splitpoint's position.</param>
-
-        //    // TODO: support vendor-specific transform functions
-        //    Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit.style.transform = "";
-        //    var topFlex = yPosition / window.innerHeight;
-        //    var bottomFlex = (window.innerHeight - (yPosition + Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit.clientHeight)) / window.innerHeight;
-
-        //    Ensemble.Editor.UI.PageSections.upperHalf.entireSection.style.flex = topFlex;
-        //    Ensemble.Editor.UI.PageSections.lowerHalf.entireSection.style.flex = bottomFlex;
-        //    this.viewResized();
-        //},
 
         refreshMediaBrowser: function () {
             /// <summary>Refreshes the Media Browser at its current location</summary>
