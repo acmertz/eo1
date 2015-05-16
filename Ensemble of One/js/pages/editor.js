@@ -53,8 +53,12 @@
             this.currentEffectsMenuTab = null;
             this._attachListeners();
 
-            //$("#projectLoadingPageContainer").removeClass("loadingPageVisible");
-            //$("#projectLoadingPageContainer").addClass("loadingPageHidden");
+            Ensemble.Pages.Editor.viewResized();
+            Ensemble.Editor.PlaybackMGR.seek(500);
+            Ensemble.Editor.PlaybackMGR.seek(0);
+            for (let i = 0; i < 120; i++) {
+                Ensemble.Editor.Renderer.requestFrame();
+            }
         },
 
         unload: function () {

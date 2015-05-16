@@ -119,9 +119,9 @@
                 let loadingPage = document.getElementsByClassName("loading-page--editor")[0];
                 let editorPage = document.getElementsByClassName("app-page--editor")[0];
 
+                $(editorPage).removeClass("app-page--hidden")
                 Ensemble.Pages.Editor.showInitial();
-
-                $(editorPage).removeClass("app-page--hidden").addClass("app-page--enter-right");
+                $(editorPage).addClass("app-page--enter-right");
                 setTimeout(function () {
                     $(loadingPage).addClass("loading-page--hidden").removeClass("app-page--enter-right");
                 }, 500);

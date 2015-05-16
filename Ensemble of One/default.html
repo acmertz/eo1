@@ -248,25 +248,26 @@
                 </div>
             </section>
 
-            <section id="editorLowerHalf">
-                <div id="editorTimelineRulerContainer">
-                    <div class="editorTimelineRulerButtonPlaceholder"></div>
-                    <div id="editorTimelineHeaderPlaceholder"></div>
-                    <div id="editorTimelineDetailsPlaceholder"></div>
-                    <div id="editorTimelineRulerContent">
+            <section class="editor-section editor-section--lower">
+                <div class="timeline-ruler-container">
+                    <div class="timeline-button-container timeline-button-container--left"></div>
+                    <div class="timeline-track-header-container"></div>
+                    <div class="timeline-track-widget-container timeline-track-widget-container--placeholder"></div>
+                    <div class="timeline-ruler">
                         <div class="timeline-ruler__flag"></div>
                         <div class="timeline-ruler__inner"></div>
                     </div>
-                    <div class="editorTimelineRulerButtonPlaceholder"></div>
+                    <div class="timeline-button-container timeline-button-container--right"></div>
                 </div>
-                <div id="editorTimelineContainer">
-                    <div class="editorTimelineSideControls">
-                        <i class="editorGeneralButton" id="editorTimelineAddTrackButton" title="New track">&#xE109;</i>
-                        <div class="spacer"></div>
+                <div class="timeline-display-container">
+                    <div class="timeline-button-container timeline-button-container--left">
+                        <div class="timeline-button-container__section">
+                            <button class="eo1-btn eo1-btn--timeline eo1-btn--timeline-new-track" title="New track">&#xE109;</button>
+                        </div>
                     </div>
                     <div id="timeline-track-container">
-                        <div id="editorTimelineHeaders" class="timeline-scrollable-container"></div>
-                        <div id="editorTimelineDetails" class="timeline-scrollable-container"></div>
+                        <div class="timeline-track-header-container timeline-track-header-container--standard timeline-scrollable-container"></div>
+                        <div class="timeline-track-widget-container timeline-track-widget-container--standard timeline-scrollable-container"></div>
                         <div class="timeline-track-container-wrap">
                             <div id="editorTimelineTracks" class="timeline-scrollable-container">
                                 <div class="timeline__cursor"></div>
@@ -274,12 +275,17 @@
                             </div>
                         </div>
                     </div>
-                    <div class="editorTimelineSideControls">
-                        <i class="editorGeneralButton" id="editorTimelineZoomInButton" title="Zoom in">&#xE12E;</i>
-                        <i class="editorGeneralButton" id="editorTimelineZoomOutButton" title="Zoom out">&#xE1A4;</i>
-                        <div class="spacer"></div>
-                        <i class="fa-rotate-270 editorGeneralButton" id="editorTimelineScrollUpButton" title="Scroll up">&#xE111;</i>
-                        <i class="fa-rotate-270 editorGeneralButton" id="editorTimelineScrollDownButton" title="Scroll down">&#xE112;</i>
+                    <div class="timeline-button-container timeline-button-container--right">
+                        <div class="timeline-button-container__section">
+                            <button class="eo1-btn eo1-btn--timeline eo1-btn--timeline-zoom-in" title="Zoom in">&#xE12E;</button>
+                            <button class="eo1-btn eo1-btn--timeline eo1-btn--timeline-zoom-out" title="Zoom out">&#xE1A4;</button>
+                        </div>
+                        <div class="timeline-button-container__section timeline-button-container__section--spacer"></div>
+                        <div class="timeline-button-container__section">
+                            <button class="fa-rotate-270 eo1-btn eo1-btn--timeline eo1-btn--timeline-scroll-up" title="Scroll up">&#xE111;</button>
+                            <button class="fa-rotate-270 eo1-btn eo1-btn--timeline eo1-btn--timeline-scroll-down" title="Scroll down">&#xE112;</button>
+                        </div>
+                        
                     </div>
                 </div>
             </section>

@@ -8,13 +8,11 @@
             this.PageSections.upperHalf.canvasAndControls = document.getElementById("editorCanvasContainer");
             this.PageSections.upperHalf.canvasContainer = document.getElementsByClassName("editor-canvas-container")[0];
 
-            this.PageSections.lowerHalf.entireSection = document.getElementById("editorLowerHalf");
             this.PageSections.lowerHalf.timeline = document.getElementById("timeline-track-container");
-            this.PageSections.lowerHalf.timelineRuler = document.getElementById("editorTimelineRulerContent");
-            this.PageSections.lowerHalf.timelineHeaders = document.getElementById("editorTimelineHeaders");
-            this.PageSections.lowerHalf.timelineDetails = document.getElementById("editorTimelineDetails");
+            this.PageSections.lowerHalf.timelineHeaders = document.getElementsByClassName("timeline-track-header-container--standard")[0];
+            this.PageSections.lowerHalf.timelineDetails = document.getElementsByClassName("timeline-track-widget-container--standard")[0];
             this.PageSections.lowerHalf.timelineTracks = document.getElementById("editorTimelineTracks");
-            this.PageSections.lowerHalf.timelineHeaderDetailPlaceholder = document.getElementById("editorTimelineDetailsPlaceholder");
+            this.PageSections.lowerHalf.timelineHeaderDetailPlaceholder = document.getElementsByClassName("timeline-track-widget-container--placeholder")[0];
             this.PageSections.divider = document.getElementById("editorHorizontalDivider");
 
             this.PageSections.menu.actionMenu.project.nameDisplay = document.getElementById("editorProjectNameDisplay");
@@ -73,9 +71,7 @@
             },
             lowerHalf: {
                 //The entire lower half of the page.
-                entireSection: null,
                 timeline: null,
-                timelineRuler: null,
                 timelineHeaders: null,
                 timelineDetails: null,
                 timelineTracks: null,

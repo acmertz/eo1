@@ -486,7 +486,7 @@
 
         updateTrackSizing: function () {
             /// <summary>Updates the timeline tracks to match the recently resized view.</summary>
-            let maxTrackHeight = 75;
+            let maxTrackHeight = 50;
             let increment = maxTrackHeight;
             let sizeReached = false;
             let timelineHeight = $(Ensemble.Editor.UI.PageSections.lowerHalf.timeline).innerHeight();
@@ -536,7 +536,7 @@
 
             let markWidth = mark / ratio;
 
-            let displayTime = Ensemble.Editor.UI.PageSections.lowerHalf.timelineRuler.clientWidth * ratio;
+            let displayTime = Ensemble.Editor.TimelineMGR.ui.timeRuler.clientWidth * ratio;
             if (Ensemble.Session.projectDuration > displayTime) displayTime = Ensemble.Session.projectDuration;
 
             let cur = 0;
@@ -1139,16 +1139,16 @@
         },
 
         _refreshUI: function () {
-            this.ui.buttonScrollUp = document.getElementById("editorTimelineScrollUpButton");
-            this.ui.buttonScrollDown = document.getElementById("editorTimelineScrollDownButton");
-            this.ui.buttonZoomIn = document.getElementById("editorTimelineZoomInButton");
-            this.ui.buttonZoomOut = document.getElementById("editorTimelineZoomOutButton");
-            this.ui.buttonNewTrack = document.getElementById("editorTimelineAddTrackButton");
+            this.ui.buttonScrollUp = document.getElementsByClassName("eo1-btn--timeline-scroll-up")[0];
+            this.ui.buttonScrollDown = document.getElementsByClassName("eo1-btn--timeline-scroll-down")[0];
+            this.ui.buttonZoomIn = document.getElementsByClassName("eo1-btn--timeline-zoom-in")[0];
+            this.ui.buttonZoomOut = document.getElementsByClassName("eo1-btn--timeline-zoom-out")[0];
+            this.ui.buttonNewTrack = document.getElementsByClassName("eo1-btn--timeline-new-track")[0];
             this.ui.timeCursor = document.getElementsByClassName("timeline__cursor")[0];
             this.ui.timeCursorPreview = document.getElementsByClassName("editorTimelineDragPreviewFlyout")[0];
             this.ui.trackContainer = document.getElementById("timeline-track-container");
             this.ui.scrollableContainer = document.getElementsByClassName("timeline-track-container-wrap")[0];
-            this.ui.timeRuler = document.getElementById("editorTimelineRulerContent");
+            this.ui.timeRuler = document.getElementsByClassName("timeline-ruler")[0];
             this.ui.timeRulerInner = document.getElementsByClassName("timeline-ruler__inner")[0];
             this.ui.timeRulerFlag = document.getElementsByClassName("timeline-ruler__flag")[0];
             this.ui.timelineSelectionCallout = document.getElementsByClassName("timeline-selection-callout")[0];
@@ -1279,7 +1279,7 @@
 
                     Ensemble.Editor.TimelineMGR._timeCursorDragOffset = Ensemble.Editor.TimelineMGR._timeCursorDragOffset + cursorOffset;
 
-                    let rulerPos = Math.floor($("#editorTimelineRulerContainer").position().top);
+                    let rulerPos = Math.floor($(".timeline-ruler-container").position().top);
                     Ensemble.Editor.TimelineMGR.ui.timeCursorPreview.style.top = (rulerPos + 5) + "px";
                     Ensemble.Editor.TimelineMGR.ui.timeCursorPreview.style.left = Ensemble.Editor.TimelineMGR._timeCursorLastMousPos - (0.5 * Ensemble.Editor.TimelineMGR.ui.timeCursorPreview.offsetWidth) + "px";
                     Ensemble.Editor.TimelineMGR.ui.timeCursorPreview.style.visibility = "visible";
