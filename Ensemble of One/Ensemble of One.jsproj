@@ -98,6 +98,7 @@
     <Content Include="css\default.css" />
     <Content Include="js\editor\calloutmgr.js" />
     <Content Include="js\editor\clip.js" />
+    <Content Include="js\editor\mediabrowser.js" />
     <Content Include="js\editor\menumgr.js" />
     <Content Include="js\editor\playbackmgr.js" />
     <Content Include="js\editor\renderer.js" />
@@ -113,7 +114,6 @@
     <Content Include="js\historymgr.js" />
     <Content Include="js\keyboardmgr.js" />
     <Content Include="js\mainmenu-new.js" />
-    <Content Include="js\mediabrowser.js" />
     <Content Include="js\osdialogmgr.js" />
     <Content Include="js\pages\editor.js" />
     <Content Include="js\pages\mainmenu.js" />

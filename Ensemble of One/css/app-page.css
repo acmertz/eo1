@@ -1,4 +1,4 @@
-﻿.app-page, .loading-page {
+﻿.app-page {
     position: absolute;
     top: 0;
     left: 0;
@@ -6,11 +6,8 @@
     height: 100%;
 }
 
-.loading-page {
+.app-page--loading {
     background-image: url('/img/tiny_grid.png');
-}
-
-.loading-page--editor {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -21,6 +18,11 @@
     display: flex;
     flex-direction: column;
     background-color: #fff;
+}
+
+.app-page--media-browser {
+    width: 600px;
+    max-width: 100%;
 }
 
 .app-page--enter-right {
@@ -37,6 +39,21 @@
     }
 }
 
-.loading-page--hidden, .app-page--hidden {
+.app-page--exit-right {
+    left: 100%;
+    animation: pageExitBackward 0.4s ease;
+    pointer-events: all;
+}
+@keyframes pageExitBackward {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+
+.app-page--hidden {
     display: none;
 }

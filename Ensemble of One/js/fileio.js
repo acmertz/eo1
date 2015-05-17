@@ -1536,7 +1536,7 @@
                         title: success.title
                     };
                     
-                    Ensemble.MediaBrowser.updateMediaFileMeta(index + Ensemble.FileIO._pickItemsTempFolders.length, returnVal);
+                    Ensemble.Editor.MediaBrowser.updateMediaFileMeta(index + Ensemble.FileIO._pickItemsTempFolders.length, returnVal);
                     Ensemble.FileIO._winCompleteMediaPropertyLookup();
                 });
             })();
@@ -1560,7 +1560,7 @@
                         title: success.title
                     };
 
-                    Ensemble.MediaBrowser.updateMediaFileMeta(index + Ensemble.FileIO._pickItemsTempFolders.length, returnVal);
+                    Ensemble.Editor.MediaBrowser.updateMediaFileMeta(index + Ensemble.FileIO._pickItemsTempFolders.length, returnVal);
                     Ensemble.FileIO._winCompleteMediaPropertyLookup();
                 });
             })();
@@ -1579,7 +1579,7 @@
                         width: success.width,
                         title: success.title,
                     };
-                    Ensemble.MediaBrowser.updateMediaFileMeta(index + Ensemble.FileIO._pickItemsTempFolders.length, returnVal);
+                    Ensemble.Editor.MediaBrowser.updateMediaFileMeta(index + Ensemble.FileIO._pickItemsTempFolders.length, returnVal);
                     Ensemble.FileIO._winCompleteMediaPropertyLookup();
                 });
             })();

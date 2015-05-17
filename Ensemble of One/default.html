@@ -31,6 +31,7 @@
     <!-- Editor -->
     <script src="/js/editor/calloutmgr.js"></script>
     <script src="/js/editor/clip.js"></script>
+    <script src="/js/editor/mediabrowser.js"></script>
     <script src="/js/editor/menumgr.js"></script>
     <script src="/js/editor/playbackmgr.js"></script>
     <script src="/js/editor/renderer.js"></script>
@@ -60,7 +61,6 @@
     <script src="/js/historymgr.js"></script>
     <script src="/js/mainmenu-new.js"></script>
     <script src="/js/keyboardmgr.js"></script>
-    <script src="/js/mediabrowser.js"></script>
     <script src="/js/osdialogmgr.js"></script>
     <script src="/js/platform.js"></script>
     <script src="/js/projectfile.js"></script>
@@ -135,12 +135,16 @@
     </div>
 
 
-    <div class="loading-page loading-page--hidden loading-page--editor">
+    <div class="app-page app-page--loading app-page--loading-editor app-page--hidden">
         <h1><progress class="win-ring win-medium"></progress>&nbsp;Loading your project&hellip;</h1>
     </div>
 
-    <div class="loading-page loading-page--hidden loading-page--main-menu">
+    <div class="app-page app-page--loading app-page--loading-main-menu app-page--hidden app-page--loading-main-menu">
         <h1><progress class="win-ring win-medium"></progress>&nbsp;Closing your project&hellip;</h1>
+    </div>
+
+    <div class="app-page app-page--media-browser app-page--hidden">
+
     </div>
 
     <div class="app-page app-page--hidden app-page--editor" id="editorPageContainer">
@@ -352,39 +356,6 @@
             </div>
         </div>
 
-        <div id="editorMediaBrowserPreviewClickEater" class="editorClickEater editorClickEaterFaded"></div>
-        <div id="mediaBrowserPreviewDialog" class="mainMenuZoomDialog">
-            <div class="mainMenuZoomDialogContent">
-                <div id="mediaBrowserPreviewVideo" class="mediaBrowserPreviewItem">
-                    <video controls autoplay></video><br />
-                    <div class="previewItemControls">
-                        <div class="previewItemControlsInnerCenter">
-                            <button class="media-browser-preview__btn media-browser-preview__btn--add-to-project"><i class="fa fa-plus"></i> Add to project</button>
-                            <button class="media-browser-preview__btn media-browser-preview__btn--close-preview"><i class="fa fa-times"></i> Close</button>
-                        </div>
-                    </div>
-                </div>
-                <div id="mediaBrowserPreviewAudio" class="mediaBrowserPreviewItem">
-                    <audio controls autoplay></audio><br />
-                    <div class="previewItemControls">
-                        <div class="previewItemControlsInnerCenter">
-                            <button class="media-browser-preview__btn media-browser-preview__btn--add-to-project"><i class="fa fa-plus"></i> Add to project</button>
-                            <button class="media-browser-preview__btn media-browser-preview__btn--close-preview"><i class="fa fa-times"></i> Close</button>
-                        </div>
-                    </div>
-                </div>
-                <div id="mediaBrowserPreviewPicture" class="mediaBrowserPreviewItem">
-                    <img /><br />
-                    <div class="previewItemControls">
-                        <div class="previewItemControlsInnerCenter">
-                            <button class="media-browser-preview__btn media-browser-preview__btn--add-to-project"><i class="fa fa-plus"></i> Add to project</button>
-                            <button class="media-browser-preview__btn media-browser-preview__btn--close-preview"><i class="fa fa-times"></i> Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div class="media-browser__drag-preview"></div>
 
         <div id="editorTimelineEWClickEater" class="editorClickEater editorClickEaterFaded"></div>
@@ -549,15 +520,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="pageContainer loadingPage" id="projectLoadingPageContainer">
-            <h2 class="loadingPageMessage">Loading project "<span id="projectLoadingNameDisplay">[Project Name Here]</span>..."</h2>
-            <progress class="win-ring win-large"></progress>
-        </div>
-        <div class="pageContainer loadingPage" id="projectClosingPageContainer">
-            <h2 class="loadingPageMessage">Closing your project...</h2>
-            <progress class="win-ring win-large"></progress>
         </div>
     </div>
     <div>

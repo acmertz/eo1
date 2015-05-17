@@ -225,12 +225,12 @@
 
             importMenuTransitioned: function (event) {
                 event.currentTarget.removeEventListener("transitionend", Ensemble.Editor.MenuMGR._listeners.importMenuTransitioned);
-                Ensemble.MediaBrowser.refresh();
+                Ensemble.Editor.MediaBrowser.refresh();
             },
 
             browseMediaReturned: function (file, payload) {
-                Ensemble.MediaBrowser._currentPreview = file;
-                Ensemble.MediaBrowser._addPreviewToProject(payload);
+                Ensemble.Editor.MediaBrowser._currentPreview = file;
+                Ensemble.Editor.MediaBrowser._addPreviewToProject(payload);
             }
         },
     });

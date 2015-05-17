@@ -102,12 +102,12 @@
                 let filename = event.currentTarget.dataset.filename;
                 let text = event.currentTarget.projectname;
                 
-                let loadingPage = document.getElementsByClassName("loading-page--editor")[0];
-                $(loadingPage).removeClass("loading-page--hidden").addClass("app-page--enter-right");
+                let loadingPage = document.getElementsByClassName("app-page--loading-editor")[0];
+                $(loadingPage).removeClass("app-page--hidden").addClass("app-page--enter-right");
 
                 window.setTimeout(function () {
                     Ensemble.FileIO.loadProject(filename);
-                }, 500);
+                }, 1000);
             },
 
             openMenuItemContextMenu: function (event) {
@@ -116,11 +116,11 @@
 
             projectFinishedLoading: function () {
                 console.log("Project finished loading. Show the Editor.");
-                let loadingPage = document.getElementsByClassName("loading-page--editor")[0];
+                let loadingPage = document.getElementsByClassName("app-page--loading-editor")[0];
                 let editorPage = document.getElementsByClassName("app-page--editor")[0];
 
                 $(editorPage).removeClass("app-page--hidden")
-                Ensemble.Pages.Editor.showInitial();
+                Ensemble.Pages.Editor.init();
                 editorPage.addEventListener("animationend", Ensemble.MainMenu._listeners.editorEntranceFinished);
                 $(editorPage).addClass("app-page--enter-right");
             },
@@ -129,7 +129,7 @@
                 if (event.animationName == "pageEnterForward") {
                     event.currentTarget.removeEventListener("animationend", Ensemble.MainMenu._listeners.editorEntranceFinished);
                     $(event.currentTarget).removeClass("app-page--enter-right");
-                    $(".loading-page--editor").removeClass("app-page--enter-right").addClass("loading-page--hidden");
+                    $(".app-page--loading-editor").removeClass("app-page--enter-right").addClass("app-page--hidden");
                 }
             }
         }
