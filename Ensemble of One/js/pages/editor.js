@@ -39,10 +39,7 @@
             projectSubmenu.numberOfClipsDisplay.innerText = Ensemble.Session.projectClipCount.toString();
             projectSubmenu.aspectRatioDisplay.innerText = Ensemble.Session.projectAspect;
 
-            $("#editorPageContainer").removeClass("pageContainerHidden");
-
             //Update the Editor with the current settings
-            //this.layoutInterfaceToSplitpoint(Ensemble.Settings.getEditorDividerPosition() * window.innerHeight);
             Ensemble.Editor.TimelineMGR.newRulerScale();            
 
             this.currentActionMenuItem = document.getElementById("editorMenuContentProject");

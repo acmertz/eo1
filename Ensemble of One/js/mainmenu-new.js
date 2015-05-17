@@ -121,10 +121,16 @@
 
                 $(editorPage).removeClass("app-page--hidden")
                 Ensemble.Pages.Editor.showInitial();
+                editorPage.addEventListener("animationend", Ensemble.MainMenu._listeners.editorEntranceFinished);
                 $(editorPage).addClass("app-page--enter-right");
-                setTimeout(function () {
-                    $(loadingPage).addClass("loading-page--hidden").removeClass("app-page--enter-right");
-                }, 500);
+            },
+
+            editorEntranceFinished: function (event) {
+                if (event.animationName == "pageEnterForward") {
+                    event.currentTarget.removeEventListener("animationend", Ensemble.MainMenu._listeners.editorEntranceFinished);
+                    $(event.currentTarget).removeClass("app-page--enter-right");
+                    $(".loading-page--editor").removeClass("app-page--enter-right").addClass("loading-page--hidden");
+                }
             }
         }
 
