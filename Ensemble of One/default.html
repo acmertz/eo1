@@ -144,7 +144,18 @@
     </div>
 
     <div class="app-page app-page--media-browser app-page--hidden">
-
+        <div class="mediaBrowserHeaderContainer">
+            <button class="win-backbutton editor-import-menu__close-button"></button>
+            <div id="editorMediaBrowserLocationButtonContainer"><span id="editorMediaBrowserLocationButton">Videos library</span><span>&nbsp;&rsaquo;</span></div>
+            <div id="editorMediaBrowserCurrentPathContainer"></div>
+            <div id="editorMediaBrowserFolderControlContainer">
+                <progress class="win-ring win-medium" id="editorMediaBrowserLoadingProgress"></progress>
+                <span class="mediaBrowserFolderControl" id="editorMediaBrowserHomeButton">&#xE10F;</span>
+                <span class="mediaBrowserFolderControl" id="editorMediaBrowserUpOneLevelButton">&#xE110;</span>
+                <span class="mediaBrowserFolderControl" id="editorMediaBrowserRefreshButton">&#xE117;</span>
+            </div>
+        </div>
+        <div id="editorMenuMediaBrowserFileList"></div>
     </div>
 
     <div class="app-page app-page--hidden app-page--editor" id="editorPageContainer">
@@ -302,6 +313,8 @@
 
         <div id="editor-history-msg">Placeholder history message.</div>
 
+        <div class="editor-menu-clickeater"></div>
+
         <div class="editorTimelineDragPreviewFlyout" tabindex="-1">00:00:00.000</div>
         <div class="timeline-selection-callout" tabindex="-1">
             <div class="selection-callout__state selection-callout__state--standard">
@@ -316,7 +329,7 @@
             </div>
         </div>
 
-        <div class="editor-menu-clickeater"></div>
+        
 
         <div class="editor-menu-container">
             <div class="editor-menu editor-menu--file">
@@ -339,20 +352,6 @@
                     <li class="editor-menu__divider"></li>
                     <li class="editor-menu__command editor-command__exit" data-editor-command="exit">&#xE112; Close project</li>
                 </ul>
-            </div>
-            <div class="editor-menu editor-menu--import">
-                <div class="mediaBrowserHeaderContainer">
-                    <button class="win-backbutton editor-import-menu__close-button"></button>
-                    <div id="editorMediaBrowserLocationButtonContainer"><span id="editorMediaBrowserLocationButton">Videos library</span><span>&nbsp;&rsaquo;</span></div>
-                    <div id="editorMediaBrowserCurrentPathContainer"></div>
-                    <div id="editorMediaBrowserFolderControlContainer">
-                        <progress class="win-ring win-medium" id="editorMediaBrowserLoadingProgress"></progress>
-                        <span class="mediaBrowserFolderControl" id="editorMediaBrowserHomeButton">&#xE10F;</span>
-                        <span class="mediaBrowserFolderControl" id="editorMediaBrowserUpOneLevelButton">&#xE110;</span>
-                        <span class="mediaBrowserFolderControl" id="editorMediaBrowserRefreshButton">&#xE117;</span>
-                    </div>
-                </div>
-                <div id="editorMenuMediaBrowserFileList"></div>
             </div>
         </div>
 

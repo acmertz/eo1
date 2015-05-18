@@ -23,6 +23,9 @@
 .app-page--media-browser {
     width: 600px;
     max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
 }
 
 .app-page--enter-right {
@@ -47,6 +50,33 @@
 @keyframes pageExitBackward {
     0% {
         transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.app-page--displace-right {
+    left: 600px;
+    animation: pageDisplaceRight 0.3s ease;
+}
+
+@keyframes pageDisplaceRight {
+    0% {
+        transform: translateX(-600px);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.app-page--close-displace-right {
+    animation: pageCloseDisplaceRight 0.3s ease;
+}
+
+@keyframes pageCloseDisplaceRight {
+    0% {
+        transform: translateX(600px);
     }
     100% {
         transform: translateX(0);
