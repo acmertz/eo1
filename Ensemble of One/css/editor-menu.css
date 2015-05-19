@@ -8,6 +8,15 @@
     box-sizing: border-box;
 }
 
+.editor-menu-titlebar {
+    height: 45px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #fff;
+    background-color: #dc143c;
+}
+
 .editor-menubar__command-list {
     list-style: none;
     margin: 0;
