@@ -17,6 +17,21 @@
     background-color: #dc143c;
 }
 
+.editor-menu__titlebar-button {
+    color: #fff;
+    height: 100%;
+    line-height: 45px;
+}
+
+.editor-menu__titlebar-button:hover {
+    background-color: #df2b4f;
+}
+
+.editor-menu__titlebar-button:active {
+    color: #dc143c;
+    background-color: #fff;
+}
+
 .editor-menubar__command-list {
     list-style: none;
     margin: 0;
@@ -129,8 +144,8 @@
 
 .editor-menu__command {
     background-color: #fff;
-    border: 1px solid #b2b2ff;
-    border-left: 10px solid #b2b2ff;
+    border: 1px solid #dc143c;
+    border-left: 10px solid #dc143c;
     color: #333;
     font-size: 24px;
     margin: 0 0 10px 0;
@@ -139,7 +154,7 @@
 }
 
 .editor-menu__command:hover {
-    border-color: #c1c1ff;
+    border-color: #df2b4f;
 }
 
 .editor-menu__command:last-child {
@@ -178,6 +193,12 @@
 
 /* HOME MENU */
 
+
+.editor-menu-section {
+    padding: 10px;
+    box-sizing: border-box;
+}
+
 #editorProjectNameDisplay {
     display: inline-block;
     line-height: 41px;
@@ -185,8 +206,6 @@
 }
 
 .editor-project-details {
-    display: flex;
-    flex-direction: row;
     margin-bottom: 10px;
 }
 
@@ -197,7 +216,7 @@
 
 .editor-project-details__thumb {
     width: 100%;
-    height: 180px;
+    height: auto;
     background-color: black;
 }
 
@@ -205,6 +224,13 @@
 .mediaBrowserHeaderContainer {
     display: flex;
     justify-content: center;
+    height: 45px;
+    background-color: #dc143c;
+    color: #fff;
+}
+
+.editor-import-menu__close-button {
+    color: #fff;
 }
 
 #editorMenuMediaBrowserFileList {
@@ -213,9 +239,6 @@
     overflow-x: hidden;
     padding: 10px;
     background: #fafafa;
-    border-radius: 5px;
-    border-top-right-radius: 0;
-    border: 2px solid #e6e6e6;
 }
 
 #editorMediaBrowserLocationButtonContainer {
@@ -249,38 +272,32 @@
 
 #editorMediaBrowserFolderControlContainer {
     display: flex;
-    line-height: 41px;
+    line-height: 45px;
+    margin-right: 10px;
 }
 
 .mediaBrowserFolderControl {
-    font-size: large;
-    background-color: rgb(250,250,250);
-    border: 2px solid rgb(230,230,230);
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    border-bottom-style: none;
     padding: 0 15px;
-    margin: 0 0 0 5px;
-}
-
-.mediaBrowserFolderControl:first-of-type {
     margin: 0;
+    color: #fff;
 }
 
 .mediaBrowserFolderControl:hover {
-    background-color: white;
+    background-color: #df2b4f;
 }
 
 .mediaBrowserFolderControl:active {
-    background-color: black;
-    color: white;
-    border-color: black;
+    background-color: #fff;
+    color: #dc143c;
 }
 
 #editorMediaBrowserLoadingProgress {
-    margin-right: 10px;
+    margin-right: 5px;
     display: none;
-    vertical-align: top;
+    height: 45px;
+    box-sizing: border-box;
+    padding: 10px 0;
+    color: #fff;
 }
 
 .media-browser__list-item {

@@ -145,7 +145,7 @@
 
     <div class="app-page app-page--media-browser app-page--hidden">
         <div class="mediaBrowserHeaderContainer">
-            <button class="win-backbutton editor-import-menu__close-button"></button>
+            <button class="win-backbutton editor-import-menu__close-button editor-menu__titlebar-button"></button>
             <div id="editorMediaBrowserLocationButtonContainer"><span id="editorMediaBrowserLocationButton">Videos library</span><span>&nbsp;&rsaquo;</span></div>
             <div id="editorMediaBrowserCurrentPathContainer"></div>
             <div id="editorMediaBrowserFolderControlContainer">
@@ -160,24 +160,25 @@
 
     <div class="app-page app-page--editor-menu app-page--hidden">
         <section class="editor-menu-titlebar">
-            <button class="win-backbutton editor-file-menu__close-button"></button>
+            <button class="win-backbutton editor-file-menu__close-button editor-menu__titlebar-button"></button>
             <h2 id="editorProjectNameDisplay">Project Name Here</h2>
         </section>
         
-        <div class="editor-project-details">
+        <section class="editor-menu-section">
             <p><img src="" alt="Project thumbnail" class="editor-project-details__thumb" /></p>
             <p id="editorMenuDurationDisplay">[Placeholder Duration Here]</p>
             <p><span id="editorMenuNumberOfTracksDisplay">[Placeholder]</span> tracks</p>
             <p><span id="editorMenuNumberOfClipsDisplay">[Placeholder]</span><span> clips</span></p>
             <p id="editorMenuAspectRatioDisplay">[Placeholder Aspect Ratio Here]</p>
-        </div>
-        <ul class="editor-menu__command-list">
+        </section>
+
+        <ul class="editor-menu__command-list editor-menu-section">
             <li class="editor-menu__command editor-command__undo" data-editor-command="undo">&#xE10E; Undo</li>
             <li class="editor-menu__command editor-command__redo" data-editor-command="redo">&#xE10D; Redo</li>
             <li class="editor-menu__divider"></li>
             <li class="editor-menu__command editor-command__exit" data-editor-command="exit">&#xE112; Close project</li>
         </ul>
-        <a class="main-menu__nav-item" data-menu="open-project">&nbsp;Open</a>
+        
     </div>
 
     <div class="app-page app-page--hidden app-page--editor" id="editorPageContainer">

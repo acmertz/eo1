@@ -31,8 +31,6 @@
 .app-page--editor-menu {
     width: 320px;
     max-width: 100%;
-    padding: 20px;
-    box-sizing: border-box;
     background-color: #fff;
 }
 
