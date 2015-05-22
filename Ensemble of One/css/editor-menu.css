@@ -276,17 +276,17 @@
     margin-right: 10px;
 }
 
-.mediaBrowserFolderControl {
+.editor-titlebar-control {
     padding: 0 15px;
     margin: 0;
     color: #fff;
 }
 
-.mediaBrowserFolderControl:hover {
+.editor-titlebar-control:hover {
     background-color: #df2b4f;
 }
 
-.mediaBrowserFolderControl:active {
+.editor-titlebar-control:active {
     background-color: #fff;
     color: #dc143c;
 }

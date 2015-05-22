@@ -18,6 +18,7 @@
             this.currentMenu = null;
             this.currentState = "none";
             $(".editor-menu").removeClass(".editor-menu--visible");
+            $(".app-page--editor-menu").addClass("app-page--hidden");
         },
 
         hideMenus: function () {

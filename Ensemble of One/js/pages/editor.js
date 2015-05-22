@@ -61,21 +61,9 @@
         unload: function () {
             /// <summary>Triggers an unload of the project.</summary>
             console.log("Hiding editor...");
-            let editorPage = document.getElementsByClassName("app-page--editor")[0];
             $(".app-page--loading-main-menu").removeClass("app-page--hidden");
-            $(editorPage).addClass("app-page--exit-right");
-            editorPage.addEventListener("transitionend", Ensemble.Pages.Editor._listeners.exitAnimationFinished);
-            
-            window.setTimeout(function () {
-                
-
-                window.setTimeout(function () {
-                    $("#imgMainLogo").css("display", "initial");
-                    $("#projectClosingPageContainer").removeClass("loadingPageVisible");
-                    $("#projectClosingPageContainer").addClass("loadingPageHidden");
-                    Ensemble.Pages.MainMenu.showInitial();
-                }, 500);
-            }, 500);
+            $(".app-page--editor").removeClass("app-page--displace").removeClass("app-page--displace-right-320");
+            Ensemble.Pages.Editor._listeners.exitAnimationFinished();
         },
 
         ui: {
