@@ -1,0 +1,33 @@
+﻿.eo1-btn {
+    background: #dc143c;
+    border: 1px solid #dc143c;
+    border-radius: 3px;
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.eo1-btn:hover {
+    background: #df2b4f;
+}
+
+.eo1-btn:active {
+    background: #e65a76;
+}
+
+.eo1-btn:disabled {
+    background: rgba(0,0,0,0.2);
+    color: rgba(0,0,0,0.2);
+    pointer-events: none;
+}
+
+.eo1-btn--timeline {
+    min-width: 0;
+    width: 50px;
+    height: 50px;
+    margin-top: 10px;
+}
+
+.eo1-btn--timeline:first-child {
+    margin-top: 0;
+}

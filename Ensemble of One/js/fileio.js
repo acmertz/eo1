@@ -8,6 +8,8 @@
 
         _clipLoadBuffer: {},
 
+        _createProjectCallback: null,
+
         _projectLoadBuffer: {},
         _projectClipsFullyLoaded: 0,
 
@@ -404,12 +406,12 @@
             return xml;
         },
 
-        createProject: function (name, location, aspect) {
+        createProject: function (name, aspect, callback) {
             /// <summary>Creates save files for a new project.</summary>
             /// <param name="name" type="String">The name of the project.</param>
-            /// <param name="location" type="String">The location of the project. Values other than "local" or "cloud" will generate an exception.</param>
             /// <param name="aspect" type="String">The aspect ratio of the project (16:9, 4:3, etc.).</param>
             let projectRes = Ensemble.Settings.getDefaultResolution(aspect);
+            Ensemble.FileIO._createProjectCallback = callback;
             switch (Ensemble.Platform.currentPlatform) {
                 case "win8":
                     Windows.Storage.ApplicationData.current.localFolder.createFolderAsync("Projects", Windows.Storage.CreationCollisionOption.openIfExists).then(function (projectDir) {
@@ -481,15 +483,8 @@
                             //Generate a thumbnail.
                             console.log("Creating save files...");
                             Windows.Storage.FileIO.writeTextAsync(projectFile, xml.ToString()).then(function () {
-                                console.log("Project finished creating.");
-
-                                window.setTimeout(function () {
-                                    Ensemble.Pages.MainMenu.showProjectLoadingPage(name);
-
-                                    window.setTimeout(function () {
-                                        Ensemble.FileIO.loadProject(projectFile.name);
-                                    }, 500);
-                                }, 1000);
+                                Ensemble.FileIO._createProjectCallback(projectFile.name);
+                                Ensemble.FileIO._createProjectCallback = null;
                             });
                         });
                     });
@@ -504,7 +499,7 @@
         loadProject: function (filename, fileobj) {
             /// <summary>Loads a previously saved project from storage. You may pass either a file name (internal app storage) or a loaded file object (external storage).</summary>
             /// <param name="filename" type="String">The name of the project to be loaded.</param>
-            /// <param name="fileobj" type="Windows.Storage.StorageFile">
+            /// <param name="fileobj" type="Windows.Storage.StorageFile"></param>
 
             switch (Ensemble.Platform.currentPlatform) {
                 case "win8":
@@ -922,7 +917,8 @@
             }
             if (Ensemble.Session.projectClipCount == 0) {
                 //Fire callback. Project is empty (no tracks or media).
-                Ensemble.Pages.MainMenu.navigateToEditor();
+                //Ensemble.Pages.MainMenu.navigateToEditor();
+                Ensemble.MainMenu._listeners.projectFinishedLoading();
             }
         },
 
@@ -1083,7 +1079,8 @@
                 if (Ensemble.FileIO._projectClipsFullyLoaded === Ensemble.Session.projectClipCount) {
                     console.info("Finished loading all clips!");
                     requestAnimationFrame(function () {
-                        Ensemble.Pages.MainMenu.navigateToEditor();
+                        //Ensemble.Pages.MainMenu.navigateToEditor();
+                        Ensemble.MainMenu._listeners.projectFinishedLoading();
                     });
                 }
             })();
@@ -1185,7 +1182,10 @@
                     continueLoad: continueLoad
                 };
                 srcElement.setAttribute("data-eo1-uniqueid", clipUniqueImportId);
+                srcElement.className = "editor-media-item";
+                srcElement.id = clipUniqueImportId;
                 console.log("Setting src for EnsembleFile with uniqueId " + clipUniqueImportId + "...");
+                document.getElementsByClassName("editor-media-container")[0].appendChild(srcElement);
                 srcElement.src = fileURI;
             })();
         },
@@ -1239,7 +1239,6 @@
         enumerateProjects: function (callback) {
             /// <summary>Enumerates all available projects in the project directory.</summary>
             /// <param name="callback" type="Function">The callback to be fired after all projects have been enumerated.</param>
-            console.info("Enumerating all saved projects...");
             switch (Ensemble.Platform.currentPlatform) {
                 case "win8":
                     var dataArray = [];
@@ -1259,7 +1258,6 @@
                                             var ensembleProject = xmlDoc.firstChild;
 
                                             var loadedProjectName = xmlDoc.getElementsByTagName("ProjectName")[0].childNodes[0].nodeValue;
-                                            console.log("Found project \"" + loadedProjectName + "\" in the Projects directory!");
                                             try {
                                                 var loadedDateModified = new Date(parseInt(xmlDoc.getElementsByTagName("DateModified")[0].childNodes[0].nodeValue, 10));
                                             }
@@ -1533,7 +1531,7 @@
                         title: success.title
                     };
                     
-                    Ensemble.MediaBrowser.updateMediaFileMeta(index + Ensemble.FileIO._pickItemsTempFolders.length, returnVal);
+                    Ensemble.Editor.MediaBrowser.updateMediaFileMeta(index + Ensemble.FileIO._pickItemsTempFolders.length, returnVal);
                     Ensemble.FileIO._winCompleteMediaPropertyLookup();
                 });
             })();
@@ -1557,7 +1555,7 @@
                         title: success.title
                     };
 
-                    Ensemble.MediaBrowser.updateMediaFileMeta(index + Ensemble.FileIO._pickItemsTempFolders.length, returnVal);
+                    Ensemble.Editor.MediaBrowser.updateMediaFileMeta(index + Ensemble.FileIO._pickItemsTempFolders.length, returnVal);
                     Ensemble.FileIO._winCompleteMediaPropertyLookup();
                 });
             })();
@@ -1576,7 +1574,7 @@
                         width: success.width,
                         title: success.title,
                     };
-                    Ensemble.MediaBrowser.updateMediaFileMeta(index + Ensemble.FileIO._pickItemsTempFolders.length, returnVal);
+                    Ensemble.Editor.MediaBrowser.updateMediaFileMeta(index + Ensemble.FileIO._pickItemsTempFolders.length, returnVal);
                     Ensemble.FileIO._winCompleteMediaPropertyLookup();
                 });
             })();

@@ -1,237 +1,4 @@
-﻿#editorPageContainer {
-    display: flex;
-    flex-direction: column;
-}
-
-#editorUpperHalf {
-    padding: 10px;
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-}
-
-.editorUpperHalfVisible {
-    animation: editorUpperHalfEnter 0.2s ease;
-    animation-delay: 0.4s;
-    animation-fill-mode: backwards;
-}
-
-@keyframes editorUpperHalfEnter {
-    0% {
-        transform: translateX(100px);
-        opacity: 0;
-    }
-    100% {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-#editorPageContainer #editorCanvasContainer {
-    display: flex;
-    height: 100%;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-#editorPageContainer #editorCanvasContainer #editorCanvasContent {
-    flex: 1;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-#editorCanvasContent #editorCanvas {
-    width: 100%;
-}
-
-#editorPageContainer #editorCanvasContainer #editorPlayControls {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-}
-
-#editorPlayControls .editorPlayControlSection {
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-}
-
-.editorPlayControlSection .editorGeneralButton {
-    font-size: 18px;
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-top: 0;
-    border-top-right-radius: 0px;
-    border-top-left-radius: 0px;
-    border-top: none;
-}
-
-.editorPlayControlSection #editorPlaypauseButton {
-    font-size: 36px;
-    padding: 0 40px;
-}
-
-.editorPlayControlSection i:active {
-    background-color: black;
-    color: white;
-}
-
-#editorPlayControls #editorPlayControlsLeft {
-    justify-content: flex-start;
-}
-
-#editorPlayControls #editorPlayControlsMain {
-    justify-content: center;
-    align-items: flex-start;
-}
-
-#editorPlayControls #editorPlayControlsRight {
-    justify-content: flex-end;
-}
-
-#editorPageContainer #editorHorizontalDivider {
-    height: 12px;
-    width: 100%;
-    background: linear-gradient(to right, white 60%, black 60%);
-	background-size: 22px 2px;
-    border-top: 5px solid black;
-	border-bottom: 5px solid black;
-    cursor: ns-resize;
-}
-
-#editorPageContainer .editorHorizontalDividerHidden {
-    visibility: hidden;
-}
-
-#editorPageContainer .editorHorizontalDividerVisible {
-    animation: editorDividerEnter 0.4s ease-in-out;
-    -webkit-animation: editorDividerEnter 0.4s ease-in-out;
-}
-
-@keyframes editorDividerEnter {
-    0% {
-        transform: scale(0);
-    }
-    50% {
-        transform: scale(1.02);
-    }
-    75% {
-        transform: scale(0.99);
-    }
-    100% {
-        transform: scale(1);
-    }
-}
-
-@-webkit-keyframes editorDividerEnter {
-    0% {
-        -webkit-transform: scale(0);
-    }
-    50% {
-        -webkit-transform: scale(1.02);
-    }
-    75% {
-        -webkit-transform: scale(0.99);
-    }
-    100% {
-        -webkit-transform: scale(1);
-    }
-}
-
-#editorLowerHalf {
-    flex: 1;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.editorLowerHalfVisible {
-    animation: editorLowerHalfEnter 0.4s ease;
-    animation-delay: 0.6s;
-    animation-fill-mode: backwards;
-}
-
-@keyframes editorLowerHalfEnter {
-    0% {
-        opacity: 0;
-        transform: translateX(100px);
-    }
-    100% {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-#editorTimelineRulerContainer {
-    width: 100%;
-    height: 50px;
-    display: flex;
-    flex-direction: row;
-}
-
-#editorTimelineContainer {
-    flex: 1;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-}
-
-#editorTimelineRulerContent {
-    position: relative;
-    border: 2px solid gray;
-    border-bottom: none;
-    flex: 1;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-    background-color: white;
-    overflow: hidden;
-    white-space: nowrap;
-}
-
-.editorTimelineSideControls, .editorTimelineRulerButtonPlaceholder {
-    width: 50px;
-    height: 100%;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    padding-left: 10px;
-    padding-right: 10px;
-}
-
-.editorTimelineSideControls .spacer {
-    flex: 1;
-}
-
-.editorGeneralButton {
-    border: 1px solid black;
-    border-radius: 4px;
-    padding: 10px;
-    margin-top: 10px;
-    background-color: white;
-    font-style: normal;
-    font-size: 18px;
-}
-
-.editorGeneralButton:first-child {
-    margin-top: 0;
-}
-
-.editorTimelineSideControls i:active {
-    background-color: black;
-    color: white;
-}
-
-.timeline-scrollable-container {
+﻿.timeline-scrollable-container {
     position: relative;
     top: 0px;
 }
@@ -240,13 +7,11 @@
     flex: 1;
     height: 100%;
     border: 2px solid gray;
-    border-radius: 2px;
-    border-top-right-radius: 0px;
     overflow: hidden;
     display: flex;
 }
 
-#editorTimelineHeaders, #editorTimelineHeaderPlaceholder {
+.timeline-track-header-container {
     width: 50px;
 }
 
@@ -284,13 +49,13 @@
     background-color: black;
 }
 
-#editorTimelineDetails, #editorTimelineDetailsPlaceholder {
+.timeline-track-widget-container {
     width: 0px;
     white-space: nowrap;
     overflow: hidden;
 }
 
-#editorTimelineDetails.detailsExpanded, #editorTimelineDetailsPlaceholder.detailsExpanded, .timelineDetailRow.timelineDetailControls {
+.timeline-track-widget-container.detailsExpanded, .timelineDetailRow.timelineDetailControls {
     width: 150px;
 }
 
@@ -345,7 +110,7 @@
 }
 
 #editor-history-msg {
-    position: fixed;
+    position: absolute;
     top: 0px;
     right: 0px;
     padding: 5px 10px 0 10px;
@@ -389,9 +154,7 @@
     pointer-events: all;
 }
 
-.videoPlaybackSurface {
-    background-color: black;
-}
+
 
 #editorMenuClickEater {
     display: none;
@@ -412,13 +175,6 @@
     -webkit-transition: background-color 0.4s ease-in-out;
 }
 
-#topBottomSplitpointClickEater {
-    cursor: ns-resize;
-    background-color: rgba(0,0,0,0.5);
-    transition: background-color 0.4s ease-in-out;
-    -webkit-transition: background-color 0.4s ease-in-out;
-}
-
 .editorClickEaterFaded {
     pointer-events: none;
     background-color: rgba(0,0,0,0) !important;
@@ -426,14 +182,4 @@
 
 #editorTimelineEWClickEater {
     cursor: ew-resize;
-}
-
-.zIndexTop {
-    z-index: 10000;
-}
-
-@media screen and (orientation:landscape) {
-}
-
-@media screen and (orientation:portrait) {
 }

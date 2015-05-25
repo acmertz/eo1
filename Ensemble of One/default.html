@@ -2,39 +2,43 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Ensemble_of_One</title>
+    <title>Ensemble_of_One_Win10</title>
 
     <!-- WinJS references -->
-    <script src="//Microsoft.WinJS.2.0/js/base.js"></script>
-    <link rel="stylesheet" href="lib/Microsoft.WinJS.4.0/css/ui-light.css" />
-    <script src="lib/Microsoft.WinJS.4.0/js/WinJS.min.js"></script>
+    <!-- To get the latest version of WinJS, go to: http://go.microsoft.com/fwlink/?LinkId=533245 -->
+    <link href="WinJS/css/ui-light.css" rel="stylesheet" />
+    <script src="WinJS/js/WinJS.js"></script>
 
-    <!-- Ensemble of One references -->
-    <link href="/css/default.css" rel="stylesheet" />
+    <!-- Ensemble_of_One_Win10 references -->
+    <link rel="stylesheet" href="/css/default.css" />
+    <link rel="stylesheet" href="/css/app-page.css" />
+    <link rel="stylesheet" href="/css/buttons.css" />
     <link rel="stylesheet" href="/css/editor.css" />
     <link rel="stylesheet" href="/css/editor-menu.css" />
+    <link rel="stylesheet" href="/css/editor-new.css" />
+    <link rel="stylesheet" href="/css/main-menu.css" />
     <link rel="stylesheet" href="/css/media-browser.css" />
     <link rel="stylesheet" href="/css/timeline.css" />
     <script src="/js/default.js"></script>
 
     <!-- Libraries -->
-    <link rel="stylesheet" href="lib/font-awesome-4.1.0/css/font-awesome.min.css">
-    <script src="lib/jquery-2.1.1.min.js"></script>
-    <script src="lib/underscore-min.js"></script>
-    <script src="lib/XMLWriter.js"></script>
+    <link rel="stylesheet" href="/lib/font-awesome-4.1.0/css/font-awesome.min.css">
+    <script src="/lib/jquery-2.1.1.min.js"></script>
+    <script src="/lib/underscore-min.js"></script>
+    <script src="/lib/XMLWriter.js"></script>
 
     <!-- Classes, functions, and global variables -->
-
     <!-- Editor -->
     <script src="/js/editor/calloutmgr.js"></script>
     <script src="/js/editor/clip.js"></script>
+    <script src="/js/editor/mediabrowser.js"></script>
     <script src="/js/editor/menumgr.js"></script>
     <script src="/js/editor/playbackmgr.js"></script>
     <script src="/js/editor/renderer.js"></script>
     <script src="/js/editor/selectionmgr.js"></script>
     <script src="/js/editor/timelinemgr.js"></script>
     <script src="/js/editor/timelinezoommgr.js"></script>
-    <script src="js/editor/track.js"></script>
+    <script src="/js/editor/track.js"></script>
 
     <!-- Events -->
     <script src="/js/events/action.js"></script>
@@ -55,8 +59,8 @@
     <script src="/js/ensemblefolder.js"></script>
     <script src="/js/fileio.js"></script>
     <script src="/js/historymgr.js"></script>
+    <script src="/js/mainmenu-new.js"></script>
     <script src="/js/keyboardmgr.js"></script>
-    <script src="/js/mediabrowser.js"></script>
     <script src="/js/osdialogmgr.js"></script>
     <script src="/js/platform.js"></script>
     <script src="/js/projectfile.js"></script>
@@ -65,6 +69,312 @@
     <script src="/js/ui.js"></script>
 </head>
 <body>
+    <div class="editor-media-container"></div>
+    <div class="app-page app-page--main-menu">
+        <nav class="main-menu__nav-container">
+            <header class="main-menu__nav-header">
+                <h1 class="main-menu__app-logo">Ensemble of One</h1>
+            </header>
+            <section class="main-menu__nav-section main-menu__nav-section--primary">
+                <a class="main-menu__nav-item main-menu__nav-item--active" data-menu="home">&nbsp;Home</a>
+                <a class="main-menu__nav-item" data-menu="new-project">&nbsp;New</a>
+                <a class="main-menu__nav-item" data-menu="open-project">&nbsp;Open</a>
+            </section>
+            <section class="main-menu__nav-section main-menu__nav-section--spacer"></section>
+            <section class="main-menu__nav-section main-menu__nav-section--secondary">
+                <a class="main-menu__nav-item" data-menu="settings">&nbsp;Settings</a>
+            </section>
+        </nav>
+        <main class="main-menu__content-container">
+            <section class="main-menu__content-section main-menu__content-section--home main-menu__content-section--visible">
+                <div>
+                    <h2>Quickstart</h2>
+                    <p>Select an aspect ratio to get started! We reccommend 16:9.</p>
+                    <div class="home-menu__quick-start-container">
+                        <a class="home-menu__quick-start-item home-menu__quick-start-item--16-9" title="Widescreen 16:9"></a>
+                        <a class="home-menu__quick-start-item home-menu__quick-start-item--4-3" title="Fullscreen 4:3"></a>
+                        <a class="home-menu__quick-start-item home-menu__quick-start-item--16-10" title="Widescreen 16:10"></a>
+                        <a class="home-menu__quick-start-item home-menu__quick-start-item--239-1" title="Widescreen 2.39:1"></a>
+                    </div>
+                </div>
+                <div>
+                    <h2>Recent projects</h2>
+                    <p>Nothing to show here.</p>
+                </div>
+            </section>
+            <section class="main-menu__content-section main-menu__content-section--new-project main-menu__content-section--hidden">
+                <div>
+                    <h2>New project</h2>
+
+                    <p>Create a new Ensemble of One project. Projects can contain as many videos, audio clips, and images as you care to import. Let loose and make something great!</p>
+                    </div>
+                <div>
+                    <h3>Project name</h3>
+                    <input type="text" autocomplete="off" spellcheck="true" placeholder="My great project" class="menu-create-project-param menu-create-project-param--name" />
+                    <p>Give your project a fitting name. Feel free to use any characters you want (even emoji)!</p>
+
+                    <h3>Aspect ratio</h3>
+                    <select class="menu-create-project-param menu-create-project-param--aspect">
+                        <option selected value="16:9">Widescreen (HDTV, 16:9)</option>
+                        <option value="16:10">Widescreen (laptop, 16:10)</option>
+                        <option value="2.39:1">Widescreen (cinematic, 2.39:1)</option>
+                        <option value="4:3">Standard (tube TV, 4:3)</option>
+                    </select>
+                    <p>Decide what shape you want your video to be. HDTVs usually have a ratio of 16:9, so in most cases this'll probably be your best shot.</p>
+                </div>
+                <p><button class="eo1-btn menu-create-project-param menu-create-project-param--submit">Create</button></p>
+            </section>
+            <section class="main-menu__content-section main-menu__content-section--open-project main-menu__content-section--hidden">
+                <div>
+                    <h2>Open project</h2>
+                    <p>
+                        <button disabled class="eo1-btn">Browse...</button>
+                    </p>
+                    </div>
+                <div>
+                    <h3>Local projects</h3>
+                    <ul class="open-menu__local-projects"></ul>
+                </div>
+            </section>
+            <section class="main-menu__content-section main-menu__content-section--settings main-menu__content-section--hidden">
+                <h2>Settings</h2>
+                <p>Nothing to show here.</p>
+            </section>
+        </main>
+    </div>
+
+
+    <div class="app-page app-page--loading app-page--loading-editor app-page--hidden">
+        <h1><progress class="win-ring win-medium"></progress>&nbsp;Loading your project&hellip;</h1>
+    </div>
+
+    <div class="app-page app-page--loading app-page--loading-main-menu app-page--hidden app-page--loading-main-menu">
+        <h1><progress class="win-ring win-medium"></progress>&nbsp;Closing your project&hellip;</h1>
+    </div>
+
+    <div class="app-page app-page--media-browser app-page--hidden">
+        <div class="mediaBrowserHeaderContainer">
+            <button class="win-backbutton editor-import-menu__close-button editor-menu__titlebar-button"></button>
+            <div id="editorMediaBrowserLocationButtonContainer"><span id="editorMediaBrowserLocationButton">Videos library</span><span>&nbsp;&rsaquo;</span></div>
+            <div id="editorMediaBrowserCurrentPathContainer"></div>
+            <div id="editorMediaBrowserFolderControlContainer">
+                <progress class="win-ring win-medium" id="editorMediaBrowserLoadingProgress"></progress>
+                <span class="editor-titlebar-control" id="editorMediaBrowserHomeButton">&#xE10F;</span>
+                <span class="editor-titlebar-control" id="editorMediaBrowserUpOneLevelButton">&#xE110;</span>
+                <span class="editor-titlebar-control" id="editorMediaBrowserRefreshButton">&#xE117;</span>
+            </div>
+        </div>
+        <div id="editorMenuMediaBrowserFileList"></div>
+    </div>
+
+    <div class="app-page app-page--editor-menu app-page--hidden">
+        <section class="editor-menu-titlebar">
+            <button class="win-backbutton editor-file-menu__close-button editor-menu__titlebar-button"></button>
+        </section>
+        
+        <section class="editor-menu-section">
+            <h2 id="editorProjectNameDisplay">Project Name Here</h2>
+            <p><img src="" alt="Project thumbnail" class="editor-project-details__thumb" /></p>
+            <p id="editorMenuDurationDisplay">[Placeholder Duration Here]</p>
+            <p><span id="editorMenuNumberOfTracksDisplay">[Placeholder]</span> tracks</p>
+            <p><span id="editorMenuNumberOfClipsDisplay">[Placeholder]</span><span> clips</span></p>
+            <p id="editorMenuAspectRatioDisplay">[Placeholder Aspect Ratio Here]</p>
+        </section>
+
+        <ul class="editor-menu__command-list editor-menu-section">
+            <li class="editor-menu__command editor-command__undo" data-editor-command="undo">&#xE10E; Undo</li>
+            <li class="editor-menu__command editor-command__redo" data-editor-command="redo">&#xE10D; Redo</li>
+            <li class="editor-menu__divider"></li>
+            <li class="editor-menu__command editor-command__exit" data-editor-command="exit">&#xE112; Close project</li>
+        </ul>
+        
+    </div>
+
+    <div class="app-page app-page--hidden app-page--editor" id="editorPageContainer">
+        <nav class="editor-menubar">
+            <div class="editor-menubar__command-list">
+                <span class="editor-menubar__command editor-menubar__command--file" data-ensemble-menu="file">&#59136;</span>
+                <span class="editor-menubar__command editor-menubar__command--home editor-menubar__command--active" data-ensemble-menu="home">Home</span>
+                <span class="editor-menubar__command editor-menubar__command--record" data-ensemble-menu="record">Record</span>
+                <span class="editor-menubar__command editor-menubar__command--effects" data-ensemble-menu="effects">Animations</span>
+                <span class="editor-menubar__command editor-menubar__command--export" data-ensemble-menu="export">Export</span>
+            </div>
+            <div data-win-control="WinJS.UI.ToolBar" class="editor-menubar__toolbar editor-toolbar--home" data-ensemble-menu="home">
+                <button data-editor-command="show-library" class="editor-toolbar-command editor-toolbar-command--import-media" data-win-control="WinJS.UI.Command" data-win-options="{
+                    label:'Import',
+                    section:'primary',
+                    type:'button',
+                    icon: 'add'}"></button>
+                <button data-editor-command="browse-media" class="editor-toolbar-command editor-toolbar-command--browse-media" data-win-control="WinJS.UI.Command" data-win-options="{
+                    label:'Browse',
+                    section:'primary',
+                    type:'button',
+                    icon: 'openfile'}"></button>
+                <hr data-win-control="WinJS.UI.Command" class="editor-toolbar-command" data-win-options="{type:'separator'}" />
+                <button data-editor-command="split-clip" class="editor-toolbar-command editor-toolbar-command--split-clip" data-win-control="WinJS.UI.Command" data-win-options="{
+                    label:'Split',
+                    section:'primary',
+                    type:'button',
+                    icon: 'flag'}"></button>
+                <button data-editor-command="trim-clip" class="editor-toolbar-command editor-toolbar-command--trim-clip" data-win-control="WinJS.UI.Command" data-win-options="{
+                    label:'Trim',
+                    section:'primary',
+                    type:'button',
+                    icon: 'trim'}"></button>
+                <hr data-win-control="WinJS.UI.Command" class="" data-win-options="{type:'separator'}" />
+                <button data-editor-command="remove-clip" class="editor-toolbar-command editor-toolbar-command--remove-clip" data-win-control="WinJS.UI.Command" data-win-options="{
+                    label:'Remove',
+                    section:'primary',
+                    type:'button',
+                    icon: 'delete'}"></button>
+                <hr data-win-control="WinJS.UI.Command" class="editor-toolbar-command" data-win-options="{type:'separator'}" />
+                <button data-editor-command="clear-selection" class="editor-toolbar-command editor-toolbar-command--clear-selection" data-win-control="WinJS.UI.Command" data-win-options="{
+                    label:'Clear',
+                    section:'primary',
+                    type:'button',
+                    icon: 'clearselection'}"></button>
+            </div>
+            <div data-win-control="WinJS.UI.ToolBar" class="editor-menubar__toolbar editor-toolbar--record" data-ensemble-menu="record">
+                <button data-editor-command="record-video" class="editor-toolbar-command editor-toolbar-command--record-video" data-win-control="WinJS.UI.Command" data-win-options="{
+                    label:'Video',
+                    section:'primary',
+                    type:'button',
+                    icon: 'video'}"></button>
+                <button data-editor-command="record-audio" class="editor-toolbar-command editor-toolbar-command--record-audio" data-win-control="WinJS.UI.Command" data-win-options="{
+                    label:'Audio',
+                    section:'primary',
+                    type:'button',
+                    icon: 'microphone'}"></button>
+                <button data-editor-command="record-photo" class="editor-toolbar-command editor-toolbar-command--record-photo" data-win-control="WinJS.UI.Command" data-win-options="{
+                    label:'Photo',
+                    section:'primary',
+                    type:'button',
+                    icon: 'camera'}"></button>
+            </div>
+            <div data-win-control="WinJS.UI.ToolBar" class="editor-menubar__toolbar editor-toolbar--effects" data-ensemble-menu="effects">
+                <button data-editor-command="create-title" class="editor-toolbar-command editor-toolbar-command--create-title" data-win-control="WinJS.UI.Command" data-win-options="{
+                    label:'Title',
+                    section:'primary',
+                    type:'button',
+                    icon: 'previewlink'}"></button>
+                <button data-editor-command="create-filter" class="editor-toolbar-command editor-toolbar-command--create-filter" data-win-control="WinJS.UI.Command" data-win-options="{
+                    label:'Filter',
+                    section:'primary',
+                    type:'button',
+                    icon: 'favorite'}"></button>
+                <button data-editor-command="edit-animation" class="editor-toolbar-command editor-toolbar-command--edit-animation" data-win-control="WinJS.UI.Command" data-win-options="{
+                    label:'Animation',
+                    section:'primary',
+                    type:'button',
+                    icon: 'list'}"></button>
+            </div>
+            <div data-win-control="WinJS.UI.ToolBar" class="editor-menubar__toolbar editor-toolbar--export" data-ensemble-menu="export">
+                <button data-editor-command="export-video" class="editor-toolbar-command editor-toolbar-command--export-video" data-win-control="WinJS.UI.Command" data-win-options="{
+                    label:'Video',
+                    section:'primary',
+                    type:'button',
+                    icon: 'videochat'}"></button>
+                <button data-editor-command="export-audio" class="editor-toolbar-command editor-toolbar-command--export-audio" data-win-control="WinJS.UI.Command" data-win-options="{
+                    label:'Audio',
+                    section:'primary',
+                    type:'button',
+                    icon: 'audio'}"></button>
+                <button data-editor-command="export-photo" class="editor-toolbar-command editor-toolbar-command--export-photo" data-win-control="WinJS.UI.Command" data-win-options="{
+                    label:'Photo',
+                    section:'primary',
+                    type:'button',
+                    icon: 'pictures'}"></button>
+            </div>
+        </nav>
+        <main class="editor-content">
+            <section class="editor-section editor-section--upper">
+                <div class="editor-canvas-container">
+                    <canvas class="editor-canvas"></canvas>
+                </div>
+                <div class="editor-playback-widget">
+                    <div class="editor-time-display">00:00:00.000</div>
+                    <div>
+                        <button class="eo1-btn eo1-btn--editor-playpause" title="Play">&#xE102;</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="editor-section editor-section--lower">
+                <div class="timeline-ruler-container">
+                    <div class="timeline-button-container timeline-button-container--left"></div>
+                    <div class="timeline-track-header-container"></div>
+                    <div class="timeline-track-widget-container timeline-track-widget-container--placeholder"></div>
+                    <div class="timeline-ruler">
+                        <div class="timeline-ruler__flag"></div>
+                        <div class="timeline-ruler__inner"></div>
+                    </div>
+                    <div class="timeline-button-container timeline-button-container--right"></div>
+                </div>
+                <div class="timeline-display-container">
+                    <div class="timeline-button-container timeline-button-container--left">
+                        <div class="timeline-button-container__section">
+                            <button class="eo1-btn eo1-btn--timeline eo1-btn--timeline-new-track" title="New track">&#xE109;</button>
+                        </div>
+                    </div>
+                    <div id="timeline-track-container">
+                        <div class="timeline-track-header-container timeline-track-header-container--standard timeline-scrollable-container"></div>
+                        <div class="timeline-track-widget-container timeline-track-widget-container--standard timeline-scrollable-container"></div>
+                        <div class="timeline-track-container-wrap">
+                            <div id="editorTimelineTracks" class="timeline-scrollable-container">
+                                <div class="timeline__cursor"></div>
+                                <div class="timeline__drop-preview"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-button-container timeline-button-container--right">
+                        <div class="timeline-button-container__section">
+                            <button class="eo1-btn eo1-btn--timeline eo1-btn--timeline-zoom-in" title="Zoom in">&#xE12E;</button>
+                            <button class="eo1-btn eo1-btn--timeline eo1-btn--timeline-zoom-out" title="Zoom out">&#xE1A4;</button>
+                        </div>
+                        <div class="timeline-button-container__section timeline-button-container__section--spacer"></div>
+                        <div class="timeline-button-container__section">
+                            <button class="fa-rotate-270 eo1-btn eo1-btn--timeline eo1-btn--timeline-scroll-up" title="Scroll up">&#xE111;</button>
+                            <button class="fa-rotate-270 eo1-btn eo1-btn--timeline eo1-btn--timeline-scroll-down" title="Scroll down">&#xE112;</button>
+                        </div>
+                        
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+
+        <div id="editor-history-msg">Placeholder history message.</div>
+
+        <div class="editor-menu-clickeater"></div>
+
+        <div class="editorTimelineDragPreviewFlyout" tabindex="-1">00:00:00.000</div>
+        <div class="timeline-selection-callout" tabindex="-1">
+            <div class="selection-callout__state selection-callout__state--standard">
+                <div class="standard-callout__favorites"></div>
+                <div class="selection-callout__command callout-command--move-track-clip" data-callout-command="move-track-clip">&#xE174;</div>
+                <div class="selection-callout__command callout-command--move-clip" data-callout-command="move-clip">&#xE13C;</div>
+                <div class="selection-callout__command callout-command--context-menu" data-callout-command="context-menu">&#xE10C;</div>
+            </div>
+            <div class="selection-callout__state selection-callout__state--clip-trim">
+                <div class="selection-callout__command callout-command--accept-trim" data-callout-command="accept-trim">&#xE10B;</div>
+                <div class="selection-callout__command callout-command--reject-trim" data-callout-command="reject-trim">&#xE10A;</div>
+            </div>
+        </div>
+
+        
+
+        <div class="editor-menu-container" style="display: none !important">
+            <div class="editor-menu editor-menu--file">
+                
+            </div>
+        </div>
+
+        <div class="media-browser__drag-preview"></div>
+
+        <div id="editorTimelineEWClickEater" class="editorClickEater editorClickEaterFaded"></div>
+    </div>
+
+
     <div id="appContainer">
         <div id="splashScreen">
             <img id="imgMainLogo" src="/img/packaging/splashScreen.png" alt="Splash screen" />
@@ -130,19 +440,22 @@
                             </tr>
                             <tr>
                                 <td>Location: </td>
-                                <td><select id="mainMenuProjectLocation">
-                                    <option selected value="local">This device</option>
-                                    <option disabled value="cloud">Cloud storage</option>
-                                </select>
+                                <td>
+                                    <select id="mainMenuProjectLocation">
+                                        <option selected value="local">This device</option>
+                                        <option disabled value="cloud">Cloud storage</option>
+                                    </select>
                             </tr>
                             <tr>
                                 <td>Aspect ratio: </td>
-                                <td><select id="mainMenuProjectAspect">
-                                    <option selected value="16:9">Widescreen (HDTV, 16:9)</option>
-                                    <option value="16:10">Widescreen (laptop, 16:10)</option>
-                                    <option value="2.39:1">Widescreen (cinematic, 2.39:1)</option>
-                                    <option value="4:3">Standard (tube TV, 4:3)</option>
-                                </select></td>
+                                <td>
+                                    <select id="mainMenuProjectAspect">
+                                        <option selected value="16:9">Widescreen (HDTV, 16:9)</option>
+                                        <option value="16:10">Widescreen (laptop, 16:10)</option>
+                                        <option value="2.39:1">Widescreen (cinematic, 2.39:1)</option>
+                                        <option value="4:3">Standard (tube TV, 4:3)</option>
+                                    </select>
+                                </td>
                             </tr>
                         </table>
                         <button id="mainMenuValidateProjectButton">
@@ -221,264 +534,6 @@
                 </div>
             </div>
         </div>
-
-
-        <div class="pageContainer pageContainerHidden" id="editorPageContainer">
-            <nav class="editor-menubar">
-                <div class="editor-menubar__command-list">
-                    <span class="editor-menubar__command editor-menubar__command--file" data-ensemble-menu="file">&#59136;</span>
-                    <span class="editor-menubar__command editor-menubar__command--home editor-menubar__command--active" data-ensemble-menu="home">Home</span>
-                    <span class="editor-menubar__command editor-menubar__command--record" data-ensemble-menu="record">Record</span>
-                    <span class="editor-menubar__command editor-menubar__command--effects" data-ensemble-menu="effects">Animations</span>
-                    <span class="editor-menubar__command editor-menubar__command--export" data-ensemble-menu="export">Export</span>
-                </div>
-                <div data-win-control="WinJS.UI.ToolBar" class="editor-menubar__toolbar editor-toolbar--home" data-ensemble-menu="home">
-                    <button data-editor-command="show-library" class="editor-toolbar-command editor-toolbar-command--import-media" data-win-control="WinJS.UI.Command" data-win-options="{
-                        label:'Import',
-                        section:'primary',
-                        type:'button',
-                        icon: 'add'}"></button>
-                    <button data-editor-command="browse-media" class="editor-toolbar-command editor-toolbar-command--browse-media" data-win-control="WinJS.UI.Command" data-win-options="{
-                        label:'Browse',
-                        section:'primary',
-                        type:'button',
-                        icon: 'openfile'}"></button>
-                    <hr data-win-control="WinJS.UI.Command" class="editor-toolbar-command" data-win-options="{type:'separator'}" />
-                    <button data-editor-command="split-clip" class="editor-toolbar-command editor-toolbar-command--split-clip" data-win-control="WinJS.UI.Command" data-win-options="{
-                        label:'Split',
-                        section:'primary',
-                        type:'button',
-                        icon: 'flag'}"></button>
-                    <button data-editor-command="trim-clip" class="editor-toolbar-command editor-toolbar-command--trim-clip" data-win-control="WinJS.UI.Command" data-win-options="{
-                        label:'Trim',
-                        section:'primary',
-                        type:'button',
-                        icon: 'trim'}"></button>
-                    <hr data-win-control="WinJS.UI.Command" class="" data-win-options="{type:'separator'}" />
-                    <button data-editor-command="remove-clip" class="editor-toolbar-command editor-toolbar-command--remove-clip" data-win-control="WinJS.UI.Command" data-win-options="{
-                        label:'Remove',
-                        section:'primary',
-                        type:'button',
-                        icon: 'delete'}"></button>
-                    <hr data-win-control="WinJS.UI.Command" class="editor-toolbar-command" data-win-options="{type:'separator'}" />
-                    <button data-editor-command="clear-selection" class="editor-toolbar-command editor-toolbar-command--clear-selection" data-win-control="WinJS.UI.Command" data-win-options="{
-                        label:'Clear',
-                        section:'primary',
-                        type:'button',
-                        icon: 'clearselection'}"></button>
-                </div>
-                <div data-win-control="WinJS.UI.ToolBar" class="editor-menubar__toolbar editor-toolbar--record" data-ensemble-menu="record">
-                    <button data-editor-command="record-video" class="editor-toolbar-command editor-toolbar-command--record-video" data-win-control="WinJS.UI.Command" data-win-options="{
-                        label:'Video',
-                        section:'primary',
-                        type:'button',
-                        icon: 'video'}"></button>
-                    <button data-editor-command="record-audio" class="editor-toolbar-command editor-toolbar-command--record-audio" data-win-control="WinJS.UI.Command" data-win-options="{
-                        label:'Audio',
-                        section:'primary',
-                        type:'button',
-                        icon: 'microphone'}"></button>
-                    <button data-editor-command="record-photo" class="editor-toolbar-command editor-toolbar-command--record-photo" data-win-control="WinJS.UI.Command" data-win-options="{
-                        label:'Photo',
-                        section:'primary',
-                        type:'button',
-                        icon: 'camera'}"></button>
-                </div>
-                <div data-win-control="WinJS.UI.ToolBar" class="editor-menubar__toolbar editor-toolbar--effects" data-ensemble-menu="effects">
-                    <button data-editor-command="create-title" class="editor-toolbar-command editor-toolbar-command--create-title" data-win-control="WinJS.UI.Command" data-win-options="{
-                        label:'Title',
-                        section:'primary',
-                        type:'button',
-                        icon: 'previewlink'}"></button>
-                    <button data-editor-command="create-filter" class="editor-toolbar-command editor-toolbar-command--create-filter" data-win-control="WinJS.UI.Command" data-win-options="{
-                        label:'Filter',
-                        section:'primary',
-                        type:'button',
-                        icon: 'favorite'}"></button>
-                    <button data-editor-command="edit-animation" class="editor-toolbar-command editor-toolbar-command--edit-animation" data-win-control="WinJS.UI.Command" data-win-options="{
-                        label:'Animation',
-                        section:'primary',
-                        type:'button',
-                        icon: 'list'}"></button>
-                </div>
-                <div data-win-control="WinJS.UI.ToolBar" class="editor-menubar__toolbar editor-toolbar--export" data-ensemble-menu="export">
-                    <button data-editor-command="export-video" class="editor-toolbar-command editor-toolbar-command--export-video" data-win-control="WinJS.UI.Command" data-win-options="{
-                        label:'Video',
-                        section:'primary',
-                        type:'button',
-                        icon: 'videochat'}"></button>
-                    <button data-editor-command="export-audio" class="editor-toolbar-command editor-toolbar-command--export-audio" data-win-control="WinJS.UI.Command" data-win-options="{
-                        label:'Audio',
-                        section:'primary',
-                        type:'button',
-                        icon: 'audio'}"></button>
-                    <button data-editor-command="export-photo" class="editor-toolbar-command editor-toolbar-command--export-photo" data-win-control="WinJS.UI.Command" data-win-options="{
-                        label:'Photo',
-                        section:'primary',
-                        type:'button',
-                        icon: 'pictures'}"></button>
-                </div>
-            </nav>
-            <div id="editorUpperHalf">
-                <div id="editorCanvasContainer">
-                    <div id="editorCanvasContent">
-                        <canvas id="editorCanvas" class="videoPlaybackSurface"></canvas>
-                    </div>
-                    <div id="editorPlayControls">
-                        <div class="editorPlayControlSection" id="editorPlayControlsLeft">
-                            <span id="editorTimeDisplay">00:00:00.000</span>
-                        </div>
-                        <div class="editorPlayControlSection" id="editorPlayControlsMain">
-                            <button id="editorPlaypauseButton" title="Play">&#xE102;</button>
-                        </div>
-                        <div class="editorPlayControlSection" id="editorPlayControlsRight">
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <div id="editorHorizontalDivider" class="editorHorizontalDividerHidden"></div>
-
-            <div id="editorLowerHalf">
-                <div id="editorTimelineRulerContainer">
-                    <div class="editorTimelineRulerButtonPlaceholder"></div>
-                    <div id="editorTimelineHeaderPlaceholder"></div>
-                    <div id="editorTimelineDetailsPlaceholder"></div>
-                    <div id="editorTimelineRulerContent">
-                        <div class="timeline-ruler__flag"></div>
-                        <div class="timeline-ruler__inner"></div>
-                    </div>
-                    <div class="editorTimelineRulerButtonPlaceholder"></div>
-                </div>
-                <div id="editorTimelineContainer">
-                    <div class="editorTimelineSideControls">
-                        <i class="editorGeneralButton" id="editorTimelineAddTrackButton" title="New track">&#xE109;</i>
-                        <div class="spacer"></div>
-                    </div>
-                    <div id="timeline-track-container">
-                        <div id="editorTimelineHeaders" class="timeline-scrollable-container"></div>
-                        <div id="editorTimelineDetails" class="timeline-scrollable-container"></div>
-                        <div class="timeline-track-container-wrap">
-                            <div id="editorTimelineTracks" class="timeline-scrollable-container">
-                                <div class="timeline__cursor"></div>
-                                <div class="timeline__drop-preview"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="editorTimelineSideControls">
-                        <i class="editorGeneralButton" id="editorTimelineZoomInButton" title="Zoom in">&#xE12E;</i>
-                        <i class="editorGeneralButton" id="editorTimelineZoomOutButton" title="Zoom out">&#xE1A4;</i>
-                        <div class="spacer"></div>
-                        <i class="fa-rotate-270 editorGeneralButton" id="editorTimelineScrollUpButton" title="Scroll up">&#xE111;</i>
-                        <i class="fa-rotate-270 editorGeneralButton" id="editorTimelineScrollDownButton" title="Scroll down">&#xE112;</i>
-                    </div>
-                </div>
-            </div>
-
-            <div id="editor-history-msg">Placeholder history message.</div>
-
-            <div class="editorTimelineDragPreviewFlyout" tabindex="-1">00:00:00.000</div>
-            <div class="timeline-selection-callout" tabindex="-1">
-                <div class="selection-callout__state selection-callout__state--standard">
-                    <div class="standard-callout__favorites"></div>
-                    <div class="selection-callout__command callout-command--move-track-clip" data-callout-command="move-track-clip">&#xE174;</div>
-                    <div class="selection-callout__command callout-command--move-clip" data-callout-command="move-clip">&#xE13C;</div>
-                    <div class="selection-callout__command callout-command--context-menu" data-callout-command="context-menu">&#xE10C;</div>
-                </div>
-                <div class="selection-callout__state selection-callout__state--clip-trim">
-                    <div class="selection-callout__command callout-command--accept-trim" data-callout-command="accept-trim">&#xE10B;</div>
-                    <div class="selection-callout__command callout-command--reject-trim" data-callout-command="reject-trim">&#xE10A;</div>
-                </div>
-            </div>
-
-            <div class="editor-menu-clickeater"></div>
-
-            <div class="editor-menu-container">
-                <div class="editor-menu editor-menu--file">
-                    <button class="win-backbutton editor-file-menu__close-button"></button>
-                    <h2 id="editorProjectNameDisplay">Project Name Here</h2>
-                    <div class="editor-project-details">
-                        <div class="editor-project-details__column">
-                            <img src="" alt="Project thumbnail" class="editor-project-details__thumb" />
-                        </div>
-                        <div class="editor-project-details__column">
-                            <p id="editorMenuDurationDisplay">[Placeholder Duration Here]</p>
-                            <p><span id="editorMenuNumberOfTracksDisplay">[Placeholder]</span> tracks</p>
-                            <p><span id="editorMenuNumberOfClipsDisplay">[Placeholder]</span><span> clips</span></p>
-                            <p id="editorMenuAspectRatioDisplay">[Placeholder Aspect Ratio Here]</p>
-                        </div>
-                    </div>
-                    <ul class="editor-menu__command-list">
-                        <li class="editor-menu__command editor-command__undo" data-editor-command="undo">&#xE10E; Undo</li>
-                        <li class="editor-menu__command editor-command__redo" data-editor-command="redo">&#xE10D; Redo</li>
-                        <li class="editor-menu__divider"></li>
-                        <li class="editor-menu__command editor-command__exit" data-editor-command="exit">&#xE112; Close project</li>
-                    </ul>
-                </div>
-                <div class="editor-menu editor-menu--import">
-                    <div class="mediaBrowserHeaderContainer">
-                        <button class="win-backbutton editor-import-menu__close-button"></button>
-                        <div id="editorMediaBrowserLocationButtonContainer"><span id="editorMediaBrowserLocationButton">Videos library</span><span>&nbsp;&rsaquo;</span></div>
-                        <div id="editorMediaBrowserCurrentPathContainer"></div>
-                        <div id="editorMediaBrowserFolderControlContainer">
-                            <progress class="win-ring win-medium" id="editorMediaBrowserLoadingProgress"></progress>
-                            <span class="mediaBrowserFolderControl" id="editorMediaBrowserHomeButton">&#xE10F;</span>
-                            <span class="mediaBrowserFolderControl" id="editorMediaBrowserUpOneLevelButton">&#xE110;</span>
-                            <span class="mediaBrowserFolderControl" id="editorMediaBrowserRefreshButton">&#xE117;</span>
-                        </div>
-                    </div>
-                    <div id="editorMenuMediaBrowserFileList"></div>
-                </div>
-            </div>
-
-            <div id="editorMediaBrowserPreviewClickEater" class="editorClickEater editorClickEaterFaded"></div>
-            <div id="mediaBrowserPreviewDialog" class="mainMenuZoomDialog">
-                <div class="mainMenuZoomDialogContent">
-                    <div id="mediaBrowserPreviewVideo" class="mediaBrowserPreviewItem">
-                        <video controls autoplay></video><br />
-                        <div class="previewItemControls">
-                            <div class="previewItemControlsInnerCenter">
-                                <button class="media-browser-preview__btn media-browser-preview__btn--add-to-project"><i class="fa fa-plus"></i> Add to project</button>
-                                <button class="media-browser-preview__btn media-browser-preview__btn--close-preview"><i class="fa fa-times"></i> Close</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="mediaBrowserPreviewAudio" class="mediaBrowserPreviewItem">
-                        <audio controls autoplay></audio><br />
-                        <div class="previewItemControls">
-                            <div class="previewItemControlsInnerCenter">
-                                <button class="media-browser-preview__btn media-browser-preview__btn--add-to-project"><i class="fa fa-plus"></i> Add to project</button>
-                                <button class="media-browser-preview__btn media-browser-preview__btn--close-preview"><i class="fa fa-times"></i> Close</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="mediaBrowserPreviewPicture" class="mediaBrowserPreviewItem">
-                        <img /><br />
-                        <div class="previewItemControls">
-                            <div class="previewItemControlsInnerCenter">
-                                <button class="media-browser-preview__btn media-browser-preview__btn--add-to-project"><i class="fa fa-plus"></i> Add to project</button>
-                                <button class="media-browser-preview__btn media-browser-preview__btn--close-preview"><i class="fa fa-times"></i> Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="media-browser__drag-preview"></div>
-
-            <div id="topBottomSplitpointClickEater" class="editorClickEater editorClickEaterFaded"></div>
-            <div id="editorTimelineEWClickEater" class="editorClickEater editorClickEaterFaded"></div>
-        </div>
-
-        <div class="pageContainer loadingPage" id="projectLoadingPageContainer">
-            <h2 class="loadingPageMessage">Loading project "<span id="projectLoadingNameDisplay">[Project Name Here]</span>..."</h2>
-            <progress class="win-ring win-large"></progress>
-        </div>
-        <div class="pageContainer loadingPage" id="projectClosingPageContainer">
-            <h2 class="loadingPageMessage">Closing your project...</h2>
-            <progress class="win-ring win-large"></progress>
-        </div>
     </div>
     <div>
         <div id="editorMediaBrowserLocationFlyout" data-win-control="WinJS.UI.Menu">
@@ -516,7 +571,7 @@
             <span class="bold">Width: </span><span class="media-browser-property media-browser-property--width"></span><br />
             <span class="bold">Height: </span><span class="media-browser-property media-browser-property--height"></span><br />
             <span class="bold">Duration: </span><span class="media-browser-property media-browser-property--duration"></span><br />
-            <span class="bold">Bitrate: </span><span class="media-browser-property media-browser-property--bitrate"></span>       
+            <span class="bold">Bitrate: </span><span class="media-browser-property media-browser-property--bitrate"></span>
         </div>
         <div id="clip-selected-contextmenu" data-win-control="WinJS.UI.Menu">
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Copy'}"></button>

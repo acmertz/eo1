@@ -18,7 +18,7 @@
 
         //// PUBLIC METHODS ////
 
-        showInitial: function () {
+        init: function () {
             /// <summary>Plays the Editor pagelaunch animation and attaches all event listeners.</summary>
 
             Ensemble.Editor.TimelineMGR.init();
@@ -29,14 +29,7 @@
             Ensemble.HistoryMGR.refreshMessage();
             Ensemble.Editor.MenuMGR.init();
             Ensemble.Editor.CalloutMGR.init();
-            Ensemble.MediaBrowser.init();
-
-            //Hide UI items so they can play their entrance animation
-            $(Ensemble.Editor.UI.PageSections.upperHalf.entireSection).removeClass("editorUpperHalfVisible");
-            $(Ensemble.Editor.UI.PageSections.lowerHalf.entireSection).removeClass("editorLowerHalfVisible");
-            $(Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit).addClass("editorHorizontalDividerHidden");
-            $(Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit).removeClass();
-            $(Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit).addClass("editorHorizontalDividerHidden");
+            Ensemble.Editor.MediaBrowser.init();
 
             //Perform UI setup operations (project name, thumbnail, etc.)
             var projectSubmenu = Ensemble.Editor.UI.PageSections.menu.actionMenu.project;
@@ -46,20 +39,8 @@
             projectSubmenu.numberOfClipsDisplay.innerText = Ensemble.Session.projectClipCount.toString();
             projectSubmenu.aspectRatioDisplay.innerText = Ensemble.Session.projectAspect;
 
-            $("#editorPageContainer").removeClass("pageContainerHidden");
-
             //Update the Editor with the current settings
-            this.layoutInterfaceToSplitpoint(Ensemble.Settings.getEditorDividerPosition() * window.innerHeight);
-            Ensemble.Editor.TimelineMGR.newRulerScale();
-
-            $(Ensemble.Editor.UI.PageSections.upperHalf.entireSection).addClass("editorUpperHalfVisible");
-            $(Ensemble.Editor.UI.PageSections.lowerHalf.entireSection).addClass("editorLowerHalfVisible");
-
-            window.setTimeout(function () {
-                $(Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit).removeClass("editorHorizontalDividerHidden");
-                $(Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit).addClass("editorHorizontalDividerVisible")
-            }, 500);
-            
+            Ensemble.Editor.TimelineMGR.newRulerScale();            
 
             this.currentActionMenuItem = document.getElementById("editorMenuContentProject");
             this.currentActionMenuTab = document.getElementById("editorMenuTabProject");
@@ -67,24 +48,64 @@
             this.currentMediaMenuTab = Ensemble.Editor.UI.UserInput.Buttons.mediaMenuTabLocal;
             this.currentEffectsMenuItem = document.getElementById("editorEffectsMenuContentEffects");
             this.currentEffectsMenuTab = null;
-            this._attachListeners();
+            this._refreshUI();
 
-            $("#projectLoadingPageContainer").removeClass("loadingPageVisible");
-            $("#projectLoadingPageContainer").addClass("loadingPageHidden");
+            Ensemble.Pages.Editor.viewResized();
+            Ensemble.Editor.PlaybackMGR.seek(500);
+            Ensemble.Editor.PlaybackMGR.seek(0);
+            for (let i = 0; i < 120; i++) {
+                Ensemble.Editor.Renderer.requestFrame();
+            }
         },
 
         unload: function () {
             /// <summary>Triggers an unload of the project.</summary>
             console.log("Hiding editor...");
-            $("#projectClosingPageContainer").removeClass("loadingPageHidden");
-            $("#projectClosingPageContainer").addClass("loadingPageVisible");
-            window.setTimeout(function () {
-                $("#editorPageContainer").addClass("pageContainerHidden");
-                Ensemble.Pages.Editor._detachListeners();
-                console.log("Unloading project...");
+            $(".app-page--loading-main-menu").removeClass("app-page--hidden");
+            $(".app-page--editor").removeClass("app-page--displace").removeClass("app-page--displace-right-320");
+            Ensemble.Pages.Editor._listeners.exitAnimationFinished();
+        },
 
+        ui: {
+
+        },
+
+        _refreshUI: function () {
+            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocation).click(this._mediaBrowserButtonOnClickListener);
+            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserHome).click(this._mediaBrowserHomeButtonOnClickListener);
+            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserUpOneLevel).click(this._mediaBrowserUpOneLevelButtonOnClickListener);
+            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserRefresh).click(this._mediaBrowserRefreshButtonOnClickListener);
+            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationVideos).click(this._mediaBrowserLocationSelectedOnClickListener);
+            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationMusic).click(this._mediaBrowserLocationSelectedOnClickListener);
+            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationPictures).click(this._mediaBrowserLocationSelectedOnClickListener);
+
+            window.addEventListener("resize", Ensemble.Pages.Editor.viewResized);
+
+            Ensemble.KeyboardMGR.editorDefault();
+        },
+
+        _cleanUI: function () {
+            //Media Browser commands
+            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocation).unbind("click");
+            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserHome).unbind("click");
+            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserUpOneLevel).unbind("click");
+            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserRefresh).unbind("click");
+            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationVideos).unbind("click");
+            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationMusic).unbind("click");
+            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationPictures).unbind("click");
+
+            window.removeEventListener("resize", Ensemble.Pages.Editor.viewResized);
+
+            Ensemble.KeyboardMGR.off();
+        },
+
+        _listeners: {
+            exitAnimationFinished: function (event) {
+                let editorPage = document.getElementsByClassName("app-page--editor")[0];
+                editorPage.removeEventListener("transitionend", Ensemble.Pages.Editor._listeners.exitAnimationFinished);
+                $(editorPage).removeClass("app-page--exit-right").addClass("app-page--hidden");
+                
                 Ensemble.Editor.MenuMGR.closeMenu();
-
                 Ensemble.Editor.TimelineMGR.unload();
                 Ensemble.Editor.PlaybackMGR.unload();
                 Ensemble.Editor.Renderer.unload();
@@ -92,15 +113,21 @@
                 Ensemble.HistoryMGR.unload();
                 Ensemble.Editor.SelectionMGR.unload();
                 Ensemble.Editor.CalloutMGR.unload();
-                Ensemble.MediaBrowser.unload();
+                Ensemble.Editor.MediaBrowser.unload();
 
-                window.setTimeout(function () {
-                    $("#imgMainLogo").css("display", "initial");
-                    $("#projectClosingPageContainer").removeClass("loadingPageVisible");
-                    $("#projectClosingPageContainer").addClass("loadingPageHidden");
-                    Ensemble.Pages.MainMenu.showInitial();
-                }, 500);
-            }, 500);
+                Ensemble.Pages.Editor._cleanUI();
+
+                setTimeout(function () {
+                    let loadingPage = document.getElementsByClassName("app-page--loading-main-menu")[0];
+                    $(loadingPage).addClass("app-page--exit-right");
+                    loadingPage.addEventListener("animationend", Ensemble.Pages.Editor._listeners.loadingMenuExitFinished);
+                }, 1000);
+            },
+
+            loadingMenuExitFinished: function (event) {
+                event.currentTarget.removeEventListener("animationend", Ensemble.Pages.Editor._listeners.loadingMenuExitFinished);
+                $(event.currentTarget).removeClass("app-page--exit-right").addClass("app-page--hidden");
+            }
         },
 
         viewResized: function () {
@@ -126,107 +153,21 @@
                 finalWidth = Ensemble.Utilities.AspectGenerator.generateWidth(Ensemble.Session.projectAspect, finalHeight);
             }
 
-            Ensemble.Editor.UI.PageSections.upperHalf.canvasAndControls.style.width = finalWidth + "px";
+            //Ensemble.Editor.UI.PageSections.upperHalf.canvasAndControls.style.width = finalWidth + "px";
+            Ensemble.Editor.UI.PageSections.upperHalf.canvasContainer.style.width = finalWidth + "px";
             Ensemble.Editor.UI.RenderSurfaces.mainCanvas.style.height = finalHeight + "px";
             try { Ensemble.Editor.Renderer.canvasResized(); }
             catch (exception) { }
             Ensemble.Editor.TimelineMGR.updateTrackSizing();
         },
 
-        uiSplitpointDragBegin: function (screenOffsetY, splitpointOffsetY) {
-            /// <summary>Begins a drag operation on the main UI splitpoint.</summary>
-            /// <param name="screenOffsetY" type="Number">The offset in pixels from the top of the screen that the mousedown occurred.</param>
-            /// <param name="splitpointOffsetY" type="Number">The offset in pixels from the top of the splitpoint element that the mousedown occurred.</param>
-            this._screenClickOffsetY = screenOffsetY;
-            this._uiSplitpointMousedownOffsetY = splitpointOffsetY;
-            $(Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit).addClass("zIndexTop");
-            $(Ensemble.Editor.UI.UserInput.ClickEaters.splitpoint).removeClass("editorClickEaterFaded");
-            Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit.removeEventListener("mousedown", this._topBottomSplitMouseDown, false);
-            document.addEventListener("mousemove", this._topBottomSplitDragMove, false);
-            document.addEventListener("mouseup", this._topBottomSplitDragEnd, false);
-            this.uiSplitpointDraggedTo(screenOffsetY);
-        },
-
-        uiSplitpointDraggedTo: function (yPosition) {
-            /// <summary>Begins a drag operation on the main UI splitpoint.</summary>
-            /// <param name="yPosition" type="Number">The new Y coordinate of the splitpoint.</param>
-
-            // TODO: support vendor-specific transform functions
-            Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit.style.transform = "translateY(" + (yPosition - this._screenClickOffsetY - this._uiSplitpointMousedownOffsetY) + "px)";
-        },
-
-        uiSplitpointDragEnd: function (yPosition) {
-            /// <summary>Finshes a drag operation on the main UI splitpoint.</summary>
-            /// <param name="yPosition" type="Number">The final Y coordinate of the splitpoint.</param>
-            document.removeEventListener("mousemove", this._topBottomSplitDragMove, false);
-            document.removeEventListener("mouseup", this._topBottomSplitDragEnd, false);
-            Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit.addEventListener("mousedown", this._topBottomSplitMouseDown, false);
-
-            $(Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit).removeClass("zIndexTop");
-            $(Ensemble.Editor.UI.UserInput.ClickEaters.splitpoint).addClass("editorClickEaterFaded");
-
-            this.layoutInterfaceToSplitpoint(yPosition);
-            Ensemble.Settings.setEditorDividerPosition(yPosition / window.innerHeight);
-        },
-
-        layoutInterfaceToSplitpoint: function (yPosition) {
-            /// <summary>Sets the UI splitpoint to the specified position and lays out the UI around it.</summary>
-            /// <param name="yPosition" type="Number">The Y coordinate in pixels representing the splitpoint's position.</param>
-
-            // TODO: support vendor-specific transform functions
-            Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit.style.transform = "";
-            var topFlex = yPosition / window.innerHeight;
-            var bottomFlex = (window.innerHeight - (yPosition + Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit.clientHeight)) / window.innerHeight;
-
-            Ensemble.Editor.UI.PageSections.upperHalf.entireSection.style.flex = topFlex;
-            Ensemble.Editor.UI.PageSections.lowerHalf.entireSection.style.flex = bottomFlex;
-            this.viewResized();
-        },
-
         refreshMediaBrowser: function () {
             /// <summary>Refreshes the Media Browser at its current location</summary>
             console.log("Refreshing the Media Browser...");
-            Ensemble.MediaBrowser.navigateToFolder(Ensemble.MediaBrowser.currentLocation());
+            Ensemble.Editor.MediaBrowser.navigateToFolder(Ensemble.Editor.MediaBrowser.currentLocation());
         },
 
         //// PRIVATE METHODS ////
-
-        _attachListeners: function () {
-            //Media Browser commands
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocation).click(this._mediaBrowserButtonOnClickListener);
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserHome).click(this._mediaBrowserHomeButtonOnClickListener);
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserUpOneLevel).click(this._mediaBrowserUpOneLevelButtonOnClickListener);
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserRefresh).click(this._mediaBrowserRefreshButtonOnClickListener);
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationVideos).click(this._mediaBrowserLocationSelectedOnClickListener);
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationMusic).click(this._mediaBrowserLocationSelectedOnClickListener);
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationPictures).click(this._mediaBrowserLocationSelectedOnClickListener);
-
-            //Other
-            $(Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit).mousedown(this._topBottomSplitMouseDown);
-
-            window.addEventListener("resize", Ensemble.Pages.Editor.viewResized);
-
-            Ensemble.KeyboardMGR.editorDefault();
-        },
-
-        _detachListeners: function () {
-            //Media Browser commands
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocation).unbind("click");
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserHome).unbind("click");
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserUpOneLevel).unbind("click");
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserRefresh).unbind("click");
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationVideos).unbind("click");
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationMusic).unbind("click");
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationPictures).unbind("click");
-
-            //Other
-            $(Ensemble.Editor.UI.UserInput.Boundaries.topBottomSplit).unbind("mousedown");
-
-            window.removeEventListener("resize", Ensemble.Pages.Editor.viewResized);
-
-            Ensemble.KeyboardMGR.off();
-        },
-
         _mediaBrowserButtonOnClickListener: function () {
             Ensemble.Editor.UI.UserInput.Flyouts.mediaBrowserLocation.winControl.show(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocation, "bottom", "left");
         },
@@ -235,143 +176,32 @@
             Ensemble.Pages.Editor.hideActionMenu();
         },
 
-        _topBottomSplitMouseDown: function (event) {
-            //console.log("Mouse down on UI splitpoint at screen Y coordinate of " + event.clientY + " and top offset of " + event.offsetY);
-            Ensemble.Pages.Editor.uiSplitpointDragBegin(event.clientY, 0); //replaced event.offsetY with 0
-        },
-
-        _topBottomSplitDragMove: function (event) {
-            Ensemble.Pages.Editor.uiSplitpointDraggedTo(event.clientY);
-        },
-
-        _topBottomSplitDragEnd: function (event) {
-            Ensemble.Pages.Editor.uiSplitpointDragEnd(event.clientY);
-        },
-
-        _menuHeaderProjectOnClick: function () {
-            Ensemble.Pages.Editor.menuShowProjectTab();
-        },
-
-        _menuHeaderEditOnClick: function () {
-            Ensemble.Pages.Editor.menuShowEditTab();
-        },
-
-        _menuHeaderClipOnClick: function () {
-            Ensemble.Pages.Editor.menuShowClipTab();
-        },
-
-        _menuHeaderTrackOnClick: function () {
-            Ensemble.Pages.Editor.menuShowTrackTab();
-        },
-
-        _menuHeaderExportOnClick: function () {
-            Ensemble.Pages.Editor.menuShowExportTab();
-        },
-
-        _menuHeaderClearActionMenuTabs: function () {
-            /// <summary>Clears focus on all menu header tabs across all Editor menus.</summary>
-            var allTabs = document.getElementsByClassName("actionMenuTab");
-            for (var i = 0; i < allTabs.length; i++) {
-                $(allTabs[i]).removeClass("editorMenuRightAdjacentTab");
-                $(allTabs[i]).removeClass("editorMenuLeftAdjacentTab");
-            }
-        },
-
-        _menuHeaderClearMediaMenuTabs: function () {
-            /// <summary>Clears focus on all menu header tabs across all Editor menus.</summary>
-            var allTabs = document.getElementsByClassName("mediaMenuTab");
-            for (var i = 0; i < allTabs.length; i++) {
-                $(allTabs[i]).removeClass("editorMenuRightAdjacentTab");
-                $(allTabs[i]).removeClass("editorMenuLeftAdjacentTab");
-            }
-        },
-
-        _menuHeaderFocusTab: function (tabToFocus, itemToShow) {
-            /// <summary>Focuses the indicated tab and blurs the tab that was previously focused.</summary>
-            /// <param name="tabToFocus" type="HTML Element">The tab to focus.</param>
-            /// <param name="itemToShow" type="HTML Element">The menu item to show.</param>
-
-            this._menuHeaderClearActionMenuTabs();
-
-            $(Ensemble.Pages.Editor.currentActionMenuTab).removeClass("editorMenuTabFocused");
-            $(Ensemble.Pages.Editor.currentActionMenuTab).addClass("editorMenuTabBlurred");
-
-            Ensemble.Pages.Editor.currentActionMenuTab = tabToFocus;
-
-            $(Ensemble.Pages.Editor.currentActionMenuTab).removeClass("editorMenuTabBlurred");
-            $(Ensemble.Pages.Editor.currentActionMenuTab).addClass("editorMenuTabFocused");
-
-            WinJS.UI.Animation.exitContent(Ensemble.Pages.Editor.currentActionMenuItem).done(function () {
-                Ensemble.Pages.Editor.currentActionMenuItem.style.display = "none";
-                Ensemble.Pages.Editor.currentActionMenuItem = itemToShow;
-                Ensemble.Pages.Editor.currentActionMenuItem.style.display = "flex"; //changed from inline
-                WinJS.UI.Animation.enterContent(Ensemble.Pages.Editor.currentActionMenuItem);
-            });
-        },
-
-        _mediaMenuHeaderFocusTab: function (tabToFocus, itemToShow) {
-            /// <summary>Focuses the indicated tab and blurs the tab that was previously focused.</summary>
-            /// <param name="tabToFocus" type="HTML Element">The tab to focus.</param>
-            /// <param name="itemToShow" type="HTML Element">The menu item to show.</param>
-            this._menuHeaderClearMediaMenuTabs();
-
-            $(Ensemble.Pages.Editor.currentMediaMenuTab).removeClass("editorMenuTabFocused");
-            $(Ensemble.Pages.Editor.currentMediaMenuTab).addClass("editorMenuTabBlurred");
-
-            Ensemble.Pages.Editor.currentMediaMenuTab = tabToFocus;
-
-            $(Ensemble.Pages.Editor.currentMediaMenuTab).removeClass("editorMenuTabBlurred");
-            $(Ensemble.Pages.Editor.currentMediaMenuTab).addClass("editorMenuTabFocused");
-
-            WinJS.UI.Animation.exitContent(Ensemble.Pages.Editor.currentMediaMenuItem).done(function () {
-                Ensemble.Pages.Editor.currentMediaMenuItem.style.display = "none";
-                Ensemble.Pages.Editor.currentMediaMenuItem = itemToShow;
-                Ensemble.Pages.Editor.currentMediaMenuItem.style.display = "flex";
-                WinJS.UI.Animation.enterContent(Ensemble.Pages.Editor.currentMediaMenuItem);
-            });
-        },
-
-        _mediaMenuTabLocalOnClickListener: function (event) {
-            console.log("Clicked the Media Menu Local tab.")
-            Ensemble.Pages.Editor.mediaMenuShowLocalTab();
-        },
-
-        _mediaMenuTabCameraOnClickListener: function (event) {
-            console.log("Clicked the Media Menu Camera tab.")
-            Ensemble.Pages.Editor.mediaMenuShowCameraTab();
-        },
-
-        _mediaMenuTabMicOnClickListener: function (event) {
-            console.log("Clicked the Media Menu Mic tab.")
-            Ensemble.Pages.Editor.mediaMenuShowMicTab();
-        },
-
         _mediaBrowserHomeButtonOnClickListener: function (event) {
             console.log("Media Browser navigating home...");
-            Ensemble.MediaBrowser.navigateHome();
+            Ensemble.Editor.MediaBrowser.navigateHome();
         },
 
         _mediaBrowserUpOneLevelButtonOnClickListener: function (event) {
             console.log("Media browser navigating up one level (if possible)...");
-            Ensemble.MediaBrowser.upOneLevel();
+            Ensemble.Editor.MediaBrowser.upOneLevel();
         },
 
         _mediaBrowserRefreshButtonOnClickListener: function (event) {
-            Ensemble.MediaBrowser.navigateToFolder(Ensemble.MediaBrowser.currentLocation());
+            Ensemble.Editor.MediaBrowser.navigateToFolder(Ensemble.Editor.MediaBrowser.currentLocation());
         },
 
         _mediaBrowserLocationSelectedOnClickListener: function (event) {
             switch (event.currentTarget) {
                 case Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationVideos:
-                    Ensemble.MediaBrowser.setContext("video");
+                    Ensemble.Editor.MediaBrowser.setContext("video");
                     Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocation.innerHTML = "Videos library";
                     break;
                 case Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationMusic:
-                    Ensemble.MediaBrowser.setContext("music");
+                    Ensemble.Editor.MediaBrowser.setContext("music");
                     Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocation.innerHTML = "Music library";
                     break;
                 case Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationPictures:
-                    Ensemble.MediaBrowser.setContext("picture");
+                    Ensemble.Editor.MediaBrowser.setContext("picture");
                     Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocation.innerHTML = "Pictures library";
                     break;
             }

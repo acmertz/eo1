@@ -4,18 +4,15 @@
         relink: function () {
             /// <summary>Renews all UI references and makes sure they're alive.</summary>
 
-            this.PageSections.upperHalf.entireSection = document.getElementById("editorUpperHalf");
+            this.PageSections.upperHalf.entireSection = document.getElementsByClassName("editor-section--upper")[0];
             this.PageSections.upperHalf.canvasAndControls = document.getElementById("editorCanvasContainer");
-            this.PageSections.upperHalf.canvasContainer = document.getElementById("editorCanvasContent");
-            this.PageSections.upperHalf.controlContainer = document.getElementById("editorPlayControls");
+            this.PageSections.upperHalf.canvasContainer = document.getElementsByClassName("editor-canvas-container")[0];
 
-            this.PageSections.lowerHalf.entireSection = document.getElementById("editorLowerHalf");
             this.PageSections.lowerHalf.timeline = document.getElementById("timeline-track-container");
-            this.PageSections.lowerHalf.timelineRuler = document.getElementById("editorTimelineRulerContent");
-            this.PageSections.lowerHalf.timelineHeaders = document.getElementById("editorTimelineHeaders");
-            this.PageSections.lowerHalf.timelineDetails = document.getElementById("editorTimelineDetails");
+            this.PageSections.lowerHalf.timelineHeaders = document.getElementsByClassName("timeline-track-header-container--standard")[0];
+            this.PageSections.lowerHalf.timelineDetails = document.getElementsByClassName("timeline-track-widget-container--standard")[0];
             this.PageSections.lowerHalf.timelineTracks = document.getElementById("editorTimelineTracks");
-            this.PageSections.lowerHalf.timelineHeaderDetailPlaceholder = document.getElementById("editorTimelineDetailsPlaceholder");
+            this.PageSections.lowerHalf.timelineHeaderDetailPlaceholder = document.getElementsByClassName("timeline-track-widget-container--placeholder")[0];
             this.PageSections.divider = document.getElementById("editorHorizontalDivider");
 
             this.PageSections.menu.actionMenu.project.nameDisplay = document.getElementById("editorProjectNameDisplay");
@@ -36,7 +33,7 @@
             this.Graphics.mediaBrowserPreviewMusic = document.getElementById("mediaBrowserPreviewAudio");
             this.Graphics.mediaBrowserPreviewPic = document.getElementById("mediaBrowserPreviewPicture");
 
-            this.RenderSurfaces.mainCanvas = document.getElementById("editorCanvas");
+            this.RenderSurfaces.mainCanvas = document.getElementsByClassName("editor-canvas")[0];
 
             this.UserInput.Buttons.mediaBrowserLocation = document.getElementById("editorMediaBrowserLocationButton");
             this.UserInput.Buttons.mediaBrowserHome = document.getElementById("editorMediaBrowserHomeButton");
@@ -53,7 +50,6 @@
 
             this.UserInput.Boundaries.topBottomSplit = document.getElementById("editorHorizontalDivider");
 
-            this.UserInput.ClickEaters.splitpoint = document.getElementById("topBottomSplitpointClickEater");
             this.UserInput.ClickEaters.mediaPreview = document.getElementById("editorMediaBrowserPreviewClickEater");
 
             this.UserInput.Flyouts.mediaBrowserLocation = document.getElementById("editorMediaBrowserLocationFlyout");
@@ -71,14 +67,11 @@
                 //The entire upper half of the page.
                 entireSection: null,
                 canvasAndControls: null,
-                canvasContainer: null,
-                controlContainer: null
+                canvasContainer: null
             },
             lowerHalf: {
                 //The entire lower half of the page.
-                entireSection: null,
                 timeline: null,
-                timelineRuler: null,
                 timelineHeaders: null,
                 timelineDetails: null,
                 timelineTracks: null,
@@ -149,7 +142,6 @@
                 topBottomSplit: null
             },
             ClickEaters: {
-                splitpoint: null,
                 mediaPreview: null
             },
             Flyouts: {
