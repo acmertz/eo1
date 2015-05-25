@@ -3,6 +3,7 @@
         /// <summary>Manages the Main Menu.</summary>
         init: function () {
             /// <summary>Initializes the Main Menu.</summary>
+            Ensemble.Settings.init();
             Ensemble.MainMenu._refreshUI();
         },
 
@@ -71,6 +72,7 @@
                             Ensemble.FileIO.enumerateProjects(Ensemble.MainMenu._listeners.enumeratedProjects);
                         });
                     });
+                    Ensemble.Settings.refreshSettingsDialog();
                 }
             },
 
