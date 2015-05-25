@@ -272,7 +272,7 @@
 }
 
 .timeline-selection-callout {
-    position: fixed;
+    position: absolute;
     top: 100px;
     left: 0;
     height: 40px;

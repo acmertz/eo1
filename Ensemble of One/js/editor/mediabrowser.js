@@ -213,7 +213,6 @@
                 Ensemble.Editor.MediaBrowser._mediaItems.push(files[i]);
             }
             Ensemble.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.innerHTML = mediaString;
-            //Ensemble.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.addEventListener("click", Ensemble.Editor.MediaBrowser._listItemClicked, false);
             Ensemble.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.addEventListener("pointerdown", Ensemble.Editor.MediaBrowser._listItemMouseDown, false);
             Ensemble.FileIO.retrieveMediaProperties(Ensemble.Editor.MediaBrowser._mediaItems[0], 0, Ensemble.Editor.MediaBrowser._metaDataCallback);
             Ensemble.FileIO.retrieveThumbnail(Ensemble.Editor.MediaBrowser._mediaItems[0], 0, Ensemble.Editor.MediaBrowser._thumbnailCallback);
@@ -293,7 +292,6 @@
 
             vidTag.pause();
             audioTag.pause();
-            //Ensemble.Editor.UI.Graphics.mediaBrowserPreviewVideo.src = "";
         },
 
         //Private methods
@@ -336,8 +334,7 @@
 
         _addPreviewToLayerLoadFinished: function (clipObj) {
             /// <param name="clipObj" type="Object">The loaded Clip, ready for playback and rendering.</param>
-            //Ensemble.Editor.MediaBrowser.closeMediaPreview();
-            Ensemble.Editor.MenuMGR.closeMenu();
+            $(Ensemble.Editor.MenuMGR.ui.clickEater).click();
         },
 
         _openMediaPreviewPopup: function () {
@@ -439,18 +436,15 @@
             Ensemble.Editor.MediaBrowser._dragging = true;
             Ensemble.Editor.MediaBrowser._dragCheck = false;
 
-            //Ensemble.Editor.UI.Popups.mediaBrowserPreviewDrag.style.transform = "translate(" + Ensemble.Utilities.MouseTracker.x + "px," + Ensemble.Utilities.MouseTracker.y + "px)";
             Ensemble.Editor.MediaBrowser.ui.dragPreview.style.left = Ensemble.Utilities.MouseTracker.x + "px";
             Ensemble.Editor.MediaBrowser.ui.dragPreview.style.top = Ensemble.Utilities.MouseTracker.y + "px";
 
-            //$(Ensemble.Editor.UI.Popups.mediaBrowserPreviewDrag).removeClass("editorDraggedPreviewHidden");
-            //$(Ensemble.Editor.UI.Popups.mediaBrowserPreviewDrag).addClass("editorDraggedPreviewVisible");
             $(Ensemble.Editor.MediaBrowser.ui.dragPreview).removeClass("media-browser__drag-preview--hidden").addClass("media-browser__drag-preview--visible");
 
             window.requestAnimationFrame(Ensemble.Editor.MediaBrowser._listItemDragUpdate);
             document.addEventListener("mouseup", Ensemble.Editor.MediaBrowser._listItemEndDrag, false);
 
-            Ensemble.Editor.MenuMGR.closeMenu();
+            $(Ensemble.Editor.MenuMGR.ui.clickEater).click();
             Ensemble.Editor.Renderer.disableStandardInteraction();
 
             Ensemble.Editor.TimelineMGR.ui.scrollableContainer.addEventListener("pointerenter", Ensemble.Editor.MediaBrowser._listeners.draggedClipEnteredTimeline);
@@ -459,7 +453,6 @@
 
         _listItemDragUpdate: function (event) {
             // Update the item's position.
-            //Ensemble.Editor.UI.Popups.mediaBrowserPreviewDrag.style.transform = "translate(" + Ensemble.Utilities.MouseTracker.x + "px," + Ensemble.Utilities.MouseTracker.y + "px)";
             if (Ensemble.Editor.MediaBrowser._dragTimeline) {
                 let zoomRatio = Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel].ratio;
                 let offsetX = Ensemble.Utilities.MouseTracker.x - Ensemble.Editor.MediaBrowser._dragOffset.left;
@@ -492,8 +485,6 @@
             Ensemble.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.style.overflowY = "";
             document.removeEventListener("mouseup", Ensemble.Editor.MediaBrowser._listItemEndDrag);
 
-            //$(Ensemble.Editor.UI.Popups.mediaBrowserPreviewDrag).removeClass("editorDraggedPreviewVisible");
-            //$(Ensemble.Editor.UI.Popups.mediaBrowserPreviewDrag).addClass("editorDraggedPreviewHidden");
             $(Ensemble.Editor.MediaBrowser.ui.dragPreview).removeClass("media-browser__drag-preview--visible").addClass("media-browser__drag-preview--hidden");
 
             Ensemble.Editor.Renderer.enableStandardInteraction();
