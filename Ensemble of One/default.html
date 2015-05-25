@@ -87,45 +87,54 @@
         </nav>
         <main class="main-menu__content-container">
             <section class="main-menu__content-section main-menu__content-section--home main-menu__content-section--visible">
-                <h2>Quickstart</h2>
-                <p>Select an aspect ratio to get started! We reccommend 16:9.</p>
-                <div class="home-menu__quick-start-container">
-                    <a class="home-menu__quick-start-item home-menu__quick-start-item--16-9" title="Widescreen 16:9"></a>
-                    <a class="home-menu__quick-start-item home-menu__quick-start-item--4-3" title="Fullscreen 4:3"></a>
-                    <a class="home-menu__quick-start-item home-menu__quick-start-item--16-10" title="Widescreen 16:10"></a>
-                    <a class="home-menu__quick-start-item home-menu__quick-start-item--239-1" title="Widescreen 2.39:1"></a>
+                <div>
+                    <h2>Quickstart</h2>
+                    <p>Select an aspect ratio to get started! We reccommend 16:9.</p>
+                    <div class="home-menu__quick-start-container">
+                        <a class="home-menu__quick-start-item home-menu__quick-start-item--16-9" title="Widescreen 16:9"></a>
+                        <a class="home-menu__quick-start-item home-menu__quick-start-item--4-3" title="Fullscreen 4:3"></a>
+                        <a class="home-menu__quick-start-item home-menu__quick-start-item--16-10" title="Widescreen 16:10"></a>
+                        <a class="home-menu__quick-start-item home-menu__quick-start-item--239-1" title="Widescreen 2.39:1"></a>
+                    </div>
                 </div>
-                <h2>Recent projects</h2>
-                <p>Nothing to show here.</p>
+                <div>
+                    <h2>Recent projects</h2>
+                    <p>Nothing to show here.</p>
+                </div>
             </section>
             <section class="main-menu__content-section main-menu__content-section--new-project main-menu__content-section--hidden">
-                <h2>New project</h2>
-                <p>Create a new Ensemble of One project. Projects can contain as many videos, audio clips, and images as you care to import. Let loose and make something great!</p>
+                <div>
+                    <h2>New project</h2>
 
-                <h3>Project name</h3>
-                <input type="text" autocomplete="off" spellcheck="true" placeholder="My great project" />
-                <p>Give your project a fitting name. Feel free to use any characters you want (even emoji)!</p>
+                    <p>Create a new Ensemble of One project. Projects can contain as many videos, audio clips, and images as you care to import. Let loose and make something great!</p>
+                    </div>
+                <div>
+                    <h3>Project name</h3>
+                    <input type="text" autocomplete="off" spellcheck="true" placeholder="My great project" class="menu-create-project-param menu-create-project-param--name" />
+                    <p>Give your project a fitting name. Feel free to use any characters you want (even emoji)!</p>
 
-                <h3>Aspect ratio</h3>
-                <select>
-                    <option selected value="16:9">Widescreen (HDTV, 16:9)</option>
-                    <option value="16:10">Widescreen (laptop, 16:10)</option>
-                    <option value="2.39:1">Widescreen (cinematic, 2.39:1)</option>
-                    <option value="4:3">Standard (tube TV, 4:3)</option>
-                </select>
-                <p>Decide what shape you want your video to be. HDTVs usually have a ratio of 16:9, so in most cases this'll probably be your best shot.</p>
-
-                <p><button class="eo1-btn">Create</button></p>
+                    <h3>Aspect ratio</h3>
+                    <select class="menu-create-project-param menu-create-project-param--aspect">
+                        <option selected value="16:9">Widescreen (HDTV, 16:9)</option>
+                        <option value="16:10">Widescreen (laptop, 16:10)</option>
+                        <option value="2.39:1">Widescreen (cinematic, 2.39:1)</option>
+                        <option value="4:3">Standard (tube TV, 4:3)</option>
+                    </select>
+                    <p>Decide what shape you want your video to be. HDTVs usually have a ratio of 16:9, so in most cases this'll probably be your best shot.</p>
+                </div>
+                <p><button class="eo1-btn menu-create-project-param menu-create-project-param--submit">Create</button></p>
             </section>
             <section class="main-menu__content-section main-menu__content-section--open-project main-menu__content-section--hidden">
-                <h2>Open project</h2>
-                <p>
-                    <button disabled class="eo1-btn">Browse...</button>
-                </p>
-                <h3>Local projects</h3>
-                <ul class="open-menu__local-projects"></ul>
-
-                
+                <div>
+                    <h2>Open project</h2>
+                    <p>
+                        <button disabled class="eo1-btn">Browse...</button>
+                    </p>
+                    </div>
+                <div>
+                    <h3>Local projects</h3>
+                    <ul class="open-menu__local-projects"></ul>
+                </div>
             </section>
             <section class="main-menu__content-section main-menu__content-section--settings main-menu__content-section--hidden">
                 <h2>Settings</h2>
