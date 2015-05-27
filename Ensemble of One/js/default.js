@@ -8,6 +8,24 @@ var myGreatGlobalVids = [];
 	var activation = Windows.ApplicationModel.Activation;
 
 	app.onactivated = function (args) {
+	    let appView = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
+	    let primaryColor = Windows.UI.ColorHelper.fromArgb(255, 220, 20, 60);
+	    let hoverColor = Windows.UI.ColorHelper.fromArgb(255, 223, 43, 79);
+	    let activeColor = Windows.UI.ColorHelper.fromArgb(255, 230, 90, 118);
+	    let textColor = Windows.UI.ColorHelper.fromArgb(255, 255, 255, 255);
+	    appView.titleBar.backgroundColor = primaryColor;
+	    appView.titleBar.foregroundColor = textColor;
+	    appView.titleBar.inactiveBackgroundColor = hoverColor;
+	    appView.titleBar.inactiveForegroundColor = textColor;
+	    appView.titleBar.buttonBackgroundColor = primaryColor;
+	    appView.titleBar.buttonForegroundColor = textColor;
+	    appView.titleBar.buttonInactiveBackgroundColor = hoverColor;
+	    appView.titleBar.buttonInactiveForegroundColor = textColor;
+	    appView.titleBar.buttonHoverBackgroundColor = hoverColor;
+	    appView.titleBar.buttonHoverForegroundColor = textColor;
+	    appView.titleBar.buttonPressedBackgroundColor = activeColor;
+	    appView.titleBar.buttonPressedForegroundColor = textColor;
+
 	    if (Ensemble.Platform.currentPlatform == null) {
 	        args.setPromise(WinJS.UI.processAll());
 	        Ensemble.Platform.setCurrentPlatform("win8");

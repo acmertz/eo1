@@ -45,13 +45,14 @@
             if (Ensemble.Editor.TimelineMGR._clipIndex.length > 0) {
                 for (let k = Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList.length - 1; k > -1; k--) {
                     Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList[k].drawToCanvas(Ensemble.Editor.Renderer._playbackCanvasContext, Ensemble.Editor.Renderer._scale);
-                    if (Ensemble.Editor.Renderer._draggedClips.indexOf(Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList[k].id) > -1) {
-                        let clip = Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList[k];
-                        let scale = Ensemble.Editor.Renderer._scale;
-                        let context = Ensemble.Editor.Renderer._playbackCanvasContext;
-                        let xdif = Ensemble.Editor.Renderer._clipDragCurrentLeft - Ensemble.Editor.Renderer._clipDragOriginalLeft;
-                        let ydif = Ensemble.Editor.Renderer._clipDragCurrentTop - Ensemble.Editor.Renderer._clipDragOriginalTop;
 
+                    let clip = Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList[k];
+                    let scale = Ensemble.Editor.Renderer._scale;
+                    let context = Ensemble.Editor.Renderer._playbackCanvasContext;
+                    let xdif = Ensemble.Editor.Renderer._clipDragCurrentLeft - Ensemble.Editor.Renderer._clipDragOriginalLeft;
+                    let ydif = Ensemble.Editor.Renderer._clipDragCurrentTop - Ensemble.Editor.Renderer._clipDragOriginalTop;
+
+                    if (Ensemble.Editor.Renderer._draggedClips.indexOf(Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList[k].id) > -1) {
                         let xcoord = (clip.xcoord * scale) + xdif;
                         let ycoord = (clip.ycoord * scale) + ydif;
                         let xwidth = clip.width * scale;
@@ -70,11 +71,6 @@
                         context.globalAlpha = 1;
                     }
                     if (Ensemble.Editor.Renderer._resizedClips.indexOf(Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList[k].id) > -1) {
-                        let clip = Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList[k];
-                        let scale = Ensemble.Editor.Renderer._scale;
-                        let context = Ensemble.Editor.Renderer._playbackCanvasContext;
-                        let xdif = Ensemble.Editor.Renderer._clipDragCurrentLeft - Ensemble.Editor.Renderer._clipDragOriginalLeft;
-                        let ydif = Ensemble.Editor.Renderer._clipDragCurrentTop - Ensemble.Editor.Renderer._clipDragOriginalTop;
                         let bound = Ensemble.Editor.Renderer._resizedBound;
 
                         let xcoord = clip.xcoord * scale;
