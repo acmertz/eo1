@@ -37,6 +37,7 @@
             /// <summary>Retrieves the value of the named app setting.</summary>
             /// <param name="name" type="String">The name of the setting to lookup.</param>
             /// <returns>The value of the setting.</returns>
+            return Windows.Storage.ApplicationData.current.roamingSettings.values[name];
 
         },
 
@@ -122,7 +123,7 @@
                             break;
                         case "delete-all-projects":
                             dialogTitle = "Delete all projects?";
-                            dialogMsg = "This will delete all projects saved within Ensemble of One. This only affects projects saved within the app — if you copied your project to another location (a flash drive or SD card, for instance), we won't touch it. This can't be undone, so don't continue unless you're absolutely sure.";
+                            dialogMsg = "This will delete all projects saved within Ensemble of One. This only affects projects saved within the app — if you copied your project to another location (a flash drive or SD card, for instance) or chose \"Save as\" from the Editor, we won't touch it. This can't be undone, so don't continue unless you're absolutely sure.";
                             dialogCommands = [
                                 {
                                     label: "Delete all projects",

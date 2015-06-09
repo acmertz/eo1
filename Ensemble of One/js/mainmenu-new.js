@@ -33,6 +33,7 @@
                 this.ui.quickStartItems[i].addEventListener("pointerup", this._listeners.pointerUp);
                 this.ui.quickStartItems[i].addEventListener("touchend", this._listeners.pointerUp);
                 this.ui.quickStartItems[i].addEventListener("mouseup", this._listeners.pointerUp);
+                this.ui.quickStartItems[i].addEventListener("click", this._listeners.quickstartItemClicked);
             }
 
             document.getElementsByClassName("menu-create-project-param--submit")[0].addEventListener("click", Ensemble.MainMenu._listeners.newProjectButtonClicked);
@@ -74,6 +75,11 @@
                     });
                     Ensemble.Settings.refreshSettingsDialog();
                 }
+            },
+
+            quickstartItemClicked: function (event) {
+                console.log("Quickstart project with aspect ratio " + event.currentTarget.dataset.quickstart + "...");
+                Ensemble.FileIO.createProject("Untitled project", event.currentTarget.dataset.quickstart, Ensemble.MainMenu._listeners.newProjectCreated);
             },
 
             enumeratedProjects: function (projects) {
@@ -130,6 +136,9 @@
                 Ensemble.Pages.Editor.init();
                 editorPage.addEventListener("animationend", Ensemble.MainMenu._listeners.editorEntranceFinished);
                 $(editorPage).addClass("app-page--enter-right");
+
+                let appView = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
+                appView.title = Ensemble.Session.projectName;
             },
 
             editorEntranceFinished: function (event) {

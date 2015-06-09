@@ -19,6 +19,9 @@
         _resizedStatus: {},
         _resizedRatio: {},
 
+        _snapPointsClip: [],
+        _snapPointsCanvas: [],
+
         init: function () {
             this._refreshUI();
             this.canvasResized();
@@ -233,6 +236,54 @@
             Ensemble.Session.projectThumb = tempCanvas.toDataURL("image/png");
         },
 
+        updateClipSnapPoints: function () {
+            /// <summary>Updates the clip-snappable regions for dragged/resized clips in the canvas.</summary>
+            if (Ensemble.Settings.retrieveSetting("sticky-edges-clip")) {
+
+            }
+            else {
+                Ensemble.Editor.Renderer._snapPointsClip = [];
+            }
+        },
+
+        updateCanvasSnapPoints: function () {
+            /// <summary>Updates the canvas-snappable regions for dragged/resized clips in the canvas.</summary>
+            if (Ensemble.Settings.retrieveSetting("sticky-edges-canvas")) {
+                let scale = Ensemble.Editor.Renderer._scale;
+                let width = Ensemble.Session.projectResolution.width * scale;
+                let height = Ensemble.Session.projectResolution.height * scale;
+                Ensemble.Editor.Renderer._snapPointsCanvas = [
+                    {
+                        x1: 0,
+                        x2: width,
+                        y1: 0,
+                        y2: 0
+                    },
+                    {
+                        x1: width,
+                        x2: width,
+                        y1: 0,
+                        y2: height
+                    },
+                    {
+                        x1: 0,
+                        x2: width,
+                        y1: height,
+                        y2: height
+                    },
+                    {
+                        x1: 0,
+                        x2: 0,
+                        y1: 0,
+                        y2: height
+                    }
+                ];
+            }
+            else {
+                Ensemble.Editor.Renderer._snapPointsCanvas = [];
+            }
+        },
+
         _processAnimationFrame: function () {
             Ensemble.Editor.Renderer.renderSingleFrame();
             if (Ensemble.Editor.Renderer._active) window.requestAnimationFrame(Ensemble.Editor.Renderer._processAnimationFrame);
@@ -320,6 +371,9 @@
 
                     if (Ensemble.Editor.SelectionMGR.selected.indexOf(Ensemble.Editor.SelectionMGR.hovering[0]) > -1) dragDelay = 0;
                     Ensemble.Editor.SelectionMGR.replaceSelection(Ensemble.Editor.SelectionMGR.hovering[0]);
+
+                    Ensemble.Editor.Renderer.updateClipSnapPoints();
+                    Ensemble.Editor.Renderer.updateCanvasSnapPoints();
                     
                     if (dragDelay == 0) {
                         // clip is already selected.

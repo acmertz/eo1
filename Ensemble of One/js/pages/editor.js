@@ -64,6 +64,8 @@
             $(".app-page--loading-main-menu").removeClass("app-page--hidden");
             $(".app-page--editor").removeClass("app-page--displace").removeClass("app-page--displace-right-320");
             Ensemble.Pages.Editor._listeners.exitAnimationFinished();
+            let appView = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
+            appView.title = "";
         },
 
         ui: {
