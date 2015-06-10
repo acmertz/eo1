@@ -1697,10 +1697,9 @@
                         projectQuery.getFilesAsync().then(function (projectFiles) {
                             if (projectFiles.length > 0) {
                                 for (var i = 0; i < projectFiles.length; i++) {
-                                    projectFiles[i].deleteAsync(Windows.Storage.StorageDeleteOption.permanentDelete).done(function (success) {
-                                        //console.log("Deleted a project file.");
-                                    });
+                                    projectFiles[i].deleteAsync(Windows.Storage.StorageDeleteOption.permanentDelete);
                                 }
+                                console.info("Deleted all projects.");
                             }
                             else console.log("No projects to delete.");
                         });

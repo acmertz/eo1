@@ -90,15 +90,20 @@
                 <div>
                     <h2>Quickstart</h2>
                     <p>Select an aspect ratio to get started! We reccommend 16:9.</p>
+                    </div>
+                <div>
                     <div class="home-menu__quick-start-container">
-                        <a class="home-menu__quick-start-item home-menu__quick-start-item--16-9" title="Widescreen 16:9"></a>
-                        <a class="home-menu__quick-start-item home-menu__quick-start-item--4-3" title="Fullscreen 4:3"></a>
-                        <a class="home-menu__quick-start-item home-menu__quick-start-item--16-10" title="Widescreen 16:10"></a>
-                        <a class="home-menu__quick-start-item home-menu__quick-start-item--239-1" title="Widescreen 2.39:1"></a>
+                        <a class="home-menu__quick-start-item home-menu__quick-start-item--16-9" data-quickstart="16:9" title="Widescreen 16:9"></a>
+                        <a class="home-menu__quick-start-item home-menu__quick-start-item--4-3" data-quickstart="4:3" title="Fullscreen 4:3"></a>
+                        <a class="home-menu__quick-start-item home-menu__quick-start-item--16-10" data-quickstart="16:10" title="Widescreen 16:10"></a>
+                        <a class="home-menu__quick-start-item home-menu__quick-start-item--239-1" data-quickstart="2.39:1" title="Widescreen 2.39:1"></a>
                     </div>
                 </div>
                 <div>
                     <h2>Recent projects</h2>
+                    <p>Projects you've recently edited.</p>
+                </div>
+                <div>
                     <p>Nothing to show here.</p>
                 </div>
             </section>
@@ -137,8 +142,20 @@
                 </div>
             </section>
             <section class="main-menu__content-section main-menu__content-section--settings main-menu__content-section--hidden">
-                <h2>Settings</h2>
-                <p>Nothing to show here.</p>
+                <div>
+                    <h2>Settings</h2>
+                    <p>One size doesn't have to fit all &mdash; go ahead, configure Ensemble of One to your liking!</p>
+                </div>
+                <div class="settings-menu-section">
+                    <h3>Canvas Sticky Edges</h3>
+                    <div class="app-setting app-setting--sticky-edges-clip" data-app-setting="sticky-edges-clip" data-setting-type="toggle" data-win-control="WinJS.UI.ToggleSwitch" data-win-options="{title: 'Clips stick to each other', checked: true}"></div>
+                    <div class="app-setting app-setting--sticky-edges-canvas" data-app-setting="sticky-edges-canvas" data-setting-type="toggle" data-win-control="WinJS.UI.ToggleSwitch" data-win-options="{title: 'Clips stick to canvas edges', checked: true}"></div>
+                </div>
+                <div class="settings-menu-section">
+                    <h3>Danger Zone</h3>
+                    <p><button class="eo1-btn app-setting app-setting--reset-settings" data-app-setting="reset-settings" data-setting-type="instant">Reset settings</button></p>
+                    <p><button class="eo1-btn app-setting app-setting--delete-all-projects" data-app-setting="delete-all-projects" data-setting-type="instant">Delete temporary projects</button></p>
+                </div>
             </section>
         </main>
     </div>

@@ -203,6 +203,50 @@
                 };
             },
 
+            getEdges: function (multiplier) {
+                /// <summary>Returns an object containing all the edge lines that make up the clip.</summary>
+                /// <param type="Number" name="multiplier">Optional. A value by which to multiply the returned values. Useful for conditions where the coordinates must be scaled before rendering.</param>
+                /// <returns type="Object">An object containing the points for the top, right, bottom, and left edges.</returns>
+                let ratio = multiplier || 1;
+                let returnVal = {
+                    top: {
+                        x1: ratio * this.xcoord,
+                        x2: ratio * (this.xcoord + this.width),
+                        y1: ratio * this.ycoord,
+                        y2: ratio * this.ycoord
+                    },
+                    right: {
+                        x1: ratio * (this.xcoord + this.width),
+                        x2: ratio * (this.xcoord + this.width),
+                        y1: ratio * this.ycoord,
+                        y2: ratio * (this.ycoord + this.height)
+                    },
+                    bottom: {
+                        x1: ratio * this.xcoord,
+                        x2: ratio * (this.xcoord + this.width),
+                        y1: ratio * (this.ycoord + this.height),
+                        y2: ratio * (this.ycoord + this.height)
+                    },
+                    left: {
+                        x1: ratio * this.xcoord,
+                        x2: ratio * this.xcoord,
+                        y1: ratio * this.ycoord,
+                        y2: ratio * (this.ycoord + this.height)
+                    }
+                };
+                returnVal.top.id = returnVal.right.id = returnVal.bottom.id = returnVal.left.id = this.id;
+                returnVal.top.coords = returnVal.right.coords = returnVal.bottom.coords = returnVal.left.coords = {
+                    x: ratio * this.xcoord,
+                    y: ratio * this.ycoord
+                };
+                returnVal.top.dimensions = returnVal.right.dimensions = returnVal.bottom.dimensions = returnVal.left.dimensions = {
+                    width: ratio * this.width,
+                    height: ratio * this.height
+                };
+
+                return returnVal;
+            },
+
             unload: function () {
                 /// <summary>Unloads the clip and turns its file reference into a stub.</summary>
                 let domPlayer = document.getElementById(this._player.id);
