@@ -19,8 +19,17 @@
         _resizedStatus: {},
         _resizedRatio: {},
 
-        _snapPointsClip: [],
-        _snapPointsCanvas: [],
+        _snapPointsClip: {
+            horizontal: [],
+            vertical: []
+        },
+        _snapDistanceClip: 10,
+        _snapPointsCanvas: {
+            horizontal: [],
+            vertical: []
+        },
+        _snapDistanceCanvas: 10,
+        _currentSnap: {x: 0, y: 0},
 
         init: function () {
             this._refreshUI();
@@ -60,6 +69,125 @@
                         let ycoord = (clip.ycoord * scale) + ydif;
                         let xwidth = clip.width * scale;
                         let yheight = clip.height * scale;
+
+
+                        // compute sticky edges for clips
+                        let snapX = Infinity,
+                            snapY = Infinity;
+                        for (let i = 0; i < Ensemble.Editor.Renderer._snapPointsClip.vertical.length; i++) {
+                            // left
+                            let xDistance = Math.abs(xcoord - Ensemble.Editor.Renderer._snapPointsClip.vertical[i].x1);
+                            if (xDistance < Ensemble.Editor.Renderer._snapDistanceClip) {
+                                let edgeInRange = false;
+                                if (Ensemble.Editor.Renderer._snapPointsClip.vertical[i].coords.y <= ycoord && ycoord <= Ensemble.Editor.Renderer._snapPointsClip.vertical[i].coords.y + Ensemble.Editor.Renderer._snapPointsClip.vertical[i].dimensions.height) edgeInRange = true;
+                                if (Ensemble.Editor.Renderer._snapPointsClip.vertical[i].coords.y <= ycoord + yheight && ycoord + yheight <= Ensemble.Editor.Renderer._snapPointsClip.vertical[i].coords.y + Ensemble.Editor.Renderer._snapPointsClip.vertical[i].dimensions.height) edgeInRange = true;
+                                if (edgeInRange) {
+                                    let snapDif = xcoord - Ensemble.Editor.Renderer._snapPointsClip.vertical[i].x1;
+                                    if (snapX > snapDif) {
+                                        snapX = snapDif;
+                                        xcoord = Ensemble.Editor.Renderer._snapPointsClip.vertical[i].x1;
+                                    }
+                                }
+                            }
+
+                            //right
+                            xDistance = Math.abs((xcoord + xwidth) - Ensemble.Editor.Renderer._snapPointsClip.vertical[i].x1);
+                            if (xDistance < Ensemble.Editor.Renderer._snapDistanceClip) {
+                                let edgeInRange = false;
+                                if (Ensemble.Editor.Renderer._snapPointsClip.vertical[i].coords.y <= ycoord && ycoord <= Ensemble.Editor.Renderer._snapPointsClip.vertical[i].coords.y + Ensemble.Editor.Renderer._snapPointsClip.vertical[i].dimensions.height) edgeInRange = true;
+                                if (Ensemble.Editor.Renderer._snapPointsClip.vertical[i].coords.y <= ycoord + yheight && ycoord + yheight <= Ensemble.Editor.Renderer._snapPointsClip.vertical[i].coords.y + Ensemble.Editor.Renderer._snapPointsClip.vertical[i].dimensions.height) edgeInRange = true;
+                                if (edgeInRange) {
+                                    let snapDif = xcoord - (Ensemble.Editor.Renderer._snapPointsClip.vertical[i].x1 - xwidth);
+                                    if (snapX > snapDif) {
+                                        snapX = snapDif;
+                                        xcoord = Ensemble.Editor.Renderer._snapPointsClip.vertical[i].x1 - xwidth;
+                                    }
+                                }
+                            }
+                        }
+
+                        for (let i = 0; i < Ensemble.Editor.Renderer._snapPointsClip.horizontal.length; i++) {
+                            //top
+                            let yDistance = Math.abs(ycoord - Ensemble.Editor.Renderer._snapPointsClip.horizontal[i].y1);
+                            if (yDistance < Ensemble.Editor.Renderer._snapDistanceClip) {
+                                let edgeInRange = false;
+                                if (Ensemble.Editor.Renderer._snapPointsClip.horizontal[i].coords.x <= xcoord && xcoord <= Ensemble.Editor.Renderer._snapPointsClip.horizontal[i].coords.x + Ensemble.Editor.Renderer._snapPointsClip.horizontal[i].dimensions.width) edgeInRange = true;
+                                if (Ensemble.Editor.Renderer._snapPointsClip.horizontal[i].coords.x <= xcoord + xwidth && xcoord + xwidth <= Ensemble.Editor.Renderer._snapPointsClip.horizontal[i].coords.x + Ensemble.Editor.Renderer._snapPointsClip.horizontal[i].dimensions.width) edgeInRange = true;
+                                if (edgeInRange) {
+                                    let snapDif = ycoord - Ensemble.Editor.Renderer._snapPointsClip.horizontal[i].y1;
+                                    if (snapY > snapDif) {
+                                        snapY = snapDif;
+                                        ycoord = Ensemble.Editor.Renderer._snapPointsClip.horizontal[i].y1;
+                                    }
+                                }
+                            }
+
+                            //bottom
+                            yDistance = Math.abs((ycoord + yheight) - Ensemble.Editor.Renderer._snapPointsClip.horizontal[i].y1);
+                            if (yDistance < Ensemble.Editor.Renderer._snapDistanceClip) {
+                                let edgeInRange = false;
+                                if (Ensemble.Editor.Renderer._snapPointsClip.horizontal[i].coords.x <= xcoord && xcoord <= Ensemble.Editor.Renderer._snapPointsClip.horizontal[i].coords.x + Ensemble.Editor.Renderer._snapPointsClip.horizontal[i].dimensions.width) edgeInRange = true;
+                                if (Ensemble.Editor.Renderer._snapPointsClip.horizontal[i].coords.x <= xcoord + xwidth && xcoord + xwidth <= Ensemble.Editor.Renderer._snapPointsClip.horizontal[i].coords.x + Ensemble.Editor.Renderer._snapPointsClip.horizontal[i].dimensions.width) edgeInRange = true;
+                                if (edgeInRange) {
+                                    let snapDif = ycoord - (Ensemble.Editor.Renderer._snapPointsClip.horizontal[i].y1 - yheight);
+                                    if (snapY > snapDif) {
+                                        snapY = snapDif;
+                                        ycoord = Ensemble.Editor.Renderer._snapPointsClip.horizontal[i].y1 - yheight;
+                                    }
+                                }
+                            }
+                        }
+
+                        // compute sticky edges for canvas edges
+                        for (let i = 0; i < Ensemble.Editor.Renderer._snapPointsCanvas.vertical.length; i++) {
+                            //left
+                            let xDistance = Math.abs(xcoord - Ensemble.Editor.Renderer._snapPointsCanvas.vertical[i].x1);
+                            if (xDistance < Ensemble.Editor.Renderer._snapDistanceClip) {
+                                let snapDif = xcoord - Ensemble.Editor.Renderer._snapPointsCanvas.vertical[i].x1;
+                                if (snapX > snapDif) {
+                                    snapX = snapDif;
+                                    xcoord = Ensemble.Editor.Renderer._snapPointsCanvas.vertical[i].x1;
+                                }
+                            }
+
+                            //right
+                            xDistance = Math.abs((xcoord + xwidth) - Ensemble.Editor.Renderer._snapPointsCanvas.vertical[i].x1);
+                            if (xDistance < Ensemble.Editor.Renderer._snapDistanceClip) {
+                                let snapDif = xcoord - (Ensemble.Editor.Renderer._snapPointsCanvas.vertical[i].x1 - xwidth);
+                                if (snapX > snapDif) {
+                                    snapX = snapDif;
+                                    xcoord = Ensemble.Editor.Renderer._snapPointsCanvas.vertical[i].x1 - xwidth;
+                                }
+                            }
+                        }
+
+                        for (let i = 0; i < Ensemble.Editor.Renderer._snapPointsCanvas.horizontal.length; i++) {
+                            //top
+                            let yDistance = Math.abs(ycoord - Ensemble.Editor.Renderer._snapPointsCanvas.horizontal[i].y1);
+                            if (yDistance < Ensemble.Editor.Renderer._snapDistanceClip) {
+                                let snapDif = ycoord - Ensemble.Editor.Renderer._snapPointsCanvas.horizontal[i].y1;
+                                if (snapY > snapDif) {
+                                    snapY = snapDif;
+                                    ycoord = Ensemble.Editor.Renderer._snapPointsCanvas.horizontal[i].y1;
+                                }
+                            }
+
+                            //bottom
+                            yDistance = Math.abs((ycoord + yheight) - Ensemble.Editor.Renderer._snapPointsCanvas.horizontal[i].y1);
+                            if (yDistance < Ensemble.Editor.Renderer._snapDistanceClip) {
+                                let snapDif = ycoord - (Ensemble.Editor.Renderer._snapPointsCanvas.horizontal[i].y1 - yheight);
+                                if (snapY > snapDif) {
+                                    snapY = snapDif;
+                                    ycoord = Ensemble.Editor.Renderer._snapPointsCanvas.horizontal[i].y1 - yheight;
+                                }
+                            }
+                        }
+
+                        if (isFinite(snapX)) Ensemble.Editor.Renderer._currentSnap.x = snapX;
+                        else Ensemble.Editor.Renderer._currentSnap.x = 0;
+                        if (isFinite(snapY)) Ensemble.Editor.Renderer._currentSnap.y = snapY;
+                        else Ensemble.Editor.Renderer._currentSnap.y = 0;
+
 
                         context.globalAlpha = 0.5;
                         context.beginPath();
@@ -238,11 +366,18 @@
 
         updateClipSnapPoints: function () {
             /// <summary>Updates the clip-snappable regions for dragged/resized clips in the canvas.</summary>
+            Ensemble.Editor.Renderer._snapPointsClip.horizontal = [];
+            Ensemble.Editor.Renderer._snapPointsClip.vertical = [];
             if (Ensemble.Settings.retrieveSetting("sticky-edges-clip")) {
-
-            }
-            else {
-                Ensemble.Editor.Renderer._snapPointsClip = [];
+                let horizontalEdges = [];
+                let verticalEdges = [];
+                for (let i = Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList.length - 1; i > -1; i--) {
+                    let tempEdge = Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList[i].getEdges(Ensemble.Editor.Renderer._scale);
+                    horizontalEdges.push(tempEdge.top, tempEdge.bottom);
+                    verticalEdges.push(tempEdge.left, tempEdge.right);
+                }
+                Ensemble.Editor.Renderer._snapPointsClip.horizontal = horizontalEdges;
+                Ensemble.Editor.Renderer._snapPointsClip.vertical = verticalEdges;
             }
         },
 
@@ -252,35 +387,41 @@
                 let scale = Ensemble.Editor.Renderer._scale;
                 let width = Ensemble.Session.projectResolution.width * scale;
                 let height = Ensemble.Session.projectResolution.height * scale;
-                Ensemble.Editor.Renderer._snapPointsCanvas = [
-                    {
-                        x1: 0,
-                        x2: width,
-                        y1: 0,
-                        y2: 0
-                    },
-                    {
-                        x1: width,
-                        x2: width,
-                        y1: 0,
-                        y2: height
-                    },
-                    {
-                        x1: 0,
-                        x2: width,
-                        y1: height,
-                        y2: height
-                    },
-                    {
-                        x1: 0,
-                        x2: 0,
-                        y1: 0,
-                        y2: height
-                    }
-                ];
+                Ensemble.Editor.Renderer._snapPointsCanvas = {
+                    horizontal: [
+                        {
+                            x1: 0,
+                            x2: width,
+                            y1: 0,
+                            y2: 0
+                        },
+                        {
+                            x1: 0,
+                            x2: width,
+                            y1: height,
+                            y2: height
+                        }
+                    ],
+                    vertical: [
+                        {
+                            x1: width,
+                            x2: width,
+                            y1: 0,
+                            y2: height
+                        },
+
+                        {
+                            x1: 0,
+                            x2: 0,
+                            y1: 0,
+                            y2: height
+                        }
+                    ]
+                };
             }
             else {
-                Ensemble.Editor.Renderer._snapPointsCanvas = [];
+                Ensemble.Editor.Renderer._snapPointsCanvas.horizontal = [];
+                Ensemble.Editor.Renderer._snapPointsCanvas.vertical = [];
             }
         },
 
@@ -437,8 +578,8 @@
                 if (!Ensemble.Editor.PlaybackMGR.playing) Ensemble.Editor.Renderer.stop();
 
                 let scale = Ensemble.Editor.Renderer._scale;
-                let xdif = Ensemble.Editor.Renderer._clipDragCurrentLeft - Ensemble.Editor.Renderer._clipDragOriginalLeft;
-                let ydif = Ensemble.Editor.Renderer._clipDragCurrentTop - Ensemble.Editor.Renderer._clipDragOriginalTop;
+                let xdif = Ensemble.Editor.Renderer._clipDragCurrentLeft - Ensemble.Editor.Renderer._clipDragOriginalLeft - Ensemble.Editor.Renderer._currentSnap.x;
+                let ydif = Ensemble.Editor.Renderer._clipDragCurrentTop - Ensemble.Editor.Renderer._clipDragOriginalTop - Ensemble.Editor.Renderer._currentSnap.y;
 
                 let newX = [];
                 let newY = [];
