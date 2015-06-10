@@ -16,7 +16,12 @@
         _draggedClips: [],
         _resizedClips: [],
         _resizedBound: {},
-        _resizedStatus: {},
+        _resizedStatus: {
+            xcoord: 0,
+            ycoord: 0,
+            width: 0,
+            height: 0
+        },
         _resizedRatio: {},
 
         _snapPointsClip: {
@@ -201,6 +206,7 @@
                         context.drawImage(clip._player, xcoord, ycoord, xwidth, yheight);
                         context.globalAlpha = 1;
                     }
+
                     if (Ensemble.Editor.Renderer._resizedClips.indexOf(Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList[k].id) > -1) {
                         let bound = Ensemble.Editor.Renderer._resizedBound;
 
@@ -254,15 +260,6 @@
                                     yheight = clip.height * scale;
                                     break;
                             }
-                        }
-
-                        if (1 > xwidth) {
-                            xwidth = 1;
-                            xcoord = (clip.xcoord * scale) + (clip.width * scale) - 1;
-                        }
-                        if (1 > yheight) {
-                            yheight = 1;
-                            ycoord = (clip.ycoord * scale) + (clip.height * scale) - 1;
                         }
 
                         context.globalAlpha = 0.75;

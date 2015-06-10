@@ -7,7 +7,9 @@
     <!-- WinJS references -->
     <!-- To get the latest version of WinJS, go to: http://go.microsoft.com/fwlink/?LinkId=533245 -->
     <link href="WinJS/css/ui-light.css" rel="stylesheet" />
-    <script src="WinJS/js/WinJS.js"></script>
+    <!--<script src="WinJS/js/WinJS.js"></script>-->
+    <script src="WinJS/js/base.js"></script>
+    <script src="WinJS/js/ui.js"></script>
 
     <!-- Ensemble_of_One_Win10 references -->
     <link rel="stylesheet" href="/css/default.css" />
@@ -68,12 +70,12 @@
     <script src="/js/settings.js"></script>
     <script src="/js/ui.js"></script>
 </head>
-<body>
+<body class="win-type-body">
     <div class="editor-media-container"></div>
     <div class="app-page app-page--main-menu">
         <nav class="main-menu__nav-container">
             <header class="main-menu__nav-header">
-                <h1 class="main-menu__app-logo">Ensemble of One</h1>
+                <h1 class="win-h1 main-menu__app-logo">Ensemble of One</h1>
             </header>
             <section class="main-menu__nav-section main-menu__nav-section--primary">
                 <a class="main-menu__nav-item main-menu__nav-item--active" data-menu="home">&nbsp;Home</a>
@@ -88,7 +90,7 @@
         <main class="main-menu__content-container">
             <section class="main-menu__content-section main-menu__content-section--home main-menu__content-section--visible">
                 <div>
-                    <h2>Quickstart</h2>
+                    <h2 class="win-h2">Quickstart</h2>
                     <p>Select an aspect ratio to get started! We reccommend 16:9.</p>
                     </div>
                 <div>
@@ -100,7 +102,7 @@
                     </div>
                 </div>
                 <div>
-                    <h2>Recent projects</h2>
+                    <h2 class="win-h2">Recent projects</h2>
                     <p>Projects you've recently edited.</p>
                 </div>
                 <div>
@@ -109,17 +111,17 @@
             </section>
             <section class="main-menu__content-section main-menu__content-section--new-project main-menu__content-section--hidden">
                 <div>
-                    <h2>New project</h2>
+                    <h2 class="win-h2">New project</h2>
 
                     <p>Create a new Ensemble of One project. Projects can contain as many videos, audio clips, and images as you care to import. Let loose and make something great!</p>
                     </div>
                 <div>
-                    <h3>Project name</h3>
-                    <input type="text" autocomplete="off" spellcheck="true" placeholder="My great project" class="menu-create-project-param menu-create-project-param--name" />
+                    <h3 class="win-h3">Project name</h3>
+                    <input type="text" autocomplete="off" spellcheck="true" placeholder="My great project" class="win-textbox menu-create-project-param menu-create-project-param--name" />
                     <p>Give your project a fitting name. Feel free to use any characters you want (even emoji)!</p>
 
-                    <h3>Aspect ratio</h3>
-                    <select class="menu-create-project-param menu-create-project-param--aspect">
+                    <h3 class="win-h3">Aspect ratio</h3>
+                    <select class="win-dropdown menu-create-project-param menu-create-project-param--aspect">
                         <option selected value="16:9">Widescreen (HDTV, 16:9)</option>
                         <option value="16:10">Widescreen (laptop, 16:10)</option>
                         <option value="2.39:1">Widescreen (cinematic, 2.39:1)</option>
@@ -127,34 +129,34 @@
                     </select>
                     <p>Decide what shape you want your video to be. HDTVs usually have a ratio of 16:9, so in most cases this'll probably be your best shot.</p>
                 </div>
-                <p><button class="eo1-btn menu-create-project-param menu-create-project-param--submit">Create</button></p>
+                <p><button class="win-button eo1-btn menu-create-project-param menu-create-project-param--submit">Create</button></p>
             </section>
             <section class="main-menu__content-section main-menu__content-section--open-project main-menu__content-section--hidden">
                 <div>
-                    <h2>Open project</h2>
+                    <h2 class="win-h2">Open project</h2>
                     <p>
-                        <button disabled class="eo1-btn">Browse...</button>
+                        <button disabled class="win-button eo1-btn">Browse...</button>
                     </p>
                     </div>
                 <div>
-                    <h3>Local projects</h3>
+                    <h3 class="win-h3">Local projects</h3>
                     <ul class="open-menu__local-projects"></ul>
                 </div>
             </section>
             <section class="main-menu__content-section main-menu__content-section--settings main-menu__content-section--hidden">
                 <div>
-                    <h2>Settings</h2>
+                    <h2 class="win-h2">Settings</h2>
                     <p>One size doesn't have to fit all &mdash; go ahead, configure Ensemble of One to your liking!</p>
                 </div>
                 <div class="settings-menu-section">
-                    <h3>Canvas Sticky Edges</h3>
+                    <h3 class="win-h3">Canvas Sticky Edges</h3>
                     <div class="app-setting app-setting--sticky-edges-clip" data-app-setting="sticky-edges-clip" data-setting-type="toggle" data-win-control="WinJS.UI.ToggleSwitch" data-win-options="{title: 'Clips stick to each other', checked: true}"></div>
                     <div class="app-setting app-setting--sticky-edges-canvas" data-app-setting="sticky-edges-canvas" data-setting-type="toggle" data-win-control="WinJS.UI.ToggleSwitch" data-win-options="{title: 'Clips stick to canvas edges', checked: true}"></div>
                 </div>
                 <div class="settings-menu-section">
-                    <h3>Danger Zone</h3>
-                    <p><button class="eo1-btn app-setting app-setting--reset-settings" data-app-setting="reset-settings" data-setting-type="instant">Reset settings</button></p>
-                    <p><button class="eo1-btn app-setting app-setting--delete-all-projects" data-app-setting="delete-all-projects" data-setting-type="instant">Delete temporary projects</button></p>
+                    <h3 class="win-h3">Danger Zone</h3>
+                    <p><button class="win-button eo1-btn app-setting app-setting--reset-settings" data-app-setting="reset-settings" data-setting-type="instant">Reset settings</button></p>
+                    <p><button class="win-button eo1-btn app-setting app-setting--delete-all-projects" data-app-setting="delete-all-projects" data-setting-type="instant">Delete temporary projects</button></p>
                 </div>
             </section>
         </main>
@@ -162,11 +164,11 @@
 
 
     <div class="app-page app-page--loading app-page--loading-editor app-page--hidden">
-        <h1><progress class="win-ring win-medium"></progress>&nbsp;Loading your project&hellip;</h1>
+        <h1 class="win-h1"><progress class="win-ring win-medium"></progress>&nbsp;Loading your project&hellip;</h1>
     </div>
 
     <div class="app-page app-page--loading app-page--loading-main-menu app-page--hidden app-page--loading-main-menu">
-        <h1><progress class="win-ring win-medium"></progress>&nbsp;Closing your project&hellip;</h1>
+        <h1 class="win-h1"><progress class="win-ring win-medium"></progress>&nbsp;Closing your project&hellip;</h1>
     </div>
 
     <div class="app-page app-page--media-browser app-page--hidden">
@@ -311,7 +313,7 @@
                 <div class="editor-playback-widget">
                     <div class="editor-time-display">00:00:00.000</div>
                     <div>
-                        <button class="eo1-btn eo1-btn--editor-playpause" title="Play">&#xE102;</button>
+                        <button class="win-button eo1-btn eo1-btn--editor-playpause" title="Play">&#xE102;</button>
                     </div>
                 </div>
             </section>
@@ -330,7 +332,7 @@
                 <div class="timeline-display-container">
                     <div class="timeline-button-container timeline-button-container--left">
                         <div class="timeline-button-container__section">
-                            <button class="eo1-btn eo1-btn--timeline eo1-btn--timeline-new-track" title="New track">&#xE109;</button>
+                            <button class="win-button eo1-btn eo1-btn--timeline eo1-btn--timeline-new-track" title="New track">&#xE109;</button>
                         </div>
                     </div>
                     <div id="timeline-track-container">
@@ -345,13 +347,13 @@
                     </div>
                     <div class="timeline-button-container timeline-button-container--right">
                         <div class="timeline-button-container__section">
-                            <button class="eo1-btn eo1-btn--timeline eo1-btn--timeline-zoom-in" title="Zoom in">&#xE12E;</button>
-                            <button class="eo1-btn eo1-btn--timeline eo1-btn--timeline-zoom-out" title="Zoom out">&#xE1A4;</button>
+                            <button class="win-button eo1-btn eo1-btn--timeline eo1-btn--timeline-zoom-in" title="Zoom in">&#xE12E;</button>
+                            <button class="win-button eo1-btn eo1-btn--timeline eo1-btn--timeline-zoom-out" title="Zoom out">&#xE1A4;</button>
                         </div>
                         <div class="timeline-button-container__section timeline-button-container__section--spacer"></div>
                         <div class="timeline-button-container__section">
-                            <button class="fa-rotate-270 eo1-btn eo1-btn--timeline eo1-btn--timeline-scroll-up" title="Scroll up">&#xE111;</button>
-                            <button class="fa-rotate-270 eo1-btn eo1-btn--timeline eo1-btn--timeline-scroll-down" title="Scroll down">&#xE112;</button>
+                            <button class="win-button fa-rotate-270 eo1-btn eo1-btn--timeline eo1-btn--timeline-scroll-up" title="Scroll up">&#xE111;</button>
+                            <button class="win-button fa-rotate-270 eo1-btn eo1-btn--timeline eo1-btn--timeline-scroll-down" title="Scroll down">&#xE112;</button>
                         </div>
                         
                     </div>

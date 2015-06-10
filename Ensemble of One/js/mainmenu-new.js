@@ -86,7 +86,7 @@
                 Ensemble.MainMenu.ui.localProjectContainer.innerHTML = "";;
                 for (let i = 0; i < projects.length; i++) {
                     let thumb = "<img class='open-menu__item-thumb' src='" + projects[i].thumbnail + "'/>";
-                    let title = "<h4>" + projects[i].name + "</h4>";
+                    let title = "<h4 class='win-h4'>" + projects[i].name + "</h4>";
 
                     let entireItem = document.createElement("li");
                     entireItem.className = "open-menu__project-item";
