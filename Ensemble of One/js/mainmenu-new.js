@@ -69,9 +69,9 @@
                     WinJS.UI.Animation.exitPage(outgoing.children, null).done(function () {
                         $(outgoing).removeClass("main-menu__content-section--visible").addClass("main-menu__content-section--hidden");
                         $(incoming).removeClass("main-menu__content-section--hidden").addClass("main-menu__content-section--visible");
-                        WinJS.UI.Animation.enterPage(incoming.children, null).done(function () {
-                            Ensemble.FileIO.enumerateProjects(Ensemble.MainMenu._listeners.enumeratedProjects);
-                        });
+                        WinJS.UI.Animation.enterPage(incoming.children, null);
+                        if (incoming.dataset.menu == "open-project") Ensemble.FileIO.enumerateProjects(Ensemble.MainMenu._listeners.enumeratedProjects);
+                        else $(Ensemble.MainMenu.ui.localProjectContainer.children).css("opacity", "0");
                     });
                     Ensemble.Settings.refreshSettingsDialog();
                 }
@@ -100,7 +100,8 @@
 
                     Ensemble.MainMenu.ui.localProjectContainer.appendChild(entireItem);
                 }
-                WinJS.UI.Animation.fadeIn(Ensemble.MainMenu.ui.localProjectContainer);
+
+                WinJS.UI.Animation.enterPage(Ensemble.MainMenu.ui.localProjectContainer.children, null);
             },
 
             pointerDown: function (event) {
