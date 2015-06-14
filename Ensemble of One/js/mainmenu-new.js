@@ -147,6 +147,7 @@
                     event.currentTarget.removeEventListener("animationend", Ensemble.MainMenu._listeners.editorEntranceFinished);
                     $(event.currentTarget).removeClass("app-page--enter-right");
                     $(".app-page--loading-editor").removeClass("app-page--enter-right").addClass("app-page--hidden");
+                    Ensemble.Navigation.pushBackState(Ensemble.Pages.Editor.unload);
                 }
             },
 

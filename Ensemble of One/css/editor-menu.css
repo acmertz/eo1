@@ -17,21 +17,6 @@
     background-color: #dc143c;
 }
 
-.editor-menu__titlebar-button {
-    color: #fff;
-    height: 100%;
-    line-height: 45px;
-}
-
-.editor-menu__titlebar-button:hover {
-    background-color: #df2b4f;
-}
-
-.editor-menu__titlebar-button:active {
-    color: #dc143c;
-    background-color: #fff;
-}
-
 .editor-menubar__command-list {
     list-style: none;
     margin: 0;
@@ -177,17 +162,20 @@
     border-top: 5px solid #d3d3d3;
 }
 
-.editor-menu-clickeater {
+.ensemble-clickeater {
     display: none;
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+}
+
+.ensemble-clickeater--editor-menu {
     z-index: 99;
 }
 
-.editor-menu-clickeater--active {
+.ensemble-clickeater--active {
     display: block;
 }
 
@@ -226,10 +214,6 @@
     justify-content: center;
     height: 45px;
     background-color: #dc143c;
-    color: #fff;
-}
-
-.editor-import-menu__close-button {
     color: #fff;
 }
 

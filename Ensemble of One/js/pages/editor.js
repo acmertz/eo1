@@ -58,12 +58,19 @@
             }
         },
 
-        unload: function () {
+        unload: function (event) {
             /// <summary>Triggers an unload of the project.</summary>
+            /// <param name="event" type="Object">An optional event object. If passed, the Editor will assume its menu is closed and play an alternate animation instead.</param>
             $(".app-page--loading-main-menu").removeClass("app-page--hidden");
 
             let editorPage = document.getElementsByClassName("app-page--editor")[0];
-            $(editorPage).removeClass("app-page--displace").removeClass("app-page--displace-right-320").addClass("app-page--exit-right-from-displace-320");
+            if ($(editorPage).hasClass("app-page--displace")) {
+                $(editorPage).removeClass("app-page--displace").removeClass("app-page--displace-right-320").addClass("app-page--exit-right-from-displace-320");
+            }
+            else {
+                $(editorPage).addClass("app-page--exit-right");
+            }
+            
             editorPage.addEventListener("animationend", Ensemble.Pages.Editor._listeners.exitAnimationFinished);
 
             Ensemble.Editor.MenuMGR.closeMenu();
@@ -110,7 +117,7 @@
             exitAnimationFinished: function (event) {
                 let editorPage = document.getElementsByClassName("app-page--editor")[0];
                 editorPage.removeEventListener("animationend", Ensemble.Pages.Editor._listeners.exitAnimationFinished);
-                $(editorPage).removeClass("app-page--exit-right-from-displace-320").addClass("app-page--hidden");
+                $(editorPage).removeClass("app-page--exit-right-from-displace-320").removeClass("app-page--exit-right").addClass("app-page--hidden");
                 
                 Ensemble.Editor.TimelineMGR.unload();
                 Ensemble.Editor.PlaybackMGR.unload();
