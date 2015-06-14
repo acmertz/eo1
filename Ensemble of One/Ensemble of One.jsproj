@@ -166,12 +166,22 @@
     <Content Include="lib\underscore-min.map" />
     <Content Include="lib\XMLWriter.js" />
     <Content Include="WinJS\css\ui-dark.css" />
+    <Content Include="WinJS\css\ui-dark.min.css" />
     <Content Include="WinJS\css\ui-light.css" />
+    <Content Include="WinJS\css\ui-light.min.css" />
     <Content Include="WinJS\fonts\Symbols.ttf" />
+    <Content Include="WinJS\js\base.js" />
+    <Content Include="WinJS\js\base.min.js" />
+    <Content Include="WinJS\js\base.min.js.map" />
     <Content Include="WinJS\js\en-US\ui.strings.js" />
-    <Content Include="WinJS\js\WinJS.js" />
-    <Content Include="WinJS\js\WinJS.intellisense.js" />
+    <Content Include="WinJS\js\ui.js" />
+    <Content Include="WinJS\js\ui.min.js" />
+    <Content Include="WinJS\js\ui.min.js.map" />
     <Content Include="WinJS\js\WinJS.intellisense-setup.js" />
+    <Content Include="WinJS\js\WinJS.intellisense.js" />
+    <Content Include="WinJS\License.txt" />
+    <Content Include="WinJS\package.json" />
+    <Content Include="WinJS\README.md" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\$(WMSJSProjectDirectory)\Microsoft.VisualStudio.$(WMSJSProject).targets" />
   <!-- To modify your build process, add your task inside one of the targets below then uncomment

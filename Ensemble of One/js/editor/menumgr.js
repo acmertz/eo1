@@ -17,8 +17,10 @@
             this.menuOpen = false;
             this.currentMenu = null;
             this.currentState = "none";
-            $(".editor-menu").removeClass(".editor-menu--visible");
-            $(".app-page--editor-menu").addClass("app-page--hidden");
+
+            let editorMenu = document.getElementsByClassName("app-page--editor-menu")[0];
+            $(editorMenu).addClass("app-page--exit-right");
+            editorMenu.addEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.exitAnimationFinished);
         },
 
         hideMenus: function () {
@@ -119,14 +121,18 @@
         },
 
         _listeners: {
+            exitAnimationFinished: function (event) {
+                let editorMenu = document.getElementsByClassName("app-page--editor-menu")[0];
+                $(editorMenu).removeClass("app-page--exit-right").addClass("app-page--hidden");;
+                editorMenu.removeEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.exitAnimationFinished);
+            },
+
             menubarButtonClicked: function (event) {
                 let targetToolbarId = event.currentTarget.dataset.ensembleMenu;
                 let targetToolbar = document.getElementsByClassName("editor-toolbar--" + event.currentTarget.dataset.ensembleMenu)[0];
                 if (targetToolbarId == "file") {
-                    console.log("Show file menu.");
                     Ensemble.Editor.MenuMGR.ui.projectThumb.src = Ensemble.Session.projectThumb;
 
-                    //$(".editor-menu--file").addClass("editor-menu--visible");
                     $(".app-page--editor-menu").removeClass("app-page--hidden");
                     $(".app-page--editor").addClass("app-page--displace app-page--displace-right-320");
 

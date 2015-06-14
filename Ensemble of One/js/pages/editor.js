@@ -60,10 +60,15 @@
 
         unload: function () {
             /// <summary>Triggers an unload of the project.</summary>
-            console.log("Hiding editor...");
             $(".app-page--loading-main-menu").removeClass("app-page--hidden");
-            $(".app-page--editor").removeClass("app-page--displace").removeClass("app-page--displace-right-320");
-            Ensemble.Pages.Editor._listeners.exitAnimationFinished();
+
+            let editorPage = document.getElementsByClassName("app-page--editor")[0];
+            $(editorPage).removeClass("app-page--displace").removeClass("app-page--displace-right-320").addClass("app-page--exit-right-from-displace-320");
+            editorPage.addEventListener("animationend", Ensemble.Pages.Editor._listeners.exitAnimationFinished);
+
+            Ensemble.Editor.MenuMGR.closeMenu();
+            Ensemble.Editor.MenuMGR.unload();
+
             let appView = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
             appView.title = "";
         },
@@ -104,14 +109,12 @@
         _listeners: {
             exitAnimationFinished: function (event) {
                 let editorPage = document.getElementsByClassName("app-page--editor")[0];
-                editorPage.removeEventListener("transitionend", Ensemble.Pages.Editor._listeners.exitAnimationFinished);
-                $(editorPage).removeClass("app-page--exit-right").addClass("app-page--hidden");
+                editorPage.removeEventListener("animationend", Ensemble.Pages.Editor._listeners.exitAnimationFinished);
+                $(editorPage).removeClass("app-page--exit-right-from-displace-320").addClass("app-page--hidden");
                 
-                Ensemble.Editor.MenuMGR.closeMenu();
                 Ensemble.Editor.TimelineMGR.unload();
                 Ensemble.Editor.PlaybackMGR.unload();
                 Ensemble.Editor.Renderer.unload();
-                Ensemble.Editor.MenuMGR.unload();
                 Ensemble.HistoryMGR.unload();
                 Ensemble.Editor.SelectionMGR.unload();
                 Ensemble.Editor.CalloutMGR.unload();

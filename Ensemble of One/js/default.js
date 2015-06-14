@@ -21,10 +21,10 @@ var myGreatGlobalVids = [];
 	    appView.titleBar.buttonForegroundColor = textColor;
 	    appView.titleBar.buttonInactiveBackgroundColor = hoverColor;
 	    appView.titleBar.buttonInactiveForegroundColor = textColor;
-	    appView.titleBar.buttonHoverBackgroundColor = hoverColor;
+	    appView.titleBar.buttonHoverBackgroundColor = activeColor;
 	    appView.titleBar.buttonHoverForegroundColor = textColor;
-	    appView.titleBar.buttonPressedBackgroundColor = activeColor;
-	    appView.titleBar.buttonPressedForegroundColor = textColor;
+	    appView.titleBar.buttonPressedBackgroundColor = textColor;
+	    appView.titleBar.buttonPressedForegroundColor = primaryColor;
 
 	    if (Ensemble.Platform.currentPlatform == null) {
 	        args.setPromise(WinJS.UI.processAll());

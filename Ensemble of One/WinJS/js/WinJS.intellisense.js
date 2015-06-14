@@ -1,9 +1,12 @@
-﻿(function () {
+﻿// Copyright (c) Microsoft Corporation.  All Rights Reserved. Licensed under the MIT License. See License.txt in the project root for license information.
+/* global intellisense, window, document, setTimeout, WinJS */
+(function () {
+    "use strict";
     var redirect = intellisense.redirectDefinition;
 
     function makeAllEnumerable(v) {
         /// <param name="v" type="Object" />
-        if (v && typeof v === "object")
+        if (v && typeof v === "object") {
             Object.getOwnPropertyNames(v).forEach(function (name) {
                 var pd = Object.getOwnPropertyDescriptor(v, name);
                 if (!pd.enumerable && pd.configurable) {
@@ -11,6 +14,7 @@
                     Object.defineProperty(v, name, pd);
                 }
             });
+        }
         return v;
     }
 
@@ -18,8 +22,9 @@
         /// <param name="old" type="Function" />
         var wrapper = function () {
             var args = [];
-            for (var i = 0, len = arguments.length; i < len; i++)
+            for (var i = 0, len = arguments.length; i < len; i++) {
                 args.push(makeAllEnumerable(arguments[i]));
+            }
             return old.apply(this, args);
         };
         redirect(wrapper, old);
@@ -28,12 +33,14 @@
 
     function wrapAllMethods(v) {
         /// <param name="v" type="Object" />
-        if (v)
+        if (v) {
             Object.getOwnPropertyNames(v).forEach(function (name) {
                 var value = v[name];
-                if (typeof value === "function")
+                if (typeof value === "function") {
                     v[name] = wrap(value);
+                }
             });
+        }
         return v;
     }
 
@@ -49,7 +56,7 @@
             var app = this;
             setTimeout(function () {
                 app.stop();
-            }, 0)
+            }, 0);
             return originalApplicationStart.apply(this, arguments);
         };
         redirect(WinJS.Application.start, originalApplicationStart);
@@ -59,7 +66,6 @@
             var result = originalPagesDefine.apply(this, arguments);
 
             intellisense.callerDefines(result, members);
-            intellisense.logMessage('in here');
             if (typeof uri === 'string') {
                 intellisense.declareNavigationContainer(result, "Page (" + uri + ")");
             }
@@ -104,7 +110,9 @@
                     if (typeof member === 'function') {
                         intellisense.setCallContext(member, {
                             get thisArg() {
-                                if (!classInstance) classInstance = new result();
+                                if (!classInstance) {
+                                    classInstance = new result();
+                                }
                                 return classInstance;
                             }
                         });
