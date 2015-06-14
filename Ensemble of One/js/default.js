@@ -47,6 +47,7 @@ var myGreatGlobalVids = [];
 			if (args.detail.previousExecutionState !== activation.ApplicationExecutionState.terminated) {
 			    // TODO: This application has been newly launched. Initialize your application here.
 			    console.info("Starting Ensemble of One...");
+			    Ensemble.Navigation.init();
 			    //var extendedSplashImage = document.getElementById("imgMainLogo");
 			    //extendedSplashImage.width = args.detail.splashScreen.imageLocation.width;
 			    //extendedSplashImage.height = args.detail.splashScreen.imageLocation.height;

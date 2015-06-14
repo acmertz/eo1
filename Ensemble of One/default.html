@@ -63,6 +63,7 @@
     <script src="/js/historymgr.js"></script>
     <script src="/js/mainmenu-new.js"></script>
     <script src="/js/keyboardmgr.js"></script>
+    <script src="/js/navigation.js"></script>
     <script src="/js/osdialogmgr.js"></script>
     <script src="/js/platform.js"></script>
     <script src="/js/projectfile.js"></script>
@@ -174,7 +175,6 @@
     <div class="app-page app-page--media-browser app-page--hidden">
         <div class="app-page__inner app-page__inner--600 app-page__inner--media-browser">
             <div class="mediaBrowserHeaderContainer">
-                <button class="win-backbutton editor-import-menu__close-button editor-menu__titlebar-button"></button>
                 <div id="editorMediaBrowserLocationButtonContainer"><span id="editorMediaBrowserLocationButton">Videos library</span><span>&nbsp;&rsaquo;</span></div>
                 <div id="editorMediaBrowserCurrentPathContainer"></div>
                 <div id="editorMediaBrowserFolderControlContainer">
@@ -191,11 +191,10 @@
     <div class="app-page app-page--editor-menu app-page--hidden">
         <div class="app-page__inner app-page__inner--320 app-page__inner--editor-menu">
             <section class="editor-menu-titlebar">
-                <button class="win-backbutton editor-file-menu__close-button editor-menu__titlebar-button"></button>
             </section>
 
             <section class="editor-menu-section">
-                <h2 id="editorProjectNameDisplay">Project Name Here</h2>
+                <h2 class="win-h2" id="editorProjectNameDisplay">Project Name Here</h2>
                 <p><img src="" alt="Project thumbnail" class="editor-project-details__thumb" /></p>
                 <p id="editorMenuDurationDisplay">[Placeholder Duration Here]</p>
                 <p><span id="editorMenuNumberOfTracksDisplay">[Placeholder]</span> tracks</p>
@@ -367,7 +366,7 @@
 
         <div id="editor-history-msg">Placeholder history message.</div>
 
-        <div class="editor-menu-clickeater"></div>
+        <div class="ensemble-clickeater ensemble-clickeater--backnav ensemble-clickeater--editor-menu"></div>
 
         <div class="editorTimelineDragPreviewFlyout" tabindex="-1">00:00:00.000</div>
         <div class="timeline-selection-callout" tabindex="-1">

@@ -19,8 +19,10 @@
             this.currentState = "none";
 
             let editorMenu = document.getElementsByClassName("app-page--editor-menu")[0];
-            $(editorMenu).addClass("app-page--exit-right");
-            editorMenu.addEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.exitAnimationFinished);
+            if (!$(editorMenu).hasClass("app-page--hidden")) {
+                $(editorMenu).addClass("app-page--exit-right");
+                editorMenu.addEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.exitAnimationFinished);
+            }
         },
 
         hideMenus: function () {
@@ -33,10 +35,24 @@
 
         closeMenu: function () {
             /// <summary>Closes the menu.</summary>
-            $(Ensemble.Editor.MenuMGR.ui.clickEater).removeClass("editor-menu-clickeater--active");
+            $(Ensemble.Editor.MenuMGR.ui.clickEater).removeClass("ensemble-clickeater--active");
             Ensemble.Editor.MenuMGR.hideMenus();
             Ensemble.Editor.MenuMGR.menuOpen = false;
             Ensemble.KeyboardMGR.editorDefault();
+        },
+
+        closeFileMenu: function () {
+            $(Ensemble.Editor.MenuMGR.ui.clickEater).removeClass("ensemble-clickeater--active");
+
+            $(".app-page--editor").removeClass("app-page--displace-right-320").addClass("app-page--close-displace-right-320");
+            document.getElementsByClassName("app-page--editor")[0].addEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.projectMenuExited)
+        },
+
+        closeMediaMenu: function () {
+            $(Ensemble.Editor.MenuMGR.ui.clickEater).removeClass("ensemble-clickeater--active");
+
+            $(".app-page--editor").removeClass("app-page--displace-right-600").addClass("app-page--close-displace-right-600");
+            document.getElementsByClassName("app-page--editor")[0].addEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.importMenuExited)
         },
 
         _reevaluateState: function () {
@@ -71,12 +87,8 @@
         },
 
         _refreshUI: function () {
-            this.ui.clickEater = document.getElementsByClassName("editor-menu-clickeater")[0];
+            this.ui.clickEater = document.getElementsByClassName("ensemble-clickeater--editor-menu")[0];
             this.ui.projectThumb = document.getElementsByClassName("editor-project-details__thumb")[0];
-
-            //this.ui.clickEater.addEventListener("click", Ensemble.Editor.MenuMGR._listeners.clickEaterClicked);
-            document.getElementsByClassName("editor-import-menu__close-button")[0].addEventListener("click", Ensemble.Editor.MenuMGR._listeners.mediaBrowserClickEaterClicked);
-            document.getElementsByClassName("editor-file-menu__close-button")[0].addEventListener("click", Ensemble.Editor.MenuMGR._listeners.projectMenuClickEaterClicked);
 
             let menuBarButtons = document.getElementsByClassName("editor-menubar__command");
             for (let i = 0; i < menuBarButtons.length; i++) {
@@ -96,10 +108,6 @@
         },
 
         _cleanUI: function () {
-            //this.ui.clickEater.removeEventListener("click", Ensemble.Editor.MenuMGR._listeners.clickEaterClicked);
-            document.getElementsByClassName("editor-import-menu__close-button")[0].removeEventListener("click", Ensemble.Editor.MenuMGR._listeners.mediaBrowserClickEaterClicked);
-            document.getElementsByClassName("editor-file-menu__close-button")[0].removeEventListener("click", Ensemble.Editor.MenuMGR._listeners.projectMenuClickEaterClicked);
-
             this.ui.clickEater = null;
             this.ui.projectThumb = null;
 
@@ -137,8 +145,8 @@
                     $(".app-page--editor").addClass("app-page--displace app-page--displace-right-320");
 
                     Ensemble.Editor.MenuMGR.menuOpen = true;
-                    $(Ensemble.Editor.MenuMGR.ui.clickEater).addClass("editor-menu-clickeater--active");
-                    Ensemble.Editor.MenuMGR.ui.clickEater.addEventListener("click", Ensemble.Editor.MenuMGR._listeners.projectMenuClickEaterClicked);
+                    $(Ensemble.Editor.MenuMGR.ui.clickEater).addClass("ensemble-clickeater--active");
+                    Ensemble.Navigation.pushBackState(Ensemble.Editor.MenuMGR.closeFileMenu);
                     Ensemble.KeyboardMGR.editorMenu();
                 }
                 else {
@@ -156,12 +164,6 @@
                     }
                     Ensemble.Pages.Editor.viewResized();
                 }
-            },
-
-            mouseEnteredMenubarCommand: function (event) {
-                console.log("Mouse entered menubar command!");
-                let targetMenu = document.getElementsByClassName("editor-menu--" + event.currentTarget.dataset.ensembleMenu)[0];
-                Ensemble.Editor.MenuMGR.showMenu(targetMenu);
             },
 
             menuCommandPointerDown: function (event) {
@@ -192,8 +194,8 @@
                     document.getElementsByClassName("app-page--editor")[0].addEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.importMenuTransitioned)
 
                     Ensemble.Editor.MenuMGR.menuOpen = true;
-                    $(Ensemble.Editor.MenuMGR.ui.clickEater).addClass("editor-menu-clickeater--active");
-                    Ensemble.Editor.MenuMGR.ui.clickEater.addEventListener("click", Ensemble.Editor.MenuMGR._listeners.mediaBrowserClickEaterClicked);
+                    $(Ensemble.Editor.MenuMGR.ui.clickEater).addClass("ensemble-clickeater--active");
+                    Ensemble.Navigation.pushBackState(Ensemble.Editor.MenuMGR.closeMediaMenu);
                     Ensemble.KeyboardMGR.editorMenu();
                 }
 
@@ -239,14 +241,6 @@
                 //Ensemble.Editor.MenuMGR.closeMenu();
             },
 
-            mediaBrowserClickEaterClicked: function (event) {
-                Ensemble.Editor.MenuMGR.ui.clickEater.removeEventListener("click", Ensemble.Editor.MenuMGR._listeners.mediaBrowserClickEaterClicked);
-                $(Ensemble.Editor.MenuMGR.ui.clickEater).removeClass("editor-menu-clickeater--active");
-                
-                $(".app-page--editor").removeClass("app-page--displace-right-600").addClass("app-page--close-displace-right-600");
-                document.getElementsByClassName("app-page--editor")[0].addEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.importMenuExited)
-            },
-
             importMenuTransitioned: function (event) {
                 event.currentTarget.removeEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.importMenuTransitioned);
                 Ensemble.Editor.MediaBrowser.refresh();
@@ -256,14 +250,6 @@
                 document.getElementsByClassName("app-page--editor")[0].removeEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.importMenuExited);
                 $(".app-page--media-browser").addClass("app-page--hidden");
                 $(".app-page--editor").removeClass("app-page--displace app-page--close-displace-right-600");
-            },
-
-            projectMenuClickEaterClicked: function (event) {
-                Ensemble.Editor.MenuMGR.ui.clickEater.removeEventListener("click", Ensemble.Editor.MenuMGR._listeners.projectMenuClickEaterClicked);
-                $(Ensemble.Editor.MenuMGR.ui.clickEater).removeClass("editor-menu-clickeater--active");
-
-                $(".app-page--editor").removeClass("app-page--displace-right-320").addClass("app-page--close-displace-right-320");
-                document.getElementsByClassName("app-page--editor")[0].addEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.projectMenuExited)
             },
 
             projectMenuExited: function (event) {
