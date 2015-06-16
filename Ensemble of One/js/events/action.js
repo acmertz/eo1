@@ -224,11 +224,13 @@
                                 break;
                         }
 
-                        let dimensions = Ensemble.Editor.Renderer.generateClipInitialPosition(player.videoWidth, player.videoHeight);
-                        clip.width = player.width = dimensions.width;
-                        clip.height = player.height = dimensions.height;
-                        clip.xcoord = dimensions.xcoord;
-                        clip.ycoord = dimensions.ycoord;
+                        if (clip.isRenderable()) {
+                            let dimensions = Ensemble.Editor.Renderer.generateClipInitialPosition(player.videoWidth, player.videoHeight);
+                            clip.width = player.width = dimensions.width;
+                            clip.height = player.height = dimensions.height;
+                            clip.xcoord = dimensions.xcoord;
+                            clip.ycoord = dimensions.ycoord;
+                        }
                     }
                     clip.setPlayer(player);
                     Ensemble.Editor.TimelineMGR.addClipToTrack(clip, destinationTrack, destinationTime);

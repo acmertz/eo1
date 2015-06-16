@@ -45,17 +45,24 @@ function processTime () {
 
 function checkBreakpoints() {
     /// <summary>Checks to see if the rendering/playback breakpoint has changed.</summary>
-    for (let i = breakpoints.length - 1; i > -1; i--) {
-        if (lastTime > breakpoints[i]) {
-            // i is the current position in the index
-            if (i != position) {
-                // switching to a new position.
-                position = i;
-                console.log("New position: " + position + ", time: " + lastTime);
-                postMessage({ type: "newIndexPosition", contents: position });
+    let oldPosition = position;
+    if (lastTime > 0) {
+        for (let i = breakpoints.length - 1; i > -1; i--) {
+            if (lastTime > breakpoints[i]) {
+                // i is the current position in the index
+                if (i != position) {
+                    // switching to a new position.
+                    position = i;
+                }
+                break;
             }
-            break;
         }
+    }
+    else position = 0;
+
+    if (position != oldPosition) {
+        console.log("New position: " + position + ", time: " + lastTime);
+        postMessage({ type: "newIndexPosition", contents: position });
     }
 }
 

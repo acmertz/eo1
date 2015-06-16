@@ -35,11 +35,16 @@
 
         play: function () {
             /// <summary>Begins playback from the current position in the project.</summary>
+            let playbackList = Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].playbackList,
+                clipCount = playbackList.length;
+
             this.playing = true;
             this._timer.postMessage({ type: "startTimer" });
-            for (let i = 0; i < Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList.length; i++) {
-                Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList[i].play();
+
+            for (let i = 0; i < clipCount; i++) {
+                playbackList[i].play();
             }
+
             Ensemble.Editor.Renderer.start();
             this.ui.buttonPlayPause.innerHTML = "&#xE103;";
         },
@@ -142,10 +147,8 @@
                 Ensemble.Editor.PlaybackMGR._clipSeekCount++;
                 if (Ensemble.Editor.PlaybackMGR._clipSeekCount == Ensemble.Session.projectClipCount) {
                     console.log("Finished seeking.");
-                    //setTimeout(function () { Ensemble.Editor.Renderer.renderSingleFrame(); }, 0);
                     Ensemble.Editor.PlaybackMGR._renderNextTimeUpdate = true;
                     Ensemble.Editor.PlaybackMGR._timer.postMessage({ type: "seeked", contents: Ensemble.Editor.PlaybackMGR._seekDestination });
-                    setTimeout(function () { Ensemble.Editor.Renderer.renderSingleFrame() }, 0);
                 }
             }
         }

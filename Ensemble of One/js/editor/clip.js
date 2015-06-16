@@ -247,6 +247,13 @@
                 return returnVal;
             },
 
+            isRenderable: function () {
+                /// <summary>Returns whether or not the clip can be drawn to the screen (i.e., is either a video or image file).</summary>
+                /// <returns type="Boolean">Whether or not the clip is renderable.</returns>
+                if (this.type == Ensemble.Editor.Clip.ClipType.video || this.type == Ensemble.Editor.Clip.ClipType.picture) return true;
+                return false;
+            },
+
             unload: function () {
                 /// <summary>Unloads the clip and turns its file reference into a stub.</summary>
                 let domPlayer = document.getElementById(this._player.id);

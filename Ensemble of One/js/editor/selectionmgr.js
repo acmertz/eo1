@@ -36,15 +36,17 @@
                     found = true;
                 }
                 if (this.selected[i] != clipId) {
-                    Ensemble.Editor.TimelineMGR.getClipById(this.selected[i]).selected = false;
+                    let targetClip = Ensemble.Editor.TimelineMGR.getClipById(this.selected[i]);
+                    targetClip.selected = false;
                     $("#" + Ensemble.Editor.TimelineMGR._buildClipDOMId(this.selected[i])).removeClass("timeline-clip--selected");
-                    needFrame = true;
+                    if (targetClip.isRenderable() && Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList.indexOf(targetClip) > -1) needFrame = true;
                 }
             }
 
             if (!found) {
-                needFrame = true;
-                Ensemble.Editor.TimelineMGR.getClipById(clipId).selected = true;
+                let targetClip = Ensemble.Editor.TimelineMGR.getClipById(clipId);
+                targetClip.selected = true;
+                if (targetClip.isRenderable() && Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList.indexOf(targetClip) > -1) needFrame = true;
                 $("#" + Ensemble.Editor.TimelineMGR._buildClipDOMId(clipId)).addClass("timeline-clip--selected");
                 console.log("Selected clip " + clipId + ".");
             }
@@ -96,7 +98,7 @@
                 clip.hovering = true;
                 this.hovering.push(clip);
                 $("#" + Ensemble.Editor.TimelineMGR._buildClipDOMId(clipId)).addClass("timeline-clip--hovering");
-                Ensemble.Editor.Renderer.requestFrame();
+                if (clip.isRenderable() && Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList.indexOf(clip) > -1) Ensemble.Editor.Renderer.requestFrame();
             }
         },
 
@@ -118,7 +120,7 @@
                 let clip = this.hovering.splice(clipIndex, 1)[0];
                 clip.hovering = false;
                 $("#" + Ensemble.Editor.TimelineMGR._buildClipDOMId(clipId)).removeClass("timeline-clip--hovering");
-                Ensemble.Editor.Renderer.requestFrame();
+                if (clip.isRenderable() && Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList.indexOf(clip) > -1) Ensemble.Editor.Renderer.requestFrame();
             }
         },
 
@@ -145,15 +147,17 @@
                     found = true;
                 }
                 if (this.hovering[i] != clipId) {
-                    Ensemble.Editor.TimelineMGR.getClipById(this.hovering[i]).hovering = false;
+                    let targetClip = Ensemble.Editor.TimelineMGR.getClipById(this.hovering[i]);
+                    targetClip.hovering = false;
                     $("#" + Ensemble.Editor.TimelineMGR._buildClipDOMId(this.hovering[i])).removeClass("timeline-clip--hovering");
-                    needFrame = true;
+                    if (targetClip.isRenderable()) needFrame = true;
                 }
             }
 
             if (!found) {
-                needFrame = true;
-                Ensemble.Editor.TimelineMGR.getClipById(clipId).hovering = true;
+                let targetClip = Ensemble.Editor.TimelineMGR.getClipById(clipId);
+                targetClip.hovering = true;
+                if (targetClip.isRenderable()) needFrame = true;
                 $("#" + Ensemble.Editor.TimelineMGR._buildClipDOMId(clipId)).addClass("timeline-clip--hovering");
             }
             this.hovering = [];
