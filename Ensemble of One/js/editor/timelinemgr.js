@@ -1164,6 +1164,7 @@
             this.ui.timeRulerFlag.addEventListener("pointerdown", this._listeners.timeCursorMousedown);
             this.ui.trackContainer.addEventListener("pointerdown", this._listeners.timelineTrackContainerPointerDown);
             this.ui.scrollableContainer.addEventListener("scroll", this._listeners.timelineScrolled);
+            this.ui.timeRulerInner.addEventListener("click", this._listeners.timelineRulerClicked);
         },
 
         _cleanUI: function () {
@@ -1174,7 +1175,8 @@
             this.ui.buttonNewTrack.removeEventListener("click", this._listeners.buttonNewTrack);
             this.ui.timeCursor.removeEventListener("pointerdown", this._listeners.timeCursorMousedown);
             this.ui.timeRulerFlag.removeEventListener("pointerdown", this._listeners.timeCursorMousedown);
-            this.ui.scrollableContainer.addEventListener("scroll", this._listeners.timelineScrolled);
+            this.ui.scrollableContainer.removeEventListener("scroll", this._listeners.timelineScrolled);
+            this.ui.timeRulerInner.removeEventListener("click", this._listeners.timelineRulerClicked);
 
             this.ui.buttonScrollUp = null;
             this.ui.buttonScrollDown = null;
@@ -1217,14 +1219,18 @@
                     time: timeList[i],
                     starting: [],
                     stopping: [],
-                    renderList: []
+                    renderList: [],
+                    playbackList: []
                 };
                 for (let k = 0; k < this.tracks.length; k++) {
                     for (let g = 0; g < this.tracks[k].clips.length; g++) {
                         let tempClip = this.tracks[k].clips[g];
                         if (tempClip.startTime === timeList[i].time) timeList[i].starting.push(tempClip);
                         if (tempClip.startTime + tempClip.duration === timeList[i].time) timeList[i].stopping.push(tempClip);
-                        if ((tempClip.startTime <= timeList[i].time) && (timeList[i].time < tempClip.startTime + tempClip.duration)) timeList[i].renderList.push(tempClip);
+                        if ((tempClip.startTime <= timeList[i].time) && (timeList[i].time < tempClip.startTime + tempClip.duration)) {
+                            if (tempClip.isRenderable()) timeList[i].renderList.push(tempClip);
+                            timeList[i].playbackList.push(tempClip);
+                        }
                     }
                 }
             }
@@ -1386,6 +1392,14 @@
 
             timelineScrolled: function (event) {
                 if (!Ensemble.Editor.Renderer._active) Ensemble.Editor.Renderer.requestFrame();
+            },
+
+            timelineRulerClicked: function (event) {
+                Ensemble.Editor.TimelineMGR._timeCursorDisplayScale = Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel].ratio;
+                let clickVal = (event.pageX - $(Ensemble.Editor.TimelineMGR.ui.timeRuler).offset().left) + Ensemble.Editor.TimelineMGR.ui.timeRuler.scrollLeft,
+                    candidateTime = clickVal * Ensemble.Editor.TimelineMGR._timeCursorDisplayScale;
+                if (Ensemble.Editor.PlaybackMGR.playing) Ensemble.Editor.PlaybackMGR.pause();
+                Ensemble.Editor.PlaybackMGR.seek(candidateTime);
             },
 
             mouseClipPreventDirectDragStart: function (event) {

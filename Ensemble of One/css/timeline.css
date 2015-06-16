@@ -92,6 +92,7 @@
     left: 0;
     top: 0;
     height: 100%;
+    cursor: text;
 }
 
 .timeline-ruler__flag {
