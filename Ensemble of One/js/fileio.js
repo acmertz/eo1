@@ -24,15 +24,11 @@
         _multiClipLoadBuffer: [],
 
         saveProject: function () {
-            /// <summary>Saves the currently loaded project to disc.</summary>
+            /// <summary>Saves the currently loaded project to disk.</summary>
 
             //Generate XML string
             var xml = new XMLWriter();
             xml.BeginNode("EnsembleOfOneProject");
-
-            xml.BeginNode("ProjectName");
-            xml.WriteString(Ensemble.Session.projectName);
-            xml.EndNode();
 
             xml.BeginNode("ProjectThumb");
             Ensemble.Editor.Renderer.updateThumb();
@@ -420,9 +416,6 @@
 
                             var xml = new XMLWriter();
                             xml.BeginNode("EnsembleOfOneProject");
-                            xml.BeginNode("ProjectName");
-                            xml.WriteString(name);
-                            xml.EndNode();
 
                             let tempCanvas = document.createElement("canvas");
                             tempCanvas.width = projectRes.width * 0.25;
@@ -436,9 +429,6 @@
 
                             xml.BeginNode("TimelineZoom");
                             xml.WriteString(Ensemble.Editor.TimelineZoomMGR.currentLevel.toString());
-                            xml.EndNode();
-                            xml.BeginNode("ProjectFilename");
-                            xml.WriteString(projectFile.name);
                             xml.EndNode();
                             xml.BeginNode("DateCreated");
                             xml.WriteString(savetime);
@@ -506,7 +496,7 @@
                     if (filename == null && fileobj != null) {
                         Ensemble.Session.projectFile = fileobj;
                         Windows.Storage.FileIO.readTextAsync(fileobj).then(function (contents) {
-                            Ensemble.FileIO._processLoadedProjectData(filename, contents);
+                            Ensemble.FileIO._processLoadedProjectData(filename, fileobj.displayName, contents);
                         })
                     }
                     else {
@@ -514,7 +504,7 @@
                         var file = Windows.Storage.StorageFile.getFileFromApplicationUriAsync(uri).then(function (projectFile) {
                             Ensemble.Session.projectFile = projectFile;
                             Windows.Storage.FileIO.readTextAsync(projectFile).then(function (contents) {
-                                Ensemble.FileIO._processLoadedProjectData(filename, contents);
+                                Ensemble.FileIO._processLoadedProjectData(filename, projectFile.displayName, contents);
                             })
                         });
                     }
@@ -526,13 +516,12 @@
             }
         },
 
-        _processLoadedProjectData: function (filename, xmlString) {
+        _processLoadedProjectData: function (filename, projectName, xmlString) {
             var parser = new DOMParser();
             var xmlDoc = parser.parseFromString(xmlString, "text/xml");
 
             var ensembleProject = xmlDoc.firstChild;
 
-            var projectName = xmlDoc.getElementsByTagName("ProjectName")[0].childNodes[0].nodeValue;
             console.log("Loading project \"" + projectName + "...\"");
 
             let projectThumb = xmlDoc.getElementsByTagName("ProjectThumb")[0].childNodes[0].nodeValue;
@@ -1251,13 +1240,13 @@
                                 for (var i = 0; i < projectFiles.length; i++) {
                                     (function () { 
                                         var loadedFilename = projectFiles[i].name;
+                                        var loadedProjectName = projectFiles[i].displayName;
                                         Windows.Storage.FileIO.readTextAsync(projectFiles[i]).then(function (contents) {
                                             var parser = new DOMParser();
                                             var xmlDoc = parser.parseFromString(contents, "text/xml");
 
                                             var ensembleProject = xmlDoc.firstChild;
-
-                                            var loadedProjectName = xmlDoc.getElementsByTagName("ProjectName")[0].childNodes[0].nodeValue;
+                                            
                                             try {
                                                 var loadedDateModified = new Date(parseInt(xmlDoc.getElementsByTagName("DateModified")[0].childNodes[0].nodeValue, 10));
                                             }
@@ -1272,6 +1261,11 @@
                                             dataArray.push(new Ensemble.Editor.ProjectFile(loadedProjectName, loadedFilename, loadedDateModified, loadedNumberOfClips, loadedAspectRatio, loadedProjectLength, loadedThumbnailPath));
 
                                             if (dataArray.length == projectFiles.length) {
+                                                dataArray.sort(function (a, b) {
+                                                    if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+                                                    if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+                                                    return 0;
+                                                });
                                                 callback(dataArray);
                                             }
                                         });

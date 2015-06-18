@@ -111,11 +111,11 @@
 
 #editor-history-msg {
     position: absolute;
-    top: 0px;
+    top: 45px;
     right: 0px;
     padding: 5px 10px 0 10px;
     line-height: 41px;
-    color: #fafafa;
+    color: #000;
     z-index: 1;
 }
 

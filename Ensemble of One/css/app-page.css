@@ -14,6 +14,23 @@
     pointer-events: none;
 }
 
+.ensemble-clickeater {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.ensemble-clickeater--editor-menu {
+    z-index: 99;
+}
+
+.ensemble-clickeater--active {
+    display: block;
+}
+
 .app-page--editor {
     display: flex;
     flex-direction: column;
@@ -140,4 +157,45 @@
     display: flex;
     flex-direction: column;
     background: #fff;
+}
+
+.app-page__inner--app-settings {
+    left: 50%;
+    width: 900px;
+    transform: translate(-50%, 0);
+    background-color: rgba(255, 255, 255, 0.95);
+    box-sizing: border-box;
+    padding: 20px;
+    top: 80px;
+    height: calc(100% - 80px);
+    border: 2px solid #d3d3d3;
+    border-bottom: 0;
+    z-index: 100;
+}
+
+.app-page--enter-up {
+    animation: pageEnterUp 0.3s ease;
+}
+
+@keyframes pageEnterUp {
+    0% {
+        transform: translateY(100%);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+.app-page--exit-down {
+    animation: pageExitDown 0.3s ease;
+    top: 100%;
+}
+
+@keyframes pageExitDown {
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(0);
+    }
 }

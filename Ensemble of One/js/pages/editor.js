@@ -61,6 +61,7 @@
         unload: function (event) {
             /// <summary>Triggers an unload of the project.</summary>
             /// <param name="event" type="Object">An optional event object. If passed, the Editor will assume its menu is closed and play an alternate animation instead.</param>
+            Ensemble.Navigation.reset();
             $(".app-page--loading-main-menu").removeClass("app-page--hidden");
 
             let editorPage = document.getElementsByClassName("app-page--editor")[0];
