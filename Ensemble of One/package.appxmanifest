@@ -33,7 +33,7 @@
 
       <uap:VisualElements
         DisplayName="Ensemble of One"
-        Description="A no-nonsense, desktop-grade video editor built for Windows universal devices"
+        Description="A no-nonsense, desktop-grade video editor built for Windows universal devices."
         BackgroundColor="#dc143c"
         Square150x150Logo="img\packaging\logo_sq150.png"
         Square44x44Logo="img\packaging\logo_sq44.png">

@@ -4,7 +4,6 @@
     padding: 0;
     z-index: 1;
     background-color: #dc143c;
-    padding: 5px 0 0 0;
     box-sizing: border-box;
 }
 
@@ -17,14 +16,21 @@
     background-color: #dc143c;
 }
 
-.editor-menubar__command-list {
+.editor-menu-titlebar--tab-list {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.editor-menubar__tab-list {
     list-style: none;
     margin: 0;
     padding: 0;
     display: flex;
 }
 
-.editor-menubar__command {
+.editor-menubar__tab {
     height: 40px;
     text-align: center;
     display: inline-block;
@@ -34,35 +40,32 @@
     color: #fafafa;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
-    margin: 0 0 0 5px;
+    margin: 5px 0 0 5px;
 }
 
-.editor-menubar__command:last-child {
+.editor-menubar__tab:hover {
+    background-color: #ff5a76;
 }
 
-.editor-menubar__command:hover {
-    background-color: #df2b4f;
-}
-
-.editor-menubar__command:active {
+.editor-menubar__tab:active {
     background-color: #e6e6e6;
     color: #dc143c;
 }
 
-.editor-menubar__command:last-child {
+.editor-menubar__tab:last-child {
 }
 
-.editor-menubar__command--active {
+.editor-menubar__tab--active {
     background-color: #e6e6e6;
     color: #dc143c;
 }
 
-.editor-menubar__command--active:hover {
+.editor-menubar__tab--active:hover {
     background-color: #e6e6e6;
     color: #dc143c;
 }
 
-.editor-menubar__command--file {
+.editor-menubar__tab--file {
 }
 
 .editor-menubar__toolbar {
@@ -121,31 +124,6 @@
     flex-direction: column;
 }
 
-.editor-menu__command-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-.editor-menu__command {
-    background-color: #fff;
-    border: 1px solid #dc143c;
-    border-left: 10px solid #dc143c;
-    color: #333;
-    font-size: 24px;
-    margin: 0 0 10px 0;
-    line-height: 40px;
-    padding: 0 10px;
-}
-
-.editor-menu__command:hover {
-    border-color: #df2b4f;
-}
-
-.editor-menu__command:last-child {
-    margin: 0;
-}
-
 .editor-command--disabled {
     pointer-events: none;
     touch-action: none;
@@ -153,30 +131,13 @@
     border-color: #d3d3d3
 }
 
-.editor-menubar__command--file {
+.editor-menubar__tab--file {
     font-family: "Segoe MDL2 Assets", "Symbols";
 }
 
 .editor-menu__divider {
     margin: 10px 0;
     border-top: 5px solid #d3d3d3;
-}
-
-.ensemble-clickeater {
-    display: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
-
-.ensemble-clickeater--editor-menu {
-    z-index: 99;
-}
-
-.ensemble-clickeater--active {
-    display: block;
 }
 
 /* HOME MENU */
@@ -264,15 +225,23 @@
     padding: 0 15px;
     margin: 0;
     color: #fff;
+    height: 100%;
+    line-height: 45px;
+    display: inline-block;
 }
 
 .editor-titlebar-control:hover {
-    background-color: #df2b4f;
+    background-color: #ff5a76;
 }
 
 .editor-titlebar-control:active {
     background-color: #fff;
     color: #dc143c;
+}
+
+.editor-titlebar-control:disabled {
+    color: #d3d3d3;
+    pointer-events: none;
 }
 
 #editorMediaBrowserLoadingProgress {

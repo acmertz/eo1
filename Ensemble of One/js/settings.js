@@ -20,6 +20,12 @@
                 }
                 allSettings[i].addEventListener(listenerType, Ensemble.Settings._listeners.userChangedSetting);
             }
+
+            let allTriggers = document.getElementsByClassName("app-trigger--settings");
+            for (let i = 0; i < allTriggers.length; i++) {
+                allTriggers[i].addEventListener("click", Ensemble.Settings._listeners.settingsTriggerClicked);
+            }
+
             Ensemble.Settings.setDefaults(false);
         },
 
@@ -88,6 +94,12 @@
             }
         },
 
+        closeSettingsPane: function () {
+            let settingsPane = document.getElementsByClassName("app-page--app-settings")[0];
+            $(settingsPane).addClass("app-page--exit-down");
+            settingsPane.addEventListener("animationend", Ensemble.Settings._listeners.settingsPaneExitFinished);
+        },
+
         _listeners: {
             userChangedSetting: function (event) {
                 let valueToSave = null;
@@ -149,6 +161,27 @@
             userDeleteAllProjects: function () {
                 Ensemble.FileIO.deleteAllProjects();
                 console.info("User deleted all projects.");
+            },
+
+            settingsTriggerClicked: function (event) {
+                let settingsPane = document.getElementsByClassName("app-page--app-settings")[0];
+                $(settingsPane).removeClass("app-page--hidden");
+                $(settingsPane).addClass("app-page--enter-up");
+                event.currentTarget.blur();
+                settingsPane.addEventListener("animationend", Ensemble.Settings._listeners.settingsPaneEntranceFinished);
+                Ensemble.Navigation.pushBackState(Ensemble.Settings.closeSettingsPane);
+            },
+
+            settingsPaneEntranceFinished: function (event) {
+                let settingsPane = document.getElementsByClassName("app-page--app-settings")[0];
+                settingsPane.removeEventListener("animationend", Ensemble.Settings._listeners.settingsPaneEntranceFinished);
+                $(settingsPane).removeClass("app-page--enter-up");
+            },
+
+            settingsPaneExitFinished: function (event) {
+                let settingsPane = document.getElementsByClassName("app-page--app-settings")[0];
+                settingsPane.removeEventListener("animationend", Ensemble.Settings._listeners.settingsPaneExitFinished);
+                $(settingsPane).removeClass("app-page--exit-down").addClass("app-page--hidden");
             }
         }
     });

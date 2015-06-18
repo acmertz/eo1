@@ -29,7 +29,7 @@
             /// <summary>Hides any active menus, but keeps the menu in the "Open" state. Useful for swapping menues.</summary>
             if (this.currentMenu) this.currentMenu.removeEventListener("transitionend", Ensemble.Editor.MenuMGR._listeners.importMenuTransitioned);
             $(".editor-menu").removeClass("editor-menu--visible");
-            //$(".editor-menubar__command--active").removeClass("editor-menubar__command--active");
+            //$(".editor-menubar__tab--active").removeClass("editor-menubar__tab--active");
             this.currentMenu = null;
         },
 
@@ -59,11 +59,11 @@
             // All commands are disabled unless explicitly enabled.
             $(".editor-menu__command").addClass("editor-command--disabled");
             $(".editor-toolbar-command").attr("disabled", "disabled");
-            let myComm = $(".editor-toolbar-command");
+            $(".app-trigger--editor").attr("disabled", true);
 
             $(".editor-command__exit").removeClass("editor-command--disabled");
-            if (Ensemble.HistoryMGR.canUndo()) $(".editor-command__undo").removeClass("editor-command--disabled");
-            if (Ensemble.HistoryMGR.canRedo()) $(".editor-command__redo").removeClass("editor-command--disabled");
+            if (Ensemble.HistoryMGR.canUndo()) $(".app-trigger--undo").attr("disabled", false);
+            if (Ensemble.HistoryMGR.canRedo()) $(".app-trigger--redo").attr("disabled", false);
 
             $(".editor-toolbar-command--import-media").removeAttr("disabled");
             $(".editor-toolbar-command--browse-media").removeAttr("disabled");
@@ -90,7 +90,7 @@
             this.ui.clickEater = document.getElementsByClassName("ensemble-clickeater--editor-menu")[0];
             this.ui.projectThumb = document.getElementsByClassName("editor-project-details__thumb")[0];
 
-            let menuBarButtons = document.getElementsByClassName("editor-menubar__command");
+            let menuBarButtons = document.getElementsByClassName("editor-menubar__tab");
             for (let i = 0; i < menuBarButtons.length; i++) {
                 menuBarButtons[i].addEventListener("click", Ensemble.Editor.MenuMGR._listeners.menubarButtonClicked);
             }
@@ -100,9 +100,8 @@
                 toolbarCommands[i].addEventListener("click", Ensemble.Editor.MenuMGR._listeners.menuCommandClick);
             }
 
-            let menuCommands = document.getElementsByClassName("editor-menu__command");
+            let menuCommands = document.getElementsByClassName("app-trigger--editor");
             for (let i = 0; i < menuCommands.length; i++) {
-                menuCommands[i].addEventListener("pointerdown", Ensemble.Editor.MenuMGR._listeners.menuCommandPointerDown);
                 menuCommands[i].addEventListener("click", Ensemble.Editor.MenuMGR._listeners.menuCommandClick);
             }
         },
@@ -111,7 +110,7 @@
             this.ui.clickEater = null;
             this.ui.projectThumb = null;
 
-            let menuBarButtons = document.getElementsByClassName("editor-menubar__command");
+            let menuBarButtons = document.getElementsByClassName("editor-menubar__tab");
             for (let i = 0; i < menuBarButtons.length; i++) {
                 menuBarButtons[i].removeEventListener("click", Ensemble.Editor.MenuMGR._listeners.menubarButtonClicked);
             }
@@ -121,9 +120,8 @@
                 toolbarCommands[i].removeEventListener("click", Ensemble.Editor.MenuMGR._listeners.menuCommandClick);
             }
 
-            let menuCommands = document.getElementsByClassName("editor-menu__command");
+            let menuCommands = document.getElementsByClassName("app-trigger--editor");
             for (let i = 0; i < menuCommands.length; i++) {
-                menuCommands[i].removeEventListener("pointerdown", Ensemble.Editor.MenuMGR._listeners.menuCommandPointerDown);
                 menuCommands[i].removeEventListener("click", Ensemble.Editor.MenuMGR._listeners.menuCommandClick);
             }
         },
@@ -155,25 +153,15 @@
                     if (activeToolbar) {
                         activeToolbarId = activeToolbar.dataset.ensembleMenu;
                         $(activeToolbar).removeClass("editor-toolbar--visible").addClass("editor-toolbar--hidden");
-                        $(".editor-menubar__command--" + activeToolbarId).removeClass("editor-menubar__command--active");
+                        $(".editor-menubar__tab--" + activeToolbarId).removeClass("editor-menubar__tab--active");
                     }
                     
                     if (targetToolbarId != activeToolbarId) {
                         $(targetToolbar).removeClass("editor-toolbar--hidden").addClass("editor-toolbar--visible");
-                        $(".editor-menubar__command--" + targetToolbarId).addClass("editor-menubar__command--active");
+                        $(".editor-menubar__tab--" + targetToolbarId).addClass("editor-menubar__tab--active");
                     }
                     Ensemble.Pages.Editor.viewResized();
                 }
-            },
-
-            menuCommandPointerDown: function (event) {
-                WinJS.UI.Animation.pointerDown(event.currentTarget);
-                event.currentTarget.addEventListener("pointerup", Ensemble.Editor.MenuMGR._listeners.menuCommandPointerUp);
-            },
-
-            menuCommandPointerUp: function (event) {
-                WinJS.UI.Animation.pointerUp(event.currentTarget);
-                event.currentTarget.removeEventListener("pointerup", Ensemble.Editor.MenuMGR._listeners.menuCommandPointerUp);
             },
 
             clickEaterClicked: function (event) {
@@ -206,9 +194,9 @@
                 }
 
                 // HOME
-                else if (command == "undo") setTimeout(function () { Ensemble.HistoryMGR.undoLast() }, 0);
-                else if (command == "redo") setTimeout(function () { Ensemble.HistoryMGR.redoNext() }, 0);
-                else if (command == "exit") setTimeout(function () { Ensemble.Pages.Editor.unload() }, 0);
+                else if (command == "undo") Ensemble.HistoryMGR.undoLast();
+                else if (command == "redo") Ensemble.HistoryMGR.redoNext();
+                else if (command == "close-project") Ensemble.Pages.Editor.unload();
 
                 // CLIP
                 else if (command == "split-clip") {

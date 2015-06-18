@@ -61,19 +61,21 @@
 
         _listeners: {
             navItemClicked: function (event) {
-                let outgoing = document.getElementsByClassName("main-menu__content-section--visible")[0];
-                let incoming = document.getElementsByClassName("main-menu__content-section--" + event.currentTarget.dataset.menu)[0];
-                $(".main-menu__nav-item--active").removeClass("main-menu__nav-item--active");
-                $(event.currentTarget).addClass("main-menu__nav-item--active");
-                if (outgoing != incoming) {
-                    WinJS.UI.Animation.exitPage(outgoing.children, null).done(function () {
-                        $(outgoing).removeClass("main-menu__content-section--visible").addClass("main-menu__content-section--hidden");
-                        $(incoming).removeClass("main-menu__content-section--hidden").addClass("main-menu__content-section--visible");
-                        WinJS.UI.Animation.enterPage(incoming.children, null);
-                        if (incoming.dataset.menu == "open-project") Ensemble.FileIO.enumerateProjects(Ensemble.MainMenu._listeners.enumeratedProjects);
-                        else $(Ensemble.MainMenu.ui.localProjectContainer.children).css("opacity", "0");
-                    });
-                    Ensemble.Settings.refreshSettingsDialog();
+                if (!WinJS.Utilities.hasClass(event.currentTarget, "app-trigger")) {
+                    let outgoing = document.getElementsByClassName("main-menu__content-section--visible")[0];
+                    let incoming = document.getElementsByClassName("main-menu__content-section--" + event.currentTarget.dataset.menu)[0];
+                    $(".main-menu__nav-item--active").removeClass("main-menu__nav-item--active");
+                    $(event.currentTarget).addClass("main-menu__nav-item--active");
+                    if (outgoing != incoming) {
+                        WinJS.UI.Animation.exitPage(outgoing.children, null).done(function () {
+                            $(outgoing).removeClass("main-menu__content-section--visible").addClass("main-menu__content-section--hidden");
+                            $(incoming).removeClass("main-menu__content-section--hidden").addClass("main-menu__content-section--visible");
+                            WinJS.UI.Animation.enterPage(incoming.children, null);
+                            if (incoming.dataset.menu == "open-project") Ensemble.FileIO.enumerateProjects(Ensemble.MainMenu._listeners.enumeratedProjects);
+                            else $(Ensemble.MainMenu.ui.localProjectContainer.children).css("opacity", "0");
+                        });
+                        Ensemble.Settings.refreshSettingsDialog();
+                    }
                 }
             },
 

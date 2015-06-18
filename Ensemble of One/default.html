@@ -85,7 +85,7 @@
             </section>
             <section class="main-menu__nav-section main-menu__nav-section--spacer"></section>
             <section class="main-menu__nav-section main-menu__nav-section--secondary">
-                <a class="main-menu__nav-item" data-menu="settings">&nbsp;Settings</a>
+                <a class="main-menu__nav-item app-trigger app-trigger--settings" data-menu="settings">&nbsp;Settings</a>
             </section>
         </nav>
         <main class="main-menu__content-container">
@@ -145,20 +145,7 @@
                 </div>
             </section>
             <section class="main-menu__content-section main-menu__content-section--settings main-menu__content-section--hidden" data-menu="settings">
-                <div>
-                    <h2 class="win-h2">Settings</h2>
-                    <p>One size doesn't have to fit all &mdash; go ahead, configure Ensemble of One to your liking!</p>
-                </div>
-                <div class="settings-menu-section">
-                    <h3 class="win-h3">Canvas Sticky Edges</h3>
-                    <div class="app-setting app-setting--sticky-edges-clip" data-app-setting="sticky-edges-clip" data-setting-type="toggle" data-win-control="WinJS.UI.ToggleSwitch" data-win-options="{title: 'Clips stick to each other', checked: true}"></div>
-                    <div class="app-setting app-setting--sticky-edges-canvas" data-app-setting="sticky-edges-canvas" data-setting-type="toggle" data-win-control="WinJS.UI.ToggleSwitch" data-win-options="{title: 'Clips stick to canvas edges', checked: true}"></div>
-                </div>
-                <div class="settings-menu-section">
-                    <h3 class="win-h3">Danger Zone</h3>
-                    <p><button class="win-button eo1-btn app-setting app-setting--reset-settings" data-app-setting="reset-settings" data-setting-type="instant">Reset settings</button></p>
-                    <p><button class="win-button eo1-btn app-setting app-setting--delete-all-projects" data-app-setting="delete-all-projects" data-setting-type="instant">Delete temporary projects</button></p>
-                </div>
+                
             </section>
         </main>
     </div>
@@ -191,6 +178,8 @@
     <div class="app-page app-page--editor-menu app-page--hidden">
         <div class="app-page__inner app-page__inner--320 app-page__inner--editor-menu">
             <section class="editor-menu-titlebar">
+                <span class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--close-project" data-editor-command="close-project" title="Close project">&#xE112;&nbsp;Close project</span>
+                <span class="editor-titlebar-control app-trigger app-trigger--settings" title="Settings"></span>
             </section>
 
             <section class="editor-menu-section">
@@ -201,24 +190,21 @@
                 <p><span id="editorMenuNumberOfClipsDisplay">[Placeholder]</span><span> clips</span></p>
                 <p id="editorMenuAspectRatioDisplay">[Placeholder Aspect Ratio Here]</p>
             </section>
-
-            <ul class="editor-menu__command-list editor-menu-section">
-                <li class="editor-menu__command editor-command__undo" data-editor-command="undo">&#xE10E; Undo</li>
-                <li class="editor-menu__command editor-command__redo" data-editor-command="redo">&#xE10D; Redo</li>
-                <li class="editor-menu__divider"></li>
-                <li class="editor-menu__command editor-command__exit" data-editor-command="exit">&#xE112; Close project</li>
-            </ul>
         </div>
     </div>
 
     <div class="app-page app-page--hidden app-page--editor" id="editorPageContainer">
         <nav class="editor-menubar">
-            <div class="editor-menubar__command-list">
-                <span class="editor-menubar__command editor-menubar__command--file" data-ensemble-menu="file">&#59136;</span>
-                <span class="editor-menubar__command editor-menubar__command--home editor-menubar__command--active" data-ensemble-menu="home">Home</span>
-                <span class="editor-menubar__command editor-menubar__command--record" data-ensemble-menu="record">Record</span>
-                <span class="editor-menubar__command editor-menubar__command--effects" data-ensemble-menu="effects">Animations</span>
-                <span class="editor-menubar__command editor-menubar__command--export" data-ensemble-menu="export">Export</span>
+            <div class="editor-menubar__tab-list">
+                <span class="editor-menubar__tab editor-menubar__tab--file" data-ensemble-menu="file">&#59136;</span>
+                <span class="editor-menubar__tab editor-menubar__tab--home editor-menubar__tab--active" data-ensemble-menu="home">Home</span>
+                <span class="editor-menubar__tab editor-menubar__tab--record" data-ensemble-menu="record">Record</span>
+                <span class="editor-menubar__tab editor-menubar__tab--effects" data-ensemble-menu="effects">Animations</span>
+                <span class="editor-menubar__tab editor-menubar__tab--export" data-ensemble-menu="export">Export</span>
+                <span class="editor-menu-titlebar editor-menu-titlebar--tab-list">
+                    <span title="Undo" class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--undo" data-editor-command="undo">&#xE10E;</span>
+                    <span title="Redo" class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--redo" data-editor-command="redo">&#xE10D;</span>
+                </span>
             </div>
             <div data-win-control="WinJS.UI.ToolBar" class="editor-menubar__toolbar editor-toolbar--home" data-ensemble-menu="home">
                 <button data-editor-command="show-library" class="editor-toolbar-command editor-toolbar-command--import-media" data-win-control="WinJS.UI.Command" data-win-options="{
@@ -605,6 +591,26 @@
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Remove'}"></button>
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Rename'}"></button>
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Properties'}"></button>
+        </div>
+    </div>
+
+    <div class="app-page app-page--app-settings app-page--hidden">
+        <div class="ensemble-clickeater ensemble-clickeater--active ensemble-clickeater--backnav"></div>
+        <div class="app-page__inner app-page__inner--app-settings">
+            <div>
+                <h2 class="win-h2">Settings</h2>
+                <p>One size doesn't have to fit all &mdash; go ahead, configure Ensemble of One to your liking.</p>
+            </div>
+            <div class="settings-menu-section">
+                <h3 class="win-h3">Canvas Sticky Edges</h3>
+                <div class="app-setting app-setting--sticky-edges-clip" data-app-setting="sticky-edges-clip" data-setting-type="toggle" data-win-control="WinJS.UI.ToggleSwitch" data-win-options="{title: 'Clips stick to each other', checked: true}"></div>
+                <div class="app-setting app-setting--sticky-edges-canvas" data-app-setting="sticky-edges-canvas" data-setting-type="toggle" data-win-control="WinJS.UI.ToggleSwitch" data-win-options="{title: 'Clips stick to canvas edges', checked: true}"></div>
+            </div>
+            <div class="settings-menu-section">
+                <h3 class="win-h3">Danger Zone</h3>
+                <p><button class="win-button eo1-btn app-setting app-setting--reset-settings" data-app-setting="reset-settings" data-setting-type="instant">Reset settings</button></p>
+                <p><button class="win-button eo1-btn app-setting app-setting--delete-all-projects" data-app-setting="delete-all-projects" data-setting-type="instant">Delete temporary projects</button></p>
+            </div>
         </div>
     </div>
 </body>
