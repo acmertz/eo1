@@ -5,6 +5,7 @@
             /// <summary>Initializes the Main Menu.</summary>
             Ensemble.Settings.init();
             Ensemble.MainMenu._refreshUI();
+            WinJS.UI.Animation.enterPage(document.getElementsByClassName("main-menu__content-section--home")[0].children, null);
         },
 
         unload: function () {
@@ -103,7 +104,7 @@
                     Ensemble.MainMenu.ui.localProjectContainer.appendChild(entireItem);
                 }
 
-                WinJS.UI.Animation.enterPage(Ensemble.MainMenu.ui.localProjectContainer.children, null);
+                WinJS.UI.Animation.enterContent(Ensemble.MainMenu.ui.localProjectContainer.children);
             },
 
             pointerDown: function (event) {

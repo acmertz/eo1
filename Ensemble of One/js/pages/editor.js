@@ -95,8 +95,6 @@
             $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationPictures).click(this._mediaBrowserLocationSelectedOnClickListener);
 
             window.addEventListener("resize", Ensemble.Pages.Editor.viewResized);
-
-            Ensemble.KeyboardMGR.editorDefault();
         },
 
         _cleanUI: function () {
@@ -110,8 +108,6 @@
             $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationPictures).unbind("click");
 
             window.removeEventListener("resize", Ensemble.Pages.Editor.viewResized);
-
-            Ensemble.KeyboardMGR.off();
         },
 
         _listeners: {

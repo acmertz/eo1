@@ -22,7 +22,8 @@
                 Ensemble.HistoryMGR._backStack.push(action);
                 Ensemble.HistoryMGR._forwardStack = [];
                 Ensemble.HistoryMGR.refreshMessage();
-                setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
+                Ensemble.FileIO.saveProject();
+                Ensemble.Editor.MenuMGR._reevaluateState();
             }
         },
 
@@ -40,21 +41,22 @@
                 Ensemble.HistoryMGR._pendingCallback = null;
             }
             Ensemble.HistoryMGR.refreshMessage();
-            setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
+            Ensemble.Editor.MenuMGR._reevaluateState();
+            Ensemble.FileIO.saveProject();
         },
 
         _undoRemoveTrackComplete: function (loadedClips) {
             Ensemble.HistoryMGR._pendingAction.finishUndo(loadedClips);
             Ensemble.HistoryMGR._forwardStack.push(Ensemble.HistoryMGR._pendingAction);
             Ensemble.HistoryMGR._pendingAction = null;
-            setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
+            Ensemble.FileIO.saveProject();
         },
 
         _undoRemoveClipComplete: function (loadedClips) {
             Ensemble.HistoryMGR._pendingAction.finishUndo(loadedClips);
             Ensemble.HistoryMGR._forwardStack.push(Ensemble.HistoryMGR._pendingAction);
             Ensemble.HistoryMGR._pendingAction = null;
-            setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
+            Ensemble.FileIO.saveProject();
         },
 
         undoLast: function () {
@@ -70,8 +72,9 @@
                     actionToUndo.undo();
                     this._forwardStack.push(actionToUndo);
                     this.refreshMessage();
-                    setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
+                    Ensemble.FileIO.saveProject();
                 }
+                Ensemble.Editor.MenuMGR._reevaluateState();
             }
         },
 
@@ -91,6 +94,7 @@
                     setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
                 }
             }
+            Ensemble.Editor.MenuMGR._reevaluateState();
         },
 
         canUndo: function () {

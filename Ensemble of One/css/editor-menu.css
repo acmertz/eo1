@@ -228,6 +228,10 @@
     height: 100%;
     line-height: 45px;
     display: inline-block;
+    background-color: transparent;
+    border: 0;
+    box-sizing: border-box;
+    font-family: "Segoe MDL2 Assets";
 }
 
 .editor-titlebar-control:hover {

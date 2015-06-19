@@ -180,9 +180,11 @@
 @keyframes pageEnterUp {
     0% {
         transform: translateY(100%);
+        z-index: 100;
     }
     100% {
         transform: translateY(0);
+        z-index: 100;
     }
 }
 
@@ -194,8 +196,10 @@
 @keyframes pageExitDown {
     0% {
         transform: translateY(-100%);
+        z-index: 100;
     }
     100% {
         transform: translateY(0);
+        z-index: 100;
     }
 }

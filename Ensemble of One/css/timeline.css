@@ -30,16 +30,6 @@
     text-align: right;
 }
 
-.timeline-button-container--left .eo1-btn--timeline {
-    border-top-right-radius: 0;
-    border-bottom-left-radius: 0;
-}
-
-.timeline-button-container--right .eo1-btn--timeline {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-}
-
 .timeline-button-container__section--spacer {
     flex: 1;
 }

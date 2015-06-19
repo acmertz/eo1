@@ -508,7 +508,6 @@
             this._snapScrollToNearestTrack();
 
             this.ui.trackContainer.style.background = "repeating-linear-gradient(#FFFFFF, #FFFFFF " + this._currentTrackHeight + "px, #F0F0F0 " + this._currentTrackHeight + "px, #F0F0F0 " + (2 * this._currentTrackHeight) + "px)";
-            this.newRulerScale();
         },
 
         generateNewTrackId: function () {
@@ -530,38 +529,39 @@
             let params = Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel];
 
             let ratio = params.ratio;
-            let interval = params.interval;
-            let mark = params.mark;
-            let sub = params.sub;
+            //let interval = params.interval;
+            //let mark = params.mark;
+            //let sub = params.sub;
 
-            let markWidth = mark / ratio;
+            //let markWidth = mark / ratio;
 
-            let displayTime = Ensemble.Editor.TimelineMGR.ui.timeRuler.clientWidth * ratio;
-            if (Ensemble.Session.projectDuration > displayTime) displayTime = Ensemble.Session.projectDuration;
+            //let displayTime = Ensemble.Editor.TimelineMGR.ui.timeRuler.clientWidth * ratio;
+            //if (Ensemble.Session.projectDuration > displayTime) displayTime = Ensemble.Session.projectDuration;
 
-            let cur = 0;
-            let htmlStr = "";
-            let timeStr = "";
+            //let cur = 0;
+            //let htmlStr = "";
+            //let timeStr = "";
 
-            while (displayTime > cur) {
-                htmlStr = htmlStr + "<span style='width: " + markWidth + "px' class='timeline-ruler__mark"
-                if (cur > 0) {
-                    //if (cur % mark === 0) console.log("Mark at " + cur);
-                    if (cur % sub === 0) {
-                        //console.log("Sub at " + cur);
-                        htmlStr = htmlStr + " timeline-ruler__mark--sub";
-                    }
-                    if (cur % interval === 0) {
-                        //console.log("Interval at " + cur);
-                        htmlStr = htmlStr + " timeline-ruler__mark--interval";
-                        timeStr = timeStr + "<span class='timeline-ruler__time' style='left: " + (cur / ratio) + "px'>" + Ensemble.Utilities.TimeConverter.timelineTime(cur) + "</span>";
-                    }
-                }
-                htmlStr = htmlStr + "'></span>";
-                cur = cur + mark;
-            }
-            //console.log("Finished determining intervals.");
-            Ensemble.Editor.TimelineMGR.ui.timeRulerInner.innerHTML = htmlStr + timeStr;
+            //while (displayTime > cur) {
+            //    htmlStr = htmlStr + "<span style='width: " + markWidth + "px' class='timeline-ruler__mark"
+            //    if (cur > 0) {
+            //        //if (cur % mark === 0) console.log("Mark at " + cur);
+            //        if (cur % sub === 0) {
+            //            //console.log("Sub at " + cur);
+            //            htmlStr = htmlStr + " timeline-ruler__mark--sub";
+            //        }
+            //        if (cur % interval === 0) {
+            //            //console.log("Interval at " + cur);
+            //            htmlStr = htmlStr + " timeline-ruler__mark--interval";
+            //            timeStr = timeStr + "<span class='timeline-ruler__time' style='left: " + (cur / ratio) + "px'>" + Ensemble.Utilities.TimeConverter.timelineTime(cur) + "</span>";
+            //        }
+            //    }
+            //    htmlStr = htmlStr + "'></span>";
+            //    cur = cur + mark;
+            //}
+            //Ensemble.Editor.TimelineMGR.ui.timeRulerInner.innerHTML = htmlStr + timeStr;
+
+            Ensemble.Editor.TimelineMGR.ui.timeRulerInner.style.width = (Ensemble.Session.projectDuration / ratio) + "px";
 
             for (let i = 0; i < this.tracks.length; i++) {
                 for (let k = 0; k < this.tracks[i].clips.length; k++) {
@@ -1095,13 +1095,6 @@
             $(Ensemble.Editor.UI.UserInput.Flyouts.trackRemove.winControl).bind("afterhide", Ensemble.Editor.TimelineMGR._unbindTrackDeleteListeners);
 
             Ensemble.Editor.UI.UserInput.Flyouts.trackRemove.winControl.show(event.currentTarget, "auto");
-            //if (track.clips.length > 1) {
-            //    // Show the delete track confirmation flyout.
-            //}
-            //else {
-            //    // Track is empty. Just go ahead and delete it.
-            //    Ensemble.Editor.TimelineMGR.removeTrack(Ensemble.Editor.TimelineMGR._trackEditId);
-            //}
         },
 
         _unbindTrackDeleteListeners: function () {
@@ -1266,7 +1259,6 @@
                 if (!Ensemble.Editor.PlaybackMGR.playing) {
                     event.stopPropagation();
 
-                    Ensemble.KeyboardMGR.editorTimelineCursorDrag();
                     $("#editorTimelineEWClickEater").removeClass("editorClickEaterFaded");
 
                     let allClips = document.getElementsByClassName("timeline-clip");
@@ -1309,7 +1301,6 @@
                 document.removeEventListener("pointerup", Ensemble.Editor.TimelineMGR._listeners.timeCursorDragFinished);
                 $("#editorTimelineEWClickEater").addClass("editorClickEaterFaded");
                 Ensemble.Editor.TimelineMGR._timeCursorDragging = false;
-                Ensemble.KeyboardMGR.editorDefault();
 
                 let allClips = document.getElementsByClassName("timeline-clip");
                 for (let i = 0; i < allClips.length; i++) {
@@ -1414,8 +1405,6 @@
 
                 event.stopPropagation();
 
-                Ensemble.KeyboardMGR.editorTimelineCursorDrag();
-
                 Ensemble.Editor.TimelineMGR._clipDragPointerOriginalLeft = event.pageX;
                 Ensemble.Editor.TimelineMGR._clipDragPointerCurrentLeft = event.pageX;
                 Ensemble.Editor.TimelineMGR._clipDragPointerOriginalTop = event.pageY;
@@ -1495,14 +1484,11 @@
                 document.removeEventListener("pointermove", Ensemble.Editor.TimelineMGR._listeners.clipDragCursorUpdate);
                 document.removeEventListener("pointerup", Ensemble.Editor.TimelineMGR._listeners.clipDirectDragFinished);
                 Ensemble.Editor.TimelineMGR._clipDragging = false;
-                Ensemble.KeyboardMGR.editorDefault();
             },
 
             calloutMoveClipPointerDown: function (event) {
                 if (!Ensemble.Editor.PlaybackMGR.playing) {
                     event.stopPropagation();
-
-                    Ensemble.KeyboardMGR.editorTimelineCursorDrag();
                    
                     Ensemble.Editor.TimelineMGR._clipDragPointerOriginalLeft = event.pageX;
                     Ensemble.Editor.TimelineMGR._clipDragPointerCurrentLeft = event.pageX;
@@ -1677,14 +1663,11 @@
                 document.removeEventListener("pointermove", Ensemble.Editor.TimelineMGR._listeners.clipDragCursorUpdate);
                 document.removeEventListener("pointerup", Ensemble.Editor.TimelineMGR._listeners.clipDragFinished);
                 Ensemble.Editor.TimelineMGR._clipDragging = false;
-                Ensemble.KeyboardMGR.editorDefault();
             },
 
             calloutMoveTrackClipPointerDown: function (event) {
                 if (!Ensemble.Editor.PlaybackMGR.playing) {
                     event.stopPropagation();
-
-                    Ensemble.KeyboardMGR.editorTimelineCursorDrag();
 
                     Ensemble.Editor.TimelineMGR._clipDragPointerOriginalTop = event.pageY;
                     Ensemble.Editor.TimelineMGR._clipDragPointerCurrentTop = event.pageY;
@@ -1897,7 +1880,6 @@
                 document.removeEventListener("pointermove", Ensemble.Editor.TimelineMGR._listeners.clipDragCursorUpdate);
                 document.removeEventListener("pointerup", Ensemble.Editor.TimelineMGR._listeners.clipTrimStopped);
                 Ensemble.Editor.TimelineMGR._clipTrimming = false;
-                Ensemble.KeyboardMGR.editorDefault();
             }
 
 

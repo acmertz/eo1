@@ -38,7 +38,6 @@
             $(Ensemble.Editor.MenuMGR.ui.clickEater).removeClass("ensemble-clickeater--active");
             Ensemble.Editor.MenuMGR.hideMenus();
             Ensemble.Editor.MenuMGR.menuOpen = false;
-            Ensemble.KeyboardMGR.editorDefault();
         },
 
         closeFileMenu: function () {
@@ -57,13 +56,12 @@
 
         _reevaluateState: function () {
             // All commands are disabled unless explicitly enabled.
-            $(".editor-menu__command").addClass("editor-command--disabled");
-            $(".editor-toolbar-command").attr("disabled", "disabled");
+            $(".editor-toolbar-command").attr("disabled", true);
             $(".app-trigger--editor").attr("disabled", true);
 
-            $(".editor-command__exit").removeClass("editor-command--disabled");
-            if (Ensemble.HistoryMGR.canUndo()) $(".app-trigger--undo").attr("disabled", false);
-            if (Ensemble.HistoryMGR.canRedo()) $(".app-trigger--redo").attr("disabled", false);
+            $(".app-trigger--close-project").removeAttr("disabled");
+            if (Ensemble.HistoryMGR.canUndo()) $(".app-trigger--undo").removeAttr("disabled");
+            if (Ensemble.HistoryMGR.canRedo()) $(".app-trigger--redo").removeAttr("disabled");
 
             $(".editor-toolbar-command--import-media").removeAttr("disabled");
             $(".editor-toolbar-command--browse-media").removeAttr("disabled");
@@ -145,7 +143,6 @@
                     Ensemble.Editor.MenuMGR.menuOpen = true;
                     $(Ensemble.Editor.MenuMGR.ui.clickEater).addClass("ensemble-clickeater--active");
                     Ensemble.Navigation.pushBackState(Ensemble.Editor.MenuMGR.closeFileMenu);
-                    Ensemble.KeyboardMGR.editorMenu();
                 }
                 else {
                     let activeToolbar = document.getElementsByClassName("editor-toolbar--visible")[0];
@@ -184,7 +181,6 @@
                     Ensemble.Editor.MenuMGR.menuOpen = true;
                     $(Ensemble.Editor.MenuMGR.ui.clickEater).addClass("ensemble-clickeater--active");
                     Ensemble.Navigation.pushBackState(Ensemble.Editor.MenuMGR.closeMediaMenu);
-                    Ensemble.KeyboardMGR.editorMenu();
                 }
 
                 else if (command == "browse-media") {

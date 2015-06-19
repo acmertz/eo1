@@ -111,12 +111,10 @@
     <Content Include="js\events\action.js" />
     <Content Include="js\fileio.js" />
     <Content Include="js\historymgr.js" />
-    <Content Include="js\keyboardmgr.js" />
-    <Content Include="js\mainmenu-new.js" />
+    <Content Include="js\mainmenu.js" />
     <Content Include="js\navigation.js" />
     <Content Include="js\osdialogmgr.js" />
     <Content Include="js\pages\editor.js" />
-    <Content Include="js\pages\mainmenu.js" />
     <Content Include="js\platform.js" />
     <Content Include="js\projectfile.js" />
     <Content Include="js\session.js" />
