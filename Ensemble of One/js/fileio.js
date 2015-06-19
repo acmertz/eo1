@@ -906,7 +906,6 @@
             }
             if (Ensemble.Session.projectClipCount == 0) {
                 //Fire callback. Project is empty (no tracks or media).
-                //Ensemble.Pages.MainMenu.navigateToEditor();
                 Ensemble.MainMenu._listeners.projectFinishedLoading();
             }
         },
@@ -1068,7 +1067,6 @@
                 if (Ensemble.FileIO._projectClipsFullyLoaded === Ensemble.Session.projectClipCount) {
                     console.info("Finished loading all clips!");
                     requestAnimationFrame(function () {
-                        //Ensemble.Pages.MainMenu.navigateToEditor();
                         Ensemble.MainMenu._listeners.projectFinishedLoading();
                     });
                 }

@@ -5,7 +5,6 @@
             /// <summary>Renews all UI references and makes sure they're alive.</summary>
 
             this.PageSections.upperHalf.entireSection = document.getElementsByClassName("editor-section--upper")[0];
-            this.PageSections.upperHalf.canvasAndControls = document.getElementById("editorCanvasContainer");
             this.PageSections.upperHalf.canvasContainer = document.getElementsByClassName("editor-canvas-container")[0];
 
             this.PageSections.lowerHalf.timeline = document.getElementById("timeline-track-container");
@@ -13,7 +12,6 @@
             this.PageSections.lowerHalf.timelineDetails = document.getElementsByClassName("timeline-track-widget-container--standard")[0];
             this.PageSections.lowerHalf.timelineTracks = document.getElementById("editorTimelineTracks");
             this.PageSections.lowerHalf.timelineHeaderDetailPlaceholder = document.getElementsByClassName("timeline-track-widget-container--placeholder")[0];
-            this.PageSections.divider = document.getElementById("editorHorizontalDivider");
 
             this.PageSections.menu.actionMenu.project.nameDisplay = document.getElementById("editorProjectNameDisplay");
             this.PageSections.menu.actionMenu.project.durationDisplay = document.getElementById("editorMenuDurationDisplay");
@@ -28,10 +26,6 @@
             this.PageSections.menu.effectsMenu.entireSection = document.getElementById("editorEffectsMenu");
 
             this.TextFields.removeTrackConfirmationName = document.getElementById("remove-track-confirmation__name");
-
-            this.Graphics.mediaBrowserPreviewVideo = document.getElementById("mediaBrowserPreviewVideo");
-            this.Graphics.mediaBrowserPreviewMusic = document.getElementById("mediaBrowserPreviewAudio");
-            this.Graphics.mediaBrowserPreviewPic = document.getElementById("mediaBrowserPreviewPicture");
 
             this.RenderSurfaces.mainCanvas = document.getElementsByClassName("editor-canvas")[0];
 
@@ -48,10 +42,6 @@
             this.UserInput.Buttons.moveTrackToBottom = document.getElementById("editorMoveTrackBottom");
             this.UserInput.Buttons.confirmRemoveTrack = document.getElementById("remove-track-confirmation__button");
 
-            this.UserInput.Boundaries.topBottomSplit = document.getElementById("editorHorizontalDivider");
-
-            this.UserInput.ClickEaters.mediaPreview = document.getElementById("editorMediaBrowserPreviewClickEater");
-
             this.UserInput.Flyouts.mediaBrowserLocation = document.getElementById("editorMediaBrowserLocationFlyout");
             this.UserInput.Flyouts.moveTrack = document.getElementById("editorMoveTrackFlyout");
             this.UserInput.Flyouts.trackVolume = document.getElementById("editorTrackVolumeFlyout");
@@ -66,7 +56,6 @@
             upperHalf: {
                 //The entire upper half of the page.
                 entireSection: null,
-                canvasAndControls: null,
                 canvasContainer: null
             },
             lowerHalf: {
@@ -77,13 +66,8 @@
                 timelineTracks: null,
                 timelineHeaderDetailPlaceholder: null
             },
-            //Horizontal divider bar that separates the top half of the page from the lower half.
-            divider: null,
-            //Free-floating menu buttons that toggle the visibility of the Editor menu.
-            menuButtons: null,
             //Transient, light-dismiss menu dialog that appears in the top left corner of the screen.
             menu: {
-                entireSection: null,
                 actionMenu: {
                     entireSection: null,
                     project: {
@@ -113,12 +97,6 @@
             removeTrackConfirmationName: null
         },
 
-        Graphics: {
-            mediaBrowserPreviewVideo: null,
-            mediaBrowserPreviewMusic: null,
-            mediaBrowserPreviewPic: null
-        },
-
         RenderSurfaces: {
             mainCanvas: null
         },
@@ -137,12 +115,6 @@
                 moveTrackDown: null,
                 moveTrackToBottom: null,
                 confirmRemoveTrack: null
-            },
-            Boundaries: {
-                topBottomSplit: null
-            },
-            ClickEaters: {
-                mediaPreview: null
             },
             Flyouts: {
                 mediaBrowserLocation: null,

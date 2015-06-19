@@ -33,33 +33,17 @@ var myGreatGlobalVids = [];
 	        Ensemble.Editor.UI.relink();
 	    }
 	    if (args.detail.kind === Windows.ApplicationModel.Activation.ActivationKind.file && Ensemble.Session.projectName == null) {
-	        let projectToOpen = null;
-	        for (let i = 0; i < args.detail.files.length; i++) {
-	            if (args.detail.files[i].fileType == ".eo1") {
-	                projectToOpen = args.detail.files[i];
-	                break;
-	            }
-	        }
-	        Ensemble.Pages.MainMenu.showProjectLoadingPage(projectToOpen.displayName);
-	        Ensemble.FileIO.loadProject(null, projectToOpen);
+	        console.log("Load the activated file here.");
 	    }
 		if (args.detail.kind === activation.ActivationKind.launch) {
 			if (args.detail.previousExecutionState !== activation.ApplicationExecutionState.terminated) {
 			    // TODO: This application has been newly launched. Initialize your application here.
 			    console.info("Starting Ensemble of One...");
 			    Ensemble.Navigation.init();
-			    //var extendedSplashImage = document.getElementById("imgMainLogo");
-			    //extendedSplashImage.width = args.detail.splashScreen.imageLocation.width;
-			    //extendedSplashImage.height = args.detail.splashScreen.imageLocation.height;
-
-			    //args.detail.splashScreen.addEventListener("dismissed", function () {
-			    //    Ensemble.Pages.MainMenu.showInitial();
-			    //});
-
-			    //Ensemble.Pages.MainMenu.showInitial();
-
 			    Ensemble.MainMenu.init();
-			} else {
+			}
+
+			else {
 				// TODO: This application has been reactivated from suspension.
 			    // Restore application state here.
 			    // Load back into previously open project.

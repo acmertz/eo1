@@ -46,7 +46,6 @@
     <script src="/js/events/action.js"></script>
 
     <!-- Page controllers -->
-    <script src="/js/pages/mainmenu.js"></script>
     <script src="/js/pages/editor.js"></script>
 
     <!-- Utilities -->
@@ -61,8 +60,7 @@
     <script src="/js/ensemblefolder.js"></script>
     <script src="/js/fileio.js"></script>
     <script src="/js/historymgr.js"></script>
-    <script src="/js/mainmenu-new.js"></script>
-    <script src="/js/keyboardmgr.js"></script>
+    <script src="/js/mainmenu.js"></script>
     <script src="/js/navigation.js"></script>
     <script src="/js/osdialogmgr.js"></script>
     <script src="/js/platform.js"></script>
@@ -166,9 +164,9 @@
                 <div id="editorMediaBrowserCurrentPathContainer"></div>
                 <div id="editorMediaBrowserFolderControlContainer">
                     <progress class="win-ring win-medium" id="editorMediaBrowserLoadingProgress"></progress>
-                    <span class="editor-titlebar-control" id="editorMediaBrowserHomeButton">&#xE10F;</span>
-                    <span class="editor-titlebar-control" id="editorMediaBrowserUpOneLevelButton">&#xE110;</span>
-                    <span class="editor-titlebar-control" id="editorMediaBrowserRefreshButton">&#xE117;</span>
+                    <button class="editor-titlebar-control" id="editorMediaBrowserHomeButton">&#xE10F;</button>
+                    <button class="editor-titlebar-control" id="editorMediaBrowserUpOneLevelButton">&#xE110;</button>
+                    <button class="editor-titlebar-control" id="editorMediaBrowserRefreshButton">&#xE117;</button>
                 </div>
             </div>
             <div id="editorMenuMediaBrowserFileList"></div>
@@ -178,8 +176,8 @@
     <div class="app-page app-page--editor-menu app-page--hidden">
         <div class="app-page__inner app-page__inner--320 app-page__inner--editor-menu">
             <section class="editor-menu-titlebar">
-                <span class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--close-project" data-editor-command="close-project" title="Close project">&#xE112;&nbsp;Close project</span>
-                <span class="editor-titlebar-control app-trigger app-trigger--settings" title="Settings"></span>
+                <button class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--close-project" data-editor-command="close-project" title="Close project">&#xE112;&nbsp;Close project</button>
+                <button class="editor-titlebar-control app-trigger app-trigger--settings" title="Settings"></button>
             </section>
 
             <section class="editor-menu-section">
@@ -202,8 +200,8 @@
                 <span class="editor-menubar__tab editor-menubar__tab--effects" data-ensemble-menu="effects">Animations</span>
                 <span class="editor-menubar__tab editor-menubar__tab--export" data-ensemble-menu="export">Export</span>
                 <span class="editor-menu-titlebar editor-menu-titlebar--tab-list">
-                    <span title="Undo" class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--undo" data-editor-command="undo">&#xE10E;</span>
-                    <span title="Redo" class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--redo" data-editor-command="redo">&#xE10D;</span>
+                    <button title="Undo" class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--undo" data-editor-command="undo">&#xE10E;</button>
+                    <button title="Redo" class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--redo" data-editor-command="redo">&#xE10D;</button>
                 </span>
             </div>
             <div data-win-control="WinJS.UI.ToolBar" class="editor-menubar__toolbar editor-toolbar--home" data-ensemble-menu="home">
@@ -381,167 +379,6 @@
         <div id="editorTimelineEWClickEater" class="editorClickEater editorClickEaterFaded"></div>
     </div>
 
-
-    <div id="appContainer">
-        <div id="splashScreen">
-            <img id="imgMainLogo" src="/img/packaging/splashScreen.png" alt="Splash screen" />
-        </div>
-        <div class="pageContainer" id="mainMenuPageContainer">
-            <div id="menuPageMainContent">
-                <header id="mainMenuHeader" class="parallaxCapable">
-                    <div class="tickerSpacer"></div>
-                    <div id="tickerTicket"><div id="tickerText">Beta 0.4!</div></div>
-                    <div class="tickerSpacer"></div>
-                </header>
-
-                <div id="mainMenuControls">
-                    <div class="mainMenuPhotoButtonContainer parallaxCapable">
-                        <div id="newProjectButton" class="mainMenuPhotoButton">
-                            <div class="mainMenuButtonIcon"><i class="fa fa-4x fa-plus-square-o"></i></div>
-                            <div>New</div>
-                        </div>
-                    </div>
-
-                    <div class="imgMainLogoContainer parallaxCapable"></div>
-
-                    <div class="mainMenuPhotoButtonContainer parallaxCapable">
-                        <div id="openProjectButton" class="mainMenuPhotoButton">
-                            <i class="mainMenuButtonIcon fa fa-4x fa-folder-open-o"></i>
-                            <div>Open</div>
-                        </div>
-                    </div>
-                </div>
-
-                <footer id="mainMenuFooter" class="parallaxCapable">
-                    <div id="settingsButton">
-                        <div id="clapper">
-                            <div id="clapperTop" class="clapperPiece"></div>
-                            <div id="clapperBottom" class="clapperPiece"></div>
-                        </div>
-                        <div id="settingsIcon">
-                            <i class="fa fa-2x fa-cog"></i>
-                        </div>
-                    </div>
-                </footer>
-            </div>
-
-
-
-            <div class="mainMenuClickEater" id="newProjectClickEater"></div>
-            <div class="mainMenuClickEater" id="openProjectClickEater"></div>
-            <div class="mainMenuClickEater" id="tickerDialogClickEater"></div>
-            <div class="mainMenuClickEater" id="settingsDialogClickEater"></div>
-
-
-
-            <div id="newProjectDialog" class="mainMenuDialog newProjectDialogHidden">
-                <aside class="filmReelBorder"></aside>
-                <div id="newProjectDialogContent">
-                    <div class="filmReelFrame"></div>
-                    <div class="filmReelFrame">
-                        <h2>Create a project</h2>
-                        <table>
-                            <tr>
-                                <td>Name: </td>
-                                <td><input type="text" id="mainMenuProjectNameInput" placeholder="Untitled project" /></td>
-                            </tr>
-                            <tr>
-                                <td>Location: </td>
-                                <td>
-                                    <select id="mainMenuProjectLocation">
-                                        <option selected value="local">This device</option>
-                                        <option disabled value="cloud">Cloud storage</option>
-                                    </select>
-                            </tr>
-                            <tr>
-                                <td>Aspect ratio: </td>
-                                <td>
-                                    <select id="mainMenuProjectAspect">
-                                        <option selected value="16:9">Widescreen (HDTV, 16:9)</option>
-                                        <option value="16:10">Widescreen (laptop, 16:10)</option>
-                                        <option value="2.39:1">Widescreen (cinematic, 2.39:1)</option>
-                                        <option value="4:3">Standard (tube TV, 4:3)</option>
-                                    </select>
-                                </td>
-                            </tr>
-                        </table>
-                        <button id="mainMenuValidateProjectButton">
-                            <i class="fa fa-check"></i>
-                            Create!
-                        </button>
-                    </div>
-                    <div class="filmReelFrame"></div>
-                    <div class="filmReelFrame"></div>
-                    <div class="filmReelFrame">
-                        <h2>Creating your project...</h2> <br />
-                        <progress class="win-ring win-medium"></progress>
-                    </div>
-                    <div class="filmReelFrame"></div>
-                </div>
-                <aside class="filmReelBorder"></aside>
-            </div>
-
-
-            <div id="openProjectDialog" class="mainMenuDialog openProjectDialogHidden">
-                <aside class="filmReelBorder"></aside>
-                <div class="openProjectDialogContent" id="menuOpenProjectDialogContentEmpty">
-                    <div class="filmReelFrame"></div>
-                    <div class="filmReelFrame">
-                        <h2>No projects found</h2>
-                        <div>Tap <i class="fa fa-plus-square-o"></i> on the main menu to get started!</div>
-                    </div>
-                    <div class="filmReelFrame"></div>
-                </div>
-                <div class="openProjectDialogContent" id="menuOpenProjectDialogContentFull">
-                    <div id="openProjectDialogList"></div>
-                    <div id="openProjectDialogControls">
-                        <h3 class="mainMenuFilmReelButton" id="mainMenuConfirmOpenProjectButton" title="Open">&#xE104; Open</h3>
-                        <h3 class="mainMenuFilmReelButton animGroup2" id="mainMenuRenameProjectButton" title="Rename">&#xE13E; Rename</h3>
-                        <h3 class="mainMenuFilmReelButton mainMenuFilmReelDelete animGroup3" id="mainMenuDeleteProjectButton" title="Delete">&#xE107; Delete</h3>
-                    </div>
-                </div>
-                <aside class="filmReelBorder"></aside>
-            </div>
-
-            <div id="tickerDialog" class="mainMenuFlipDialog">
-                <div id="tickerDialogContainer">
-                    <div id="tickerDialogContent" class="mainMenuDialogContent">
-                        <h2>Welcome to Ensemble of One!</h2>
-                        <p hidden>Hey, you! ...yes, you. If you're reading this message, you've been given access to an early beta version of Ensemble of One. What that means is that anything and everything you see may be subject to change before the final release. In fact, some things will probably change quite a bit before I'm through with them. No worries, though - it's all in the interest of hand-crafting an experience that you, the user, will enjoy.</p>
-                        <p hidden>I'm sure you'll run into some serious brokenness along the way - this <em>is</em> a beta release, after all. Some of the buttons don't quite work the way they should yet (in fact, some of them don't do anything at all), and some of the menus don't go anywhere. You're here to help me find these things - anything that doesn't work or even just seems out of place - and let me know about them so I can fix them. It's a team effort, you see.</p>
-                        <p>Thanks for trying out this beta version of Ensemble of One! Keep in mind that not everything's finished yet, so don't panic if something doesn't quite seem to be working properly. Just let me know if you find any bugs!</p>
-                        <p>You don't have to do anything, by the way. It's okay if you just want to try out the beta and nothing more than that, but I would really, <em>really</em> appreciate your support. The more you help, the better Ensemble of One will be once I finally get around to releasing it. Got it? Great.</p>
-                        <p>Go ahead and give things a whirl - kick the tires, so to speak. I'm looking forward to your feedback.</p>
-                        <p>~Aaron Mertzenich, <img src="img/placeholder_logo.png" alt="[Placeholder] Software" draggable="false" /></p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="settingsDialog" class="mainMenuFlipDialog">
-                <div id="settingsDialogContainer">
-                    <div id="settingsDialogContent" class="mainMenuDialogContent">
-                        <h2>Settings</h2>
-                        <h3>Danger Zone</h3>
-                        <button id="mainMenuDeleteAllProjectsButton">Delete all projects</button>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="mainMenuClickEater" id="deleteProjectConfirmationClickEater"></div>
-
-            <div id="deleteProjectConfirmationDialog" class="mainMenuZoomDialog">
-                <div class="mainMenuZoomDialogContent">
-                    <h2><i class="fa fa-warning"></i> Delete "<span id="deleteProjectConfirmationDialogNameDisplay"></span>?"</h2>
-                    <p>Deleting is forever - you'll never see your project again. Are you absolutely sure you want to do this?</p>
-                    <div class="mainMenuFilmReelButtonContainerHorizontal">
-                        <h3 class="mainMenuFilmReelButton" id="mainMenuConfirmDeleteProjectButton" title="Permanently delete the project"><i class="fa fa-trash-o"></i> Delete it</h3>
-                        <h3 class="mainMenuFilmReelButton" id="mainMenuCancelDeleteProjectButton" title="Cancel deleting the project"><i class="fa fa-times"></i> Cancel</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <div>
         <div id="editorMediaBrowserLocationFlyout" data-win-control="WinJS.UI.Menu">
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMediaBrowserLocationVideosLibrary',label:'Videos library'}"></button>
@@ -558,11 +395,11 @@
             <input type="range" class="win-vertical" min="0" max="100" title="Track volume" />
         </div>
         <div id="editorTrackDeleteFlyout" data-win-control="WinJS.UI.Flyout">
-            <h3>
+            <h3 class="win-h3">
                 <span>Remove &quot;</span><span id="remove-track-confirmation__name">Untitled Track</span><span>?&quot;</span>
             </h3>
             <p>This will also remove all the clips inside it.</p>
-            <button id="remove-track-confirmation__button">Remove</button>
+            <button id="remove-track-confirmation__button" class="win-button eo1-btn">Remove</button>
         </div>
         <div id="mediaBrowserAddToProjectFlyout" data-win-control="WinJS.UI.Menu"></div>
         <div class="media-browser__preview-flyout" data-win-control="WinJS.UI.Flyout" aria-label="{Preview clip}">
@@ -571,7 +408,7 @@
             <img class="media-browser-preview media-browser-preview--picture" />
         </div>
         <div class="media-browser__properties-flyout" data-win-control="WinJS.UI.Flyout" aria-label="{Clip properties}">
-            <h3 class="media-browser-property media-browser-property--display-name">[Display name here]</h3>
+            <h3 class="win-h3 media-browser-property media-browser-property--display-name">[Display name here]</h3>
             <span class="bold">Folder-unique ID: </span><span class="media-browser-property media-browser-property--unique-id"></span><br />
             <span class="bold">Path: </span><span class="media-browser-property media-browser-property--path"></span><br />
             <span class="bold">Mime: </span><span class="media-browser-property media-browser-property--mime"></span><br />

@@ -235,65 +235,6 @@
             Ensemble.Editor.UI.PageSections.menu.mediaMenu.local.pathDisplay.innerText = listToUse[listToUse.length - 1].displayName;
         },
 
-        showMediaPreview: function (ensembleFile, fileUri) {
-            /// <summary>Shows the preview dialog for the given Ensemble file and URI reference.</summary>
-            /// <param name="ensembleFile" type="Ensemble.EnsembleFile">The file for which to load a preview.</param>
-            /// <param name="fileUri" type="String">The URI to the Ensemble file's source.</param>
-            Ensemble.Editor.MediaBrowser._currentPreview = ensembleFile;
-
-            $(Ensemble.Editor.UI.UserInput.ClickEaters.mediaPreview).removeClass("editorClickEaterFaded");
-
-            Ensemble.Editor.UI.Graphics.mediaBrowserPreviewVideo.style.display = "none";
-            Ensemble.Editor.UI.Graphics.mediaBrowserPreviewMusic.style.display = "none";
-            Ensemble.Editor.UI.Graphics.mediaBrowserPreviewPic.style.display = "none";
-
-            switch (ensembleFile.eo1type) {
-                case "video":
-                    Ensemble.Editor.UI.Graphics.mediaBrowserPreviewVideo.style.display = "block";
-                    var vidTag = Ensemble.Editor.UI.Graphics.mediaBrowserPreviewVideo.getElementsByTagName("video")[0];
-                    vidTag.addEventListener("play", Ensemble.Editor.MediaBrowser._openMediaPreviewPopup, false);
-                    vidTag.src = fileUri;
-                    break;
-                case "audio":
-                    Ensemble.Editor.UI.Graphics.mediaBrowserPreviewMusic.style.display = "block";
-                    var audioTag = Ensemble.Editor.UI.Graphics.mediaBrowserPreviewMusic.getElementsByTagName("audio")[0];
-                    audioTag.addEventListener("play", Ensemble.Editor.MediaBrowser._openMediaPreviewPopup, false);
-                    audioTag.src = fileUri;
-                    break;
-                case "picture":
-                    Ensemble.Editor.UI.Graphics.mediaBrowserPreviewPic.style.display = "block";
-                    var picTag = Ensemble.Editor.UI.Graphics.mediaBrowserPreviewPic.getElementsByTagName("img")[0];
-                    picTag.addEventListener("load", Ensemble.Editor.MediaBrowser._openMediaPreviewPopup, false);
-                    picTag.src = fileUri;
-                    break;
-            }
-            $(".media-browser-preview__btn--add-to-project").click(Ensemble.Editor.MediaBrowser._addPreviewToProject);
-            $(".media-browser-preview__btn--close-preview").click(Ensemble.Editor.MediaBrowser.closeMediaPreview);
-            Ensemble.Editor.UI.UserInput.ClickEaters.mediaPreview.addEventListener("click", Ensemble.Editor.MediaBrowser.closeMediaPreview, false);
-        },
-
-        closeMediaPreview: function () {
-            /// <summary>Stops any playback occuring in the media preview dialog and hides the dialog.</summary>
-            Ensemble.Editor.UI.UserInput.ClickEaters.mediaPreview.removeEventListener("click", Ensemble.Editor.MediaBrowser.closeMediaPreview);
-            $(Ensemble.Editor.UI.UserInput.ClickEaters.mediaPreview).addClass("editorClickEaterFaded");
-            $(Ensemble.Editor.UI.Popups.mediaBrowserPreviewDialog).removeClass("mainMenuZoomDialogVisible");
-            $(Ensemble.Editor.UI.Popups.mediaBrowserPreviewDialog).addClass("mainMenuZoomDialogHidden");
-
-            var vidTag = Ensemble.Editor.UI.Graphics.mediaBrowserPreviewVideo.getElementsByTagName("video")[0];
-            var audioTag = Ensemble.Editor.UI.Graphics.mediaBrowserPreviewMusic.getElementsByTagName("audio")[0];
-            var picTag = Ensemble.Editor.UI.Graphics.mediaBrowserPreviewPic.getElementsByTagName("img")[0];
-
-            vidTag.removeEventListener("play", Ensemble.Editor.MediaBrowser._openMediaPreviewPopup);
-            audioTag.removeEventListener("play", Ensemble.Editor.MediaBrowser._openMediaPreviewPopup);
-            picTag.removeEventListener("load", Ensemble.Editor.MediaBrowser._openMediaPreviewPopup);
-
-            $(".media-browser-preview__btn--add-to-project").unbind("click");
-            $(".media-browser-preview__btn--close-preview").unbind("click");
-
-            vidTag.pause();
-            audioTag.pause();
-        },
-
         //Private methods
 
         _addPreviewToProject: function (event) {
@@ -334,20 +275,7 @@
 
         _addPreviewToLayerLoadFinished: function (clipObj) {
             /// <param name="clipObj" type="Object">The loaded Clip, ready for playback and rendering.</param>
-            $(Ensemble.Editor.MenuMGR.ui.clickEater).click();
-        },
-
-        _openMediaPreviewPopup: function () {
-            $(Ensemble.Editor.UI.Popups.mediaBrowserPreviewDialog).removeClass("mainMenuZoomDialogHidden");
-            $(Ensemble.Editor.UI.Popups.mediaBrowserPreviewDialog).addClass("mainMenuZoomDialogVisible");
-
-            var vidTag = Ensemble.Editor.UI.Graphics.mediaBrowserPreviewVideo.getElementsByTagName("video")[0];
-            var audioTag = Ensemble.Editor.UI.Graphics.mediaBrowserPreviewMusic.getElementsByTagName("audio")[0];
-            var picTag = Ensemble.Editor.UI.Graphics.mediaBrowserPreviewPic.getElementsByTagName("img")[0];
-
-            vidTag.removeEventListener("play", Ensemble.Editor.MediaBrowser._openMediaPreviewPopup);
-            audioTag.removeEventListener("play", Ensemble.Editor.MediaBrowser._openMediaPreviewPopup);
-            picTag.removeEventListener("load", Ensemble.Editor.MediaBrowser._openMediaPreviewPopup);
+            console.log("Finished loading clip.");
         },
 
         _listItemMouseDown: function (event) {
@@ -519,26 +447,6 @@
         _disableMediaFolderListeners: function () {
             Ensemble.Editor.UI.PageSections.menu.mediaMenu.local.mediaList.removeEventListener("click", Ensemble.Editor.MediaBrowser._listItemClicked);
         },
-
-        _breadcrumbOnClick: function (event) {
-            /// <summary>DEPRECATED. Used to enable breadcrumb navigation in the Media Browser title area.</summary>
-            console.log("Clicked a bread crumb.");
-            switch (Ensemble.Editor.MediaBrowser._context) {
-                case "video":
-                    while (Ensemble.Editor.MediaBrowser._breadCrumbsVideo[Ensemble.Editor.MediaBrowser._breadCrumbsVideo.length - 1] !== event.currentTarget.ensembleFile) Ensemble.Editor.MediaBrowser._breadCrumbsVideo.pop();
-                    break;
-                case "music":
-                    while (Ensemble.Editor.MediaBrowser._breadCrumbsMusic[Ensemble.Editor.MediaBrowser._breadCrumbsMusic.length - 1] !== event.currentTarget.ensembleFile) Ensemble.Editor.MediaBrowser._breadCrumbsMusic.pop();
-                    break;
-                case "picture":
-                    while (Ensemble.Editor.MediaBrowser._breadCrumbsPicture[Ensemble.Editor.MediaBrowser._breadCrumbsPicture.length - 1] !== event.currentTarget.ensembleFile) Ensemble.Editor.MediaBrowser._breadCrumbsPicture.pop();
-                    break;
-            }
-            Ensemble.Editor.MediaBrowser.navigateToFolder(Ensemble.Editor.MediaBrowser.currentLocation());
-        },
-
-
-
 
         ui: {
             previewFlyout: null,
