@@ -175,6 +175,7 @@
 
 .app-page--enter-up {
     animation: pageEnterUp 0.3s ease;
+    z-index: 100;
 }
 
 @keyframes pageEnterUp {
@@ -191,6 +192,7 @@
 .app-page--exit-down {
     animation: pageExitDown 0.3s ease;
     top: 100%;
+    z-index: 100;
 }
 
 @keyframes pageExitDown {
