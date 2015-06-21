@@ -526,42 +526,53 @@
 
         newRulerScale: function () {
             /// <summary>Sets the scale used to display the timeline, its tracks and clips, and the timing ruler.</summary>
-            let params = Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel];
+            let params = Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel],
+                ratio = params.ratio,
+                interval = params.interval,
+                mark = params.mark,
+                sub = params.sub,
+                intervalHeight = 24.5,
+                markHeight = 5.5,
+                subHeight = 11.5,
+                intervalWidth = interval / ratio;
+                markWidth = mark / ratio,
+                subWidth = sub / ratio,
+                displayTime = Ensemble.Editor.TimelineMGR.ui.timeRuler.clientWidth * ratio > Ensemble.Session.projectDuration ? Ensemble.Editor.TimelineMGR.ui.timeRuler.clientWidth * ratio : Ensemble.Session.projectDuration * ratio,
+                numOfMarks = Math.ceil(displayTime / mark);
 
-            let ratio = params.ratio;
-            //let interval = params.interval;
-            //let mark = params.mark;
-            //let sub = params.sub;
+            Ensemble.Editor.TimelineMGR.ui.timeRulerInner.style.width = (displayTime / ratio) + "px";
+            Ensemble.Editor.TimelineMGR.ui.timeRulerInner.width = parseInt($(Ensemble.Editor.TimelineMGR.ui.timeRulerInner).width(), 10);
+            Ensemble.Editor.TimelineMGR.ui.timeRulerInner.height = parseInt($(Ensemble.Editor.TimelineMGR.ui.timeRulerInner).height(), 10);
 
-            //let markWidth = mark / ratio;
+            let rulerContext = Ensemble.Editor.TimelineMGR.ui.timeRulerInner.getContext("2d");
+            rulerContext.clearRect(0, 0, Ensemble.Editor.TimelineMGR.ui.timeRulerInner.width, Ensemble.Editor.TimelineMGR.ui.timeRulerInner.height)
 
-            //let displayTime = Ensemble.Editor.TimelineMGR.ui.timeRuler.clientWidth * ratio;
-            //if (Ensemble.Session.projectDuration > displayTime) displayTime = Ensemble.Session.projectDuration;
+            rulerContext.beginPath();
+            rulerContext.textAlign = "center";
+            rulerContext.textBaseline = "bottom";
+            rulerContext.font = "bold 12px sans-serif";
+            for (let i = 1; i <= numOfMarks; i++) {
+                let markXPos = i * markWidth,
+                    markYHeight = 0,
+                    drawTime = false;
 
-            //let cur = 0;
-            //let htmlStr = "";
-            //let timeStr = "";
+                if (markXPos % intervalWidth == 0) {
+                    markYHeight = intervalHeight;
+                    drawTime = true;
+                }
+                else if (markXPos % subWidth == 0) markYHeight = subHeight;
+                else markYHeight = markHeight;
 
-            //while (displayTime > cur) {
-            //    htmlStr = htmlStr + "<span style='width: " + markWidth + "px' class='timeline-ruler__mark"
-            //    if (cur > 0) {
-            //        //if (cur % mark === 0) console.log("Mark at " + cur);
-            //        if (cur % sub === 0) {
-            //            //console.log("Sub at " + cur);
-            //            htmlStr = htmlStr + " timeline-ruler__mark--sub";
-            //        }
-            //        if (cur % interval === 0) {
-            //            //console.log("Interval at " + cur);
-            //            htmlStr = htmlStr + " timeline-ruler__mark--interval";
-            //            timeStr = timeStr + "<span class='timeline-ruler__time' style='left: " + (cur / ratio) + "px'>" + Ensemble.Utilities.TimeConverter.timelineTime(cur) + "</span>";
-            //        }
-            //    }
-            //    htmlStr = htmlStr + "'></span>";
-            //    cur = cur + mark;
-            //}
-            //Ensemble.Editor.TimelineMGR.ui.timeRulerInner.innerHTML = htmlStr + timeStr;
+                markXPos = Math.floor(markXPos) + 0.5;
 
-            Ensemble.Editor.TimelineMGR.ui.timeRulerInner.style.width = (Ensemble.Session.projectDuration / ratio) + "px";
+                rulerContext.moveTo(markXPos, 48);
+                rulerContext.lineTo(markXPos, 48 - markYHeight);
+
+                if (drawTime) rulerContext.fillText(Ensemble.Utilities.TimeConverter.timelineTime(((mark / ratio) * i) * ratio), markXPos, 48 - markYHeight);
+            }
+            rulerContext.closePath();
+            rulerContext.stroke();
+            
 
             for (let i = 0; i < this.tracks.length; i++) {
                 for (let k = 0; k < this.tracks[i].clips.length; k++) {

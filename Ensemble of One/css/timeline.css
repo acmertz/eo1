@@ -39,7 +39,7 @@
 /* TIMELINE RULER */
 .timeline-ruler {
     position: relative;
-    border: 2px solid gray;
+    border: 2px solid #000;
     border-bottom: none;
     flex: 1;
     border-top-left-radius: 3px;
