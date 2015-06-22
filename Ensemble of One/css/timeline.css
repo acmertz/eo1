@@ -2,12 +2,12 @@
 .timeline-ruler-container {
     width: 100%;
     height: 50px;
-    display: flex;
+    display: none;
     flex-direction: row;
 }
 
 .timeline-display-container {
-    height: calc(100% - 50px);
+    height: 100%;
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -81,8 +81,16 @@
     position: absolute;
     left: 0;
     top: 0;
-    height: 100%;
+    height: 50px;
     cursor: text;
+    background-color: #fff;
+    border-bottom: 1px solid #000;
+    box-sizing: border-box;
+}
+
+.timeline-ruler-placeholder {
+    width: 100%;
+    height: 50px;
 }
 
 .timeline-ruler__flag {
@@ -222,7 +230,7 @@
 
 .timeline__cursor {
     position: absolute;
-    top: 0;
+    top: -50px;
     left: 0;
     height: 100%;
     width: 4px;

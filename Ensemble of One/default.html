@@ -311,7 +311,6 @@
                     <div class="timeline-track-widget-container timeline-track-widget-container--placeholder"></div>
                     <div class="timeline-ruler">
                         <div class="timeline-ruler__flag"></div>
-                        <canvas class="timeline-ruler__inner"></canvas>
                     </div>
                     <div class="timeline-button-container timeline-button-container--right"></div>
                 </div>
@@ -322,14 +321,21 @@
                         </div>
                     </div>
                     <div id="timeline-track-container">
-                        <div class="timeline-track-header-container timeline-track-header-container--standard timeline-scrollable-container"></div>
-                        <div class="timeline-track-widget-container timeline-track-widget-container--standard timeline-scrollable-container"></div>
+                        <div class="timeline-track-header-container timeline-track-header-container--standard timeline-scrollable-container">
+                            <div class="timeline-ruler-placeholder"></div>
+                        </div>
+                        <div class="timeline-track-widget-container timeline-track-widget-container--standard timeline-scrollable-container">
+                            <div class="timeline-ruler-placeholder"></div>
+                        </div>
                         <div class="timeline-track-container-wrap">
+                            <div class="timeline-ruler-placeholder"></div>
                             <div id="editorTimelineTracks" class="timeline-scrollable-container">
                                 <div class="timeline__cursor"></div>
                                 <div class="timeline__drop-preview"></div>
                             </div>
+                            <canvas class="timeline-ruler__inner"></canvas>
                         </div>
+                        <div class="timeline-track-header-container__ruler-spacer"></div>
                     </div>
                     <div class="timeline-button-container timeline-button-container--right">
                         <div class="timeline-button-container__section">
@@ -341,7 +347,6 @@
                             <button class="win-button fa-rotate-270 eo1-btn eo1-btn--timeline eo1-btn--timeline-scroll-up" title="Scroll up">&#xE111;</button>
                             <button class="win-button fa-rotate-270 eo1-btn eo1-btn--timeline eo1-btn--timeline-scroll-down" title="Scroll down">&#xE112;</button>
                         </div>
-                        
                     </div>
                 </div>
             </section>

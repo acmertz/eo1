@@ -1,18 +1,34 @@
 ﻿.timeline-scrollable-container {
     position: relative;
     top: 0px;
+    min-height: 100%;
 }
 
 #timeline-track-container {
     flex: 1;
     height: 100%;
-    border: 2px solid #000;
     overflow: hidden;
     display: flex;
+    position: relative;
+    border-bottom: 1px solid #000;
 }
 
 .timeline-track-header-container {
     width: 50px;
+    position: relative;
+    border: 1px solid #000;
+    border-top: 0;
+    border-right: 0;
+}
+
+.timeline-track-header-container__ruler-spacer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 50px;
+    width: 51px;
+    background-color: #fff;
+    border-bottom: 1px solid #000;
 }
 
 .timeline-track--header, .timeline-track--controls, .timeline-track--content {
@@ -53,10 +69,15 @@
     width: 0px;
     white-space: nowrap;
     overflow: hidden;
+    border-bottom: 1px solid #000;
 }
 
 .timeline-track-widget-container.detailsExpanded, .timelineDetailRow.timelineDetailControls {
     width: 150px;
+}
+
+.timeline-track-header-container__ruler-spacer.detailsExpanded {
+    width: 201px;
 }
 
 .timeline-track--controls {
@@ -101,6 +122,11 @@
     flex: 1;
     overflow-x: scroll;
     overflow-y: hidden;
+    position: relative;
+    border: 1px solid #000;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom: 0;
 }
 
 #timeline-track-container .timeline-track--content {

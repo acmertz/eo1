@@ -537,7 +537,7 @@
                 intervalWidth = interval / ratio;
                 markWidth = mark / ratio,
                 subWidth = sub / ratio,
-                displayTime = Ensemble.Editor.TimelineMGR.ui.timeRuler.clientWidth * ratio > Ensemble.Session.projectDuration ? Ensemble.Editor.TimelineMGR.ui.timeRuler.clientWidth * ratio : Ensemble.Session.projectDuration * ratio,
+                displayTime = Ensemble.Editor.TimelineMGR.ui.trackContainer.clientWidth * ratio > Ensemble.Session.projectDuration ? Ensemble.Editor.TimelineMGR.ui.trackContainer.clientWidth * ratio : Ensemble.Session.projectDuration,
                 numOfMarks = Math.ceil(displayTime / mark);
 
             Ensemble.Editor.TimelineMGR.ui.timeRulerInner.style.width = (displayTime / ratio) + "px";
@@ -565,10 +565,10 @@
 
                 markXPos = Math.floor(markXPos) + 0.5;
 
-                rulerContext.moveTo(markXPos, 48);
-                rulerContext.lineTo(markXPos, 48 - markYHeight);
+                rulerContext.moveTo(markXPos, 50);
+                rulerContext.lineTo(markXPos, 50 - markYHeight);
 
-                if (drawTime) rulerContext.fillText(Ensemble.Utilities.TimeConverter.timelineTime(((mark / ratio) * i) * ratio), markXPos, 48 - markYHeight);
+                if (drawTime) rulerContext.fillText(Ensemble.Utilities.TimeConverter.timelineTime(((mark / ratio) * i) * ratio), markXPos, 50 - markYHeight);
             }
             rulerContext.closePath();
             rulerContext.stroke();
@@ -638,11 +638,13 @@
             if ($(Ensemble.Editor.UI.PageSections.lowerHalf.timelineDetails).hasClass("detailsExpanded")) {
                 $(Ensemble.Editor.UI.PageSections.lowerHalf.timelineDetails).removeClass("detailsExpanded")
                 $(Ensemble.Editor.UI.PageSections.lowerHalf.timelineHeaderDetailPlaceholder).removeClass("detailsExpanded");
+                $(".timeline-track-header-container__ruler-spacer").removeClass("detailsExpanded");
                 $(".trackEditButton").html("&#xE126;");
             }
             else {
                 $(Ensemble.Editor.UI.PageSections.lowerHalf.timelineDetails).addClass("detailsExpanded")
                 $(Ensemble.Editor.UI.PageSections.lowerHalf.timelineHeaderDetailPlaceholder).addClass("detailsExpanded");
+                $(".timeline-track-header-container__ruler-spacer").addClass("detailsExpanded");
                 $(".trackEditButton").html("&#xE127;");
             }
         },
@@ -838,7 +840,7 @@
             /// <param name="index" type="Number">The index of the track in the list of tracks.</param>
             /// <returns type="Object">An object with three parts: header, details, and content.</returns>
 
-            var trackNumber = Ensemble.Editor.UI.PageSections.lowerHalf.timelineHeaders.childNodes.length + 1;
+            var trackNumber = Ensemble.Editor.UI.PageSections.lowerHalf.timelineHeaders.children.length;
             if (index != null) trackNumber = index + 1;
 
             var trackHeight = this._currentTrackHeight + "px";
@@ -1166,8 +1168,7 @@
             this.ui.buttonNewTrack.addEventListener("click", this._listeners.buttonNewTrack);
             this.ui.timeCursor.addEventListener("pointerdown", this._listeners.timeCursorMousedown);
             this.ui.timeRulerFlag.addEventListener("pointerdown", this._listeners.timeCursorMousedown);
-            this.ui.trackContainer.addEventListener("pointerdown", this._listeners.timelineTrackContainerPointerDown);
-            this.ui.scrollableContainer.addEventListener("scroll", this._listeners.timelineScrolled);
+            Ensemble.Editor.UI.PageSections.lowerHalf.timelineTracks.addEventListener("pointerdown", this._listeners.timelineTrackContainerPointerDown);
             this.ui.timeRulerInner.addEventListener("click", this._listeners.timelineRulerClicked);
         },
 
@@ -1179,7 +1180,7 @@
             this.ui.buttonNewTrack.removeEventListener("click", this._listeners.buttonNewTrack);
             this.ui.timeCursor.removeEventListener("pointerdown", this._listeners.timeCursorMousedown);
             this.ui.timeRulerFlag.removeEventListener("pointerdown", this._listeners.timeCursorMousedown);
-            this.ui.scrollableContainer.removeEventListener("scroll", this._listeners.timelineScrolled);
+            Ensemble.Editor.UI.PageSections.lowerHalf.timelineTracks.removeEventListener("pointerdown", this._listeners.timelineTrackContainerPointerDown);
             this.ui.timeRulerInner.removeEventListener("click", this._listeners.timelineRulerClicked);
 
             this.ui.buttonScrollUp = null;
@@ -1392,13 +1393,9 @@
                 }
             },
 
-            timelineScrolled: function (event) {
-                if (!Ensemble.Editor.Renderer._active) Ensemble.Editor.Renderer.requestFrame();
-            },
-
             timelineRulerClicked: function (event) {
                 Ensemble.Editor.TimelineMGR._timeCursorDisplayScale = Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel].ratio;
-                let clickVal = (event.pageX - $(Ensemble.Editor.TimelineMGR.ui.timeRuler).offset().left) + Ensemble.Editor.TimelineMGR.ui.timeRuler.scrollLeft,
+                let clickVal = (event.pageX - $(Ensemble.Editor.TimelineMGR.ui.timeRulerInner).offset().left) + Ensemble.Editor.TimelineMGR.ui.timeRuler.scrollLeft,
                     candidateTime = clickVal * Ensemble.Editor.TimelineMGR._timeCursorDisplayScale;
                 if (Ensemble.Editor.PlaybackMGR.playing) Ensemble.Editor.PlaybackMGR.pause();
                 Ensemble.Editor.PlaybackMGR.seek(candidateTime);
@@ -1457,6 +1454,7 @@
                 let yDif = Ensemble.Editor.TimelineMGR._clipDragPointerCurrentTop - Ensemble.Editor.TimelineMGR._clipDragPointerOriginalTop;
 
                 let dragTime = (parseFloat(ghost.dataset.origLeft) + dif) * zoomRatio;
+
                 let trackIndex = Math.floor((parseFloat(ghost.dataset.origTop) + yDif + (0.5 * Ensemble.Editor.TimelineMGR._currentTrackHeight)) / Ensemble.Editor.TimelineMGR._currentTrackHeight);
                 
                 if (0 > trackIndex) trackIndex = 0;
