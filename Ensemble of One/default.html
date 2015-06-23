@@ -305,48 +305,37 @@
             </section>
 
             <section class="editor-section editor-section--lower">
-                <div class="timeline-ruler-container">
-                    <div class="timeline-button-container timeline-button-container--left"></div>
-                    <div class="timeline-track-header-container"></div>
-                    <div class="timeline-track-widget-container timeline-track-widget-container--placeholder"></div>
-                    <div class="timeline-ruler">
-                        <div class="timeline-ruler__flag"></div>
+                <div class="timeline-button-container timeline-button-container--left">
+                    <div class="timeline-button-container__section">
+                        <button class="win-button eo1-btn eo1-btn--timeline eo1-btn--timeline-new-track" title="New track">&#xE109;</button>
                     </div>
-                    <div class="timeline-button-container timeline-button-container--right"></div>
                 </div>
-                <div class="timeline-display-container">
-                    <div class="timeline-button-container timeline-button-container--left">
-                        <div class="timeline-button-container__section">
-                            <button class="win-button eo1-btn eo1-btn--timeline eo1-btn--timeline-new-track" title="New track">&#xE109;</button>
-                        </div>
+                <div id="timeline-track-container">
+                    <div class="timeline-track-header-container timeline-track-header-container--standard timeline-scrollable-container">
+                        <div class="timeline-ruler-placeholder"></div>
                     </div>
-                    <div id="timeline-track-container">
-                        <div class="timeline-track-header-container timeline-track-header-container--standard timeline-scrollable-container">
-                            <div class="timeline-ruler-placeholder"></div>
-                        </div>
-                        <div class="timeline-track-widget-container timeline-track-widget-container--standard timeline-scrollable-container">
-                            <div class="timeline-ruler-placeholder"></div>
-                        </div>
-                        <div class="timeline-track-container-wrap">
-                            <div class="timeline-ruler-placeholder"></div>
-                            <div id="editorTimelineTracks" class="timeline-scrollable-container">
-                                <div class="timeline__cursor"></div>
-                                <div class="timeline__drop-preview"></div>
-                            </div>
-                            <canvas class="timeline-ruler__inner"></canvas>
-                        </div>
-                        <div class="timeline-track-header-container__ruler-spacer"></div>
+                    <div class="timeline-track-widget-container timeline-track-widget-container--standard timeline-scrollable-container">
+                        <div class="timeline-ruler-placeholder"></div>
                     </div>
-                    <div class="timeline-button-container timeline-button-container--right">
-                        <div class="timeline-button-container__section">
-                            <button class="win-button eo1-btn eo1-btn--timeline eo1-btn--timeline-zoom-in" title="Zoom in">&#xE12E;</button>
-                            <button class="win-button eo1-btn eo1-btn--timeline eo1-btn--timeline-zoom-out" title="Zoom out">&#xE1A4;</button>
+                    <div class="timeline-track-container-wrap">
+                        <div class="timeline-ruler-placeholder"></div>
+                        <div id="editorTimelineTracks" class="timeline-scrollable-container">
+                            <div class="timeline__cursor"></div>
+                            <div class="timeline__drop-preview"></div>
                         </div>
-                        <div class="timeline-button-container__section timeline-button-container__section--spacer"></div>
-                        <div class="timeline-button-container__section">
-                            <button class="win-button fa-rotate-270 eo1-btn eo1-btn--timeline eo1-btn--timeline-scroll-up" title="Scroll up">&#xE111;</button>
-                            <button class="win-button fa-rotate-270 eo1-btn eo1-btn--timeline eo1-btn--timeline-scroll-down" title="Scroll down">&#xE112;</button>
-                        </div>
+                        <canvas class="timeline-ruler__inner"></canvas>
+                    </div>
+                    <div class="timeline-track-header-container__ruler-spacer"></div>
+                </div>
+                <div class="timeline-button-container timeline-button-container--right">
+                    <div class="timeline-button-container__section">
+                        <button class="win-button eo1-btn eo1-btn--timeline eo1-btn--timeline-zoom-in" title="Zoom in">&#xE12E;</button>
+                        <button class="win-button eo1-btn eo1-btn--timeline eo1-btn--timeline-zoom-out" title="Zoom out">&#xE1A4;</button>
+                    </div>
+                    <div class="timeline-button-container__section timeline-button-container__section--spacer"></div>
+                    <div class="timeline-button-container__section">
+                        <button class="win-button fa-rotate-270 eo1-btn eo1-btn--timeline eo1-btn--timeline-scroll-up" title="Scroll up">&#xE111;</button>
+                        <button class="win-button fa-rotate-270 eo1-btn eo1-btn--timeline eo1-btn--timeline-scroll-down" title="Scroll down">&#xE112;</button>
                     </div>
                 </div>
             </section>
@@ -360,7 +349,6 @@
         <div class="editorTimelineDragPreviewFlyout" tabindex="-1">00:00:00.000</div>
         <div class="timeline-selection-callout" tabindex="-1">
             <div class="selection-callout__state selection-callout__state--standard">
-                <div class="standard-callout__favorites"></div>
                 <div class="selection-callout__command callout-command--move-track-clip" data-callout-command="move-track-clip">&#xE174;</div>
                 <div class="selection-callout__command callout-command--move-clip" data-callout-command="move-clip">&#xE13C;</div>
                 <div class="selection-callout__command callout-command--context-menu" data-callout-command="context-menu">&#xE10C;</div>

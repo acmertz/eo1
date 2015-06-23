@@ -11,7 +11,6 @@
             this.PageSections.lowerHalf.timelineHeaders = document.getElementsByClassName("timeline-track-header-container--standard")[0];
             this.PageSections.lowerHalf.timelineDetails = document.getElementsByClassName("timeline-track-widget-container--standard")[0];
             this.PageSections.lowerHalf.timelineTracks = document.getElementById("editorTimelineTracks");
-            this.PageSections.lowerHalf.timelineHeaderDetailPlaceholder = document.getElementsByClassName("timeline-track-widget-container--placeholder")[0];
 
             this.PageSections.menu.actionMenu.project.nameDisplay = document.getElementById("editorProjectNameDisplay");
             this.PageSections.menu.actionMenu.project.durationDisplay = document.getElementById("editorMenuDurationDisplay");
@@ -63,8 +62,7 @@
                 timeline: null,
                 timelineHeaders: null,
                 timelineDetails: null,
-                timelineTracks: null,
-                timelineHeaderDetailPlaceholder: null
+                timelineTracks: null
             },
             //Transient, light-dismiss menu dialog that appears in the top left corner of the screen.
             menu: {
