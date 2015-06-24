@@ -508,7 +508,7 @@
             $(".timeline-track").height(this._currentTrackHeight);
             this._snapScrollToNearestTrack();
 
-            this.ui.trackContainer.style.background = "repeating-linear-gradient(#FFFFFF, #FFFFFF " + this._currentTrackHeight + "px, #F0F0F0 " + this._currentTrackHeight + "px, #F0F0F0 " + (2 * this._currentTrackHeight) + "px)";
+            Ensemble.Editor.UI.PageSections.lowerHalf.timelineTracks.style.background = "repeating-linear-gradient(#FFFFFF, #FFFFFF " + this._currentTrackHeight + "px, #F0F0F0 " + this._currentTrackHeight + "px, #F0F0F0 " + (2 * this._currentTrackHeight) + "px)";
         },
 
         generateNewTrackId: function () {
@@ -542,6 +542,7 @@
                 numOfMarks = Math.ceil(displayTime / mark);
 
             Ensemble.Editor.TimelineMGR.ui.timeRulerInner.style.width = (displayTime / ratio) + "px";
+            Ensemble.Editor.UI.PageSections.lowerHalf.timelineTracks.style.width = (displayTime / ratio) + "px";
             Ensemble.Editor.TimelineMGR.ui.timeRulerInner.width = parseInt($(Ensemble.Editor.TimelineMGR.ui.timeRulerInner).width(), 10);
             Ensemble.Editor.TimelineMGR.ui.timeRulerInner.height = parseInt($(Ensemble.Editor.TimelineMGR.ui.timeRulerInner).height(), 10);
 
@@ -617,7 +618,7 @@
             let currentTop = parseFloat($(".timeline-scrollable-container").css("margin-top"));
             if (currentTop < 0) {
                 $(".timeline-scrollable-container").css("margin-top", (currentTop + Ensemble.Editor.TimelineMGR._currentTrackHeight) + "px");
-                this.ui.trackContainer.style.backgroundPosition = "0 " + (currentTop + Ensemble.Editor.TimelineMGR._currentTrackHeight) + "px";
+                //this.ui.trackContainer.style.backgroundPosition = "0 " + (currentTop + Ensemble.Editor.TimelineMGR._currentTrackHeight) + "px";
                 Ensemble.Editor.TimelineMGR._currentScrollIndex = parseFloat($(".timeline-scrollable-container").css("margin-top")) / Ensemble.Editor.TimelineMGR._currentTrackHeight;
             }
         },
@@ -626,7 +627,7 @@
             /// <summary>Scrolls the timeline down by one track.</summary>
             let currentTop = parseFloat($(".timeline-scrollable-container").css("margin-top"));
             $(".timeline-scrollable-container").css("margin-top", (currentTop - Ensemble.Editor.TimelineMGR._currentTrackHeight) + "px");
-            this.ui.trackContainer.style.backgroundPosition = "0 " + (currentTop + Ensemble.Editor.TimelineMGR._currentTrackHeight) + "px";
+            //this.ui.trackContainer.style.backgroundPosition = "0 " + (currentTop + Ensemble.Editor.TimelineMGR._currentTrackHeight) + "px";
             Ensemble.Editor.TimelineMGR._currentScrollIndex = parseFloat($(".timeline-scrollable-container").css("margin-top")) / Ensemble.Editor.TimelineMGR._currentTrackHeight;
         },
 
@@ -1165,6 +1166,7 @@
             this.ui.buttonNewTrack.addEventListener("click", this._listeners.buttonNewTrack);
             this.ui.timeCursor.addEventListener("pointerdown", this._listeners.timeCursorMousedown);
             Ensemble.Editor.UI.PageSections.lowerHalf.timelineTracks.addEventListener("pointerdown", this._listeners.timelineTrackContainerPointerDown);
+            this.ui.scrollableContainer.addEventListener("scroll", Ensemble.Editor.TimelineMGR._listeners.timelineScrolled);
             this.ui.timeRulerInner.addEventListener("click", this._listeners.timelineRulerClicked);
         },
 
@@ -1176,6 +1178,7 @@
             this.ui.buttonNewTrack.removeEventListener("click", this._listeners.buttonNewTrack);
             this.ui.timeCursor.removeEventListener("pointerdown", this._listeners.timeCursorMousedown);
             Ensemble.Editor.UI.PageSections.lowerHalf.timelineTracks.removeEventListener("pointerdown", this._listeners.timelineTrackContainerPointerDown);
+            this.ui.scrollableContainer.removeEventListener("scroll", Ensemble.Editor.TimelineMGR._listeners.timelineScrolled);
             this.ui.timeRulerInner.removeEventListener("click", this._listeners.timelineRulerClicked);
 
             this.ui.buttonScrollUp = null;
@@ -1345,8 +1348,7 @@
                 let clipId = parseInt(event.currentTarget.id.match(/\d+$/)[0], 10);
                 console.log("Pointer down on clip " + clipId + "!");
 
-                Ensemble.Editor.SelectionMGR.replaceSelection(clipId);
-                Ensemble.Editor.CalloutMGR.show(Ensemble.Editor.SelectionMGR.selected[0], event)
+                Ensemble.Editor.SelectionMGR.replaceSelection(clipId, event);
 
                 if (event.pointerType == "touch") {
                 }
@@ -1376,7 +1378,6 @@
                 }
                 else {
                     Ensemble.Editor.SelectionMGR.clearSelection();
-                    Ensemble.Editor.CalloutMGR.hide();
                 }
             },
 
@@ -1387,6 +1388,10 @@
                 if (Ensemble.Editor.PlaybackMGR.playing) Ensemble.Editor.PlaybackMGR.pause();
                 Ensemble.Editor.PlaybackMGR.seek(candidateTime);
             },
+
+            timelineScrolled: _.debounce(function (event) {
+                Ensemble.Editor.CalloutMGR.updatePosition(true, false);
+            }, 300),
 
             mouseClipPreventDirectDragStart: function (event) {
                 clearTimeout(Ensemble.Editor.TimelineMGR._clipDragPrimeTimer);

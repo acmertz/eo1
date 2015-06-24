@@ -219,7 +219,6 @@
                 else if (command == "clear-selection") setTimeout(function () {
                     Ensemble.Editor.TimelineMGR.rejectTrim();
                     Ensemble.Editor.SelectionMGR.clearSelection();
-                    Ensemble.Editor.CalloutMGR.hide();
                 }, 0);
 
                 //Ensemble.Editor.MenuMGR.closeMenu();

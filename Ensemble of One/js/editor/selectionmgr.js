@@ -25,9 +25,10 @@
             /// <param name="clipId" type="Number">The ID of the clip.</param>
         },
 
-        replaceSelection: function (clipId) {
+        replaceSelection: function (clipId, event) {
             /// <summary>Removes all clips from the current selection array except for the clip with the given ID.</summary>
             /// <param name="clipId" type="Number">The ID of the clip.</param>
+            /// <param name="event" type="Event">Optional. The event that triggered the selection.</param>
             let needFrame = false;
             let found = false;
             for (let i = 0; i < this.selected.length; i++) {
@@ -54,7 +55,7 @@
             this.selected.push(clipId);
 
             if (needFrame) Ensemble.Editor.Renderer.requestFrame();
-
+            Ensemble.Editor.CalloutMGR.show(clipId, event)
             Ensemble.Editor.MenuMGR._reevaluateState();
         },
 
@@ -75,8 +76,11 @@
                 $("#" + Ensemble.Editor.TimelineMGR._buildClipDOMId(this.selected[i])).removeClass("timeline-clip--selected");
             }
             this.selected = [];
+
             if (needFrame) Ensemble.Editor.Renderer.requestFrame();
+            Ensemble.Editor.CalloutMGR.hide();
             Ensemble.Editor.MenuMGR._reevaluateState();
+
             console.log("Cleared selection.");
         },
 
