@@ -3,6 +3,7 @@
         /// <summary>Used to control the callout that appears in the Editor timeline.</summary>
 
         calloutVisible: false,
+        targetClip: -1,
 
         init: function () {
             this._refreshUI();
@@ -11,6 +12,7 @@
         unload: function () {
             this._cleanUI();
             this.calloutVisible = false;
+            this.targetClip = -1;
         },
 
         show: function (clipId, event) {
@@ -18,14 +20,46 @@
             /// <param name="clipId" type="Number">The ID of the clip.</param>
             /// <param name="event" type="Event">An event containing coordinates near which to show the callout.</param>
 
+            if (Ensemble.Editor.CalloutMGR.calloutVisible) {
+                $(Ensemble.Editor.CalloutMGR.ui.callout).addClass("timeline-selection-callout--scroll-transition");
+                Ensemble.Editor.CalloutMGR.ui.callout.addEventListener("transitionend", Ensemble.Editor.CalloutMGR._listeners.calloutScrolled);
+            }
+
             Ensemble.Editor.CalloutMGR.calloutVisible = true;
+            Ensemble.Editor.CalloutMGR.targetClip = clipId;
             Ensemble.Editor.CalloutMGR.setState(Ensemble.Editor.CalloutMGR.States.standard);
 
-            let clip = document.getElementById(Ensemble.Editor.TimelineMGR._buildClipDOMId(clipId));
+            let clip = document.getElementById(Ensemble.Editor.TimelineMGR._buildClipDOMId(clipId)),
+                clipOffset = $(clip).offset(),
+                xPos = 0,
+                yPos = clipOffset.top;
 
-            let pos = $(clip).offset();
-            Ensemble.Editor.CalloutMGR.ui.callout.style.top = pos.top + "px";
-            Ensemble.Editor.CalloutMGR.ui.callout.style.left = event.pageX + "px";
+            if (event && event != null) xPos = event.pageX;
+            else {
+                // calculate an X position such that the callout is fully visible
+                // prefer the center of the clip
+                // if the clip's center is offscreen, find the closest onscreen position to the center
+                // optional: move the "triangle" of the speech bubble to point in the direction of the clip when offscreen
+
+                let clipLeft = clipOffset.left,
+                    clipWidth = $(clip).outerWidth(),
+                    calloutWidth = $(Ensemble.Editor.CalloutMGR.ui.callout).outerWidth(),
+                    centeredX = clipLeft + (0.5 * clipWidth),
+                    timelineOffsetFromRight = $(".timeline-button-container").outerWidth(),
+                    timelineOffsetFromLeft = $(Ensemble.Editor.TimelineMGR.ui.scrollableContainer).offset().left;
+
+                if (centeredX + (0.5 * calloutWidth) > screen.width - (10 + timelineOffsetFromRight)) {
+                    centeredX = screen.width - (10 + timelineOffsetFromRight + (0.5 * calloutWidth));
+                }
+                else if (centeredX - (0.5 * calloutWidth) < 10 + timelineOffsetFromLeft) {
+                    centeredX = 10 + timelineOffsetFromLeft + (0.5 * calloutWidth);
+                }
+                xPos = centeredX;
+            }
+
+            Ensemble.Editor.CalloutMGR.ui.callout.style.left = xPos + "px";
+            Ensemble.Editor.CalloutMGR.ui.callout.style.top = yPos + "px";
+            
             $(Ensemble.Editor.CalloutMGR.ui.callout).addClass("timeline-selection-callout--visible");
 
             let commands = document.getElementsByClassName("selection-callout__command");
@@ -45,7 +79,8 @@
 
         hide: function () {
             /// <summary>Hides the callout.</summary>
-            Ensemble.Editor.CalloutMGR.calloutVisible = true;
+            Ensemble.Editor.CalloutMGR.calloutVisible = false;
+            Ensemble.Editor.CalloutMGR.targetClip = -1;
             $(Ensemble.Editor.CalloutMGR.ui.callout).removeClass("timeline-selection-callout--visible");
             let commands = document.getElementsByClassName("selection-callout__command");
             for (let i = 0; i < commands.length; i++) {
@@ -59,6 +94,45 @@
 
                 // CONTEXT MENU & FAVORITES
                 else commands[i].removeEventListener("click", Ensemble.Editor.CalloutMGR._listeners.favoriteClicked);
+            }
+        },
+
+        updatePosition: function (x, y) {
+            /// <summary>Automatically recalculates the postion of the callout along the indicated axes.</summary>
+            /// <param name="x" type="Boolean">Whether or not to recalculate the X position.</param>
+            /// <param name="y" type="Boolean">Whether or not to recalculate the Y position.</param>
+            if (Ensemble.Editor.CalloutMGR.calloutVisible) {
+                if (x) {
+                    let clip = document.getElementById(Ensemble.Editor.TimelineMGR._buildClipDOMId(Ensemble.Editor.CalloutMGR.targetClip)),
+                        clipOffset = $(clip).offset(),
+                        xPos = clipOffset.left,
+                        clipWidth = $(clip).outerWidth(),
+                        calloutWidth = $(Ensemble.Editor.CalloutMGR.ui.callout).outerWidth(),
+                        calloutLeft = $(Ensemble.Editor.CalloutMGR.ui.callout).offset().left,
+                        centeredX = xPos + (0.5 * clipWidth),
+                        timelineOffsetFromRight = $(".timeline-button-container").outerWidth(),
+                        timelineOffsetFromLeft = $(Ensemble.Editor.TimelineMGR.ui.scrollableContainer).offset().left;
+
+                    if (xPos <= calloutLeft + (0.5 * calloutWidth) && calloutLeft + (0.5 * calloutWidth) <= xPos + clipWidth) {
+                        // do nothing
+                    }
+                    else {
+                        if (centeredX + (0.5 * calloutWidth) > screen.width - (10 + timelineOffsetFromRight)) {
+                            centeredX = screen.width - (10 + timelineOffsetFromRight + (0.5 * calloutWidth));
+                        }
+                        else if (centeredX - (0.5 * calloutWidth) < 10 + timelineOffsetFromLeft) {
+                            centeredX = 10 + timelineOffsetFromLeft + (0.5 * calloutWidth);
+                        }
+
+                        $(Ensemble.Editor.CalloutMGR.ui.callout).addClass("timeline-selection-callout--scroll-transition");
+                        Ensemble.Editor.CalloutMGR.ui.callout.addEventListener("transitionend", Ensemble.Editor.CalloutMGR._listeners.calloutScrolled);
+                        Ensemble.Editor.CalloutMGR.ui.callout.style.left = centeredX + "px";
+                    }
+                }
+
+                if (y) {
+
+                }
             }
         },
 
@@ -97,6 +171,10 @@
                 if (event.currentTarget.dataset.calloutCommand == "context-menu") Ensemble.Editor.TimelineMGR.ui.timelineSelectionContextMenu.winControl.show(event.currentTarget);
                 else console.log("Unidentified callout command.");
             },
+            calloutScrolled: function (event) {
+                Ensemble.Editor.CalloutMGR.ui.callout.removeEventListener("transitionend", Ensemble.Editor.CalloutMGR._listeners.calloutScrolled);
+                $(Ensemble.Editor.CalloutMGR.ui.callout).removeClass("timeline-selection-callout--scroll-transition");
+            }
         },
 
         States: {
