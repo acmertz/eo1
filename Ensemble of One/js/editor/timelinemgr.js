@@ -1267,7 +1267,7 @@
                 if (!Ensemble.Editor.PlaybackMGR.playing) {
                     event.stopPropagation();
 
-                    $("#editorTimelineEWClickEater").removeClass("editorClickEaterFaded");
+                    $(".ensemble-clickeater--ew-cursor").addClass("ensemble-clickeater--active");
 
                     let allClips = document.getElementsByClassName("timeline-clip");
                     for (let i = 0; i < allClips.length; i++) {
@@ -1301,7 +1301,7 @@
                 event.stopPropagation();
                 document.removeEventListener("pointermove", Ensemble.Editor.TimelineMGR._listeners.timeCursorDragUpdate);
                 document.removeEventListener("pointerup", Ensemble.Editor.TimelineMGR._listeners.timeCursorDragFinished);
-                $("#editorTimelineEWClickEater").addClass("editorClickEaterFaded");
+                $(".ensemble-clickeater--ew-cursor").removeClass("ensemble-clickeater--active");
                 Ensemble.Editor.TimelineMGR._timeCursorDragging = false;
 
                 let allClips = document.getElementsByClassName("timeline-clip");

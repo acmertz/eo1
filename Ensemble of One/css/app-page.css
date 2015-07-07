@@ -27,6 +27,11 @@
     z-index: 99;
 }
 
+.ensemble-clickeater--ew-cursor {
+    z-index: 99;
+    cursor: ew-resize;
+}
+
 .ensemble-clickeater--active {
     display: block;
 }
