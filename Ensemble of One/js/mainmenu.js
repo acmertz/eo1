@@ -38,6 +38,7 @@
             }
 
             document.getElementsByClassName("menu-create-project-param--submit")[0].addEventListener("click", Ensemble.MainMenu._listeners.newProjectButtonClicked);
+            document.getElementsByClassName("menu-open-project-param--browse")[0].addEventListener("click", Ensemble.MainMenu._listeners.browseProjectButtonClicked);
         },
 
         _cleanUI: function () {
@@ -58,6 +59,7 @@
             this.ui.localProjectContainer = null;
 
             document.getElementsByClassName("menu-create-project-param--submit")[0].removeEventListener("click", Ensemble.MainMenu._listeners.newProjectButtonClicked);
+            document.getElementsByClassName("menu-open-project-param--browse")[0].removeEventListener("click", Ensemble.MainMenu._listeners.browseProjectButtonClicked);
         },
 
         _listeners: {
@@ -123,7 +125,7 @@
                 $(loadingPage).removeClass("app-page--hidden").addClass("app-page--enter-right");
 
                 window.setTimeout(function () {
-                    Ensemble.FileIO.loadProject(filename);
+                    Ensemble.FileIO.loadInternalProject(filename);
                 }, 1000);
             },
 
@@ -173,6 +175,22 @@
                         }
                     }
                 })
+            },
+
+            browseProjectButtonClicked: function () {
+                let openPicker = new Windows.Storage.Pickers.FileOpenPicker();
+                openPicker.viewMode = Windows.Storage.Pickers.PickerViewMode.list;
+                openPicker.fileTypeFilter.replaceAll([".eo1"]);
+                openPicker.pickSingleFileAsync().then(function (file) {
+                    if (file) {
+                        let loadingPage = document.getElementsByClassName("app-page--loading-editor")[0];
+                        $(loadingPage).removeClass("app-page--hidden").addClass("app-page--enter-right");
+
+                        window.setTimeout(function () {
+                            Ensemble.FileIO.loadExternalProject(file);
+                        }, 1000);
+                    }
+                });
             }
         }
 

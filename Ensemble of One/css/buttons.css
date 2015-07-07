@@ -1,7 +1,6 @@
 ﻿.eo1-btn {
     background: #dc143c;
     border: 1px solid #dc143c;
-    border-radius: 3px;
     color: #fff;
     cursor: pointer;
 }
@@ -18,6 +17,26 @@
     background: rgba(0,0,0,0.2);
     color: rgba(0,0,0,0.2);
     pointer-events: none;
+}
+
+.eo1-btn--radius-tr {
+    border-top-right-radius: 3px;
+}
+
+.eo1-btn--radius-tl {
+    border-top-left-radius: 3px;
+}
+
+.eo1-btn--radius-br {
+    border-bottom-right-radius: 3px;
+}
+
+.eo1-btn--radius-bl {
+    border-bottom-left-radius: 3px;
+}
+
+.eo1-btn--radius-all {
+    border-radius: 3px;
 }
 
 .eo1-btn--timeline {

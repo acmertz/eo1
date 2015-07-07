@@ -60,6 +60,8 @@
             $(".app-trigger--editor").attr("disabled", true);
 
             $(".app-trigger--close-project").removeAttr("disabled");
+            $(".app-trigger--force-save").removeAttr("disabled");
+            $(".app-trigger--save-as").removeAttr("disabled");
             if (Ensemble.HistoryMGR.canUndo()) $(".app-trigger--undo").removeAttr("disabled");
             if (Ensemble.HistoryMGR.canRedo()) $(".app-trigger--redo").removeAttr("disabled");
 
@@ -193,6 +195,8 @@
                 else if (command == "undo") Ensemble.HistoryMGR.undoLast();
                 else if (command == "redo") Ensemble.HistoryMGR.redoNext();
                 else if (command == "close-project") Ensemble.Pages.Editor.unload();
+                else if (command == "force-save") Ensemble.FileIO.saveProject();
+                else if (command == "save-as") Ensemble.FileIO.requestSaveAs();
 
                 // CLIP
                 else if (command == "split-clip") {
@@ -220,8 +224,6 @@
                     Ensemble.Editor.TimelineMGR.rejectTrim();
                     Ensemble.Editor.SelectionMGR.clearSelection();
                 }, 0);
-
-                //Ensemble.Editor.MenuMGR.closeMenu();
             },
 
             importMenuTransitioned: function (event) {

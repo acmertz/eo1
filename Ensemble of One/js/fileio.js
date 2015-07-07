@@ -23,8 +23,9 @@
         _multiClipLoadCb: null,
         _multiClipLoadBuffer: [],
 
-        saveProject: function () {
+        saveProject: function (overrideFile) {
             /// <summary>Saves the currently loaded project to disk.</summary>
+            /// <param name="overrideFile" type="Windows.Storage.StorageFile">Optional. A target for the save operation.</param>
 
             //Generate XML string
             var xml = new XMLWriter();
@@ -341,17 +342,44 @@
 
             xml = xml.ToString();
             
-            switch (Ensemble.Platform.currentPlatform) {
-                case "win8":
-                    //var uri = new Windows.Foundation.Uri('ms-appdata:///local/Projects/' + Ensemble.Session.projectFilename);
-                    Windows.Storage.FileIO.writeTextAsync(Ensemble.Session.projectFile, xml).done(function (complete) {
-                        console.info("Saved " + Ensemble.Session.projectName + ".");
-                    });
-                    break;
-                case "android":
-                    break;
-                case "ios":
-                    break;
+            if (overrideFile) {
+                Windows.Storage.FileIO.writeTextAsync(overrideFile, xml).then(function (complete) {
+                    if (Ensemble.Session.projectFileInApp) {
+                        // Remove the old project file from internal storage
+                        Ensemble.Session.projectFile.deleteAsync(Windows.Storage.StorageDeleteOption.permanentDelete).done(function () {
+                            Ensemble.Session.projectFile = overrideFile;
+                            Ensemble.Session.projectFileInApp = false;
+                        });
+                    }
+                    else {
+                        Ensemble.Session.projectFile = overrideFile;
+                    }
+                });
+            }
+
+            else {
+                Windows.Storage.FileIO.writeTextAsync(Ensemble.Session.projectFile, xml).done(function (complete) {
+                    console.info("Saved " + Ensemble.Session.projectName + ".");
+                });
+            }
+        },
+
+        requestSaveAs: function () {
+            /// <summary>Show a "Save as..." dialog to the user.</summary>
+            let savePicker = new Windows.Storage.Pickers.FileSavePicker();
+            savePicker.suggestedFileName = Ensemble.Session.projectName;
+            savePicker.suggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.desktop;
+            savePicker.fileTypeChoices.insert("Ensemble of One Project", [".eo1"]);
+            savePicker.pickSaveFileAsync().then(Ensemble.FileIO._confirmSaveAs)
+        },
+
+        _confirmSaveAs: function (file) {
+            /// <summary>Return function for the save as picker.</summary>
+            /// <param name="file" type="Windows.Storage.StorageFile">The file picked by the user.</param>
+            if (file) {
+                Ensemble.FileIO.saveProject(file);
+                let appView = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
+                appView.title = file.displayName;
             }
         },
 
@@ -486,34 +514,29 @@
             }
         },
 
-        loadProject: function (filename, fileobj) {
-            /// <summary>Loads a previously saved project from storage. You may pass either a file name (internal app storage) or a loaded file object (external storage).</summary>
-            /// <param name="filename" type="String">The name of the project to be loaded.</param>
-            /// <param name="fileobj" type="Windows.Storage.StorageFile"></param>
+        loadInternalProject: function (filename) {
+            /// <summary>Loads a saved project from internal storage.</summary>
+            /// <param name="filename" type="String">The filename of the project to be loaded.</param>
 
-            switch (Ensemble.Platform.currentPlatform) {
-                case "win8":
-                    if (filename == null && fileobj != null) {
-                        Ensemble.Session.projectFile = fileobj;
-                        Windows.Storage.FileIO.readTextAsync(fileobj).then(function (contents) {
-                            Ensemble.FileIO._processLoadedProjectData(filename, fileobj.displayName, contents);
-                        })
-                    }
-                    else {
-                        var uri = new Windows.Foundation.Uri('ms-appdata:///local/Projects/' + filename);
-                        var file = Windows.Storage.StorageFile.getFileFromApplicationUriAsync(uri).then(function (projectFile) {
-                            Ensemble.Session.projectFile = projectFile;
-                            Windows.Storage.FileIO.readTextAsync(projectFile).then(function (contents) {
-                                Ensemble.FileIO._processLoadedProjectData(filename, projectFile.displayName, contents);
-                            })
-                        });
-                    }
-                    break;
-                case "android":
-                    break;
-                case "ios":
-                    break;
-            }
+            Ensemble.Session.projectFileInApp = true;
+            let uri = new Windows.Foundation.Uri('ms-appdata:///local/Projects/' + filename);
+            let file = Windows.Storage.StorageFile.getFileFromApplicationUriAsync(uri).then(function (projectFile) {
+                Ensemble.Session.projectFile = projectFile;
+                Windows.Storage.FileIO.readTextAsync(projectFile).then(function (contents) {
+                    Ensemble.FileIO._processLoadedProjectData(filename, projectFile.displayName, contents);
+                })
+            });
+
+        },
+
+        loadExternalProject: function (file) {
+            /// <summary>Loads a saved project from storage external to the application.</summary>
+            /// <param name="file" type="Windows.Storage.StorageFile">The project file to load.</param>
+            Ensemble.Session.projectFile = file;
+            Ensemble.Session.projectFileInApp = false;
+            Windows.Storage.FileIO.readTextAsync(file).then(function (contents) {
+                Ensemble.FileIO._processLoadedProjectData(file.name, file.displayName, contents);
+            })
         },
 
         _processLoadedProjectData: function (filename, projectName, xmlString) {
@@ -522,7 +545,11 @@
 
             var ensembleProject = xmlDoc.firstChild;
 
-            console.log("Loading project \"" + projectName + "...\"");
+            let correctedProjectName = projectName.toLowerCase();
+            if (correctedProjectName.slice(-4) == ".eo1") correctedProjectName = projectName.substr(0, projectName.length - 4);
+            else correctedProjectName = projectName;
+
+            console.log("Loading project \"" + correctedProjectName + "...\"");
 
             let projectThumb = xmlDoc.getElementsByTagName("ProjectThumb")[0].childNodes[0].nodeValue;
 
@@ -537,7 +564,6 @@
                 height: parseInt(xmlDoc.getElementsByTagName("Resolution")[0].getAttribute("height"), 10)
             };
             var duration = parseInt(xmlDoc.getElementsByTagName("ProjectLength")[0].childNodes[0].nodeValue, 10);
-            var thumbnailPath = "ms-appdata:///local/Projects/" + filename + ".jpg";
 
             var tracks = xmlDoc.getElementsByTagName("Tracks")[0].getElementsByTagName("Track");
             var freeTrackId = parseInt(xmlDoc.getElementsByTagName("Tracks")[0].getAttribute("FreeTrackId"));
@@ -550,7 +576,7 @@
             Ensemble.Session.projectAspect = aspectRatio;
             Ensemble.Session.projectResolution = resolution;
             Ensemble.Session.projectFilename = filename;
-            Ensemble.Session.projectName = projectName;
+            Ensemble.Session.projectName = correctedProjectName;
             Ensemble.Session.projectThumb = projectThumb;
             Ensemble.Session.projectDuration = duration;
             Ensemble.Session.projectDateModified = dateModified;

@@ -232,6 +232,7 @@
     border: 0;
     box-sizing: border-box;
     font-family: "Segoe MDL2 Assets";
+    font-size: 18px;
 }
 
 .editor-titlebar-control:hover {
@@ -246,6 +247,14 @@
 .editor-titlebar-control:disabled {
     color: #d3d3d3;
     pointer-events: none;
+}
+
+.editor-titlebar-control--hidden {
+    display: none;
+}
+
+.editor-titlebar-control.app-trigger--settings {
+    float: right;
 }
 
 #editorMediaBrowserLoadingProgress {

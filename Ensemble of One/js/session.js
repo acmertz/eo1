@@ -15,7 +15,8 @@
         projectDateCreated: null,
         projectDateModified: null,
         projectThumb: null,
-        projectResolution: {width: 0, height: 0},
+        projectResolution: { width: 0, height: 0 },
+        projectFileInApp: false,
         refreshRate: 0,
         //projectLoading: false,
 
@@ -51,6 +52,7 @@
             this.projectTrackCount = null;
             this.projectDateCreated = null;
             this.projectDateModified = null;
+            this.projectFileInApp = false;
         }
     });
 })();

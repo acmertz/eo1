@@ -144,38 +144,3 @@
     color: #000;
     z-index: 1;
 }
-
-#mediaBrowserPreviewDialog {
-    pointer-events: none;
-}
-
-#mediaBrowserPreviewDialog .mainMenuZoomDialogContent {
-    max-width: 100%;
-    max-height: 100%;
-    background-color: transparent;
-    border: none;
-    border-radius: 0;
-}
-
-.mediaBrowserPreviewItem {
-    display: none;
-    pointer-events: all;
-}
-
-.mediaBrowserPreviewItem video, .mediaBrowserPreviewItem img, .mediaBrowserPreviewItem audio {
-    background-color: black;
-    width: 100%;
-    border-radius: 5px;
-}
-
-.mediaBrowserPreviewItem .previewItemControls {
-    text-align: center;
-}
-
-.mediaBrowserPreviewItem .previewItemControlsInnerCenter {
-    display: inline-block;
-    padding: 5px;
-    border-radius: 5px;
-    background-color: darkgray;
-    pointer-events: all;
-}

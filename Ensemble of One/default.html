@@ -94,10 +94,18 @@
                     </div>
                 <div>
                     <div class="home-menu__quick-start-container">
-                        <a class="home-menu__quick-start-item home-menu__quick-start-item--16-9" data-quickstart="16:9" title="Widescreen 16:9"></a>
-                        <a class="home-menu__quick-start-item home-menu__quick-start-item--4-3" data-quickstart="4:3" title="Fullscreen 4:3"></a>
-                        <a class="home-menu__quick-start-item home-menu__quick-start-item--16-10" data-quickstart="16:10" title="Widescreen 16:10"></a>
-                        <a class="home-menu__quick-start-item home-menu__quick-start-item--239-1" data-quickstart="2.39:1" title="Widescreen 2.39:1"></a>
+                        <a class="home-menu__quick-start-item home-menu__quick-start-item--16-9" data-quickstart="16:9" title="Widescreen 16:9">
+                            <span class="quick-start-item__label">16:9</span>
+                        </a>
+                        <a class="home-menu__quick-start-item home-menu__quick-start-item--4-3" data-quickstart="4:3" title="Fullscreen 4:3">
+                            <span class="quick-start-item__label">4:3</span>
+                        </a>
+                        <a class="home-menu__quick-start-item home-menu__quick-start-item--16-10" data-quickstart="16:10" title="Widescreen 16:10">
+                            <span class="quick-start-item__label">16:10</span>
+                        </a>
+                        <a class="home-menu__quick-start-item home-menu__quick-start-item--239-1" data-quickstart="2.39:1" title="Widescreen 2.39:1">
+                            <span class="quick-start-item__label">2.39:1</span>
+                        </a>
                     </div>
                 </div>
                 <div>
@@ -117,7 +125,7 @@
                 <div>
                     <h3 class="win-h3">Project name</h3>
                     <input type="text" autocomplete="off" spellcheck="true" placeholder="My great project" class="win-textbox menu-create-project-param menu-create-project-param--name" />
-                    <p>Give your project a fitting name. Feel free to use any characters you want (even emoji)!</p>
+                    <p>Give your project a fitting name.</p>
 
                     <h3 class="win-h3">Aspect ratio</h3>
                     <select class="win-dropdown menu-create-project-param menu-create-project-param--aspect">
@@ -128,13 +136,13 @@
                     </select>
                     <p>Decide what shape you want your video to be. HDTVs usually have a ratio of 16:9, so in most cases this'll probably be your best shot.</p>
                 </div>
-                <p><button class="win-button eo1-btn menu-create-project-param menu-create-project-param--submit">Create</button></p>
+                <p><button class="win-button eo1-btn eo1-btn--radius-all menu-create-project-param menu-create-project-param--submit">Create</button></p>
             </section>
             <section class="main-menu__content-section main-menu__content-section--open-project main-menu__content-section--hidden" data-menu="open-project">
                 <div>
                     <h2 class="win-h2">Open project</h2>
                     <p>
-                        <button disabled class="win-button eo1-btn">Browse...</button>
+                        <button class="win-button eo1-btn eo1-btn--radius-all menu-open-project-param menu-open-project-param--browse">Browse...</button>
                     </p>
                     </div>
                 <div>
@@ -176,7 +184,9 @@
     <div class="app-page app-page--editor-menu app-page--hidden">
         <div class="app-page__inner app-page__inner--320 app-page__inner--editor-menu">
             <section class="editor-menu-titlebar">
-                <button class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--close-project" data-editor-command="close-project" title="Close project">&#xE112;&nbsp;Close project</button>
+                <button class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--close-project" data-editor-command="close-project" title="Close project"></button>
+                <button class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--force-save" data-editor-command="force-save" title="Save"></button>
+                <button class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--save-as" data-editor-command="save-as" title="Save as..."></button>
                 <button class="editor-titlebar-control app-trigger app-trigger--settings" title="Settings"></button>
             </section>
 
@@ -299,7 +309,7 @@
                 <div class="editor-playback-widget">
                     <div class="editor-time-display">00:00:00.000</div>
                     <div>
-                        <button class="win-button eo1-btn eo1-btn--editor-playpause" title="Play">&#xE102;</button>
+                        <button class="win-button eo1-btn eo1-btn--editor-playpause eo1-btn--radius-all" title="Play">&#xE102;</button>
                     </div>
                 </div>
             </section>
@@ -307,7 +317,7 @@
             <section class="editor-section editor-section--lower">
                 <div class="timeline-button-container timeline-button-container--left">
                     <div class="timeline-button-container__section">
-                        <button class="win-button eo1-btn eo1-btn--timeline eo1-btn--timeline-new-track" title="New track">&#xE109;</button>
+                        <button class="win-button eo1-btn eo1-btn--timeline eo1-btn--timeline-new-track eo1-btn--radius-tr eo1-btn--radius-br" title="New track">&#xE109;</button>
                     </div>
                 </div>
                 <div id="timeline-track-container">
@@ -329,13 +339,13 @@
                 </div>
                 <div class="timeline-button-container timeline-button-container--right">
                     <div class="timeline-button-container__section">
-                        <button class="win-button eo1-btn eo1-btn--timeline eo1-btn--timeline-zoom-in" title="Zoom in">&#xE12E;</button>
-                        <button class="win-button eo1-btn eo1-btn--timeline eo1-btn--timeline-zoom-out" title="Zoom out">&#xE1A4;</button>
+                        <button class="win-button eo1-btn eo1-btn--radius-tl eo1-btn--radius-bl eo1-btn--timeline eo1-btn--timeline-zoom-in" title="Zoom in">&#xE12E;</button>
+                        <button class="win-button eo1-btn eo1-btn--radius-tl eo1-btn--radius-bl eo1-btn--timeline eo1-btn--timeline-zoom-out" title="Zoom out">&#xE1A4;</button>
                     </div>
                     <div class="timeline-button-container__section timeline-button-container__section--spacer"></div>
                     <div class="timeline-button-container__section">
-                        <button class="win-button fa-rotate-270 eo1-btn eo1-btn--timeline eo1-btn--timeline-scroll-up" title="Scroll up">&#xE111;</button>
-                        <button class="win-button fa-rotate-270 eo1-btn eo1-btn--timeline eo1-btn--timeline-scroll-down" title="Scroll down">&#xE112;</button>
+                        <button class="win-button fa-rotate-270 eo1-btn eo1-btn--radius-tl eo1-btn--radius-bl eo1-btn--timeline eo1-btn--timeline-scroll-up" title="Scroll up">&#xE111;</button>
+                        <button class="win-button fa-rotate-270 eo1-btn eo1-btn--radius-tl eo1-btn--radius-bl eo1-btn--timeline eo1-btn--timeline-scroll-down" title="Scroll down">&#xE112;</button>
                     </div>
                 </div>
             </section>
@@ -392,7 +402,7 @@
                 <span>Remove &quot;</span><span id="remove-track-confirmation__name">Untitled Track</span><span>?&quot;</span>
             </h3>
             <p>This will also remove all the clips inside it.</p>
-            <button id="remove-track-confirmation__button" class="win-button eo1-btn">Remove</button>
+            <button id="remove-track-confirmation__button" class="win-button eo1-btn eo1-btn--radius-all">Remove</button>
         </div>
         <div id="mediaBrowserAddToProjectFlyout" data-win-control="WinJS.UI.Menu"></div>
         <div class="media-browser__preview-flyout" data-win-control="WinJS.UI.Flyout" aria-label="{Preview clip}">
@@ -438,8 +448,8 @@
             </div>
             <div class="settings-menu-section">
                 <h3 class="win-h3">Danger Zone</h3>
-                <p><button class="win-button eo1-btn app-setting app-setting--reset-settings" data-app-setting="reset-settings" data-setting-type="instant">Reset settings</button></p>
-                <p><button class="win-button eo1-btn app-setting app-setting--delete-all-projects" data-app-setting="delete-all-projects" data-setting-type="instant">Delete temporary projects</button></p>
+                <p><button class="win-button eo1-btn eo1-btn--radius-all app-setting app-setting--reset-settings" data-app-setting="reset-settings" data-setting-type="instant">Reset settings</button></p>
+                <p><button class="win-button eo1-btn eo1-btn--radius-all app-setting app-setting--delete-all-projects" data-app-setting="delete-all-projects" data-setting-type="instant">Delete temporary projects</button></p>
             </div>
         </div>
     </div>
