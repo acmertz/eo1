@@ -40,6 +40,13 @@
 
         <uap:SplashScreen Image="img\packaging\splashScreen.png" />
 
+        <uap:DefaultTile
+          ShortName="Eo1">
+          <uap:ShowNameOnTiles>
+            <uap:ShowOn Tile="square150x150Logo" />
+          </uap:ShowNameOnTiles>
+        </uap:DefaultTile>
+
       </uap:VisualElements>
       <Extensions>
         <uap:Extension Category="windows.fileTypeAssociation">
