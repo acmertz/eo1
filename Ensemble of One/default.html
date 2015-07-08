@@ -21,7 +21,6 @@
     <link rel="stylesheet" href="/css/main-menu.css" />
     <link rel="stylesheet" href="/css/media-browser.css" />
     <link rel="stylesheet" href="/css/timeline.css" />
-    <script src="/js/default.js"></script>
 
     <!-- Libraries -->
     <link rel="stylesheet" href="/lib/font-awesome-4.1.0/css/font-awesome.min.css">
@@ -68,6 +67,8 @@
     <script src="/js/session.js"></script>
     <script src="/js/settings.js"></script>
     <script src="/js/ui.js"></script>
+
+    <script src="/js/default.js"></script>
 </head>
 <body class="win-type-body">
     <div class="editor-media-container"></div>
@@ -445,6 +446,8 @@
                 <h3 class="win-h3">Canvas Sticky Edges</h3>
                 <div class="app-setting app-setting--sticky-edges-clip" data-app-setting="sticky-edges-clip" data-setting-type="toggle" data-win-control="WinJS.UI.ToggleSwitch" data-win-options="{title: 'Clips stick to each other', checked: true}"></div>
                 <div class="app-setting app-setting--sticky-edges-canvas" data-app-setting="sticky-edges-canvas" data-setting-type="toggle" data-win-control="WinJS.UI.ToggleSwitch" data-win-options="{title: 'Clips stick to canvas edges', checked: true}"></div>
+                <h3 class="win-h3">Default picture duration</h3>
+                <input type="range" min="1" max="10" value="3" class="win-slider app-setting app-setting--default-picture-duration" data-app-setting="default-picture-duration" data-setting-type="slider" />
             </div>
             <div class="settings-menu-section">
                 <h3 class="win-h3">Danger Zone</h3>

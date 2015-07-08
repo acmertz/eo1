@@ -436,82 +436,75 @@
             /// <param name="aspect" type="String">The aspect ratio of the project (16:9, 4:3, etc.).</param>
             let projectRes = Ensemble.Settings.getDefaultResolution(aspect);
             Ensemble.FileIO._createProjectCallback = callback;
-            switch (Ensemble.Platform.currentPlatform) {
-                case "win8":
-                    Windows.Storage.ApplicationData.current.localFolder.createFolderAsync("Projects", Windows.Storage.CreationCollisionOption.openIfExists).then(function (projectDir) {
-                        projectDir.createFileAsync(name + ".eo1", Windows.Storage.CreationCollisionOption.generateUniqueName).then(function (projectFile) {
-                            var savetime = Date.now().toString(10);
 
-                            var xml = new XMLWriter();
-                            xml.BeginNode("EnsembleOfOneProject");
+            Windows.Storage.ApplicationData.current.localFolder.createFolderAsync("Projects", Windows.Storage.CreationCollisionOption.openIfExists).then(function (projectDir) {
+                projectDir.createFileAsync(name + ".eo1", Windows.Storage.CreationCollisionOption.generateUniqueName).then(function (projectFile) {
+                    var savetime = Date.now().toString(10);
 
-                            let tempCanvas = document.createElement("canvas");
-                            tempCanvas.width = projectRes.width * 0.25;
-                            tempCanvas.height = projectRes.height * 0.25;
-                            let tempContext = tempCanvas.getContext("2d");
-                            tempContext.fillStyle = "#000";
-                            tempContext.fillRect(0, 0, projectRes.width * 0.25, projectRes.height * 0.25);
-                            xml.BeginNode("ProjectThumb");
-                            xml.WriteString(tempCanvas.toDataURL("image/png"));
-                            xml.EndNode();
+                    var xml = new XMLWriter();
+                    xml.BeginNode("EnsembleOfOneProject");
 
-                            xml.BeginNode("TimelineZoom");
-                            xml.WriteString(Ensemble.Editor.TimelineZoomMGR.currentLevel.toString());
-                            xml.EndNode();
-                            xml.BeginNode("DateCreated");
-                            xml.WriteString(savetime);
-                            xml.EndNode();
-                            xml.BeginNode("DateModified");
-                            xml.WriteString(savetime);
-                            xml.EndNode();
-                            xml.BeginNode("NumberOfClips");
-                            xml.WriteString("0");
-                            xml.EndNode();
-                            xml.BeginNode("AspectRatio");
-                            xml.WriteString(aspect);
-                            xml.EndNode();
-                            xml.BeginNode("Resolution");
-                            xml.Attrib("width", projectRes.width.toString());
-                            xml.Attrib("height", projectRes.height.toString());
-                            xml.EndNode();
-                            xml.BeginNode("ProjectLength");
-                            xml.WriteString("0");
-                            xml.EndNode();
-                            xml.BeginNode("Tracks");
-                            xml.Attrib("FreeTrackId", "1");
-                            xml.Attrib("FreeClipId", "0");
-                            xml.BeginNode("Track");
-                            xml.Attrib("trackId", "0");
-                            xml.Attrib("trackName", "Untitled track");
-                            xml.Attrib("trackVolume", "1");
-                            xml.WriteString("");
-                            xml.EndNode();
-                            xml.EndNode();
-                            xml.BeginNode("History");
-                            xml.BeginNode("Undo");
-                            xml.WriteString("");
-                            xml.EndNode();
-                            xml.BeginNode("Redo");
-                            xml.WriteString("");
-                            xml.EndNode();
-                            xml.EndNode();
-                            xml.EndNode();
-                            xml.Close();
+                    let tempCanvas = document.createElement("canvas");
+                    tempCanvas.width = projectRes.width * 0.25;
+                    tempCanvas.height = projectRes.height * 0.25;
+                    let tempContext = tempCanvas.getContext("2d");
+                    tempContext.fillStyle = "#000";
+                    tempContext.fillRect(0, 0, projectRes.width * 0.25, projectRes.height * 0.25);
+                    xml.BeginNode("ProjectThumb");
+                    xml.WriteString(tempCanvas.toDataURL("image/png"));
+                    xml.EndNode();
 
-                            //Generate a thumbnail.
-                            console.log("Creating save files...");
-                            Windows.Storage.FileIO.writeTextAsync(projectFile, xml.ToString()).then(function () {
-                                Ensemble.FileIO._createProjectCallback(projectFile.name);
-                                Ensemble.FileIO._createProjectCallback = null;
-                            });
-                        });
+                    xml.BeginNode("TimelineZoom");
+                    xml.WriteString(Ensemble.Editor.TimelineZoomMGR.currentLevel.toString());
+                    xml.EndNode();
+                    xml.BeginNode("DateCreated");
+                    xml.WriteString(savetime);
+                    xml.EndNode();
+                    xml.BeginNode("DateModified");
+                    xml.WriteString(savetime);
+                    xml.EndNode();
+                    xml.BeginNode("NumberOfClips");
+                    xml.WriteString("0");
+                    xml.EndNode();
+                    xml.BeginNode("AspectRatio");
+                    xml.WriteString(aspect);
+                    xml.EndNode();
+                    xml.BeginNode("Resolution");
+                    xml.Attrib("width", projectRes.width.toString());
+                    xml.Attrib("height", projectRes.height.toString());
+                    xml.EndNode();
+                    xml.BeginNode("ProjectLength");
+                    xml.WriteString("0");
+                    xml.EndNode();
+                    xml.BeginNode("Tracks");
+                    xml.Attrib("FreeTrackId", "1");
+                    xml.Attrib("FreeClipId", "0");
+                    xml.BeginNode("Track");
+                    xml.Attrib("trackId", "0");
+                    xml.Attrib("trackName", "Untitled track");
+                    xml.Attrib("trackVolume", "1");
+                    xml.WriteString("");
+                    xml.EndNode();
+                    xml.EndNode();
+                    xml.BeginNode("History");
+                    xml.BeginNode("Undo");
+                    xml.WriteString("");
+                    xml.EndNode();
+                    xml.BeginNode("Redo");
+                    xml.WriteString("");
+                    xml.EndNode();
+                    xml.EndNode();
+                    xml.EndNode();
+                    xml.Close();
+
+                    //Generate a thumbnail.
+                    console.log("Creating save files...");
+                    Windows.Storage.FileIO.writeTextAsync(projectFile, xml.ToString()).then(function () {
+                        Ensemble.FileIO._createProjectCallback(projectFile.name);
+                        Ensemble.FileIO._createProjectCallback = null;
                     });
-                    break;
-                case "android":
-                    break;
-                case "ios":
-                    break;
-            }
+                });
+            });
         },
 
         loadInternalProject: function (filename) {
@@ -989,37 +982,30 @@
                 let payloadObj = payload;
                 let cb = callback;
                 let continueLoad = loadClip;
-                switch (Ensemble.Platform.currentPlatform) {
-                    case "win8":
-                        if (clipObj.file.token.length > 0) {
-                            Windows.Storage.AccessCache.StorageApplicationPermissions.futureAccessList.getFileAsync(clipObj.file.token).done(function (loadedFile) {
-                                console.log("Loading file stub for clip with ID " + payloadObj + "...");
-                                let newFile = Ensemble.FileIO._mergeFileStub(loadedFile);
-                                newFile.token = clipObj.file.token;
-                                clipObj.file = newFile;
-                                if (continueLoad) {
-                                    Ensemble.FileIO.loadClip(clipObj.file, clipObj, cb, null, null, true);
-                                }
-                                else cb(clipObj, payloadObj);
-                            });
-                        }
-                        else {
-                            Windows.Storage.StorageFile.getFileFromPathAsync(clipObj.file.path).done(function (loadedFile) {
-                                console.log("Loading file stub for clip with ID " + payloadObj + "...");
-                                let newFile = Ensemble.FileIO._mergeFileStub(loadedFile);
-                                clipObj.file = newFile;
 
-                                if (continueLoad) {
-                                    Ensemble.FileIO.loadClip(clipObj.file, clipObj, cb, null, null, true);
-                                }
-                                else cb(clipObj, payloadObj);
-                            });
+                if (clipObj.file.token.length > 0) {
+                    Windows.Storage.AccessCache.StorageApplicationPermissions.futureAccessList.getFileAsync(clipObj.file.token).done(function (loadedFile) {
+                        console.log("Loading file stub for clip with ID " + payloadObj + "...");
+                        let newFile = Ensemble.FileIO._mergeFileStub(loadedFile);
+                        newFile.token = clipObj.file.token;
+                        clipObj.file = newFile;
+                        if (continueLoad) {
+                            Ensemble.FileIO.loadClip(clipObj.file, clipObj, cb, null, null, true);
                         }
-                        break;
-                    case "android":
-                        break;
-                    case "ios":
-                        break;
+                        else cb(clipObj, payloadObj);
+                    });
+                }
+                else {
+                    Windows.Storage.StorageFile.getFileFromPathAsync(clipObj.file.path).done(function (loadedFile) {
+                        console.log("Loading file stub for clip with ID " + payloadObj + "...");
+                        let newFile = Ensemble.FileIO._mergeFileStub(loadedFile);
+                        clipObj.file = newFile;
+
+                        if (continueLoad) {
+                            Ensemble.FileIO.loadClip(clipObj.file, clipObj, cb, null, null, true);
+                        }
+                        else cb(clipObj, payloadObj);
+                    });
                 }
             })();            
         },
@@ -1150,16 +1136,7 @@
                 var data = payload;
                 var callback = complete;
 
-                var fileURI = null;
-                switch (Ensemble.Platform.currentPlatform) {
-                    case "win8":
-                        fileURI = URL.createObjectURL(file._src, { oneTimeOnly: false });
-                        break;
-                    case "android":
-                        break;
-                    case "ios":
-                        break;
-                }
+                var fileURI = URL.createObjectURL(file._src, { oneTimeOnly: false });
 
                 var srcElement = null;
                 switch (file.eo1type) {
@@ -1252,58 +1229,50 @@
         enumerateProjects: function (callback) {
             /// <summary>Enumerates all available projects in the project directory.</summary>
             /// <param name="callback" type="Function">The callback to be fired after all projects have been enumerated.</param>
-            switch (Ensemble.Platform.currentPlatform) {
-                case "win8":
-                    var dataArray = [];
-                    Windows.Storage.ApplicationData.current.localFolder.getFolderAsync("Projects").then(function (projectDir) {
-                        var projectQueryOptions = new Windows.Storage.Search.QueryOptions(Windows.Storage.Search.CommonFileQuery.orderByName, [".eo1"]);
-                        var projectQuery = projectDir.createFileQueryWithOptions(projectQueryOptions);
-                        projectQuery.getFilesAsync().then(function (projectFiles) {
-                            if (projectFiles.length == 0) callback([]);
-                            else {
-                                for (var i = 0; i < projectFiles.length; i++) {
-                                    (function () { 
-                                        var loadedFilename = projectFiles[i].name;
-                                        var loadedProjectName = projectFiles[i].displayName;
-                                        Windows.Storage.FileIO.readTextAsync(projectFiles[i]).then(function (contents) {
-                                            var parser = new DOMParser();
-                                            var xmlDoc = parser.parseFromString(contents, "text/xml");
+            var dataArray = [];
+            Windows.Storage.ApplicationData.current.localFolder.getFolderAsync("Projects").then(function (projectDir) {
+                var projectQueryOptions = new Windows.Storage.Search.QueryOptions(Windows.Storage.Search.CommonFileQuery.orderByName, [".eo1"]);
+                var projectQuery = projectDir.createFileQueryWithOptions(projectQueryOptions);
+                projectQuery.getFilesAsync().then(function (projectFiles) {
+                    if (projectFiles.length == 0) callback([]);
+                    else {
+                        for (var i = 0; i < projectFiles.length; i++) {
+                            (function () { 
+                                var loadedFilename = projectFiles[i].name;
+                                var loadedProjectName = projectFiles[i].displayName;
+                                Windows.Storage.FileIO.readTextAsync(projectFiles[i]).then(function (contents) {
+                                    var parser = new DOMParser();
+                                    var xmlDoc = parser.parseFromString(contents, "text/xml");
 
-                                            var ensembleProject = xmlDoc.firstChild;
+                                    var ensembleProject = xmlDoc.firstChild;
                                             
-                                            try {
-                                                var loadedDateModified = new Date(parseInt(xmlDoc.getElementsByTagName("DateModified")[0].childNodes[0].nodeValue, 10));
-                                            }
-                                            catch (exception) {
-                                                var loadedDateModified = "Unknown";
-                                            }
-                                            var loadedAspectRatio = xmlDoc.getElementsByTagName("AspectRatio")[0].childNodes[0].nodeValue;
-                                            var loadedNumberOfClips = xmlDoc.getElementsByTagName("MediaClip").length;
-                                            var loadedProjectLength = xmlDoc.getElementsByTagName("ProjectLength")[0].childNodes[0].nodeValue;
-                                            let loadedThumbnailPath = xmlDoc.getElementsByTagName("ProjectThumb")[0].childNodes[0].nodeValue;
+                                    try {
+                                        var loadedDateModified = new Date(parseInt(xmlDoc.getElementsByTagName("DateModified")[0].childNodes[0].nodeValue, 10));
+                                    }
+                                    catch (exception) {
+                                        var loadedDateModified = "Unknown";
+                                    }
+                                    var loadedAspectRatio = xmlDoc.getElementsByTagName("AspectRatio")[0].childNodes[0].nodeValue;
+                                    var loadedNumberOfClips = xmlDoc.getElementsByTagName("MediaClip").length;
+                                    var loadedProjectLength = xmlDoc.getElementsByTagName("ProjectLength")[0].childNodes[0].nodeValue;
+                                    let loadedThumbnailPath = xmlDoc.getElementsByTagName("ProjectThumb")[0].childNodes[0].nodeValue;
 
-                                            dataArray.push(new Ensemble.Editor.ProjectFile(loadedProjectName, loadedFilename, loadedDateModified, loadedNumberOfClips, loadedAspectRatio, loadedProjectLength, loadedThumbnailPath));
+                                    dataArray.push(new Ensemble.Editor.ProjectFile(loadedProjectName, loadedFilename, loadedDateModified, loadedNumberOfClips, loadedAspectRatio, loadedProjectLength, loadedThumbnailPath));
 
-                                            if (dataArray.length == projectFiles.length) {
-                                                dataArray.sort(function (a, b) {
-                                                    if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
-                                                    if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
-                                                    return 0;
-                                                });
-                                                callback(dataArray);
-                                            }
+                                    if (dataArray.length == projectFiles.length) {
+                                        dataArray.sort(function (a, b) {
+                                            if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+                                            if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+                                            return 0;
                                         });
-                                    })();
-                                }
-                            }
-                        });
-                    });
-                    break;
-                case "android":
-                    break;
-                case "ios":
-                    break;
-            }
+                                        callback(dataArray);
+                                    }
+                                });
+                            })();
+                        }
+                    }
+                });
+            });
         },
 
         pickItemsFromFolder: function (folder, callback) {
@@ -1312,37 +1281,29 @@
             /// <param name="callback" type="Function">The function call to execute upon completion.</param>
             Ensemble.FileIO._pickItemsCallback = callback;
             Ensemble.FileIO._clearTempItemsLookup();
-            switch (Ensemble.Platform.currentPlatform) {
-                case "win8":
-                    folder._src.getFoldersAsync().then(function (containedFolders) {
-                        console.log("Got a list of folders in the current folder.");
-                        folder._src.getFilesAsync().then(function (containedFiles) {
-                            console.log("Got a list of media files in the current folder.");
-                            for (var i = 0; i < containedFolders.length; i++) {
-                                var newFolder = Ensemble.FileIO._createFolderFromSrc(containedFolders[i]);
-                                Ensemble.FileIO._pickItemsTempFolders.push(newFolder);
+            folder._src.getFoldersAsync().then(function (containedFolders) {
+                console.log("Got a list of folders in the current folder.");
+                folder._src.getFilesAsync().then(function (containedFiles) {
+                    console.log("Got a list of media files in the current folder.");
+                    for (var i = 0; i < containedFolders.length; i++) {
+                        var newFolder = Ensemble.FileIO._createFolderFromSrc(containedFolders[i]);
+                        Ensemble.FileIO._pickItemsTempFolders.push(newFolder);
+                    }
+                    console.log("Finished adding folders to the array to display.");
+                    for (var i = 0; i < containedFiles.length; i++) {
+                        var newFile = Ensemble.FileIO._createFileFromSrc(containedFiles[i]);
+                        //Check that the file is supported.
+                        if (newFile.mime.indexOf("audio") > -1 || newFile.mime.indexOf("video") > -1 || newFile.mime.indexOf("image") > -1) {
+                            if (Ensemble.FileIO.supportedAudioTypes.indexOf(newFile.fileType) > -1 || Ensemble.FileIO.supportedVideoTypes.indexOf(newFile.fileType) > -1 || Ensemble.FileIO.supportedImageTypes.indexOf(newFile.fileType) > -1) {
+                                Ensemble.FileIO._pickItemsTempFiles.push(newFile);
                             }
-                            console.log("Finished adding folders to the array to display.");
-                            for (var i = 0; i < containedFiles.length; i++) {
-                                var newFile = Ensemble.FileIO._createFileFromSrc(containedFiles[i]);
-                                //Check that the file is supported.
-                                if (newFile.mime.indexOf("audio") > -1 || newFile.mime.indexOf("video") > -1 || newFile.mime.indexOf("image") > -1) {
-                                    if (Ensemble.FileIO.supportedAudioTypes.indexOf(newFile.fileType) > -1 || Ensemble.FileIO.supportedVideoTypes.indexOf(newFile.fileType) > -1 || Ensemble.FileIO.supportedImageTypes.indexOf(newFile.fileType) > -1) {
-                                        Ensemble.FileIO._pickItemsTempFiles.push(newFile);
-                                    }
-                                } 
-                            }
-                            console.log("Finished adding media files to the array to display.");
-                            //Now that all files and folders have been added up, pull media information.
-                            Ensemble.FileIO._pickItemsCallback(Ensemble.FileIO._pickItemsTempFiles, Ensemble.FileIO._pickItemsTempFolders);
-                        });
-                    });
-                    break;
-                case "ios":
-                    break;
-                case "android":
-                    break;
-            }
+                        } 
+                    }
+                    console.log("Finished adding media files to the array to display.");
+                    //Now that all files and folders have been added up, pull media information.
+                    Ensemble.FileIO._pickItemsCallback(Ensemble.FileIO._pickItemsTempFiles, Ensemble.FileIO._pickItemsTempFolders);
+                });
+            });
         },
 
         _createFileFromSrc: function (file) {
@@ -1399,58 +1360,50 @@
             /// <param name="index" type="Number">The file's original index in the Media Browser list.</param>
             /// <param name="callback" type="Function">The callback to execute after retrieving the media properties. Will pass the index and the meta to the callback function.</param>
             if (ensembleFile != null) {
-                switch (Ensemble.Platform.currentPlatform) {
-                    case "win8":
-                        switch (ensembleFile.eo1type) {
-                            case "video":
-                                ensembleFile._src.properties.getVideoPropertiesAsync().done(function (success) {
-                                    //console.log("Retrieved video properties for the item at index " + index + ".");
-                                    var returnVal = {
-                                        bitrate: success.bitrate,
-                                        duration: success.duration,
-                                        height: success.height,
-                                        width: success.width,
-                                        title: success.title
-                                    };
+                switch (ensembleFile.eo1type) {
+                    case "video":
+                        ensembleFile._src.properties.getVideoPropertiesAsync().done(function (success) {
+                            //console.log("Retrieved video properties for the item at index " + index + ".");
+                            var returnVal = {
+                                bitrate: success.bitrate,
+                                duration: success.duration,
+                                height: success.height,
+                                width: success.width,
+                                title: success.title
+                            };
 
-                                    callback(index, returnVal, ensembleFile._uniqueId);
-                                });
-                                break;
-                            case "audio":
-                                ensembleFile._src.properties.getMusicPropertiesAsync().done(function (success) {
-                                    //console.log("Retrieved music properties.");
-                                    var returnVal = {
-                                        album: success.album,
-                                        albumArtist: success.albumArtist,
-                                        artist: success.artist,
-                                        bitrate: success.bitrate,
-                                        duration: success.duration,
-                                        genre: success.genre,
-                                        title: success.title
-                                    };
-                                    callback(index, returnVal, ensembleFile._uniqueId);
-                                });
-                                break;
-                            case "picture":
-                                ensembleFile._src.properties.getImagePropertiesAsync().done(function (success) {
-                                    //console.log("Retrieved image properties for file \"" + srcfile.name + ".\"");
-                                    var returnVal = {
-                                        dateTaken: success.dateTaken,
-                                        height: success.height,
-                                        width: success.width,
-                                        title: success.title,
-                                    };
-                                    callback(index, returnVal, ensembleFile._uniqueId);
-                                });
-                                break;
-                            case "folder":
-                                callback(index, null, ensembleFile._uniqueId);
-                                break;
-                        }
+                            callback(index, returnVal, ensembleFile._uniqueId);
+                        });
                         break;
-                    case "ios":
+                    case "audio":
+                        ensembleFile._src.properties.getMusicPropertiesAsync().done(function (success) {
+                            //console.log("Retrieved music properties.");
+                            var returnVal = {
+                                album: success.album,
+                                albumArtist: success.albumArtist,
+                                artist: success.artist,
+                                bitrate: success.bitrate,
+                                duration: success.duration,
+                                genre: success.genre,
+                                title: success.title
+                            };
+                            callback(index, returnVal, ensembleFile._uniqueId);
+                        });
                         break;
-                    case "android":
+                    case "picture":
+                        ensembleFile._src.properties.getImagePropertiesAsync().done(function (success) {
+                            //console.log("Retrieved image properties for file \"" + srcfile.name + ".\"");
+                            var returnVal = {
+                                dateTaken: success.dateTaken,
+                                height: success.height,
+                                width: success.width,
+                                title: success.title,
+                            };
+                            callback(index, returnVal, ensembleFile._uniqueId);
+                        });
+                        break;
+                    case "folder":
+                        callback(index, null, ensembleFile._uniqueId);
                         break;
                 }
             }
@@ -1464,30 +1417,22 @@
             /// <param name="index" type="Number">The file's original index in the Media Browser list.</param>
             /// <param name="callback" type="Function">The callback to execute after retrieving the thumbnail. Will pass the index and the thumb to the callback function.</param>
             if (ensembleFile != null) {
-                switch (Ensemble.Platform.currentPlatform) {
-                    case "win8":
-                        switch (ensembleFile.eo1type) {
-                            case "folder":
-                                callback(index, null, ensembleFile._uniqueId);
-                                break;
-                            default:
-                                ensembleFile._src.getScaledImageAsThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.listView, 200).done(function (success) {
-                                    try {
-                                        callback(index, success, ensembleFile._uniqueId);
-                                    }
-                                    catch (exception) {
-                                        //Item does not have a thumbnail.
-                                        callback(index, '', ensembleFile._uniqueId);
-                                    }
-                                });
-                                break;
+                switch (ensembleFile.eo1type) {
+                    case "folder":
+                        callback(index, null, ensembleFile._uniqueId);
+                        break;
+                    default:
+                        ensembleFile._src.getScaledImageAsThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.listView, 200).done(function (success) {
+                            try {
+                                callback(index, success, ensembleFile._uniqueId);
+                            }
+                            catch (exception) {
+                                //Item does not have a thumbnail.
+                                callback(index, '', ensembleFile._uniqueId);
+                            }
+                        });
+                        break;
                             
-                        }
-                        break;
-                    case "ios":
-                        break;
-                    case "android":
-                        break;
                 }
             }
         },
@@ -1497,16 +1442,7 @@
             /// <param name="ensembleFile" type="Ensemble.EnsembleFile">The file for which to load a preview.</param>
             /// <param name="callback" type="Function">The callback to execute after the preview loaded. The callback will be passed both the Ensemble file and a URI referencing its media.</param>
             /// <param name="payload" type="Object">Optional. An object that will be passed to the callback with the retrieved data.</param>
-            var returnVal = "";
-            switch (Ensemble.Platform.currentPlatform) {
-                case "win8":
-                    returnVal = URL.createObjectURL(ensembleFile._src, { oneTimeOnly: true });
-                    break;
-                case "ios":
-                    break;
-                case "android":
-                    break;
-            }
+            var returnVal = URL.createObjectURL(ensembleFile._src, { oneTimeOnly: true });
             callback(ensembleFile, returnVal, payload);
         },
 
@@ -1642,37 +1578,13 @@
             var returnVal = null;
             switch (directoryName) {
                 case "video":
-                    switch (Ensemble.Platform.currentPlatform) {
-                        case "win8":
-                            returnVal = new Ensemble.EnsembleFolder(Windows.Storage.KnownFolders.videosLibrary);
-                            break;
-                        case "ios":
-                            break;
-                        case "android":
-                            break;
-                    }
+                    returnVal = new Ensemble.EnsembleFolder(Windows.Storage.KnownFolders.videosLibrary);
                     break;
                 case "music":
-                    switch (Ensemble.Platform.currentPlatform) {
-                        case "win8":
-                            returnVal = new Ensemble.EnsembleFolder(Windows.Storage.KnownFolders.musicLibrary);
-                            break;
-                        case "ios":
-                            break;
-                        case "android":
-                            break;
-                    }
+                    returnVal = new Ensemble.EnsembleFolder(Windows.Storage.KnownFolders.musicLibrary);
                     break;
                 case "picture":
-                    switch (Ensemble.Platform.currentPlatform) {
-                        case "win8":
-                            returnVal = new Ensemble.EnsembleFolder(Windows.Storage.KnownFolders.picturesLibrary);
-                            break;
-                        case "ios":
-                            break;
-                        case "android":
-                            break;
-                    }
+                    returnVal = new Ensemble.EnsembleFolder(Windows.Storage.KnownFolders.picturesLibrary);
                     break;
             }
             return returnVal;
@@ -1681,53 +1593,38 @@
         deleteProject: function (filename) {
             /// <summary>Permanently deletes the project with the given filename.</summary>
             /// <param name="filename" type="String">The filename of the project to be deleted.</param>
-            switch (Ensemble.Platform.currentPlatform) {
-                case "win8":
-                    var dataArray = [];
-                    Windows.Storage.ApplicationData.current.localFolder.getFolderAsync("Projects").then(function (projectDir) {
-                        projectDir.getFileAsync(filename).then(function (projectFile) {
-                            projectFile.deleteAsync(Windows.Storage.StorageDeleteOption.permanentDelete).then(function (done) {
-                                console.log("Deleted project file.");
-                            });
-                        });
-                        projectDir.getFileAsync(filename + ".jpg").then(function (projectFile) {
-                            projectFile.deleteAsync(Windows.Storage.StorageDeleteOption.permanentDelete).then(function (done) {
-                                console.log("Deleted project thumbnail.");
-                            });
-                        });
+            var dataArray = [];
+            Windows.Storage.ApplicationData.current.localFolder.getFolderAsync("Projects").then(function (projectDir) {
+                projectDir.getFileAsync(filename).then(function (projectFile) {
+                    projectFile.deleteAsync(Windows.Storage.StorageDeleteOption.permanentDelete).then(function (done) {
+                        console.log("Deleted project file.");
                     });
-                    break;
-                case "android":
-                    break;
-                case "ios":
-                    break;
-            }
+                });
+                projectDir.getFileAsync(filename + ".jpg").then(function (projectFile) {
+                    projectFile.deleteAsync(Windows.Storage.StorageDeleteOption.permanentDelete).then(function (done) {
+                        console.log("Deleted project thumbnail.");
+                    });
+                });
+            });
         },
 
         deleteAllProjects: function () {
             /// <summary>Permanently deletes all projects and their accompanying thumbnails.</summary>
             console.log("Deleting all projects...");
-            switch (Ensemble.Platform.currentPlatform) {
-                case "win8":
-                    Windows.Storage.ApplicationData.current.localFolder.getFolderAsync("Projects").then(function (projectDir) {
-                        var projectQueryOptions = new Windows.Storage.Search.QueryOptions(Windows.Storage.Search.CommonFileQuery.orderByName, [".eo1", ".jpg"]);
-                        var projectQuery = projectDir.createFileQueryWithOptions(projectQueryOptions);
-                        projectQuery.getFilesAsync().then(function (projectFiles) {
-                            if (projectFiles.length > 0) {
-                                for (var i = 0; i < projectFiles.length; i++) {
-                                    projectFiles[i].deleteAsync(Windows.Storage.StorageDeleteOption.permanentDelete);
-                                }
-                                console.info("Deleted all projects.");
-                            }
-                            else console.log("No projects to delete.");
-                        });
-                    });
-                    break;
-                case "android":
-                    break;
-                case "ios":
-                    break;
-            }
+
+            Windows.Storage.ApplicationData.current.localFolder.getFolderAsync("Projects").then(function (projectDir) {
+                var projectQueryOptions = new Windows.Storage.Search.QueryOptions(Windows.Storage.Search.CommonFileQuery.orderByName, [".eo1", ".jpg"]);
+                var projectQuery = projectDir.createFileQueryWithOptions(projectQueryOptions);
+                projectQuery.getFilesAsync().then(function (projectFiles) {
+                    if (projectFiles.length > 0) {
+                        for (var i = 0; i < projectFiles.length; i++) {
+                            projectFiles[i].deleteAsync(Windows.Storage.StorageDeleteOption.permanentDelete);
+                        }
+                        console.info("Deleted all projects.");
+                    }
+                    else console.log("No projects to delete.");
+                });
+            });
         },
 
         showMediaFilePicker: function (callback, payload) {

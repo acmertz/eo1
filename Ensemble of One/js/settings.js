@@ -3,7 +3,8 @@
         /// <summary>Provides platform-agnostic interfaces for the storage and retrieval of application settings.</summary>
         defaults: [
             { name: "sticky-edges-clip", value: true },
-            { name: "sticky-edges-canvas", value: true }
+            { name: "sticky-edges-canvas", value: true },
+            { name: "default-picture-duration", value: 3}
         ],
 
         init: function () {
@@ -12,6 +13,7 @@
                 let listenerType = "";
                 switch (allSettings[i].dataset.settingType) {
                     case "toggle":
+                    case "slider":
                         listenerType = "change";
                         break;
                     case "instant":
@@ -57,6 +59,9 @@
                 switch (allSettings[i].dataset.settingType) {
                     case "toggle":
                         allSettings[i].winControl.checked = retrievedValue;
+                        break;
+                    case "slider":
+                        allSettings[i].value = retrievedValue;
                         break;
                 }
             }
@@ -106,6 +111,9 @@
                 switch (event.currentTarget.dataset.settingType) {
                     case "toggle":
                         valueToSave = event.currentTarget.winControl.checked;
+                        break;
+                    case "slider":
+                        valueToSave = parseInt(event.currentTarget.value, 10);
                         break;
                     case "instant":
                         break;

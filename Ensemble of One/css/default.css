@@ -14,9 +14,8 @@ select:hover {
     font-family: "Symbols";
 }
 
-.editor-video-container {
+.editor-media-container {
     pointer-events: none;
-    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -27,4 +26,6 @@ select:hover {
     position: absolute;
     top: 0;
     left: 0;
+    width: 10px;
+    height: 10px;
 }
