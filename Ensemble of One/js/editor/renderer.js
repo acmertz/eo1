@@ -773,6 +773,7 @@
             },
 
             playbackCanvasPointerDown: function (event) {
+                if (event.pointerType == "touch") Ensemble.Editor.Renderer._listeners.playbackCanvasPointerMoved(event);
                 if (Ensemble.Editor.SelectionMGR.hovering.length > 0) {
                     // select the clip that is hovering
                     let dragDelay = 100;

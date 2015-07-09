@@ -70,6 +70,7 @@
 
 .editor-menubar__toolbar {
     border-bottom: 1px solid #dc143c;
+    margin-top: -1px;
     display: none;
 }
 
