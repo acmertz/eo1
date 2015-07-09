@@ -1398,6 +1398,7 @@
                                 height: success.height,
                                 width: success.width,
                                 title: success.title,
+                                duration: Ensemble.Settings.retrieveSetting("default-picture-duration") * 1000
                             };
                             callback(index, returnVal, ensembleFile._uniqueId);
                         });

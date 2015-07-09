@@ -46,7 +46,6 @@
             /// <param name="name" type="String">The name of the setting to lookup.</param>
             /// <returns>The value of the setting.</returns>
             return Windows.Storage.ApplicationData.current.roamingSettings.values[name];
-
         },
 
         refreshSettingsDialog: function () {

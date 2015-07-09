@@ -90,9 +90,6 @@
             $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserHome).click(this._mediaBrowserHomeButtonOnClickListener);
             $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserUpOneLevel).click(this._mediaBrowserUpOneLevelButtonOnClickListener);
             $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserRefresh).click(this._mediaBrowserRefreshButtonOnClickListener);
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationVideos).click(this._mediaBrowserLocationSelectedOnClickListener);
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationMusic).click(this._mediaBrowserLocationSelectedOnClickListener);
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationPictures).click(this._mediaBrowserLocationSelectedOnClickListener);
 
             window.addEventListener("resize", Ensemble.Pages.Editor.viewResized);
         },
@@ -103,9 +100,6 @@
             $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserHome).unbind("click");
             $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserUpOneLevel).unbind("click");
             $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserRefresh).unbind("click");
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationVideos).unbind("click");
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationMusic).unbind("click");
-            $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationPictures).unbind("click");
 
             window.removeEventListener("resize", Ensemble.Pages.Editor.viewResized);
         },
@@ -197,23 +191,6 @@
 
         _mediaBrowserRefreshButtonOnClickListener: function (event) {
             Ensemble.Editor.MediaBrowser.navigateToFolder(Ensemble.Editor.MediaBrowser.currentLocation());
-        },
-
-        _mediaBrowserLocationSelectedOnClickListener: function (event) {
-            switch (event.currentTarget) {
-                case Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationVideos:
-                    Ensemble.Editor.MediaBrowser.setContext("video");
-                    Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocation.innerHTML = "Videos library";
-                    break;
-                case Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationMusic:
-                    Ensemble.Editor.MediaBrowser.setContext("music");
-                    Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocation.innerHTML = "Music library";
-                    break;
-                case Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocationPictures:
-                    Ensemble.Editor.MediaBrowser.setContext("picture");
-                    Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocation.innerHTML = "Pictures library";
-                    break;
-            }
         }
     });
 })();

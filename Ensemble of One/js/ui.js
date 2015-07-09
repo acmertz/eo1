@@ -32,9 +32,6 @@
             this.UserInput.Buttons.mediaBrowserHome = document.getElementById("editorMediaBrowserHomeButton");
             this.UserInput.Buttons.mediaBrowserUpOneLevel = document.getElementById("editorMediaBrowserUpOneLevelButton");
             this.UserInput.Buttons.mediaBrowserRefresh = document.getElementById("editorMediaBrowserRefreshButton");
-            this.UserInput.Buttons.mediaBrowserLocationVideos = document.getElementById("editorMediaBrowserLocationVideosLibrary");
-            this.UserInput.Buttons.mediaBrowserLocationMusic = document.getElementById("editorMediaBrowserLocationMusicLibrary");
-            this.UserInput.Buttons.mediaBrowserLocationPictures = document.getElementById("editorMediaBrowserLocationPicturesLibrary");
             this.UserInput.Buttons.moveTrackToTop = document.getElementById("editorMoveTrackTop");
             this.UserInput.Buttons.moveTrackUp = document.getElementById("editorMoveTrackUp");
             this.UserInput.Buttons.moveTrackDown = document.getElementById("editorMoveTrackDown");
@@ -105,9 +102,6 @@
                 mediaBrowserHome: null,
                 mediaBrowserUpOneLevel: null,
                 mediaBrowserRefresh: null,
-                mediaBrowserLocationVideos: null,
-                mediaBrowserLocationMusic: null,
-                mediaBrowserLocationPictures: null,
                 moveTrackToTop: null,
                 moveTrackUp: null,
                 moveTrackDown: null,

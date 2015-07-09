@@ -720,8 +720,15 @@
             document.getElementById("editorTimelineTracks").appendChild(rightGripper);
 
             Ensemble.Editor.TimelineMGR._trimMaxDur = clipObj.file.duration;
-            Ensemble.Editor.TimelineMGR._trimMinStart = clipObj.startTime - clipObj.startTrim;
-            Ensemble.Editor.TimelineMGR._trimMaxEnd = clipObj.startTime + clipObj.duration + clipObj.endTrim;
+            if (clipObj.type == Ensemble.Editor.Clip.ClipType.picture) {
+                Ensemble.Editor.TimelineMGR._trimMinStart = 0;
+                Ensemble.Editor.TimelineMGR._trimMaxEnd = Infinity;
+            }
+            else {
+                Ensemble.Editor.TimelineMGR._trimMinStart = clipObj.startTime - clipObj.startTrim;
+                Ensemble.Editor.TimelineMGR._trimMaxEnd = clipObj.startTime + clipObj.duration + clipObj.endTrim;
+            }
+            
 
             let found = false;
             for (let i = 0; i < Ensemble.Editor.TimelineMGR.tracks.length; i++) {

@@ -317,6 +317,7 @@
                 else {
                     if (!isNaN(itemIndex)) {
                         Ensemble.Editor.MediaBrowser._dragEnsembleFile = Ensemble.Editor.MediaBrowser._mediaItems[itemIndex];
+                        if (Ensemble.Editor.MediaBrowser._dragEnsembleFile.eo1type == "picture") Ensemble.Editor.MediaBrowser._dragEnsembleFile.duration = Ensemble.Settings.retrieveSetting("default-picture-duration");
                         if (Ensemble.Editor.MediaBrowser._dragEnsembleFile.eo1type != "folder") {
                             Ensemble.Editor.MediaBrowser._dragCheck = true;
                             Ensemble.Utilities.MouseTracker.startTracking(event.clientX, event.clientY);
@@ -460,6 +461,11 @@
             this.ui.dragPreview = document.getElementsByClassName("media-browser__drag-preview")[0];
 
             this.ui.previewFlyout.addEventListener("afterhide", Ensemble.Editor.MediaBrowser._listeners.closedMediaPreview);
+
+            let locationCommands = document.getElementsByClassName("media-browser-location-flyout__command");
+            for (let i = 0; i < locationCommands.length; i++) {
+                locationCommands[i].addEventListener("click", Ensemble.Editor.MediaBrowser._listeners.locationContextButtonClicked);
+            }
         },
 
         _cleanUI: function () {
@@ -468,6 +474,11 @@
             this.ui.previewFlyout = null;
             this.ui.propertiesFlyout = null;
             this.ui.dragPreview = null;
+
+            let locationCommands = document.getElementsByClassName("media-browser-location-flyout__command");
+            for (let i = 0; i < locationCommands.length; i++) {
+                locationCommands[i].removeEventListener("click", Ensemble.Editor.MediaBrowser._listeners.locationContextButtonClicked);
+            }
         },
 
         _listeners: {
@@ -506,6 +517,23 @@
                 Ensemble.Editor.MediaBrowser._dragTimeline = false;
                 $(Ensemble.Editor.TimelineMGR.ui.dropPreview).removeClass("timeline__drop-preview--visible").addClass("timeline__drop-preview--hidden");
                 $(Ensemble.Editor.MediaBrowser.ui.dragPreview).removeClass("media-browser__drag-preview--hidden").addClass("media-browser__drag-preview--visible");
+            },
+
+            locationContextButtonClicked: function (event) {
+                switch (event.currentTarget.dataset.mediabrowserLocation) {
+                    case "video":
+                        Ensemble.Editor.MediaBrowser.setContext("video");
+                        Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocation.innerHTML = "Videos library";
+                        break;
+                    case "music":
+                        Ensemble.Editor.MediaBrowser.setContext("music");
+                        Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocation.innerHTML = "Music library";
+                        break;
+                    case "picture":
+                        Ensemble.Editor.MediaBrowser.setContext("picture");
+                        Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocation.innerHTML = "Pictures library";
+                        break;
+                }
             }
         }
 

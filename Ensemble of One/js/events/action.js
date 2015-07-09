@@ -225,7 +225,9 @@
                         }
 
                         if (clip.isRenderable()) {
-                            let dimensions = Ensemble.Editor.Renderer.generateClipInitialPosition(player.videoWidth, player.videoHeight);
+                            let dimensions = null;
+                            if (clip.type == Ensemble.Editor.Clip.ClipType.picture) dimensions = Ensemble.Editor.Renderer.generateClipInitialPosition(player.naturalWidth, player.naturalHeight);
+                            else dimensions = Ensemble.Editor.Renderer.generateClipInitialPosition(player.videoWidth, player.videoHeight);
                             clip.width = player.width = dimensions.width;
                             clip.height = player.height = dimensions.height;
                             clip.xcoord = dimensions.xcoord;
