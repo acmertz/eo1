@@ -104,6 +104,28 @@
             settingsPane.addEventListener("animationend", Ensemble.Settings._listeners.settingsPaneExitFinished);
         },
 
+        addOrReplaceRecentProjectToken: function (token) {
+            /// <summary>Adds the given project token to application storage, replacing an existing one if necessary.</summary>
+            /// <param name="token" type="String">The token to add to storage.</param>
+            let recentProjects = Windows.Storage.ApplicationData.current.localSettings.values["recentProjects"],
+                itemIndex = -1;
+            if (recentProjects) recentProjects = recentProjects = JSON.parse(recentProjects);
+            else recentProjects = [];
+            itemIndex = recentProjects.indexOf(token);
+            if (itemIndex >= 0) recentProjects.splice(itemIndex, 1);
+            recentProjects.push(token);
+            Windows.Storage.ApplicationData.current.localSettings.values["recentProjects"] = JSON.stringify(recentProjects);
+        },
+
+        getRecentProjectTokens: function () {
+            /// <summary>Returns an array of strings that can be used to retrieve recent projects.</summary>
+            /// <returns type="Array">An array containing one string for each project in the list of recent projects.</returns>
+            let recentProjects = Windows.Storage.ApplicationData.current.localSettings.values["recentProjects"];
+            if (recentProjects) recentProjects = JSON.parse(recentProjects);
+            else recentProjects = [];
+            return recentProjects;
+        },
+
         _listeners: {
             userChangedSetting: function (event) {
                 let valueToSave = null;

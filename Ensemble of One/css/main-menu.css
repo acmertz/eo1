@@ -135,7 +135,10 @@
 }
 
 
-
+.home-menu__recent-projects {
+    list-style: none;
+    padding: 0;
+}
 
 
 .open-menu__local-projects {

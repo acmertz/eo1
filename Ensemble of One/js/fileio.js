@@ -514,6 +514,7 @@
             Ensemble.Session.projectFileInApp = true;
             let uri = new Windows.Foundation.Uri('ms-appdata:///local/Projects/' + filename);
             let file = Windows.Storage.StorageFile.getFileFromApplicationUriAsync(uri).then(function (projectFile) {
+                Ensemble.FileIO.addOrReplaceRecentProject(projectFile);
                 Ensemble.Session.projectFile = projectFile;
                 Windows.Storage.FileIO.readTextAsync(projectFile).then(function (contents) {
                     Ensemble.FileIO._processLoadedProjectData(filename, projectFile.displayName, contents);
@@ -525,6 +526,7 @@
         loadExternalProject: function (file) {
             /// <summary>Loads a saved project from storage external to the application.</summary>
             /// <param name="file" type="Windows.Storage.StorageFile">The project file to load.</param>
+            Ensemble.FileIO.addOrReplaceRecentProject(projectFile);
             Ensemble.Session.projectFile = file;
             Ensemble.Session.projectFileInApp = false;
             Windows.Storage.FileIO.readTextAsync(file).then(function (contents) {
@@ -1226,7 +1228,7 @@
             console.error("Error loading clip: " + ensembleFile.displayName);
         },
 
-        enumerateProjects: function (callback) {
+        enumerateLocalProjects: function (callback) {
             /// <summary>Enumerates all available projects in the project directory.</summary>
             /// <param name="callback" type="Function">The callback to be fired after all projects have been enumerated.</param>
             var dataArray = [];
@@ -1273,6 +1275,53 @@
                     }
                 });
             });
+        },
+
+        enumerateRecentProjects: function (callback) {
+            /// <summary>Generates all recently edited projects.</summary>
+            /// <param name="callback" type="Function">The callback to be fired after all projects have been enumerated.</param>
+            let dataArray = [],
+                projectTokens = Ensemble.Settings.getRecentProjectTokens(),
+                projectCount = projectTokens.length,
+                mostRecentlyUsedList = Windows.Storage.AccessCache.StorageApplicationPermissions.mostRecentlyUsedList;
+
+            for (let i = 0; i < projectCount; i++) {
+                (function () {
+                    let iter = i;
+                    mostRecentlyUsedList.getFileAsync(projectTokens[iter]).then(function (projectFile) {
+                        let loadedFilename = projectFile.name,
+                            loadedProjectName = projectFile.displayName;
+                        Windows.Storage.FileIO.readTextAsync(projectFile).done(function (contents) {
+                            let parser = new DOMParser(),
+                                xmlDoc = parser.parseFromString(contents, "text/xml"),
+                                ensembleProject = xmlDoc.firstChild,
+                                loadedAspectRatio = xmlDoc.getElementsByTagName("AspectRatio")[0].childNodes[0].nodeValue,
+                                loadedNumberOfClips = xmlDoc.getElementsByTagName("MediaClip").length,
+                                loadedProjectLength = xmlDoc.getElementsByTagName("ProjectLength")[0].childNodes[0].nodeValue,
+                                loadedThumbnailPath = xmlDoc.getElementsByTagName("ProjectThumb")[0].childNodes[0].nodeValue,
+                                loadedDateModified = "";
+
+                            try {
+                                loadedDateModified = new Date(parseInt(xmlDoc.getElementsByTagName("DateModified")[0].childNodes[0].nodeValue, 10));
+                            }
+                            catch (exception) {
+                                loadedDateModified = "Unknown";
+                            }
+
+                            dataArray.push(new Ensemble.Editor.ProjectFile(loadedProjectName, loadedFilename, loadedDateModified, loadedNumberOfClips, loadedAspectRatio, loadedProjectLength, loadedThumbnailPath, iter));
+
+                            if (dataArray.length == projectTokens.length) {
+                                dataArray.sort(function (a, b) {
+                                    if (a.iter < b.iter) return -1;
+                                    if (a.iter > b.iter) return 1;
+                                    return 0;
+                                });
+                                callback(dataArray);
+                            }
+                        });
+                    });
+                })();
+            }
         },
 
         pickItemsFromFolder: function (folder, callback) {
@@ -1650,6 +1699,12 @@
                     console.log("Did not pick a file.");
                 }
             });
+        },
+
+        addOrReplaceRecentProject: function (projectFile) {
+            /// <summary>Adds the specified project file to the recent projects list.</summary>
+            /// <param name="projectFile" type="Windows.Storage.StorageFile">The project file to add.</param>
+            Ensemble.Settings.addOrReplaceRecentProjectToken(Windows.Storage.AccessCache.StorageApplicationPermissions.mostRecentlyUsedList.add(projectFile));
         }
     });
 })();

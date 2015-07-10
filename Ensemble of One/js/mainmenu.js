@@ -5,6 +5,7 @@
             /// <summary>Initializes the Main Menu.</summary>
             Ensemble.Settings.init();
             Ensemble.MainMenu._refreshUI();
+            Ensemble.FileIO.enumerateRecentProjects(Ensemble.MainMenu._listeners.enumeratedRecentProjects);
             WinJS.UI.Animation.enterPage(document.getElementsByClassName("main-menu__content-section--home")[0].children, null);
         },
 
@@ -16,13 +17,15 @@
         ui: {
             navItems: [],
             quickStartItems: [],
-            localProjectContainer: null
+            localProjectContainer: null,
+            recentProjectContainer: null
         },
 
         _refreshUI: function () {
             this.ui.navItems = document.getElementsByClassName("main-menu__nav-item");
             this.ui.quickStartItems = document.getElementsByClassName("home-menu__quick-start-item");
             this.ui.localProjectContainer = document.getElementsByClassName("open-menu__local-projects")[0];
+            this.ui.recentProjectContainer = document.getElementsByClassName("home-menu__recent-projects")[0];
 
             for (let i = 0; i < this.ui.navItems.length; i++) {
                 this.ui.navItems[i].addEventListener("click", this._listeners.navItemClicked);
@@ -57,6 +60,7 @@
             this.ui.navItems = [];
             this.ui.quickStartItems = [];
             this.ui.localProjectContainer = null;
+            this.ui.recentProjectContainer = null;
 
             document.getElementsByClassName("menu-create-project-param--submit")[0].removeEventListener("click", Ensemble.MainMenu._listeners.newProjectButtonClicked);
             document.getElementsByClassName("menu-open-project-param--browse")[0].removeEventListener("click", Ensemble.MainMenu._listeners.browseProjectButtonClicked);
@@ -74,7 +78,8 @@
                             $(outgoing).removeClass("main-menu__content-section--visible").addClass("main-menu__content-section--hidden");
                             $(incoming).removeClass("main-menu__content-section--hidden").addClass("main-menu__content-section--visible");
                             WinJS.UI.Animation.enterPage(incoming.children, null);
-                            if (incoming.dataset.menu == "open-project") Ensemble.FileIO.enumerateProjects(Ensemble.MainMenu._listeners.enumeratedProjects);
+                            if (incoming.dataset.menu == "open-project") Ensemble.FileIO.enumerateLocalProjects(Ensemble.MainMenu._listeners.enumeratedLocalProjects);
+                            else if (incoming.dataset.menu == "home") Ensemble.FileIO.enumerateRecentProjects(Ensemble.MainMenu._listeners.enumeratedRecentProjects);
                             else $(Ensemble.MainMenu.ui.localProjectContainer.children).css("opacity", "0");
                         });
                         Ensemble.Settings.refreshSettingsDialog();
@@ -87,7 +92,7 @@
                 Ensemble.FileIO.createProject("Untitled project", event.currentTarget.dataset.quickstart, Ensemble.MainMenu._listeners.newProjectCreated);
             },
 
-            enumeratedProjects: function (projects) {
+            enumeratedLocalProjects: function (projects) {
                 Ensemble.MainMenu.ui.localProjectContainer.innerHTML = "";;
                 for (let i = 0; i < projects.length; i++) {
                     let thumb = "<img class='open-menu__item-thumb' src='" + projects[i].thumbnail + "'/>";
@@ -107,6 +112,16 @@
                 }
 
                 WinJS.UI.Animation.enterContent(Ensemble.MainMenu.ui.localProjectContainer.children);
+            },
+
+            enumeratedRecentProjects: function (projects) {
+                console.log("Received a list of recent projects.");
+                Ensemble.MainMenu.ui.recentProjectContainer.innerHTML = "";
+                for (let i = projects.length - 1; i >= 0; i--) {
+                    let tempEl = document.createElement("li");
+                    tempEl.innerText = projects[i].name;
+                    Ensemble.MainMenu.ui.recentProjectContainer.appendChild(tempEl);
+                }
             },
 
             pointerDown: function (event) {

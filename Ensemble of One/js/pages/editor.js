@@ -124,6 +124,8 @@
                     let loadingPage = document.getElementsByClassName("app-page--loading-main-menu")[0];
                     $(loadingPage).addClass("app-page--exit-right");
                     loadingPage.addEventListener("animationend", Ensemble.Pages.Editor._listeners.loadingMenuExitFinished);
+                    Ensemble.FileIO.enumerateLocalProjects(Ensemble.MainMenu._listeners.enumeratedLocalProjects);
+                    Ensemble.FileIO.enumerateRecentProjects(Ensemble.MainMenu._listeners.enumeratedRecentProjects);
                 }, 1000);
             },
 
