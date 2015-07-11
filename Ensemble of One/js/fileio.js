@@ -507,9 +507,10 @@
             });
         },
 
-        loadInternalProject: function (filename) {
+        loadInternalProject: function (filename, srcFile) {
             /// <summary>Loads a saved project from internal storage.</summary>
             /// <param name="filename" type="String">The filename of the project to be loaded.</param>
+            /// <param name="srcFile" type="Windows.Storage.StorageFile">Optional. If the internal project lookup fails, attempts loading the project as an external file.</param>
 
             Ensemble.Session.projectFileInApp = true;
             let uri = new Windows.Foundation.Uri('ms-appdata:///local/Projects/' + filename);
@@ -518,7 +519,13 @@
                 Ensemble.Session.projectFile = projectFile;
                 Windows.Storage.FileIO.readTextAsync(projectFile).then(function (contents) {
                     Ensemble.FileIO._processLoadedProjectData(filename, projectFile.displayName, contents);
-                })
+                });
+            }, function (error) {
+                console.log("Unable to load " + filename + " as an internal project.");
+                if (srcFile) {
+                    console.log("Attempting to load as an external project...");
+                    Ensemble.FileIO.loadExternalProject(srcFile);
+                }
             });
 
         },
@@ -526,12 +533,12 @@
         loadExternalProject: function (file) {
             /// <summary>Loads a saved project from storage external to the application.</summary>
             /// <param name="file" type="Windows.Storage.StorageFile">The project file to load.</param>
-            Ensemble.FileIO.addOrReplaceRecentProject(projectFile);
+            Ensemble.FileIO.addOrReplaceRecentProject(file);
             Ensemble.Session.projectFile = file;
             Ensemble.Session.projectFileInApp = false;
             Windows.Storage.FileIO.readTextAsync(file).then(function (contents) {
                 Ensemble.FileIO._processLoadedProjectData(file.name, file.displayName, contents);
-            })
+            });
         },
 
         _processLoadedProjectData: function (filename, projectName, xmlString) {
@@ -1308,12 +1315,12 @@
                                 loadedDateModified = "Unknown";
                             }
 
-                            dataArray.push(new Ensemble.Editor.ProjectFile(loadedProjectName, loadedFilename, loadedDateModified, loadedNumberOfClips, loadedAspectRatio, loadedProjectLength, loadedThumbnailPath, iter));
+                            dataArray.push(new Ensemble.Editor.ProjectFile(loadedProjectName, loadedFilename, loadedDateModified, loadedNumberOfClips, loadedAspectRatio, loadedProjectLength, loadedThumbnailPath, iter, projectFile));
 
                             if (dataArray.length == projectTokens.length) {
                                 dataArray.sort(function (a, b) {
-                                    if (a.iter < b.iter) return -1;
-                                    if (a.iter > b.iter) return 1;
+                                    if (a.extra < b.extra) return -1;
+                                    if (a.extra > b.extra) return 1;
                                     return 0;
                                 });
                                 callback(dataArray);

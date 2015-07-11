@@ -1,6 +1,8 @@
 ﻿(function () {
     WinJS.Namespace.define("Ensemble.MainMenu", {
         /// <summary>Manages the Main Menu.</summary>
+        _recentProjects: [],
+
         init: function () {
             /// <summary>Initializes the Main Menu.</summary>
             Ensemble.Settings.init();
@@ -12,6 +14,7 @@
         unload: function () {
             /// <summary>Unloads the Main Menu.</summary>
             Ensemble.MainMenu._cleanUI();
+            Ensemble.MainMenu._recentProjects = [];
         },
 
         ui: {
@@ -116,11 +119,29 @@
 
             enumeratedRecentProjects: function (projects) {
                 console.log("Received a list of recent projects.");
+                Ensemble.MainMenu._recentProjects = projects;
                 Ensemble.MainMenu.ui.recentProjectContainer.innerHTML = "";
                 for (let i = projects.length - 1; i >= 0; i--) {
-                    let tempEl = document.createElement("li");
-                    tempEl.innerText = projects[i].name;
-                    Ensemble.MainMenu.ui.recentProjectContainer.appendChild(tempEl);
+                    let thumb = "<img class='open-menu__item-thumb' src='" + projects[i].thumbnail + "'/>";
+                    let title = "<h4 class='win-h4'>" + projects[i].name + "</h4>";
+
+                    let entireItem = document.createElement("li");
+                    entireItem.className = "open-menu__project-item";
+                    entireItem.innerHTML = thumb + title;
+
+                    entireItem.addEventListener("click", Ensemble.MainMenu._listeners.recentMenuItemClicked);
+                    entireItem.addEventListener("contextmenu", Ensemble.MainMenu._listeners.recentMenuItemContextMenu);
+
+                    entireItem.dataset.filename = projects[i].filename;
+                    entireItem.dataset.projectname = projects[i].name;
+                    entireItem.dataset.projectindex = i;
+
+                    Ensemble.MainMenu.ui.recentProjectContainer.appendChild(entireItem);
+                }
+                if (1 > projects.length) {
+                    let noItemsEl = document.createElement("li");
+                    noItemsEl.innerText = "Nothing to show here.";
+                    Ensemble.MainMenu.ui.recentProjectContainer.appendChild(noItemsEl);
                 }
             },
 
@@ -146,6 +167,24 @@
 
             openMenuItemContextMenu: function (event) {
                 console.log("Context menu for item.");
+            },
+
+            recentMenuItemClicked: function (event) {
+                let filename = event.currentTarget.dataset.filename,
+                    text = event.currentTarget.dataset.projectname,
+                    index = parseInt(event.currentTarget.dataset.projectindex, 10),
+                    projectFile = Ensemble.MainMenu._recentProjects[index];
+
+                let loadingPage = document.getElementsByClassName("app-page--loading-editor")[0];
+                $(loadingPage).removeClass("app-page--hidden").addClass("app-page--enter-right");
+
+                window.setTimeout(function () {
+                    Ensemble.FileIO.loadInternalProject(filename, projectFile.src);
+                }, 1000);
+            },
+
+            recentMenuItemContextMenu: function (event) {
+                console.log("Context menu for recent project.");
             },
 
             projectFinishedLoading: function () {

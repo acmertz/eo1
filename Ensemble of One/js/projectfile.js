@@ -1,6 +1,6 @@
 ﻿(function () {
     var ProjectFile = WinJS.Class.define(
-    function (projectName, projectFilename, dateModified, numOfClips, aspect, dur, thumbnailPath, extra) {
+    function (projectName, projectFilename, dateModified, numOfClips, aspect, dur, thumbnailPath, extra, srcfile) {
             /// <summary>Responsible for tracking and managing time-based events as they occur during playback.</summary>
             /// <param name="projectName" type="String">The name of the project.</param>
             /// <param name="projectFilename" type="String">The filename of the project.</param>
@@ -10,6 +10,7 @@
             /// <param name="dur" type="Number">The duration of the project.</param>
             /// <param name="thumbnailPath" type="String">A path to the project's thumbnail.</param>
             /// <param name="extra" type="Number">Optional. May contain arbitrary data.</param>
+            /// <param name="srcFile" type="Windows.Storage.StorageFile">Optional. A source file that backs the project.</param>
             //Constructor
             this.name = projectName;
             this.filename = projectFilename;
@@ -19,6 +20,7 @@
             this.duration = dur;
             this.thumbnail = thumbnailPath;
             this.extra = extra;
+            this.src = srcfile;
         },
         {
             //Instance members
@@ -37,7 +39,9 @@
             //Source path of the project's thumbnail.
             thumbnail: null,
             //Optional extra value.
-            extra: null
+            extra: null,
+            //Optional source file for the project.
+            src: null
         },
         {
             //Static members
