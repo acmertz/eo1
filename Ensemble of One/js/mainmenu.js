@@ -137,11 +137,13 @@
                     entireItem.dataset.projectindex = i;
 
                     Ensemble.MainMenu.ui.recentProjectContainer.appendChild(entireItem);
+                    WinJS.UI.Animation.enterContent(entireItem);
                 }
                 if (1 > projects.length) {
                     let noItemsEl = document.createElement("li");
                     noItemsEl.innerText = "Nothing to show here.";
                     Ensemble.MainMenu.ui.recentProjectContainer.appendChild(noItemsEl);
+                    WinJS.UI.Animation.enterContent(noItemsEl);
                 }
             },
 

@@ -164,6 +164,11 @@
     background: #fff;
 }
 
+.app-page--app-settings {
+    background-color: rgba(0,0,0,0.5);
+    z-index: 100;
+}
+
 .app-page__inner--app-settings {
     top: 0;
     left: 50%;
@@ -173,40 +178,42 @@
     background-color: #fff;
     box-sizing: border-box;
     padding: 20px;
-    border: 2px solid #d3d3d3;
-    border-bottom: 0;
     z-index: 100;
 }
 
-.app-page--enter-up {
-    animation: pageEnterUp 0.3s ease;
+.app-page--settings-enter {
+    animation: settingsEnter 0.3s ease;
     z-index: 100;
 }
 
-@keyframes pageEnterUp {
+@keyframes settingsEnter {
     0% {
-        transform: translateY(100%);
+        transform: scale(1.2);
         z-index: 100;
+        opacity: 0;
     }
     100% {
-        transform: translateY(0);
+        transform: scale(1);
         z-index: 100;
+        opacity: 1;
     }
 }
 
-.app-page--exit-down {
-    animation: pageExitDown 0.3s ease;
-    top: 100%;
+.app-page--settings-exit {
+    animation: settingsExit 0.2s ease;
     z-index: 100;
+    opacity: 0;
 }
 
-@keyframes pageExitDown {
+@keyframes settingsExit {
     0% {
-        transform: translateY(-100%);
+        transform: scale(1);
         z-index: 100;
+        opacity: 1;
     }
     100% {
-        transform: translateY(0);
+        transform: scale(1.1);
         z-index: 100;
+        opacity: 0;
     }
 }

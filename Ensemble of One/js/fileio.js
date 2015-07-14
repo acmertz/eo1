@@ -347,6 +347,8 @@
                     if (Ensemble.Session.projectFileInApp) {
                         // Remove the old project file from internal storage
                         Ensemble.Session.projectFile.deleteAsync(Windows.Storage.StorageDeleteOption.permanentDelete).done(function () {
+                            Ensemble.FileIO.removeRecentProject(Ensemble.Session.projectFile);
+                            Ensemble.FileIO.addOrReplaceRecentProject(overrideFile);
                             Ensemble.Session.projectFile = overrideFile;
                             Ensemble.Session.projectFileInApp = false;
                         });
@@ -1288,6 +1290,7 @@
             /// <summary>Generates all recently edited projects.</summary>
             /// <param name="callback" type="Function">The callback to be fired after all projects have been enumerated.</param>
             let dataArray = [],
+                errorArray = [],
                 projectTokens = Ensemble.Settings.getRecentProjectTokens(),
                 projectCount = projectTokens.length,
                 mostRecentlyUsedList = Windows.Storage.AccessCache.StorageApplicationPermissions.mostRecentlyUsedList;
@@ -1317,17 +1320,30 @@
 
                             dataArray.push(new Ensemble.Editor.ProjectFile(loadedProjectName, loadedFilename, loadedDateModified, loadedNumberOfClips, loadedAspectRatio, loadedProjectLength, loadedThumbnailPath, iter, projectFile));
 
-                            if (dataArray.length == projectTokens.length) {
-                                dataArray.sort(function (a, b) {
-                                    if (a.extra < b.extra) return -1;
-                                    if (a.extra > b.extra) return 1;
-                                    return 0;
-                                });
-                                callback(dataArray);
-                            }
+                            Ensemble.FileIO._enumerateRecentProjectsCompletionTest(dataArray, errorArray, projectCount, callback);
                         });
+                    }, function (error) {
+                        console.error("Unable to lookup recent project.");
+                        projectCount--;
+                        errorArray.push(projectTokens[iter]);
+                        Ensemble.FileIO._enumerateRecentProjectsCompletionTest(dataArray, errorArray, projectCount, callback);
                     });
                 })();
+            }
+        },
+
+        _enumerateRecentProjectsCompletionTest: function (dataArray, errorArray, count, callback) {
+            if (dataArray.length == count) {
+                dataArray.sort(function (a, b) {
+                    if (a.extra < b.extra) return -1;
+                    if (a.extra > b.extra) return 1;
+                    return 0;
+                });
+                for (let i = 0; i < errorArray.length; i++) {
+                    Windows.Storage.AccessCache.StorageApplicationPermissions.mostRecentlyUsedList.remove(errorArray[i]);
+                    Ensemble.Settings.removeRecentProject(errorArray[i]);
+                }
+                callback(dataArray);
             }
         },
 
@@ -1712,6 +1728,14 @@
             /// <summary>Adds the specified project file to the recent projects list.</summary>
             /// <param name="projectFile" type="Windows.Storage.StorageFile">The project file to add.</param>
             Ensemble.Settings.addOrReplaceRecentProjectToken(Windows.Storage.AccessCache.StorageApplicationPermissions.mostRecentlyUsedList.add(projectFile));
+        },
+
+        removeRecentProject: function (projectFile) {
+            /// <summary>Removes the specified project file from the recent projects list.</summary>
+            /// <param name="projectFile" type="Windows.Storage.StorageFile">The project file to remove.</param>
+            let fileToken = Windows.Storage.AccessCache.StorageApplicationPermissions.mostRecentlyUsedList.add(projectFile);
+            Windows.Storage.AccessCache.StorageApplicationPermissions.mostRecentlyUsedList.remove(fileToken);
+            Ensemble.Settings.removeRecentProject(fileToken);
         }
     });
 })();

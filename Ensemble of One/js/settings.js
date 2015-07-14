@@ -100,7 +100,7 @@
 
         closeSettingsPane: function () {
             let settingsPane = document.getElementsByClassName("app-page--app-settings")[0];
-            $(settingsPane).addClass("app-page--exit-down");
+            $(settingsPane).addClass("app-page--settings-exit");
             settingsPane.addEventListener("animationend", Ensemble.Settings._listeners.settingsPaneExitFinished);
         },
 
@@ -124,6 +124,18 @@
             if (recentProjects) recentProjects = JSON.parse(recentProjects);
             else recentProjects = [];
             return recentProjects;
+        },
+
+        removeRecentProject: function (token) {
+            /// <summary>Removes the file with the given token from the list of recent projects.</summary>
+            /// <param name="token" type="String">The token to remove from storage.</param>
+            let recentProjects = Windows.Storage.ApplicationData.current.localSettings.values["recentProjects"],
+                itemIndex = -1;
+            if (recentProjects) recentProjects = recentProjects = JSON.parse(recentProjects);
+            else recentProjects = [];
+            itemIndex = recentProjects.indexOf(token);
+            if (itemIndex >= 0) recentProjects.splice(itemIndex, 1);
+            Windows.Storage.ApplicationData.current.localSettings.values["recentProjects"] = JSON.stringify(recentProjects);
         },
 
         _listeners: {
@@ -162,6 +174,20 @@
                                 }
                             ];
                             break;
+                        case "clear-recent-projects":
+                            dialogTitle = "Clear recent projects?";
+                            dialogMsg = "Maybe you're in the mood for some spring cleaning... or maybe you just don't want THAT project showing up on the main screen. Either way, are you sure you want to clear your recent project list?";
+                            dialogCommands = [
+                                {
+                                    label: "Clear recent projects",
+                                    handler: Ensemble.Settings._listeners.userClearedRecentProjects
+                                },
+                                {
+                                    label: "Cancel",
+                                    handler: null
+                                }
+                            ];
+                            break;
                         case "delete-all-projects":
                             dialogTitle = "Delete all projects?";
                             dialogMsg = "This will delete all projects saved within Ensemble of One. This only affects projects saved within the app — if you copied your project to another location (a flash drive or SD card, for instance) or chose \"Save as\" from the Editor, we won't touch it. This can't be undone, so don't continue unless you're absolutely sure.";
@@ -187,6 +213,16 @@
                 console.info("User reset all application settings.");
             },
 
+            userClearedRecentProjects: function () {
+                let recentProjects = Ensemble.Settings.getRecentProjectTokens();
+                for (let i = 0; i < recentProjects.length; i++) {
+                    Ensemble.Settings.removeRecentProject(recentProjects[i]);
+                    Windows.Storage.AccessCache.StorageApplicationPermissions.mostRecentlyUsedList.remove(recentProjects[i]);
+                }
+                Ensemble.MainMenu._listeners.enumeratedRecentProjects([]);
+                console.info("User cleared all recent projects.");
+            },
+
             userDeleteAllProjects: function () {
                 Ensemble.FileIO.deleteAllProjects();
                 console.info("User deleted all projects.");
@@ -195,7 +231,7 @@
             settingsTriggerClicked: function (event) {
                 let settingsPane = document.getElementsByClassName("app-page--app-settings")[0];
                 $(settingsPane).removeClass("app-page--hidden");
-                $(settingsPane).addClass("app-page--enter-up");
+                $(settingsPane).addClass("app-page--settings-enter");
                 event.currentTarget.blur();
                 settingsPane.addEventListener("animationend", Ensemble.Settings._listeners.settingsPaneEntranceFinished);
                 Ensemble.Navigation.pushBackState(Ensemble.Settings.closeSettingsPane);
@@ -204,13 +240,13 @@
             settingsPaneEntranceFinished: function (event) {
                 let settingsPane = document.getElementsByClassName("app-page--app-settings")[0];
                 settingsPane.removeEventListener("animationend", Ensemble.Settings._listeners.settingsPaneEntranceFinished);
-                $(settingsPane).removeClass("app-page--enter-up");
+                $(settingsPane).removeClass("app-page--settings-enter");
             },
 
             settingsPaneExitFinished: function (event) {
                 let settingsPane = document.getElementsByClassName("app-page--app-settings")[0];
                 settingsPane.removeEventListener("animationend", Ensemble.Settings._listeners.settingsPaneExitFinished);
-                $(settingsPane).removeClass("app-page--exit-down").addClass("app-page--hidden");
+                $(settingsPane).removeClass("app-page--settings-exit").addClass("app-page--hidden");
             }
         }
     });
