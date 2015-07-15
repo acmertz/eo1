@@ -98,12 +98,13 @@
             enumeratedLocalProjects: function (projects) {
                 Ensemble.MainMenu.ui.localProjectContainer.innerHTML = "";;
                 for (let i = 0; i < projects.length; i++) {
-                    let thumb = "<img class='open-menu__item-thumb' src='" + projects[i].thumbnail + "'/>";
-                    let title = "<h4 class='win-h4'>" + projects[i].name + "</h4>";
+                    let thumb = "<img class='open-menu__item-thumb' src='" + projects[i].thumbnail + "'/>",
+                        title = "<h4 class='win-h4'>" + projects[i].name + "</h4>",
+                        dateModified = "<span>" + projects[i].modified.toLocaleDateString() + "</span>";
 
                     let entireItem = document.createElement("li");
                     entireItem.className = "open-menu__project-item";
-                    entireItem.innerHTML = thumb + title;
+                    entireItem.innerHTML = thumb + title + dateModified;
                   
                     entireItem.addEventListener("click", Ensemble.MainMenu._listeners.openMenuItemClicked);
                     entireItem.addEventListener("contextmenu", Ensemble.MainMenu._listeners.openMenuItemContextMenu);
@@ -122,12 +123,13 @@
                 Ensemble.MainMenu._recentProjects = projects;
                 Ensemble.MainMenu.ui.recentProjectContainer.innerHTML = "";
                 for (let i = projects.length - 1; i >= 0; i--) {
-                    let thumb = "<img class='open-menu__item-thumb' src='" + projects[i].thumbnail + "'/>";
-                    let title = "<h4 class='win-h4'>" + projects[i].name + "</h4>";
+                    let thumb = "<img class='open-menu__item-thumb' src='" + projects[i].thumbnail + "'/>",
+                        title = "<h4 class='win-h4'>" + projects[i].name + "</h4>",
+                        dateModified = "<span>" + projects[i].modified.toLocaleDateString() + "</span>";
 
                     let entireItem = document.createElement("li");
                     entireItem.className = "open-menu__project-item";
-                    entireItem.innerHTML = thumb + title;
+                    entireItem.innerHTML = thumb + title + dateModified;
 
                     entireItem.addEventListener("click", Ensemble.MainMenu._listeners.recentMenuItemClicked);
                     entireItem.addEventListener("contextmenu", Ensemble.MainMenu._listeners.recentMenuItemContextMenu);
