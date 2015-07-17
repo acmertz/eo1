@@ -26,30 +26,34 @@
 
         _listeners: {
             appActivated: function (args) {
+                if (args.detail.previousExecutionState != Windows.ApplicationModel.Activation.ApplicationExecutionState.running) {
+                    console.log("Starting Ensemble of One...");
+                    Ensemble.Platform.setupApplicationTheme();
+                    Ensemble.Session.setCurrentPage("main-menu");
+                    Ensemble.Editor.UI.relink();
+                    Ensemble.Navigation.init();
+                    Ensemble.MainMenu.init();
+                    console.info("Ensemble of One started!");
+                    args.setPromise(WinJS.UI.processAll());
+                }
                 switch (args.detail.kind) {
                     case Windows.ApplicationModel.Activation.ActivationKind.file:
                         console.log("Load the activated file here.");
+                        if (Ensemble.Session.getCurrentPage() == Ensemble.Session.PageStates.mainMenu) {
+                            let loadingPage = document.getElementsByClassName("app-page--loading-editor")[0];
+                            $(loadingPage).removeClass("app-page--hidden").addClass("app-page--enter-right");
+                            Ensemble.Session.setCurrentPage(Ensemble.Session.PageStates.loadingToEditor);
+                            setTimeout(function () {
+                                Ensemble.FileIO.loadInternalProject(args.detail.files[0].name, args.detail.files[0]);
+                            }, 1000);
+                        }
+                        else {
+                            Ensemble.OSDialogMGR.showDialog("Open project", "Please close your current project before opening another one.", [{ label: "Okay", handler: null }], 0, 0);
+                        }
                         break;
                     case Windows.ApplicationModel.Activation.ActivationKind.launch:
-                        switch (args.detail.previousExecutionState) {
-                            case Windows.ApplicationModel.Activation.ApplicationExecutionState.running:
-                                console.log("Ensemble of One was activated via a secondary tile or file/share contract.");
-                                break;
-                            case Windows.ApplicationModel.Activation.ApplicationExecutionState.terminated:
-                            case Windows.ApplicationModel.Activation.ApplicationExecutionState.suspended:
-                            default:
-                                console.info("Starting Ensemble of One...");
-
-                                Ensemble.Platform.setupApplicationTheme();
-                                Ensemble.Session.setCurrentPage("mainMenu");
-                                Ensemble.Editor.UI.relink();
-
-                                Ensemble.Navigation.init();
-                                Ensemble.MainMenu.init();
-                                console.info("Ensemble of One started!");
-                                args.setPromise(WinJS.UI.processAll());
-                                break;                                
-                        }
+                        // Application is launching fresh
+                        // Potentially reload a project here, if Ensemble of One was terminated by the system when a project was open.
                         break;
                 }
             },

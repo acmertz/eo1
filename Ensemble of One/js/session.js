@@ -24,15 +24,16 @@
             /// <summary>Sets the page currently displayed in the application.</summary>
             /// <param name="pageName" type="String">The name of the page. Values other than "mainMenu" and "editor" will generate an exception.</param>
             switch (pageName) {
-                case "mainMenu":
-                    break;
-                case "pageName":
+                case this.PageStates.mainMenu:
+                case this.PageStates.loadingToEditor:
+                case this.PageStates.editor:
+                case this.PageStates.loadingToMainMenu:
+                    this._currentPage = pageName;
                     break;
                 default:
                     throw new Error("Invalid page name \"" + pageName + "\"");
                     return;
             }
-            this._currentPage = pageName;
         },
 
         getCurrentPage: function () {
@@ -53,6 +54,13 @@
             this.projectDateCreated = null;
             this.projectDateModified = null;
             this.projectFileInApp = false;
+        },
+
+        PageStates: {
+            mainMenu: "main-menu",
+            loadingToEditor: "loading-to-editor",
+            editor: "editor",
+            loadingToMainMenu: "loading-to-main-menu"
         }
     });
 })();

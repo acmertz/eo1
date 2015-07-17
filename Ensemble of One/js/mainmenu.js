@@ -163,7 +163,7 @@
                 
                 let loadingPage = document.getElementsByClassName("app-page--loading-editor")[0];
                 $(loadingPage).removeClass("app-page--hidden").addClass("app-page--enter-right");
-
+                Ensemble.Session.setCurrentPage(Ensemble.Session.PageStates.loadingToEditor);
                 window.setTimeout(function () {
                     Ensemble.FileIO.loadInternalProject(filename);
                 }, 1000);
@@ -181,7 +181,7 @@
 
                 let loadingPage = document.getElementsByClassName("app-page--loading-editor")[0];
                 $(loadingPage).removeClass("app-page--hidden").addClass("app-page--enter-right");
-
+                Ensemble.Session.setCurrentPage(Ensemble.Session.PageStates.loadingToEditor);
                 window.setTimeout(function () {
                     Ensemble.FileIO.loadInternalProject(filename, projectFile.src);
                 }, 1000);

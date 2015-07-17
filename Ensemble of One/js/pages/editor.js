@@ -21,6 +21,8 @@
         init: function () {
             /// <summary>Plays the Editor pagelaunch animation and attaches all event listeners.</summary>
 
+            Ensemble.Session.setCurrentPage(Ensemble.Session.PageStates.editor);
+
             Ensemble.Editor.TimelineMGR.init();
             Ensemble.Editor.PlaybackMGR.init();
             Ensemble.Editor.Renderer.init();
@@ -71,8 +73,8 @@
             else {
                 $(editorPage).addClass("app-page--exit-right");
             }
-            
             editorPage.addEventListener("animationend", Ensemble.Pages.Editor._listeners.exitAnimationFinished);
+            Ensemble.Session.setCurrentPage(Ensemble.Session.PageStates.loadingToMainMenu);
 
             Ensemble.Editor.MenuMGR.closeMenu();
             Ensemble.Editor.MenuMGR.unload();
@@ -126,6 +128,7 @@
                     loadingPage.addEventListener("animationend", Ensemble.Pages.Editor._listeners.loadingMenuExitFinished);
                     Ensemble.FileIO.enumerateLocalProjects(Ensemble.MainMenu._listeners.enumeratedLocalProjects);
                     Ensemble.FileIO.enumerateRecentProjects(Ensemble.MainMenu._listeners.enumeratedRecentProjects);
+                    Ensemble.Session.setCurrentPage(Ensemble.Session.PageStates.mainMenu);
                 }, 1000);
             },
 
