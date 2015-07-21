@@ -15,6 +15,7 @@
         currentEffectsMenuTab: null,
         menuOpen: false,
         currentSubmenu: null,
+        pendingLoad: null,
 
         //// PUBLIC METHODS ////
 
@@ -58,13 +59,16 @@
             for (let i = 0; i < 120; i++) {
                 Ensemble.Editor.Renderer.requestFrame();
             }
+            this.pendingLoad = null;
         },
 
-        unload: function (event) {
+        unload: function (pending) {
             /// <summary>Triggers an unload of the project.</summary>
-            /// <param name="event" type="Object">An optional event object. If passed, the Editor will assume its menu is closed and play an alternate animation instead.</param>
+            /// <param name="pending" type="Windows.Storage.StorageFile">Optional. A new project to load after this one has finished unloading.</param>
+            Ensemble.Pages.Editor.pendingLoad = pending;
             Ensemble.Navigation.reset();
-            $(".app-page--loading-main-menu").removeClass("app-page--hidden");
+            if (pending) $(".app-page--loading-editor").removeClass("app-page--hidden");
+            else $(".app-page--loading-main-menu").removeClass("app-page--hidden");
 
             let editorPage = document.getElementsByClassName("app-page--editor")[0];
             if ($(editorPage).hasClass("app-page--displace")) {
@@ -119,17 +123,22 @@
                 Ensemble.Editor.SelectionMGR.unload();
                 Ensemble.Editor.CalloutMGR.unload();
                 Ensemble.Editor.MediaBrowser.unload();
-
                 Ensemble.Pages.Editor._cleanUI();
 
-                setTimeout(function () {
-                    let loadingPage = document.getElementsByClassName("app-page--loading-main-menu")[0];
-                    $(loadingPage).addClass("app-page--exit-right");
-                    loadingPage.addEventListener("animationend", Ensemble.Pages.Editor._listeners.loadingMenuExitFinished);
-                    Ensemble.FileIO.enumerateLocalProjects(Ensemble.MainMenu._listeners.enumeratedLocalProjects);
-                    Ensemble.FileIO.enumerateRecentProjects(Ensemble.MainMenu._listeners.enumeratedRecentProjects);
-                    Ensemble.Session.setCurrentPage(Ensemble.Session.PageStates.mainMenu);
-                }, 1000);
+                if (Ensemble.Pages.Editor.pendingLoad == null) {
+                    setTimeout(function () {
+                        let loadingPage = document.getElementsByClassName("app-page--loading-main-menu")[0];
+                        $(loadingPage).addClass("app-page--exit-right");
+                        loadingPage.addEventListener("animationend", Ensemble.Pages.Editor._listeners.loadingMenuExitFinished);
+                        Ensemble.FileIO.enumerateLocalProjects(Ensemble.MainMenu._listeners.enumeratedLocalProjects);
+                        Ensemble.FileIO.enumerateRecentProjects(Ensemble.MainMenu._listeners.enumeratedRecentProjects);
+                        Ensemble.Session.setCurrentPage(Ensemble.Session.PageStates.mainMenu);
+                    }, 1000);
+                }
+                else {
+                    Ensemble.Session.setCurrentPage(Ensemble.Session.PageStates.loadingToEditor);
+                    Ensemble.FileIO.loadInternalProject(Ensemble.Pages.Editor.pendingLoad.name, Ensemble.Pages.Editor.pendingLoad);
+                }
             },
 
             loadingMenuExitFinished: function (event) {

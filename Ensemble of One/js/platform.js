@@ -48,7 +48,7 @@
                             }, 1000);
                         }
                         else {
-                            Ensemble.OSDialogMGR.showDialog("Open project", "Please close your current project before opening another one.", [{ label: "Okay", handler: null }], 0, 0);
+                            Ensemble.Pages.Editor.unload(args.detail.files[0]);
                         }
                         break;
                     case Windows.ApplicationModel.Activation.ActivationKind.launch:
