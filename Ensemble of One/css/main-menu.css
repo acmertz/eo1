@@ -4,7 +4,7 @@
 }
 
 .main-menu__nav-container {
-    width: 320px;
+    width: 80px;
     flex-shrink: 0;
     max-width: 100%;
     display: flex;
@@ -31,6 +31,7 @@
 }
 
 .main-menu__app-logo {
+    display: none;
     color: #fff;
     padding: 20px;
 }
@@ -51,6 +52,7 @@
     color: #fff;
     padding: 20px;
     font-size: 24px;
+    text-align: center;
 }
 
 .main-menu__nav-item:hover {
@@ -70,6 +72,10 @@
 .main-menu__nav-item--active:hover {
     color: #dc143c;
     background-color: #fff;
+}
+
+.main-menu-nav-item__label {
+    display: none;
 }
 
 .home-menu__quick-start-container {
@@ -173,4 +179,30 @@
 
 .settings-menu-section {
     margin: 20px 0 0 0;
+}
+
+@media screen and (min-width: 568px) {
+
+}
+
+@media screen and (min-width: 768px) {
+    .main-menu__nav-container {
+        width: 320px;
+    }
+
+    .main-menu__app-logo {
+        display: block;
+    }
+
+    .main-menu__nav-item {
+        text-align: left;
+    }
+
+    .main-menu-nav-item__label {
+        display: inline;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+
 }

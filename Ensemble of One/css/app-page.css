@@ -182,7 +182,7 @@
 }
 
 .app-page--settings-enter {
-    animation: settingsEnter 0.3s ease;
+    animation: settingsEnter 0.2s ease;
     z-index: 100;
 }
 
@@ -200,7 +200,7 @@
 }
 
 .app-page--settings-exit {
-    animation: settingsExit 0.2s ease;
+    animation: settingsExit 0.1s ease;
     z-index: 100;
     opacity: 0;
 }
