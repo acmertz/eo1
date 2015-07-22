@@ -383,34 +383,34 @@
     </div>
 
     <div>
-        <div id="editorMediaBrowserLocationFlyout" data-win-control="WinJS.UI.Menu">
+        <div id="flyout--editor-media-browser-location" data-win-control="WinJS.UI.Menu">
             <button class="media-browser-location-flyout__command" data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Videos library'}" data-mediabrowser-location="video"></button>
             <button class="media-browser-location-flyout__command" data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Music library'}" data-mediabrowser-location="music"></button>
             <button class="media-browser-location-flyout__command" data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Pictures library'}" data-mediabrowser-location="picture"></button>
         </div>
-        <div id="editorMoveTrackFlyout" data-win-control="WinJS.UI.Menu">
+        <div id="flyout--editor-move-track" data-win-control="WinJS.UI.Menu">
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMoveTrackTop',label:'Move to top'}"></button>
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMoveTrackUp',label:'Move up'}"></button>
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMoveTrackDown',label:'Move down'}"></button>
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMoveTrackBottom',label:'Move to bottom'}"></button>
         </div>
-        <div id="editorTrackVolumeFlyout" data-win-control="WinJS.UI.Flyout">
+        <div id="flyout--editor-track-volume" data-win-control="WinJS.UI.Flyout">
             <input type="range" class="win-vertical" min="0" max="100" title="Track volume" />
         </div>
-        <div id="editorTrackDeleteFlyout" data-win-control="WinJS.UI.Flyout">
+        <div id="flyout--editor-track-delete" data-win-control="WinJS.UI.Flyout">
             <h3 class="win-h3">
                 <span>Remove &quot;</span><span id="remove-track-confirmation__name">Untitled Track</span><span>?&quot;</span>
             </h3>
             <p>This will also remove all the clips inside it.</p>
             <button id="remove-track-confirmation__button" class="win-button eo1-btn eo1-btn--radius-all">Remove</button>
         </div>
-        <div id="mediaBrowserAddToProjectFlyout" data-win-control="WinJS.UI.Menu"></div>
+        <div id="flyout--editor-media-browser-add-to-project" data-win-control="WinJS.UI.Menu"></div>
         <div class="media-browser__preview-flyout" data-win-control="WinJS.UI.Flyout" aria-label="{Preview clip}">
             <video class="media-browser-preview media-browser-preview--video" autoplay controls></video>
             <audio class="media-browser-preview media-browser-preview--audio" autoplay controls></audio>
             <img class="media-browser-preview media-browser-preview--picture" />
         </div>
-        <div class="media-browser__properties-flyout" data-win-control="WinJS.UI.Flyout" aria-label="{Clip properties}">
+        <div class="flyout--editor-media-browser-properties" data-win-control="WinJS.UI.Flyout" aria-label="{Clip properties}">
             <h3 class="win-h3 media-browser-property media-browser-property--display-name">[Display name here]</h3>
             <span class="bold">Folder-unique ID: </span><span class="media-browser-property media-browser-property--unique-id"></span><br />
             <span class="bold">Path: </span><span class="media-browser-property media-browser-property--path"></span><br />
@@ -420,7 +420,11 @@
             <span class="bold">Duration: </span><span class="media-browser-property media-browser-property--duration"></span><br />
             <span class="bold">Bitrate: </span><span class="media-browser-property media-browser-property--bitrate"></span>
         </div>
-        <div id="clip-selected-contextmenu" data-win-control="WinJS.UI.Menu">
+        <div class="flyout--editor-track-rename" data-win-control="WinJS.UI.Flyout" aria-label="{Rename clip}">
+            <input type="text" class="win-textbox flyout--editor-track-rename__name-textbox" /><br />
+            <button class="win-button eo1-btn eo1-btn--radius-all">Rename track</button>
+        </div>
+        <div id="contextmenu--editor-clip-selected" data-win-control="WinJS.UI.Menu">
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Copy'}"></button>
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Cut'}"></button>
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Paste'}"></button>

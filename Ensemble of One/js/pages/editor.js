@@ -23,7 +23,7 @@
             /// <summary>Plays the Editor pagelaunch animation and attaches all event listeners.</summary>
 
             Ensemble.Session.setCurrentPage(Ensemble.Session.PageStates.editor);
-
+            Ensemble.Editor.UI.relink();
             Ensemble.Editor.TimelineMGR.init();
             Ensemble.Editor.PlaybackMGR.init();
             Ensemble.Editor.Renderer.init();

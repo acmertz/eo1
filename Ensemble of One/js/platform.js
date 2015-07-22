@@ -30,7 +30,6 @@
                     console.log("Starting Ensemble of One...");
                     Ensemble.Platform.setupApplicationTheme();
                     Ensemble.Session.setCurrentPage("main-menu");
-                    Ensemble.Editor.UI.relink();
                     Ensemble.Navigation.init();
                     Ensemble.MainMenu.init();
                     console.info("Ensemble of One started!");

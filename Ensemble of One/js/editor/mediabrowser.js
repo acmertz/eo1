@@ -248,8 +248,8 @@
                 allCommands.push(menuItem);
                
             }
-            document.getElementById("mediaBrowserAddToProjectFlyout").winControl.commands = allCommands;
-            setTimeout(function () { document.getElementById("mediaBrowserAddToProjectFlyout").winControl.show(event.currentTarget, "auto") }, 100);
+            document.getElementById("flyout--editor-media-browser-add-to-project").winControl.commands = allCommands;
+            setTimeout(function () { document.getElementById("flyout--editor-media-browser-add-to-project").winControl.show(event.currentTarget, "auto") }, 100);
         },
 
         _addPreviewToTrack: function (event) {
@@ -296,8 +296,8 @@
                             menuItem.onclick = Ensemble.Editor.MediaBrowser._addPreviewToTrack;
                             allCommands.push(menuItem);
                         }
-                        document.getElementById("mediaBrowserAddToProjectFlyout").winControl.commands = allCommands;
-                        setTimeout(function () { document.getElementById("mediaBrowserAddToProjectFlyout").winControl.show(event.target, "auto"); }, 0);
+                        document.getElementById("flyout--editor-media-browser-add-to-project").winControl.commands = allCommands;
+                        setTimeout(function () { document.getElementById("flyout--editor-media-browser-add-to-project").winControl.show(event.target, "auto"); }, 0);
                     }
                     else if (event.target.dataset.mediaCommand == "preview") {
                         Ensemble.FileIO.retrieveMediaPreview(Ensemble.Editor.MediaBrowser._mediaItems[itemIndex], Ensemble.Editor.MediaBrowser._listeners.retrievedMediaPreview, event);
@@ -457,7 +457,7 @@
 
         _refreshUI: function () {
             this.ui.previewFlyout = document.getElementsByClassName("media-browser__preview-flyout")[0];
-            this.ui.propertiesFlyout = document.getElementsByClassName("media-browser__properties-flyout")[0];
+            this.ui.propertiesFlyout = document.getElementsByClassName("flyout--editor-media-browser-properties")[0];
             this.ui.dragPreview = document.getElementsByClassName("media-browser__drag-preview")[0];
 
             this.ui.previewFlyout.addEventListener("afterhide", Ensemble.Editor.MediaBrowser._listeners.closedMediaPreview);

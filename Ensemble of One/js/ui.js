@@ -38,11 +38,11 @@
             this.UserInput.Buttons.moveTrackToBottom = document.getElementById("editorMoveTrackBottom");
             this.UserInput.Buttons.confirmRemoveTrack = document.getElementById("remove-track-confirmation__button");
 
-            this.UserInput.Flyouts.mediaBrowserLocation = document.getElementById("editorMediaBrowserLocationFlyout");
-            this.UserInput.Flyouts.moveTrack = document.getElementById("editorMoveTrackFlyout");
-            this.UserInput.Flyouts.trackVolume = document.getElementById("editorTrackVolumeFlyout");
-            this.UserInput.Flyouts.trackRemove = document.getElementById("editorTrackDeleteFlyout");
-            this.UserInput.Flyouts.mediaBrowserAddToProject = document.getElementById("mediaBrowserAddToProjectFlyout");
+            this.UserInput.Flyouts.mediaBrowserLocation = document.getElementById("flyout--editor-media-browser-location");
+            this.UserInput.Flyouts.moveTrack = document.getElementById("flyout--editor-move-track");
+            this.UserInput.Flyouts.trackVolume = document.getElementById("flyout--editor-track-volume");
+            this.UserInput.Flyouts.trackRemove = document.getElementById("flyout--editor-track-delete");
+            this.UserInput.Flyouts.mediaBrowserAddToProject = document.getElementById("flyout--editor-media-browser-add-to-project");
 
             console.log("Relinked all Editor UI references.");
         },
