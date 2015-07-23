@@ -420,21 +420,20 @@
             <span class="bold">Duration: </span><span class="media-browser-property media-browser-property--duration"></span><br />
             <span class="bold">Bitrate: </span><span class="media-browser-property media-browser-property--bitrate"></span>
         </div>
-        <div class="flyout--editor-track-rename" data-win-control="WinJS.UI.Flyout" aria-label="{Rename clip}">
+        <div class="flyout--editor-track-rename" data-win-control="WinJS.UI.Flyout" aria-label="{Rename track}">
             <input type="text" class="win-textbox flyout--editor-track-rename__name-textbox" /><br />
-            <button class="win-button eo1-btn eo1-btn--radius-all">Rename track</button>
+            <button class="win-button eo1-btn eo1-btn--radius-all flyout--editor-track-rename__confirm-button">Rename track</button>
         </div>
         <div id="contextmenu--editor-clip-selected" data-win-control="WinJS.UI.Menu">
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Copy'}"></button>
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Cut'}"></button>
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Paste'}"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" class="clip-selected-contextmenu__command clip-selected-contextmenu__command--volume" data-contextmenu-command="volume" data-win-options="{id:'',label:'Volume'}"></button>
             <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',type:'separator'}" />
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Split'}"></button>
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Volume'}"></button>
-            <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',type:'separator'}" />
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Remove'}"></button>
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Rename'}"></button>
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Properties'}"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" class="clip-selected-contextmenu__command clip-selected-contextmenu__command--remove" data-contextmenu-command="remove" data-win-options="{id:'',label:'Remove'}"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" class="clip-selected-contextmenu__command clip-selected-contextmenu__command--rename" data-contextmenu-command="rename" data-win-options="{id:'',label:'Rename'}"></button>
+        </div>
+        <div class="contextmenu-position-helper"></div>
+        <div class="flyout--editor-clip-rename" data-win-control="WinJS.UI.Flyout" aria-label="{Rename clip}">
+            <input type="text" class="win-textbox flyout--editor-clip-rename__name-textbox" /><br />
+            <button class="win-button eo1-btn eo1-btn--radius-all flyout--editor-clip-rename__confirm-button">Rename clip</button>
         </div>
     </div>
 

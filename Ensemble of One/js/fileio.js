@@ -200,6 +200,13 @@
                         }
                     }
 
+                    else if (Ensemble.HistoryMGR._backStack[i]._type == Ensemble.Events.Action.ActionType.renameClip) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
+                        xml.Attrib("clipId", Ensemble.HistoryMGR._backStack[i]._payload.clipId.toString());
+                        xml.Attrib("oldName", Ensemble.HistoryMGR._backStack[i]._payload.oldName);
+                        xml.Attrib("newName", Ensemble.HistoryMGR._backStack[i]._payload.newName);
+                    }
+
                     else console.error("Unable to save History Action to disk - unknown type.");
                     xml.EndNode();
                 }
@@ -325,6 +332,13 @@
                             xml.Attrib("oldHeight", oldHeight[k].toString());
                             xml.EndNode();
                         }
+                    }
+
+                    else if (Ensemble.HistoryMGR._forwardStack[i]._type == Ensemble.Events.Action.ActionType.renameClip) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
+                        xml.Attrib("clipId", Ensemble.HistoryMGR._forwardStack[i]._payload.clipId.toString());
+                        xml.Attrib("oldName", Ensemble.HistoryMGR._forwardStack[i]._payload.oldName);
+                        xml.Attrib("newName", Ensemble.HistoryMGR._forwardStack[i]._payload.newName);
                     }
 
                     else {
@@ -751,6 +765,13 @@
                             newHeight: newHeight
                         }));
                     }
+                    else if (actionType == Ensemble.Events.Action.ActionType.renameClip) {
+                        Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.renameClip, {
+                            clipId: parseInt(undoActions[i].getAttribute("clipId"), 10),
+                            oldName: undoActions[i].getAttribute("oldName"),
+                            newName: undoActions[i].getAttribute("newName")
+                        }));
+                    }
                     else {
                         console.error("Unable to load History Action from disk - unknown type.");
                     }
@@ -912,6 +933,13 @@
                             newY: newY,
                             newWidth: newWidth,
                             newHeight: newHeight
+                        }));
+                    }
+                    else if (actionType == Ensemble.Events.Action.ActionType.renameClip) {
+                        Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.renameClip, {
+                            clipId: parseInt(redoActions[i].getAttribute("clipId"), 10),
+                            oldName: redoActions[i].getAttribute("oldName"),
+                            newName: redoActions[i].getAttribute("newName")
                         }));
                     }
                     else {

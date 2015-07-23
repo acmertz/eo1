@@ -659,6 +659,14 @@
             $("#" + this._buildTrackDetailId(trackId)).find(".timelineDetailName").text(newName);
         },
 
+        renameClip: function (clipId, newName) {
+            /// <summary>Renames the clip with the given ID.</summary>
+            /// <param name="clipId" type="Number">The ID of the clip to rename.</param>
+            /// <param name="newName" type="String">The name to give the clip.</param>
+            this.getClipById(clipId).name = newName;
+            $("#" + this._buildClipDOMId(clipId)).find(".timeline-clip__title").text(newName);
+        },
+
         changeTrackVolume: function (trackId, newVolume) {
             /// <summary>Changes the volume of the track with the given ID.</summary>
             /// <param name="trackId" type="Number">The ID of the track.</param>
@@ -1100,7 +1108,11 @@
             dropPreview: null,
             renameTrackFlyout: null,
             renameTrackConfirmButton: null,
-            renameTrackTextbox: null
+            renameTrackTextbox: null,
+            contextmenuPositionHelper: null,
+            renameClipFlyout: null,
+            renameClipConfirmButton: null,
+            renameClipTrackTextbox: null
         },
 
         _refreshUI: function () {
@@ -1118,8 +1130,12 @@
             this.ui.timelineSelectionContextMenu = document.getElementById("contextmenu--editor-clip-selected");
             this.ui.dropPreview = document.getElementsByClassName("timeline__drop-preview")[0];
             this.ui.renameTrackFlyout = document.getElementsByClassName("flyout--editor-track-rename")[0];
-            this.ui.renameTrackConfirmButton = document.getElementsByClassName("flyout--editor-track-rename")[0];
+            this.ui.renameTrackConfirmButton = document.getElementsByClassName("flyout--editor-track-rename__confirm-button")[0];
             this.ui.renameTrackTextbox = document.getElementsByClassName("flyout--editor-track-rename__name-textbox")[0];
+            this.ui.contextmenuPositionHelper = document.getElementsByClassName("contextmenu-position-helper")[0];
+            this.ui.renameClipFlyout = document.getElementsByClassName("flyout--editor-clip-rename")[0];
+            this.ui.renameClipConfirmButton = document.getElementsByClassName("flyout--editor-clip-rename__confirm-button")[0];
+            this.ui.renameClipTextbox = document.getElementsByClassName("flyout--editor-clip-rename__name-textbox")[0];
 
 
             this.ui.buttonScrollUp.addEventListener("click", this._listeners.buttonScrollUp);
@@ -1132,6 +1148,15 @@
             this.ui.scrollableContainer.addEventListener("scroll", Ensemble.Editor.TimelineMGR._listeners.timelineScrolled);
             this.ui.timeRulerInner.addEventListener("click", this._listeners.timelineRulerClicked);
             this.ui.renameTrackConfirmButton.addEventListener("click", this._listeners.renameTrackConfirmButtonClicked);
+            this.ui.renameTrackTextbox.addEventListener("keydown", Ensemble.Editor.TimelineMGR._listeners.renameTrackTextboxKeydown);
+            this.ui.renameClipConfirmButton.addEventListener("click", this._listeners.renameClipConfirmButtonClicked);
+            this.ui.renameClipTextbox.addEventListener("keydown", Ensemble.Editor.TimelineMGR._listeners.renameClipTextboxKeydown);
+
+            let selectionContextmenuCommands = document.getElementsByClassName("clip-selected-contextmenu__command"),
+                numOfContextmenuCommands = selectionContextmenuCommands.length;
+            for (let i = 0; i < numOfContextmenuCommands; i++) {
+                selectionContextmenuCommands[i].addEventListener("click", this._listeners.clipContextmenuCommandInvoked);
+            }
         },
 
         _cleanUI: function () {
@@ -1145,6 +1170,9 @@
             this.ui.scrollableContainer.removeEventListener("scroll", Ensemble.Editor.TimelineMGR._listeners.timelineScrolled);
             this.ui.timeRulerInner.removeEventListener("click", this._listeners.timelineRulerClicked);
             this.ui.renameTrackConfirmButton.removeEventListener("click", this._listeners.renameTrackConfirmButtonClicked);
+            this.ui.renameTrackTextbox.removeEventListener("keydown", Ensemble.Editor.TimelineMGR._listeners.renameTrackTextboxKeydown);
+            this.ui.renameClipConfirmButton.removeEventListener("click", this._listeners.renameClipConfirmButtonClicked);
+            this.ui.renameClipTextbox.removeEventListener("keydown", Ensemble.Editor.TimelineMGR._listeners.renameClipTextboxKeydown);
 
             this.ui.buttonScrollUp = null;
             this.ui.buttonScrollDown = null;
@@ -1162,6 +1190,13 @@
             this.ui.renameTrackFlyout = null;
             this.ui.renameTrackConfirmButton = null;
             this.ui.renameTrackTextbox = null;
+            this.ui.contextmenuPositionHelper = null;
+
+            let selectionContextmenuCommands = document.getElementsByClassName("clip-selected-contextmenu__command"),
+                numOfContextmenuCommands = selectionContextmenuCommands.length;
+            for (let i = 0; i < numOfContextmenuCommands; i++) {
+                selectionContextmenuCommands[i].removeEventListener("click", this._listeners.clipContextmenuCommandInvoked);
+            }
         },
 
         _rebuildIndex: function () {
@@ -1331,10 +1366,10 @@
                     else if (event.button == 2) {
                         event.stopPropagation();
                         event.preventDefault();
-                        let commands = document.getElementsByClassName("selection-callout__command");
-                        setTimeout(function () {
-                            Ensemble.Editor.TimelineMGR.ui.timelineSelectionContextMenu.winControl.show(commands[commands.length - 1]);
-                        }, 100);
+                        Ensemble.Editor.TimelineMGR.ui.contextmenuPositionHelper.style.left = event.pageX + "px";
+                        Ensemble.Editor.TimelineMGR.ui.contextmenuPositionHelper.style.top = event.pageY + "px";
+                        Ensemble.Editor.TimelineMGR.ui.timelineSelectionContextMenu.dataset.clipId = clipId;
+                        Ensemble.Editor.TimelineMGR.ui.timelineSelectionContextMenu.winControl.show(Ensemble.Editor.TimelineMGR.ui.contextmenuPositionHelper, "autovertical");
                     }
                 }
                 return false;
@@ -1858,7 +1893,6 @@
                     curId = parseInt($(parentTrack).attr("id").match(/\d+$/)[0]),
                     trackObj = Ensemble.Editor.TimelineMGR.getTrackById(curId);
                 Ensemble.Editor.TimelineMGR.ui.renameTrackTextbox.value = trackObj.name;
-                Ensemble.Editor.TimelineMGR.ui.renameTrackTextbox.addEventListener("keydown", Ensemble.Editor.TimelineMGR._listeners.renameTrackTextboxKeydown);
                 Ensemble.Editor.TimelineMGR.ui.renameTrackFlyout.dataset.trackId = curId;
                 Ensemble.Editor.TimelineMGR.ui.renameTrackFlyout.winControl.show(event.currentTarget);
             },
@@ -1868,10 +1902,7 @@
             },
 
             renameTrackTextboxKeydown: function (event) {
-                if (event.keyCode == 13) {
-                    Ensemble.Editor.TimelineMGR.ui.renameTrackTextbox.removeEventListener("keydown", Ensemble.Editor.TimelineMGR._listeners.renameTrackTextboxKeydown);
-                    Ensemble.Editor.TimelineMGR._listeners.renameTrackConfirmation(event);
-                }
+                if (event.keyCode == 13) Ensemble.Editor.TimelineMGR._listeners.renameTrackConfirmation(event);
             },
 
             renameTrackConfirmation: function (event) {
@@ -1888,7 +1919,47 @@
                     });
                     Ensemble.HistoryMGR.performAction(renameAction);
                 }
-            }
+            },
+
+            clipContextmenuCommandInvoked: function (event) {
+                let command = event.currentTarget.dataset.contextmenuCommand,
+                    clipId = parseInt(Ensemble.Editor.TimelineMGR.ui.timelineSelectionContextMenu.dataset.clipId, 10);
+                switch (command) {
+                    case "volume":
+                        break;
+                    case "remove":
+                        break;
+                    case "rename":
+                        Ensemble.Editor.TimelineMGR.ui.renameClipTextbox.value = Ensemble.Editor.TimelineMGR.getClipById(clipId).name;
+                        Ensemble.Editor.TimelineMGR.ui.renameClipFlyout.winControl.show(Ensemble.Editor.TimelineMGR.ui.contextmenuPositionHelper, "autovertical");
+                        break;
+                }
+            },
+
+            renameClipConfirmButtonClicked: function (event) {
+                Ensemble.Editor.TimelineMGR._listeners.renameClipConfirmation(event);
+            },
+
+            renameClipTextboxKeydown: function (event) {
+                if (event.keyCode == 13) Ensemble.Editor.TimelineMGR._listeners.renameClipConfirmation(event);
+            },
+
+            renameClipConfirmation: function (event) {
+                event.currentTarget.blur();
+                Ensemble.Editor.TimelineMGR.ui.renameClipFlyout.winControl.hide();
+                let curId = Ensemble.Editor.TimelineMGR.ui.timelineSelectionContextMenu.dataset.clipId,
+                    clipObj = Ensemble.Editor.TimelineMGR.getClipById(curId);
+                if (clipObj.name != Ensemble.Editor.TimelineMGR.ui.renameClipTextbox.value) {
+                    let renameAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.renameClip,
+                    {
+                        clipId: curId,
+                        oldName: clipObj.name,
+                        newName: Ensemble.Editor.TimelineMGR.ui.renameClipTextbox.value
+                    });
+                    Ensemble.HistoryMGR.performAction(renameAction);
+                    console.log("Rename the clip.");
+                }
+            },
 
 
         }

@@ -217,3 +217,11 @@
         opacity: 0;
     }
 }
+
+.contextmenu-position-helper {
+    visibility: hidden;
+    pointer-events: none;
+    position: fixed;
+    width: 0;
+    height: 0;
+}
