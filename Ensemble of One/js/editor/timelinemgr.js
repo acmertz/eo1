@@ -667,6 +667,22 @@
             $("#" + this._buildClipDOMId(clipId)).find(".timeline-clip__title").text(newName);
         },
 
+        refreshClipVolumeModifiers: function () {
+            /// <summary>Shortcut to refresh the volume on all clips across all tracks.</summary>
+            for (let i = 0; i < Ensemble.Editor.TimelineMGR.tracks.length; i++) {
+                for (let k = 0; k < Ensemble.Editor.TimelineMGR.tracks[i].clips.length; k++) {
+                    Ensemble.Editor.TimelineMGR.tracks[i].clips[k].setVolumeModifier(Ensemble.Editor.TimelineMGR.tracks[i].volume);
+                }
+            }
+        },
+
+        changeClipVolume: function (clipId, newVolume) {
+            /// <summary>Sets the volume of the clip with the given ID.</summary>
+            /// <param name="clipId" type="Number">The ID of the clip.</param>
+            /// <param name="newVolume" type="Number">The volume to assign the clip.</param>
+            Ensemble.Editor.TimelineMGR.getClipById(clipId).setVolume(newVolume);
+        },
+
         changeTrackVolume: function (trackId, newVolume) {
             /// <summary>Changes the volume of the track with the given ID.</summary>
             /// <param name="trackId" type="Number">The ID of the track.</param>
@@ -1112,7 +1128,11 @@
             contextmenuPositionHelper: null,
             renameClipFlyout: null,
             renameClipConfirmButton: null,
-            renameClipTrackTextbox: null
+            renameClipTrackTextbox: null,
+            clipVolumeFlyout: null,
+            clipVolumeIcon: null,
+            clipVolumeSlider: null,
+            clipVolumeIndicator: null
         },
 
         _refreshUI: function () {
@@ -1136,7 +1156,10 @@
             this.ui.renameClipFlyout = document.getElementsByClassName("flyout--editor-clip-rename")[0];
             this.ui.renameClipConfirmButton = document.getElementsByClassName("flyout--editor-clip-rename__confirm-button")[0];
             this.ui.renameClipTextbox = document.getElementsByClassName("flyout--editor-clip-rename__name-textbox")[0];
-
+            this.ui.clipVolumeFlyout = document.getElementsByClassName("flyout--editor-clip-volume")[0];
+            this.ui.clipVolumeIcon = document.getElementsByClassName("flyout--editor-clip-volume__icon")[0];
+            this.ui.clipVolumeSlider = document.getElementsByClassName("flyout--editor-clip-volume__slider")[0];
+            this.ui.clipVolumeIndicator = document.getElementsByClassName("flyout--editor-clip-volume__indicator")[0];
 
             this.ui.buttonScrollUp.addEventListener("click", this._listeners.buttonScrollUp);
             this.ui.buttonScrollDown.addEventListener("click", this._listeners.buttonScrollDown);
@@ -1191,6 +1214,10 @@
             this.ui.renameTrackConfirmButton = null;
             this.ui.renameTrackTextbox = null;
             this.ui.contextmenuPositionHelper = null;
+            this.ui.clipVolumeFlyout = null;
+            this.ui.clipVolumeIcon = null;
+            this.ui.clipVolumeSlider = null;
+            this.ui.clipVolumeIndicator = null;
 
             let selectionContextmenuCommands = document.getElementsByClassName("clip-selected-contextmenu__command"),
                 numOfContextmenuCommands = selectionContextmenuCommands.length;
@@ -1926,6 +1953,17 @@
                     clipId = parseInt(Ensemble.Editor.TimelineMGR.ui.timelineSelectionContextMenu.dataset.clipId, 10);
                 switch (command) {
                     case "volume":
+                        let tempClip = Ensemble.Editor.TimelineMGR.getClipById(clipId),
+                            volumeToSet = tempClip.volume * 100;
+
+                        if (tempClip.type == Ensemble.Editor.Clip.ClipType.audio || tempClip.type == Ensemble.Editor.Clip.ClipType.video) {
+                            Ensemble.Editor.TimelineMGR.ui.clipVolumeSlider.value = volumeToSet;
+                            Ensemble.Editor.TimelineMGR.ui.clipVolumeSlider.dataset.originalVolume = volumeToSet;
+                            Ensemble.Editor.TimelineMGR.ui.clipVolumeIndicator.innerText = volumeToSet;
+                            Ensemble.Editor.TimelineMGR.ui.clipVolumeSlider.addEventListener("input", Ensemble.Editor.TimelineMGR._listeners.clipVolumeSliderChanged);
+                            Ensemble.Editor.TimelineMGR.ui.clipVolumeFlyout.addEventListener("afterhide", Ensemble.Editor.TimelineMGR._listeners.clipVolumeFlyoutDismissed);
+                            Ensemble.Editor.TimelineMGR.ui.clipVolumeFlyout.winControl.show(Ensemble.Editor.TimelineMGR.ui.contextmenuPositionHelper, "autovertical");
+                        }
                         break;
                     case "remove":
                         break;
@@ -1957,11 +1995,43 @@
                         newName: Ensemble.Editor.TimelineMGR.ui.renameClipTextbox.value
                     });
                     Ensemble.HistoryMGR.performAction(renameAction);
-                    console.log("Rename the clip.");
                 }
             },
 
+            clipVolumeSliderChanged: function (event) {
+                let iconModifier = "mute",
+                    volume = event.currentTarget.value,
+                    curId = Ensemble.Editor.TimelineMGR.ui.timelineSelectionContextMenu.dataset.clipId,
+                    clipObj = Ensemble.Editor.TimelineMGR.getClipById(curId);
 
+                clipObj.setVolume(volume / 100);
+                
+                if (volume > 0) iconModifier = "low";
+                if (volume > 32) iconModifier = "medium";
+                if (volume > 65) iconModifier = "high";
+
+                Ensemble.Editor.TimelineMGR.ui.clipVolumeIndicator.innerText = volume;
+                $(Ensemble.Editor.TimelineMGR.ui.clipVolumeIcon).removeClass("clip-volume-icon--high")
+                    .removeClass("clip-volume-icon--medium")
+                    .removeClass("clip-volume-icon--low")
+                    .removeClass("clip-volume-icon--mute")
+                    .addClass("clip-volume-icon--" + iconModifier);
+            },
+
+            clipVolumeFlyoutDismissed: function (event) {
+                Ensemble.Editor.TimelineMGR.ui.clipVolumeFlyout.removeEventListener("afterhide", Ensemble.Editor.TimelineMGR._listeners.clipVolumeFlyoutDismissed);
+                Ensemble.Editor.TimelineMGR.ui.clipVolumeSlider.removeEventListener("input", Ensemble.Editor.TimelineMGR._listeners.clipVolumeSliderChanged);
+                if (Ensemble.Editor.TimelineMGR.ui.clipVolumeSlider.dataset.originalVolume != Ensemble.Editor.TimelineMGR.ui.clipVolumeSlider.value) {
+                    let curId = Ensemble.Editor.TimelineMGR.ui.timelineSelectionContextMenu.dataset.clipId;
+                    let volumeAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.clipVolumeChanged,
+                        {
+                            clipId: curId,
+                            oldVolume: Ensemble.Editor.TimelineMGR.ui.clipVolumeSlider.dataset.originalVolume / 100,
+                            newVolume: Ensemble.Editor.TimelineMGR.ui.clipVolumeSlider.value / 100
+                        });
+                    Ensemble.HistoryMGR.performAction(volumeAction);
+                }
+            }
         }
     });
 })();

@@ -207,6 +207,13 @@
                         xml.Attrib("newName", Ensemble.HistoryMGR._backStack[i]._payload.newName);
                     }
 
+                    else if (Ensemble.HistoryMGR._backStack[i]._type == Ensemble.Events.Action.ActionType.clipVolumeChanged) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
+                        xml.Attrib("clipId", Ensemble.HistoryMGR._backStack[i]._payload.clipId.toString());
+                        xml.Attrib("oldVolume", Ensemble.HistoryMGR._backStack[i]._payload.oldVolume.toString());
+                        xml.Attrib("newVolume", Ensemble.HistoryMGR._backStack[i]._payload.newVolume.toString());
+                    }
+
                     else console.error("Unable to save History Action to disk - unknown type.");
                     xml.EndNode();
                 }
@@ -339,6 +346,13 @@
                         xml.Attrib("clipId", Ensemble.HistoryMGR._forwardStack[i]._payload.clipId.toString());
                         xml.Attrib("oldName", Ensemble.HistoryMGR._forwardStack[i]._payload.oldName);
                         xml.Attrib("newName", Ensemble.HistoryMGR._forwardStack[i]._payload.newName);
+                    }
+
+                    else if (Ensemble.HistoryMGR._forwardStack[i]._type == Ensemble.Events.Action.ActionType.clipVolumeChanged) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
+                        xml.Attrib("clipId", Ensemble.HistoryMGR._forwardStack[i]._payload.clipId.toString());
+                        xml.Attrib("oldVolume", Ensemble.HistoryMGR._forwardStack[i]._payload.oldVolume.toString());
+                        xml.Attrib("newVolume", Ensemble.HistoryMGR._forwardStack[i]._payload.newVolume.toString());
                     }
 
                     else {
@@ -772,6 +786,13 @@
                             newName: undoActions[i].getAttribute("newName")
                         }));
                     }
+                    else if (actionType == Ensemble.Events.Action.ActionType.clipVolumeChanged) {
+                        Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.clipVolumeChanged, {
+                            clipId: parseInt(undoActions[i].getAttribute("clipId"), 10),
+                            oldVolume: parseFloat(undoActions[i].getAttribute("oldVolume")),
+                            newVolume: parseFloat(undoActions[i].getAttribute("newVolume"))
+                        }));
+                    }
                     else {
                         console.error("Unable to load History Action from disk - unknown type.");
                     }
@@ -940,6 +961,13 @@
                             clipId: parseInt(redoActions[i].getAttribute("clipId"), 10),
                             oldName: redoActions[i].getAttribute("oldName"),
                             newName: redoActions[i].getAttribute("newName")
+                        }));
+                    }
+                    else if (actionType == Ensemble.Events.Action.ActionType.clipVolumeChanged) {
+                        Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.clipVolumeChanged, {
+                            clipId: parseInt(undoActions[i].getAttribute("clipId"), 10),
+                            oldVolume: parseFloat(undoActions[i].getAttribute("oldVolume")),
+                            newVolume: parseFloat(undoActions[i].getAttribute("newVolume"))
                         }));
                     }
                     else {
@@ -1117,6 +1145,7 @@
                 Ensemble.FileIO._projectClipsFullyLoaded++;
                 if (Ensemble.FileIO._projectClipsFullyLoaded === Ensemble.Session.projectClipCount) {
                     console.info("Finished loading all clips!");
+                    Ensemble.Editor.TimelineMGR.refreshClipVolumeModifiers();
                     requestAnimationFrame(function () {
                         Ensemble.MainMenu._listeners.projectFinishedLoading();
                     });

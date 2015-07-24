@@ -14,6 +14,7 @@
             this.startTrim = 0;
             this.endTrim = 0;
             this.volume = 1;
+            this.volumeModifier = 1;
             this.width = 0;
             this.height = 0;
             this.aspect = "";
@@ -35,6 +36,7 @@
             startTrim: null,
             endTrim: null,
             volume: null,
+            volumeModifier: null,
             width: null,
             height: null,
             aspect: null,
@@ -113,6 +115,20 @@
                         this.file.width = metadata.width;
                     }
                 }
+            },
+
+            setVolume: function (val) {
+                /// <summary>Sets the volume of the clip. Note that the clip's actual playback volume may be limited by the volume of the Track containing it.</summary>
+                /// <param name="val" type="Number">The volume level to assign to the clip. Must be a decimal value between 0.0 and 1.0.</param>
+                this.volume = val;
+                this._player.volume = this.volume * this.volumeModifier;
+            },
+
+            setVolumeModifier: function (val) {
+                /// <summary>Sets the volume modifier of the clip.</summary>
+                /// <param name="val" type="Number">The volume modifier to assign to the clip. Must be a decimal value between 0.0 and 1.0.</param>
+                this.volumeModifier = val;
+                this._player.volume = this.volume * this.volumeModifier;
             },
 
             drawToCanvas: function (context, scale) {

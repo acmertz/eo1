@@ -119,6 +119,10 @@
                     Ensemble.Editor.TimelineMGR.renameClip(this._payload.clipId, this._payload.newName);
                 }
 
+                else if (this._type == Ensemble.Events.Action.ActionType.clipVolumeChanged) {
+                    Ensemble.Editor.TimelineMGR.changeClipVolume(this._payload.clipId, this._payload.newVolume);
+                }
+
                 else console.error("Unknown Action!");
             },
 
@@ -200,6 +204,10 @@
 
                 else if (this._type == Ensemble.Events.Action.ActionType.renameClip) {
                     Ensemble.Editor.TimelineMGR.renameClip(this._payload.clipId, this._payload.oldName);
+                }
+
+                else if (this._type == Ensemble.Events.Action.ActionType.clipVolumeChanged) {
+                    Ensemble.Editor.TimelineMGR.changeClipVolume(this._payload.clipId, this._payload.oldVolume);
                 }
 
                 else console.error("Unknown Action!");
@@ -314,6 +322,9 @@
                 else if (this._type == Ensemble.Events.Action.ActionType.renameClip) {
                     return "Renamed clip.";
                 }
+                else if (this._type == Ensemble.Events.Action.ActionType.clipVolumeChanged) {
+                    return "Changed clip volume.";
+                }
                 else {
                     return "Unknown action";
                 }
@@ -333,7 +344,8 @@
                 trimClip: "trimClip",
                 splitClip: "splitClip",
                 positionClip: "positionClip",
-                renameClip: "renameClip"
+                renameClip: "renameClip",
+                clipVolumeChanged: "clipVolumeChanged"
             }
         }
     );

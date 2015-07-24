@@ -42,6 +42,7 @@
             }
             Ensemble.HistoryMGR.refreshMessage();
             Ensemble.Editor.MenuMGR._reevaluateState();
+            Ensemble.Editor.TimelineMGR.refreshClipVolumeModifiers();
             Ensemble.FileIO.saveProject();
         },
 
@@ -56,6 +57,7 @@
             Ensemble.HistoryMGR._pendingAction.finishUndo(loadedClips);
             Ensemble.HistoryMGR._forwardStack.push(Ensemble.HistoryMGR._pendingAction);
             Ensemble.HistoryMGR._pendingAction = null;
+            Ensemble.Editor.TimelineMGR.refreshClipVolumeModifiers();
             Ensemble.FileIO.saveProject();
         },
 

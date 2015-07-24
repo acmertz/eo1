@@ -30,6 +30,9 @@
                 /// <summary>Sets the volume modifier of the track.</summary>
                 /// <param name="volumeToSet" type="Number">The volume to assign the track.</param>
                 this.volume = volumeToSet;
+                for (let i = 0; i < this.clips.length; i++) {
+                    this.clips[i].setVolumeModifier(volumeToSet);
+                }
             },
 
             insertClip: function (clipObj) {

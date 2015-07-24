@@ -435,6 +435,11 @@
             <input type="text" class="win-textbox flyout--editor-clip-rename__name-textbox" /><br />
             <button class="win-button eo1-btn eo1-btn--radius-all flyout--editor-clip-rename__confirm-button">Rename clip</button>
         </div>
+        <div class="flyout--editor-clip-volume" data-win-control="WinJS.UI.Flyout" aria-label="{Clip volume}">
+            <span class="flyout--editor-clip-volume__icon clip-volume-icon clip-volume-icon--high"></span>
+            <input type="range" min="0" max="100" value="100" class="win-slider flyout--editor-clip-volume__slider" />
+            <span class="flyout--editor-clip-volume__indicator">100</span>
+        </div>
     </div>
 
     <div class="app-page app-page--app-settings app-page--hidden">
