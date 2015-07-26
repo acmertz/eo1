@@ -927,7 +927,7 @@
 
             //$(renameControl).click(this._trackRenameButtonClicked);
             $(renameControl).click(this._listeners.renameTrackButtonClicked);
-            $(volumeControl).click(this._trackVolumeButtonClicked);
+            $(volumeControl).click(this._listeners.trackVolumeButtonClicked);
             $(moveControl).click(this._trackMoveButtonClicked);
             $(deleteControl).click(this._trackDeleteButtonClicked);
 
@@ -970,38 +970,6 @@
         _showTrackControls: function (event) {
             console.log("Show the track controls flyout.");
             document.getElementById("timeline-track_controls-flyout").winControl.show(event.currentTarget, "right");
-        },
-
-        _trackVolumeButtonClicked: function (event) {
-            var parentTrack = $(event.currentTarget).closest(".timeline-track--controls");
-            var trackId = parseInt($(parentTrack).attr("id").match(/\d+$/)[0]);
-            Ensemble.Editor.TimelineMGR._trackEditId = trackId;
-            $(Ensemble.Editor.UI.UserInput.Flyouts.trackVolume).find("input").val(Ensemble.Editor.TimelineMGR.getTrackById(trackId).volume * 100);
-            $(Ensemble.Editor.UI.UserInput.Flyouts.trackVolume).find("input").change(Ensemble.Editor.TimelineMGR._trackVolumeSliderChanged);
-            $(Ensemble.Editor.UI.UserInput.Flyouts.trackVolume).bind("beforehide", Ensemble.Editor.TimelineMGR._trackVolumeChangeFinish);
-            Ensemble.Editor.TimelineMGR._trackVolumeRollback = $(Ensemble.Editor.UI.UserInput.Flyouts.trackVolume).find("input").val() / 100;
-            Ensemble.Editor.UI.UserInput.Flyouts.trackVolume.winControl.show(event.currentTarget);
-        },
-
-        _trackVolumeSliderChanged: function (event) {
-            console.log("Volume slider slid.");
-            // TODO: additional logic to facilitate live volume adjustment
-        },
-
-        _trackVolumeChangeFinish: function (event) {
-            // commit volume change on flyout hide.
-            $(Ensemble.Editor.UI.UserInput.Flyouts.trackVolume).unbind("beforehide", Ensemble.Editor.TimelineMGR._trackVolumeChangeFinish);
-            $(Ensemble.Editor.UI.UserInput.Flyouts.trackVolume).find("input").unbind("change", Ensemble.Editor.TimelineMGR._trackVolumeSliderChanged);
-            if (($(Ensemble.Editor.UI.UserInput.Flyouts.trackVolume).find("input").val() / 100) != Ensemble.Editor.TimelineMGR._trackVolumeRollback) {
-                var volumeChangeAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.trackVolumeChanged,
-                    {
-                        trackId: Ensemble.Editor.TimelineMGR._trackEditId,
-                        oldVolume: Ensemble.Editor.TimelineMGR._trackVolumeRollback,
-                        newVolume: $(Ensemble.Editor.UI.UserInput.Flyouts.trackVolume).find("input").val() / 100
-                    }
-                );
-                Ensemble.HistoryMGR.performAction(volumeChangeAction);
-            }
         },
 
         _trackMoveButtonClicked: function (event) {
@@ -2026,6 +1994,59 @@
                     let volumeAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.clipVolumeChanged,
                         {
                             clipId: curId,
+                            oldVolume: Ensemble.Editor.TimelineMGR.ui.clipVolumeSlider.dataset.originalVolume / 100,
+                            newVolume: Ensemble.Editor.TimelineMGR.ui.clipVolumeSlider.value / 100
+                        });
+                    Ensemble.HistoryMGR.performAction(volumeAction);
+                }
+            },
+
+            trackVolumeButtonClicked: function (event) {
+                let parentTrack = $(event.currentTarget).closest(".timeline-track--controls"),
+                    trackId = parseInt($(parentTrack).attr("id").match(/\d+$/)[0]),
+                    tempTrack = Ensemble.Editor.TimelineMGR.getTrackById(trackId),
+                    volumeToSet = tempTrack.volume * 100;
+
+                
+                Ensemble.Editor.TimelineMGR.ui.clipVolumeSlider.value = volumeToSet;
+                Ensemble.Editor.TimelineMGR.ui.clipVolumeSlider.dataset.originalVolume = volumeToSet;
+                Ensemble.Editor.TimelineMGR.ui.clipVolumeSlider.dataset.trackId = trackId;
+                Ensemble.Editor.TimelineMGR.ui.clipVolumeIndicator.innerText = volumeToSet;
+                Ensemble.Editor.TimelineMGR.ui.clipVolumeSlider.addEventListener("input", Ensemble.Editor.TimelineMGR._listeners.trackVolumeSliderChanged);
+                Ensemble.Editor.TimelineMGR.ui.clipVolumeFlyout.addEventListener("afterhide", Ensemble.Editor.TimelineMGR._listeners.trackVolumeFlyoutDismissed);
+                Ensemble.Editor.TimelineMGR.ui.clipVolumeFlyout.winControl.show(event.currentTarget, "autovertical");
+            },
+
+            trackVolumeSliderChanged: function (event) {
+                let iconModifier = "mute",
+                    volume = event.currentTarget.value,
+                    curId = Ensemble.Editor.TimelineMGR.ui.clipVolumeSlider.dataset.trackId,
+                    trackObj = Ensemble.Editor.TimelineMGR.getTrackById(curId);
+
+                trackObj.setVolume(volume / 100);
+
+                if (volume > 0) iconModifier = "low";
+                if (volume > 32) iconModifier = "medium";
+                if (volume > 65) iconModifier = "high";
+
+                Ensemble.Editor.TimelineMGR.ui.clipVolumeIndicator.innerText = volume;
+                $(Ensemble.Editor.TimelineMGR.ui.clipVolumeIcon).removeClass("clip-volume-icon--high")
+                    .removeClass("clip-volume-icon--medium")
+                    .removeClass("clip-volume-icon--low")
+                    .removeClass("clip-volume-icon--mute")
+                    .addClass("clip-volume-icon--" + iconModifier);
+            },
+
+            trackVolumeFlyoutDismissed: function (event) {
+                Ensemble.Editor.TimelineMGR.ui.clipVolumeSlider.removeEventListener("input", Ensemble.Editor.TimelineMGR._listeners.trackVolumeSliderChanged);
+                Ensemble.Editor.TimelineMGR.ui.clipVolumeFlyout.removeEventListener("afterhide", Ensemble.Editor.TimelineMGR._listeners.trackVolumeFlyoutDismissed);
+
+
+                if (Ensemble.Editor.TimelineMGR.ui.clipVolumeSlider.dataset.originalVolume != Ensemble.Editor.TimelineMGR.ui.clipVolumeSlider.value) {
+                    let curId = Ensemble.Editor.TimelineMGR.ui.clipVolumeSlider.dataset.trackId;
+                    let volumeAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.trackVolumeChanged,
+                        {
+                            trackId: curId,
                             oldVolume: Ensemble.Editor.TimelineMGR.ui.clipVolumeSlider.dataset.originalVolume / 100,
                             newVolume: Ensemble.Editor.TimelineMGR.ui.clipVolumeSlider.value / 100
                         });

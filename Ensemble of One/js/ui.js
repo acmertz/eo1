@@ -40,7 +40,6 @@
 
             this.UserInput.Flyouts.mediaBrowserLocation = document.getElementById("flyout--editor-media-browser-location");
             this.UserInput.Flyouts.moveTrack = document.getElementById("flyout--editor-move-track");
-            this.UserInput.Flyouts.trackVolume = document.getElementById("flyout--editor-track-volume");
             this.UserInput.Flyouts.trackRemove = document.getElementById("flyout--editor-track-delete");
             this.UserInput.Flyouts.mediaBrowserAddToProject = document.getElementById("flyout--editor-media-browser-add-to-project");
 
@@ -111,7 +110,6 @@
             Flyouts: {
                 mediaBrowserLocation: null,
                 moveTrack: null,
-                trackVolume: null,
                 trackRemove: null,
                 mediaBrowserAddToProject: null
             }

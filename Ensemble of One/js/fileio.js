@@ -630,14 +630,14 @@
                     if (actionType === Ensemble.Events.Action.ActionType.createTrack) {
                         Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.createTrack,
                             {
-                                trackId: undoActions[i].getAttribute("trackId")
+                                trackId: parseInt(undoActions[i].getAttribute("trackId"), 10)
                             }
                         ));
                     }
                     else if (actionType === Ensemble.Events.Action.ActionType.renameTrack) {
                         Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.renameTrack,
                             {
-                                trackId:parseInt( undoActions[i].getAttribute("trackId"), 10),
+                                trackId: parseInt( undoActions[i].getAttribute("trackId"), 10),
                                 oldName: undoActions[i].getAttribute("oldName"),
                                 newName: undoActions[i].getAttribute("newName")
                             }
@@ -647,8 +647,8 @@
                         Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.trackVolumeChanged,
                             {
                                 trackId: parseInt(undoActions[i].getAttribute("trackId"), 10),
-                                oldVolume: parseInt(undoActions[i].getAttribute("oldVolume"), 10),
-                                newVolume: parseInt(undoActions[i].getAttribute("newVolume"), 10)
+                                oldVolume: parseFloat(undoActions[i].getAttribute("oldVolume")),
+                                newVolume: parseFloat(undoActions[i].getAttribute("newVolume"))
                             }
                         ));
                     }
@@ -807,14 +807,14 @@
                     if (actionType === Ensemble.Events.Action.ActionType.createTrack) {
                         Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.createTrack,
                             {
-                                trackId: redoActions[i].getAttribute("trackId")
+                                trackId: parseInt(redoActions[i].getAttribute("trackId"), 10)
                             }
                         ));
                     }
                     else if (actionType === Ensemble.Events.Action.ActionType.renameTrack) {
                         Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.renameTrack,
                             {
-                                trackId: redoActions[i].getAttribute("trackId"),
+                                trackId: parseInt(redoActions[i].getAttribute("trackId"), 10),
                                 oldName: redoActions[i].getAttribute("oldName"),
                                 newName: redoActions[i].getAttribute("newName")
                             }
@@ -823,18 +823,18 @@
                     else if (actionType === Ensemble.Events.Action.ActionType.trackVolumeChanged) {
                         Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.trackVolumeChanged,
                             {
-                                trackId: redoActions[i].getAttribute("trackId"),
-                                oldVolume: redoActions[i].getAttribute("oldVolume"),
-                                newVolume: redoActions[i].getAttribute("newVolume")
+                                trackId: parseInt(redoActions[i].getAttribute("trackId"), 10),
+                                oldVolume: parseFloat(redoActions[i].getAttribute("oldVolume")),
+                                newVolume: parseFloat(redoActions[i].getAttribute("newVolume"))
                             }
                         ));
                     }
                     else if (actionType === Ensemble.Events.Action.ActionType.moveTrack) {
                         Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.moveTrack,
                             {
-                                trackId: redoActions[i].getAttribute("trackId"),
-                                origin: redoActions[i].getAttribute("origin"),
-                                destination: redoActions[i].getAttribute("destination")
+                                trackId: parseInt(redoActions[i].getAttribute("trackId"), 10),
+                                origin: parseInt(redoActions[i].getAttribute("origin"), 10),
+                                destination: parseInt(redoActions[i].getAttribute("destination"), 10)
                             }
                         ));
                     }
