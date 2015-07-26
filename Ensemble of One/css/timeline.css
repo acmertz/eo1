@@ -106,7 +106,7 @@
 }
 
 .timeline-clip__thumb {
-    background-color: #808080;
+    background-color: #aaa;
     height: calc(100% + 20px);
     width: 100px;
     float: left;
@@ -156,13 +156,15 @@
 
 .timeline-clip-gripper {
     position: absolute;
-    width: 3px;
-    background-color: black;
+    width: 10px;
     cursor: ew-resize;
+    box-sizing: border-box;
+    border: 3px solid #000;
 }
 
 .timeline-clip-gripper--left {
     animation: timelineGripperLeftEnter 0.2s ease;
+    border-right: 0;
 }
 
 @keyframes timelineGripperLeftEnter {
@@ -178,6 +180,8 @@
 
 .timeline-clip-gripper--right {
     animation: timelineGripperRightEnter 0.2s ease;
+    margin-left: -10px;
+    border-left: 0;
 }
 
 @keyframes timelineGripperRightEnter {

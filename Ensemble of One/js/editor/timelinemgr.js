@@ -700,6 +700,40 @@
         showTrimControls: function (clipId) {
             /// <summary>Shows the trim controls for the clip with the given ID.</summary>
             /// <param name="clipId" type="Number">The ID of the clip to trim.</param>
+            $(".timeline-clip-gripper").remove();
+
+            let clipObj = Ensemble.Editor.TimelineMGR.getClipById(clipId),
+                clipEl = document.getElementById(Ensemble.Editor.TimelineMGR._buildClipDOMId(clipId)),
+                leftCoord = $(clipEl).position().left + "px",
+                topCoord = $(clipEl).closest(".timeline-track--content").position().top + "px",
+                tempWidth = clipEl.style.width,
+                tempHeight = Ensemble.Editor.TimelineMGR._currentTrackHeight + "px";
+
+            let leftGripper = document.createElement("div");
+            leftGripper.className = "timeline-clip-gripper timeline-clip-gripper--left";
+            leftGripper.style.left = leftCoord;
+            leftGripper.style.top = topCoord;
+            leftGripper.style.height = tempHeight;
+            leftGripper.dataset.which = "left";
+
+            let rightGripper = document.createElement("div");
+            rightGripper.className = "timeline-clip-gripper timeline-clip-gripper--right";
+            rightGripper.style.left = parseFloat(leftCoord) + parseFloat(tempWidth) + "px";
+            rightGripper.style.top = topCoord;
+            rightGripper.style.height = tempHeight;
+            rightGripper.dataset.which = "right";
+
+            Ensemble.Editor.TimelineMGR._trimGripperArr = [];
+            Ensemble.Editor.TimelineMGR._trimGripperArr.push(leftGripper);
+            Ensemble.Editor.TimelineMGR._trimGripperArr.push(rightGripper);
+            document.getElementById("editorTimelineTracks").appendChild(leftGripper);
+            document.getElementById("editorTimelineTracks").appendChild(rightGripper);
+
+        },
+
+        showTrimControlsOld: function (clipId) {
+            /// <summary>Shows the trim controls for the clip with the given ID.</summary>
+            /// <param name="clipId" type="Number">The ID of the clip to trim.</param>
             console.log("Beginning trim operation.");
             let clipObj = Ensemble.Editor.TimelineMGR.getClipById(clipId);
             let clipEl = document.getElementById(Ensemble.Editor.TimelineMGR._buildClipDOMId(clipId));
