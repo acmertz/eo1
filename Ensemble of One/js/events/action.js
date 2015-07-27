@@ -325,6 +325,9 @@
                 else if (this._type == Ensemble.Events.Action.ActionType.clipVolumeChanged) {
                     return "Changed clip volume.";
                 }
+                else if (this._type == Ensemble.Events.Action.ActionType.trimClip) {
+                    return "Trimmed clip.";
+                }
                 else {
                     return "Unknown action";
                 }

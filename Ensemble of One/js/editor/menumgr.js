@@ -69,13 +69,6 @@
             $(".editor-toolbar-command--browse-media").removeAttr("disabled");
 
             if (Ensemble.Editor.SelectionMGR.selected.length == 1) {
-                $(".editor-command__trim-clip").removeClass("editor-command--disabled");
-                $(".editor-command__remove-clip").removeClass("editor-command--disabled");
-                $(".editor-command__clear-selection").removeClass("editor-command--disabled");
-                $(".editor-command__split-clip").removeClass("editor-command--disabled");
-
-                $(".editor-toolbar-command--trim-clip").removeAttr("disabled");
-                $(".editor-toolbar-command--remove-clip").removeAttr("disabled");
                 $(".editor-toolbar-command--clear-selection").removeAttr("disabled");
                 $(".editor-toolbar-command--split-clip").removeAttr("disabled");
             }
@@ -171,11 +164,6 @@
                 let command = event.currentTarget.dataset.editorCommand;
 
                 if (command == "show-library") {
-                    //let targetMenu = document.getElementsByClassName("editor-menu--import")[0];
-
-                    //targetMenu.addEventListener("transitionend", Ensemble.Editor.MenuMGR._listeners.importMenuTransitioned);
-                    //(targetMenu).addClass("editor-menu--visible");
-
                     $(".app-page--media-browser").removeClass("app-page--hidden");
                     $(".app-page--editor").addClass("app-page--displace app-page--displace-right-600");
                     document.getElementsByClassName("app-page--editor")[0].addEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.importMenuTransitioned)
@@ -208,17 +196,6 @@
                     Ensemble.Editor.SelectionMGR.clearSelection();
                     Ensemble.Editor.SelectionMGR.clearHovering();
                     Ensemble.HistoryMGR.performAction(splitAction);
-                }
-                else if (command == "trim-clip") {
-                    Ensemble.Editor.TimelineMGR.showTrimControls(Ensemble.Editor.SelectionMGR.selected[0]);
-                }
-                else if (command == "remove-clip") {
-                    let removeAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.removeClip, {
-                        clipIds: Ensemble.Editor.SelectionMGR.selected
-                    });
-                    Ensemble.Editor.SelectionMGR.clearSelection();
-                    Ensemble.Editor.SelectionMGR.clearHovering();
-                    Ensemble.HistoryMGR.performAction(removeAction);
                 }
                 else if (command == "clear-selection") setTimeout(function () {
                     Ensemble.Editor.TimelineMGR.rejectTrim();

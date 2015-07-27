@@ -24,6 +24,7 @@
                 Ensemble.HistoryMGR.refreshMessage();
                 Ensemble.FileIO.saveProject();
                 Ensemble.Editor.MenuMGR._reevaluateState();
+                if (Ensemble.Editor.SelectionMGR.selected.length == 1) Ensemble.Editor.TimelineMGR.showTrimControls(Ensemble.Editor.SelectionMGR.selected[0]);
             }
         },
 
@@ -77,6 +78,7 @@
                     Ensemble.FileIO.saveProject();
                 }
                 Ensemble.Editor.MenuMGR._reevaluateState();
+                if (Ensemble.Editor.SelectionMGR.selected.length == 1) Ensemble.Editor.TimelineMGR.showTrimControls(Ensemble.Editor.SelectionMGR.selected[0]);
             }
         },
 
@@ -95,8 +97,9 @@
                     this.refreshMessage();
                     setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
                 }
+                Ensemble.Editor.MenuMGR._reevaluateState();
+                if (Ensemble.Editor.SelectionMGR.selected.length == 1) Ensemble.Editor.TimelineMGR.showTrimControls(Ensemble.Editor.SelectionMGR.selected[0]);
             }
-            Ensemble.Editor.MenuMGR._reevaluateState();
         },
 
         canUndo: function () {

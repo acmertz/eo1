@@ -600,7 +600,8 @@
             if (Ensemble.Editor.TimelineZoomMGR.canZoomIn()) {
                 Ensemble.Editor.TimelineZoomMGR.zoomIn();
                 Ensemble.Editor.TimelineMGR.newRulerScale();
-                setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
+                Ensemble.FileIO.saveProject();
+                if (Ensemble.Editor.SelectionMGR.selected.length == 1) Ensemble.Editor.TimelineMGR.showTrimControls(Ensemble.Editor.SelectionMGR.selected[0]);
             }
         },
 
@@ -609,7 +610,8 @@
             if (Ensemble.Editor.TimelineZoomMGR.canZoomOut()) {
                 Ensemble.Editor.TimelineZoomMGR.zoomOut();
                 Ensemble.Editor.TimelineMGR.newRulerScale();
-                setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
+                Ensemble.FileIO.saveProject();
+                if (Ensemble.Editor.SelectionMGR.selected.length == 1) Ensemble.Editor.TimelineMGR.showTrimControls(Ensemble.Editor.SelectionMGR.selected[0]);
             }
         },
 
@@ -704,9 +706,10 @@
 
             let clipObj = Ensemble.Editor.TimelineMGR.getClipById(clipId),
                 clipEl = document.getElementById(Ensemble.Editor.TimelineMGR._buildClipDOMId(clipId)),
-                leftCoord = $(clipEl).position().left + "px",
+                zoomRatio = Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel].ratio,
+                leftCoord = clipObj.startTime / zoomRatio + "px",
                 topCoord = $(clipEl).closest(".timeline-track--content").position().top + "px",
-                tempWidth = clipEl.style.width,
+                tempWidth = clipObj.duration / zoomRatio + "px",
                 tempHeight = Ensemble.Editor.TimelineMGR._currentTrackHeight + "px";
 
             let leftGripper = document.createElement("div");
@@ -723,95 +726,21 @@
             rightGripper.style.height = tempHeight;
             rightGripper.dataset.which = "right";
 
-            Ensemble.Editor.TimelineMGR._trimGripperArr = [];
-            Ensemble.Editor.TimelineMGR._trimGripperArr.push(leftGripper);
-            Ensemble.Editor.TimelineMGR._trimGripperArr.push(rightGripper);
-            document.getElementById("editorTimelineTracks").appendChild(leftGripper);
-            document.getElementById("editorTimelineTracks").appendChild(rightGripper);
-
-        },
-
-        showTrimControlsOld: function (clipId) {
-            /// <summary>Shows the trim controls for the clip with the given ID.</summary>
-            /// <param name="clipId" type="Number">The ID of the clip to trim.</param>
-            console.log("Beginning trim operation.");
-            let clipObj = Ensemble.Editor.TimelineMGR.getClipById(clipId);
-            let clipEl = document.getElementById(Ensemble.Editor.TimelineMGR._buildClipDOMId(clipId));
-
-            let ghostEl = document.createElement("div");
-            ghostEl.className = "timeline-clip-ghost";
-            ghostEl.style.width = clipEl.style.width;
-            ghostEl.style.height = Ensemble.Editor.TimelineMGR._currentTrackHeight + "px";
-            ghostEl.style.top = $(clipEl).closest(".timeline-track--content").position().top + "px";
-            ghostEl.style.left = $(clipEl).position().left + "px";
-            ghostEl.dataset.origLeft = ghostEl.style.left;
-            ghostEl.dataset.origTop = ghostEl.style.top;
-            ghostEl.dataset.origWidth = clipEl.style.width;
-            ghostEl.dataset.clipId = clipId;
-
-
-            let leftGripper = document.createElement("div");
-            leftGripper.className = "timeline-clip-gripper timeline-clip-gripper--left";
-            leftGripper.style.left = ghostEl.style.left;
-            leftGripper.style.top = ghostEl.style.top;
-            leftGripper.style.height = ghostEl.style.height;
-            leftGripper.dataset.which = "left";
-
-            let rightGripper = document.createElement("div");
-            rightGripper.className = "timeline-clip-gripper timeline-clip-gripper--right";
-            rightGripper.style.left = parseFloat(ghostEl.style.left) + parseFloat(ghostEl.style.width) + "px";
-            rightGripper.style.top = ghostEl.style.top;
-            rightGripper.style.height = ghostEl.style.height;
-            rightGripper.dataset.which = "right";
+            leftGripper.dataset.clipId = clipId;
+            rightGripper.dataset.clipId = clipId;
 
             leftGripper.addEventListener("pointerdown", Ensemble.Editor.TimelineMGR._listeners.clipTrimGripperMouseDown);
             rightGripper.addEventListener("pointerdown", Ensemble.Editor.TimelineMGR._listeners.clipTrimGripperMouseDown);
-            ghostEl.addEventListener("pointerdown", Ensemble.Editor.TimelineMGR._listeners.clipTrimGhostMouseDown);
 
-            Ensemble.Editor.TimelineMGR._clipDragArr.push(clipObj);
-            Ensemble.Editor.TimelineMGR._ghostDragArr.push(ghostEl);
+            Ensemble.Editor.TimelineMGR._clipDragArr = [];
+            Ensemble.Editor.TimelineMGR._ghostDragArr = [];
+            Ensemble.Editor.TimelineMGR._trimGripperArr = [];
             Ensemble.Editor.TimelineMGR._trimGripperArr.push(leftGripper);
             Ensemble.Editor.TimelineMGR._trimGripperArr.push(rightGripper);
 
-            document.getElementById("editorTimelineTracks").appendChild(ghostEl);
             document.getElementById("editorTimelineTracks").appendChild(leftGripper);
             document.getElementById("editorTimelineTracks").appendChild(rightGripper);
 
-            Ensemble.Editor.TimelineMGR._trimMaxDur = clipObj.file.duration;
-            if (clipObj.type == Ensemble.Editor.Clip.ClipType.picture) {
-                Ensemble.Editor.TimelineMGR._trimMinStart = 0;
-                Ensemble.Editor.TimelineMGR._trimMaxEnd = Infinity;
-            }
-            else {
-                Ensemble.Editor.TimelineMGR._trimMinStart = clipObj.startTime - clipObj.startTrim;
-                Ensemble.Editor.TimelineMGR._trimMaxEnd = clipObj.startTime + clipObj.duration + clipObj.endTrim;
-            }
-            
-
-            let found = false;
-            for (let i = 0; i < Ensemble.Editor.TimelineMGR.tracks.length; i++) {
-                if (found) break;
-                for (let k = 0; k < Ensemble.Editor.TimelineMGR.tracks[i].clips.length; k++) {
-                    if (Ensemble.Editor.TimelineMGR.tracks[i].clips[k].id == clipObj.id) {
-                        if (k > 0) {
-                            let prev = Ensemble.Editor.TimelineMGR._trimStartBound = Ensemble.Editor.TimelineMGR.tracks[i].clips[k - 1];
-                            Ensemble.Editor.TimelineMGR._trimStartBound = prev.startTime + prev.duration;
-                        }
-                        else Ensemble.Editor.TimelineMGR._trimStartBound = 0;
-
-                        if (Ensemble.Editor.TimelineMGR.tracks[i].clips.length > k + 1) {
-                            let next = Ensemble.Editor.TimelineMGR._trimStartBound = Ensemble.Editor.TimelineMGR.tracks[i].clips[k + 1];
-                            Ensemble.Editor.TimelineMGR._trimEndBound = next.startTime;
-                        }
-                        else Ensemble.Editor.TimelineMGR._trimEndBound = Infinity;
-                        found = true;
-                        break;
-                    }
-                }
-            }
-            $(".timeline-clip").addClass("timeline-clip--interaction-disabled");
-            Ensemble.Editor.TimelineMGR.ui.timeCursor.style.display = "none";
-            Ensemble.Editor.CalloutMGR.setState(Ensemble.Editor.CalloutMGR.States.trim);
         },
 
         acceptTrim: function () {
@@ -1852,6 +1781,65 @@
                 event.currentTarget.dataset.origLeft = event.currentTarget.style.left;
                 $(event.currentTarget).addClass("timeline-clip-gripper--active");
 
+
+                // Ghost creation
+                let clipId = event.currentTarget.dataset.clipId,
+                    clipObj = Ensemble.Editor.TimelineMGR.getClipById(clipId),
+                    clipEl = document.getElementById(Ensemble.Editor.TimelineMGR._buildClipDOMId(clipId));
+
+                let ghostEl = document.createElement("div");
+                ghostEl.className = "timeline-clip-ghost";
+                ghostEl.style.width = clipEl.style.width;
+                ghostEl.style.height = Ensemble.Editor.TimelineMGR._currentTrackHeight + "px";
+                ghostEl.style.top = $(clipEl).closest(".timeline-track--content").position().top + "px";
+                ghostEl.style.left = $(clipEl).position().left + "px";
+                ghostEl.dataset.origLeft = ghostEl.style.left;
+                ghostEl.dataset.origTop = ghostEl.style.top;
+                ghostEl.dataset.origWidth = clipEl.style.width;
+                ghostEl.dataset.clipId = clipId;
+
+                Ensemble.Editor.TimelineMGR._clipDragArr.push(clipObj);
+                Ensemble.Editor.TimelineMGR._ghostDragArr.push(ghostEl);
+
+                document.getElementById("editorTimelineTracks").appendChild(ghostEl);
+
+                Ensemble.Editor.TimelineMGR._trimMaxDur = clipObj.file.duration;
+                if (clipObj.type == Ensemble.Editor.Clip.ClipType.picture) {
+                    Ensemble.Editor.TimelineMGR._trimMinStart = 0;
+                    Ensemble.Editor.TimelineMGR._trimMaxEnd = Infinity;
+                }
+                else {
+                    Ensemble.Editor.TimelineMGR._trimMinStart = clipObj.startTime - clipObj.startTrim;
+                    Ensemble.Editor.TimelineMGR._trimMaxEnd = clipObj.startTime + clipObj.duration + clipObj.endTrim;
+                }
+
+
+                let found = false;
+                for (let i = 0; i < Ensemble.Editor.TimelineMGR.tracks.length; i++) {
+                    if (found) break;
+                    for (let k = 0; k < Ensemble.Editor.TimelineMGR.tracks[i].clips.length; k++) {
+                        if (Ensemble.Editor.TimelineMGR.tracks[i].clips[k].id == clipObj.id) {
+                            if (k > 0) {
+                                let prev = Ensemble.Editor.TimelineMGR._trimStartBound = Ensemble.Editor.TimelineMGR.tracks[i].clips[k - 1];
+                                Ensemble.Editor.TimelineMGR._trimStartBound = prev.startTime + prev.duration;
+                            }
+                            else Ensemble.Editor.TimelineMGR._trimStartBound = 0;
+
+                            if (Ensemble.Editor.TimelineMGR.tracks[i].clips.length > k + 1) {
+                                let next = Ensemble.Editor.TimelineMGR._trimStartBound = Ensemble.Editor.TimelineMGR.tracks[i].clips[k + 1];
+                                Ensemble.Editor.TimelineMGR._trimEndBound = next.startTime;
+                            }
+                            else Ensemble.Editor.TimelineMGR._trimEndBound = Infinity;
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                Ensemble.Editor.TimelineMGR.ui.timeCursor.style.display = "none";
+
+
+                // Listener setup
+
                 document.addEventListener("pointermove", Ensemble.Editor.TimelineMGR._listeners.clipDragCursorUpdate);
                 document.addEventListener("pointerup", Ensemble.Editor.TimelineMGR._listeners.clipTrimStopped);
 
@@ -1860,61 +1848,98 @@
             },
 
             updateClipTrim: function (event) {
-                let zoomRatio = Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel].ratio;
-                let dif = Ensemble.Editor.TimelineMGR._clipDragPointerCurrentLeft - Ensemble.Editor.TimelineMGR._clipDragPointerOriginalLeft;
-                let ghost = Ensemble.Editor.TimelineMGR._ghostDragArr[0];
-                let origClip = Ensemble.Editor.TimelineMGR._clipDragArr[0];
-                let activeGripper = document.getElementsByClassName("timeline-clip-gripper--active")[0];
-                let leftGripper = Ensemble.Editor.TimelineMGR._trimGripperArr[0];
-                let rightGripper = Ensemble.Editor.TimelineMGR._trimGripperArr[1];
+                if (Ensemble.Editor.TimelineMGR._clipTrimming) {
+                    let zoomRatio = Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel].ratio;
+                    let dif = Ensemble.Editor.TimelineMGR._clipDragPointerCurrentLeft - Ensemble.Editor.TimelineMGR._clipDragPointerOriginalLeft;
+                    let ghost = Ensemble.Editor.TimelineMGR._ghostDragArr[0];
+                    let origClip = Ensemble.Editor.TimelineMGR._clipDragArr[0];
+                    let activeGripper = document.getElementsByClassName("timeline-clip-gripper--active")[0];
+                    let leftGripper = Ensemble.Editor.TimelineMGR._trimGripperArr[0];
+                    let rightGripper = Ensemble.Editor.TimelineMGR._trimGripperArr[1];
 
-                let maxDur = Ensemble.Editor.TimelineMGR._trimMaxDur;
-                let minStart = Ensemble.Editor.TimelineMGR._trimMinStart;
-                let maxEnd = Ensemble.Editor.TimelineMGR._trimMaxEnd;
-                let startBound = Ensemble.Editor.TimelineMGR._trimStartBound;
-                let endBound = Ensemble.Editor.TimelineMGR._trimEndBound;
+                    let maxDur = Ensemble.Editor.TimelineMGR._trimMaxDur;
+                    let minStart = Ensemble.Editor.TimelineMGR._trimMinStart;
+                    let maxEnd = Ensemble.Editor.TimelineMGR._trimMaxEnd;
+                    let startBound = Ensemble.Editor.TimelineMGR._trimStartBound;
+                    let endBound = Ensemble.Editor.TimelineMGR._trimEndBound;
 
-                let leftGripperTime = 0;
-                let rightGripperTime = 0;
-                let ghostTime = 0;
-                let ghostDur = 0;
+                    let leftGripperTime = 0;
+                    let rightGripperTime = 0;
+                    let ghostTime = 0;
+                    let ghostDur = 0;
 
-                if ($(activeGripper).hasClass("timeline-clip-gripper--left")) {
-                    leftGripperTime = (parseFloat(leftGripper.dataset.origLeft) + dif) * zoomRatio;
-                    rightGripperTime = parseFloat(rightGripper.style.left) * zoomRatio;
+                    if ($(activeGripper).hasClass("timeline-clip-gripper--left")) {
+                        leftGripperTime = (parseFloat(leftGripper.dataset.origLeft) + dif) * zoomRatio;
+                        rightGripperTime = parseFloat(rightGripper.style.left) * zoomRatio;
 
-                    if (leftGripperTime >= rightGripperTime) leftGripperTime = rightGripperTime - 1;
-                    if (minStart > leftGripperTime) leftGripperTime = minStart;
-                    if (startBound > leftGripperTime) leftGripperTime = startBound;
-                }
-                else {
-                    leftGripperTime = parseFloat(leftGripper.style.left) * zoomRatio;
-                    rightGripperTime = (parseFloat(rightGripper.dataset.origLeft) + dif) * zoomRatio;
+                        if (leftGripperTime >= rightGripperTime) leftGripperTime = rightGripperTime - 1;
+                        if (minStart > leftGripperTime) leftGripperTime = minStart;
+                        if (startBound > leftGripperTime) leftGripperTime = startBound;
+                    }
+                    else {
+                        leftGripperTime = parseFloat(leftGripper.style.left) * zoomRatio;
+                        rightGripperTime = (parseFloat(rightGripper.dataset.origLeft) + dif) * zoomRatio;
 
-                    if (leftGripperTime >= rightGripperTime) rightGripperTime = leftGripperTime + 1;
-                    if (rightGripperTime > maxEnd) rightGripperTime = maxEnd;
-                    if (rightGripperTime > endBound) rightGripperTime = endBound;
-                }
-                ghostTime = leftGripperTime;
-                ghostDur = rightGripperTime - leftGripperTime;
+                        if (leftGripperTime >= rightGripperTime) rightGripperTime = leftGripperTime + 1;
+                        if (rightGripperTime > maxEnd) rightGripperTime = maxEnd;
+                        if (rightGripperTime > endBound) rightGripperTime = endBound;
+                    }
+                    ghostTime = leftGripperTime;
+                    ghostDur = rightGripperTime - leftGripperTime;
 
-                leftGripper.style.left = (leftGripperTime / zoomRatio) + "px";
-                rightGripper.style.left = (rightGripperTime / zoomRatio) + "px";
-                ghost.style.left = (ghostTime / zoomRatio) + "px";
-                ghost.style.width = (ghostDur / zoomRatio) + "px";
+                    leftGripper.style.left = (leftGripperTime / zoomRatio) + "px";
+                    rightGripper.style.left = (rightGripperTime / zoomRatio) + "px";
+                    ghost.style.left = (ghostTime / zoomRatio) + "px";
+                    ghost.style.width = (ghostDur / zoomRatio) + "px";
 
-
-                if (Ensemble.Editor.TimelineMGR._clipTrimming) requestAnimationFrame(Ensemble.Editor.TimelineMGR._listeners.updateClipTrim);
-                else {
-                    $(".timeline-clip-gripper--active").removeClass("timeline-clip-gripper--active");
+                    requestAnimationFrame(Ensemble.Editor.TimelineMGR._listeners.updateClipTrim);
                 }
             },
 
             clipTrimStopped: function (event) {
                 event.stopPropagation();
+                Ensemble.Editor.TimelineMGR._clipTrimming = false;
                 document.removeEventListener("pointermove", Ensemble.Editor.TimelineMGR._listeners.clipDragCursorUpdate);
                 document.removeEventListener("pointerup", Ensemble.Editor.TimelineMGR._listeners.clipTrimStopped);
-                Ensemble.Editor.TimelineMGR._clipTrimming = false;
+
+                // Clip trim action
+
+                let zoomRatio = Ensemble.Editor.TimelineZoomMGR.zoomLevels[Ensemble.Editor.TimelineZoomMGR.currentLevel].ratio
+                    ghost = Ensemble.Editor.TimelineMGR._ghostDragArr[0],
+                    clip = Ensemble.Editor.TimelineMGR._clipDragArr[0],
+
+                    clipStart = Math.round(parseFloat(ghost.style.left) * zoomRatio),
+                    clipDur = Math.round(parseFloat(ghost.style.width) * zoomRatio),
+
+                // now find where the clip would be if it were not trimmed at all
+                    tempStart = clip.startTime - clip.startTrim,
+                    tempEnd = clip.startTime + clip.duration + clip.endTrim,
+
+                // compare the new start and duration to the calculated ones to determine the trim values.
+                    tempStartTrim = clipStart - tempStart,
+                    tempEndTrim = tempEnd - (clipStart + clipDur),
+
+                    trimAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.trimClip, {
+                    clipId: clip.id,
+                    newStartTime: clipStart,
+                    newDuration: clipDur,
+                    newStartTrim: tempStartTrim,
+                    newEndTrim: tempEndTrim,
+                    oldStartTrim: clip.startTrim,
+                    oldEndTrim: clip.endTrim,
+                    oldDuration: clip.duration,
+                    oldStartTime: clip.startTime
+                });
+                Ensemble.HistoryMGR.performAction(trimAction);
+                Ensemble.Editor.CalloutMGR.setState(Ensemble.Editor.CalloutMGR.States.standard);
+                Ensemble.Editor.TimelineMGR._clipDragArr = [];
+                Ensemble.Editor.TimelineMGR._ghostDragArr = [];
+                Ensemble.Editor.TimelineMGR.ui.timeCursor.style.display = "";
+
+
+                // DOM cleanup
+                $(".timeline-clip-gripper--active").removeClass("timeline-clip-gripper--active");
+                $(".timeline-clip-ghost").remove();
             },
 
             renameTrackButtonClicked: function (event) {
@@ -1968,6 +1993,12 @@
                         }
                         break;
                     case "remove":
+                        let removeAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.removeClip, {
+                            clipIds: Ensemble.Editor.SelectionMGR.selected
+                        });
+                        Ensemble.Editor.SelectionMGR.clearSelection();
+                        Ensemble.Editor.SelectionMGR.clearHovering();
+                        Ensemble.HistoryMGR.performAction(removeAction);
                         break;
                     case "rename":
                         Ensemble.Editor.TimelineMGR.ui.renameClipTextbox.value = Ensemble.Editor.TimelineMGR.getClipById(clipId).name;

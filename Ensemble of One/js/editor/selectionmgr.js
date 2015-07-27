@@ -55,7 +55,7 @@
             this.selected.push(clipId);
 
             if (needFrame) Ensemble.Editor.Renderer.requestFrame();
-            Ensemble.Editor.CalloutMGR.show(clipId, event)
+            if (event.pointerType != "mouse") Ensemble.Editor.CalloutMGR.show(clipId, event)
             Ensemble.Editor.MenuMGR._reevaluateState();
             Ensemble.Editor.TimelineMGR.showTrimControls(clipId);
         },
