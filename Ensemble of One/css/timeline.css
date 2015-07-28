@@ -106,11 +106,14 @@
 }
 
 .timeline-clip__thumb {
-    background-color: #aaa;
+    background-color: #ccc;
     height: calc(100% + 20px);
     width: 100px;
     float: left;
     margin: -10px 10px 0 0;
+    background-size: 100%;
+    background-position-y: center;
+    background-position-x: center;
 }
 
 .timeline-clip__icon {
