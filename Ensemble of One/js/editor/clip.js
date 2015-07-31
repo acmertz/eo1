@@ -141,25 +141,30 @@
                 let drawHeight = this.height * scale;
                 context.drawImage(this._player, drawX, drawY, drawWidth, drawHeight);
 
-                context.strokeStyle = "lightblue";
                 if (this.selected) {
-                    context.strokeStyle = "blue";
                     context.beginPath();
-                    context.moveTo(drawX, drawY);
-                    context.lineTo(drawX + drawWidth, drawY + drawHeight);
+                    context.strokeStyle = "blue";
+                    context.fillStyle = "lightgray";
+                    let cornerTargetSize = Ensemble.Editor.Renderer._currentPointerTargetSize;
+                    context.rect(drawX, drawY, cornerTargetSize, cornerTargetSize);
+                    context.rect((drawX + drawWidth) - cornerTargetSize, drawY, cornerTargetSize, cornerTargetSize);
+                    context.rect((drawX + drawWidth) - cornerTargetSize, (drawY + drawHeight) - cornerTargetSize, cornerTargetSize, cornerTargetSize);
+                    context.rect(drawX, (drawY + drawHeight) - cornerTargetSize, cornerTargetSize, cornerTargetSize);
+                    context.fill();
                     context.stroke();
                     context.beginPath();
-                    context.moveTo(drawX + drawWidth, drawY);
-                    context.lineTo(drawX, drawY + drawHeight);
+                    context.strokeStyle = "lightgray";
+                    context.lineWidth = "1";
+                    context.rect(drawX, drawY, drawWidth, drawHeight);
                     context.stroke();
                 }
                 
-                if (this.hovering || this.selected) {
+                if (this.hovering) {
                     context.beginPath();
+                    context.fillStyle = "rgba(211, 211, 211, 0.25)";
                     context.lineWidth = "1";
                     context.rect(drawX, drawY, drawWidth, drawHeight);
-                    context.closePath();
-                    context.stroke();
+                    context.fill();
                 }
                 
             },
@@ -192,7 +197,7 @@
                 /// <summary>Returns the corner number, starting with 0 for the top left and incrementing clockwise, that contains the given coordinates. Returns -1 if no corner was clicked.</summary>
                 /// <param name="xcoord" type="Number">The X coordinate.</param>
                 /// <param name="ycoord" type="Number">The Y coordinate.</param>
-                let resizeThreshold = 10 / Ensemble.Editor.Renderer._scale;
+                let resizeThreshold = Ensemble.Editor.Renderer._currentPointerTargetSize / Ensemble.Editor.Renderer._scale;
                 let corner = -1;
                 let edge = -1;
                 if (this.ycoord <= ycoord && ycoord <= this.ycoord + resizeThreshold) {

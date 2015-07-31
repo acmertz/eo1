@@ -1,6 +1,6 @@
 ﻿(function () {
     WinJS.Namespace.define("Ensemble.Editor.Renderer", {
-        /// <summary>Renders image data onto the display canvas.</summary>
+        /// <summary>Renders image data onto the display canvas and brokers touch interaction with drawn Clips.</summary>
         _scale: 1,
         _playbackCanvasContext: null,
         _active: false,
@@ -34,7 +34,9 @@
             vertical: []
         },
         _snapDistanceCanvas: 10,
-        _currentSnap: {x: 0, y: 0},
+        _currentSnap: { x: 0, y: 0 },
+
+        _currentPointerTargetSize: 0,
 
         init: function () {
             this._refreshUI();
@@ -781,7 +783,7 @@
                     let boundResize = false;
 
                     if (Ensemble.Editor.SelectionMGR.selected.indexOf(Ensemble.Editor.SelectionMGR.hovering[0]) > -1) dragDelay = 0;
-                    Ensemble.Editor.SelectionMGR.replaceSelection(Ensemble.Editor.SelectionMGR.hovering[0]);
+                    Ensemble.Editor.SelectionMGR.replaceSelection(Ensemble.Editor.SelectionMGR.hovering[0], event);
 
                     Ensemble.Editor.Renderer.updateClipSnapEdges();
                     Ensemble.Editor.Renderer.updateCanvasSnapEdges();
@@ -947,6 +949,11 @@
                 Ensemble.Editor.Renderer._resizedStatus = {};
                 Ensemble.Editor.Renderer.enableStandardInteraction();
             }
+        },
+
+        PointerTargetSize: {
+            mouse: 10,
+            touch: 20
         }
     });
 })();

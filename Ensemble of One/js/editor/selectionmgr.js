@@ -14,17 +14,6 @@
             this.hovering = [];
         },
 
-
-        addToSelection: function (clipId) {
-            /// <summary>Adds the clip with the given ID to the current selection.</summary>
-            /// <param name="clipId" type="Number">The ID of the clip.</param>
-        },
-
-        removeFromSelection: function (clipId) {
-            /// <summary>Removes the clip with the given ID from the current selection.</summary>
-            /// <param name="clipId" type="Number">The ID of the clip.</param>
-        },
-
         replaceSelection: function (clipId, event) {
             /// <summary>Removes all clips from the current selection array except for the clip with the given ID.</summary>
             /// <param name="clipId" type="Number">The ID of the clip.</param>
@@ -53,6 +42,8 @@
             }
             this.selected = [];
             this.selected.push(clipId);
+
+            Ensemble.Editor.Renderer._currentPointerTargetSize = event.pointerType == "mouse" ? Ensemble.Editor.Renderer.PointerTargetSize.mouse : Ensemble.Editor.Renderer.PointerTargetSize.touch;
 
             if (needFrame) Ensemble.Editor.Renderer.requestFrame();
             if (event.pointerType != "mouse") Ensemble.Editor.CalloutMGR.show(clipId, event)
