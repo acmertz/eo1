@@ -1259,7 +1259,7 @@
                 let clipId = parseInt(event.currentTarget.id.match(/\d+$/)[0], 10);
                 console.log("Pointer down on clip " + clipId + "!");
 
-                Ensemble.Editor.SelectionMGR.replaceSelection(clipId, event);
+                Ensemble.Editor.SelectionMGR.replaceSelection(clipId, event, true);
 
                 if (event.pointerType == "touch") {
                 }

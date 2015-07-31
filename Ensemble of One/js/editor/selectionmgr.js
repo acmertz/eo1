@@ -14,10 +14,11 @@
             this.hovering = [];
         },
 
-        replaceSelection: function (clipId, event) {
+        replaceSelection: function (clipId, event, updateCallout) {
             /// <summary>Removes all clips from the current selection array except for the clip with the given ID.</summary>
             /// <param name="clipId" type="Number">The ID of the clip.</param>
             /// <param name="event" type="Event">Optional. The event that triggered the selection.</param>
+            /// <param name="updateCallout" type="Boolean">Optional. If true, also trigger a repositioning of the Timeline touch callout.</param>
             let needFrame = false;
             let found = false;
             for (let i = 0; i < this.selected.length; i++) {
@@ -46,7 +47,7 @@
             Ensemble.Editor.Renderer._currentPointerTargetSize = event.pointerType == "mouse" ? Ensemble.Editor.Renderer.PointerTargetSize.mouse : Ensemble.Editor.Renderer.PointerTargetSize.touch;
 
             if (needFrame) Ensemble.Editor.Renderer.requestFrame();
-            if (event.pointerType != "mouse") Ensemble.Editor.CalloutMGR.show(clipId, event)
+            if (updateCallout && event.pointerType != "mouse") Ensemble.Editor.CalloutMGR.show(clipId, event)
             Ensemble.Editor.MenuMGR._reevaluateState();
             Ensemble.Editor.TimelineMGR.showTrimControls(clipId);
         },

@@ -783,7 +783,7 @@
                     let boundResize = false;
 
                     if (Ensemble.Editor.SelectionMGR.selected.indexOf(Ensemble.Editor.SelectionMGR.hovering[0]) > -1) dragDelay = 0;
-                    Ensemble.Editor.SelectionMGR.replaceSelection(Ensemble.Editor.SelectionMGR.hovering[0], event);
+                    Ensemble.Editor.SelectionMGR.replaceSelection(Ensemble.Editor.SelectionMGR.hovering[0], event, false);
 
                     Ensemble.Editor.Renderer.updateClipSnapEdges();
                     Ensemble.Editor.Renderer.updateCanvasSnapEdges();

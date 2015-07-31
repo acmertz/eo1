@@ -73,7 +73,7 @@
                 else if (commands[i].dataset.calloutCommand == "reject-trim") commands[i].addEventListener("click", Ensemble.Editor.TimelineMGR.rejectTrim);
 
                 // CONTEXT MENU & FAVORITES
-                else commands[i].addEventListener("click", Ensemble.Editor.TimelineMGR._listeners.selectionCalloutButtonClicked);
+                else commands[i].addEventListener("click", Ensemble.Editor.CalloutMGR._listeners.contextMenuButtonClicked);
             }
         },
 
@@ -174,6 +174,12 @@
             calloutScrolled: function (event) {
                 Ensemble.Editor.CalloutMGR.ui.callout.removeEventListener("transitionend", Ensemble.Editor.CalloutMGR._listeners.calloutScrolled);
                 $(Ensemble.Editor.CalloutMGR.ui.callout).removeClass("timeline-selection-callout--scroll-transition");
+            },
+            contextMenuButtonClicked: function (event) {
+                Ensemble.Editor.TimelineMGR.ui.contextmenuPositionHelper.style.left = event.pageX + "px";
+                Ensemble.Editor.TimelineMGR.ui.contextmenuPositionHelper.style.top = event.pageY + "px";
+                Ensemble.Editor.TimelineMGR.ui.timelineSelectionContextMenu.dataset.clipId = Ensemble.Editor.CalloutMGR.targetClip;
+                Ensemble.Editor.TimelineMGR.ui.timelineSelectionContextMenu.winControl.show(event.currentTarget, "autovertical");
             }
         },
 
