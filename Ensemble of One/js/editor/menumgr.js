@@ -198,7 +198,6 @@
                     Ensemble.HistoryMGR.performAction(splitAction);
                 }
                 else if (command == "clear-selection") setTimeout(function () {
-                    Ensemble.Editor.TimelineMGR.rejectTrim();
                     Ensemble.Editor.SelectionMGR.clearSelection();
                 }, 0);
             },
