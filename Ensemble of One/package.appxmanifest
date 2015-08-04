@@ -15,19 +15,16 @@
   </Resources>
   <Applications>
     <Application Id="App" StartPage="default.html">
-      <uap:VisualElements DisplayName="Ensemble of One" Description="A no-nonsense, desktop-grade video editor built for Windows universal devices." BackgroundColor="#dc143c" Square150x150Logo="img\packaging\logo_sq150.png" Square44x44Logo="img\packaging\logo_sq44.png">
-        <uap:SplashScreen Image="img\packaging\splashScreen.png" />
-        <uap:DefaultTile ShortName="Eo1">
-          <uap:ShowNameOnTiles>
-            <uap:ShowOn Tile="square150x150Logo" />
-          </uap:ShowNameOnTiles>
+      <uap:VisualElements DisplayName="Ensemble of One" Description="A no-nonsense, desktop-grade video editor built for Windows universal devices." BackgroundColor="#dc143c" Square150x150Logo="img\packaging\logo_sq150.png" Square44x44Logo="img\packaging\taskbar.png">
+        <uap:SplashScreen Image="img\packaging\splashScreen.png" BackgroundColor="#dc143c" />
+        <uap:DefaultTile ShortName="Eo1" Square71x71Logo="img\packaging\logo_sq71.png">
         </uap:DefaultTile>
       </uap:VisualElements>
       <Extensions>
         <uap:Extension Category="windows.fileTypeAssociation">
           <uap:FileTypeAssociation Name="eo1-project">
             <uap:DisplayName>Ensemble of One Project</uap:DisplayName>
-            <uap:Logo>img\packaging\logo_sq150.png</uap:Logo>
+            <uap:Logo>img\packaging\taskbar.png</uap:Logo>
             <uap:InfoTip>An Ensemble of One video project</uap:InfoTip>
             <uap:SupportedFileTypes>
               <uap:FileType ContentType="text/xml">.eo1</uap:FileType>
