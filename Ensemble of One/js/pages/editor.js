@@ -161,10 +161,17 @@
 
             //Main display canvas
             let playbackControlHeight = Ensemble.Pages.Editor.ui.playbackWidget.clientHeight,
-                maxWidth = window.innerWidth,
+                maxWidth = Ensemble.Pages.Editor.ui.upperSection.clientWidth,
                 maxHeight = Ensemble.Pages.Editor.ui.canvasContainer.clientHeight - (playbackControlHeight + 10),
                 finalWidth = 0,
-                finalHeight = 0;
+                finalHeight = 0,
+                activeWidget = document.getElementsByClassName("editor-widget--visible")[0];
+
+            if (activeWidget != null) {
+                // a widget is active. Calculate the size based on the remaining space.
+                // may need to determine screen orientation and/or match a media query to alter the correct value, but just sticking with width for now
+                maxWidth = maxWidth - activeWidget.clientWidth;
+            }
 
             if (maxHeight >  Ensemble.Utilities.AspectGenerator.generateHeight(Ensemble.Session.projectAspect, maxWidth)) {
                 //Canvas area is taller than it is wide.

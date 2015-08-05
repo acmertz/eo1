@@ -29,6 +29,10 @@
 	position: absolute;
 }
 
+.editor-canvas-container--displaced-for-widget {
+	right: 25%;
+}
+
 .editor-canvas {
     background-color: #000;
     width: 100%;
@@ -36,4 +40,18 @@
 
 .editor-playback-widget {
 	text-align: center;
+}
+
+.editor-widget {
+	display: none;
+	width: 50%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: #ececec;
+}
+
+.editor-widget--visible {
+	display: inline-block;
 }
