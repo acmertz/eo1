@@ -4,7 +4,6 @@
         relink: function () {
             /// <summary>Renews all UI references and makes sure they're alive.</summary>
 
-            this.PageSections.upperHalf.entireSection = document.getElementsByClassName("editor-section--upper")[0];
             this.PageSections.upperHalf.canvasContainer = document.getElementsByClassName("editor-canvas-container")[0];
 
             this.PageSections.lowerHalf.timeline = document.getElementById("timeline-track-container");
@@ -25,8 +24,6 @@
             this.PageSections.menu.effectsMenu.entireSection = document.getElementById("editorEffectsMenu");
 
             this.TextFields.removeTrackConfirmationName = document.getElementById("remove-track-confirmation__name");
-
-            this.RenderSurfaces.mainCanvas = document.getElementsByClassName("editor-canvas")[0];
 
             this.UserInput.Buttons.mediaBrowserLocation = document.getElementById("editorMediaBrowserLocationButton");
             this.UserInput.Buttons.mediaBrowserHome = document.getElementById("editorMediaBrowserHomeButton");
@@ -50,7 +47,6 @@
             /// <summary>Dialogs, flyouts, and popups used to display information and get user input.</summary>
             upperHalf: {
                 //The entire upper half of the page.
-                entireSection: null,
                 canvasContainer: null
             },
             lowerHalf: {
@@ -89,10 +85,6 @@
 
         TextFields: {
             removeTrackConfirmationName: null
-        },
-
-        RenderSurfaces: {
-            mainCanvas: null
         },
 
         UserInput: {

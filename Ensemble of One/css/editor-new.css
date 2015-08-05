@@ -14,7 +14,6 @@
 .editor-section--upper {
     padding: 10px 10px 0 10px;
     top: 0;
-    text-align: center;
 }
 
 .editor-section--lower {
@@ -25,7 +24,9 @@
 
 .editor-canvas-container {
     display: inline-block;
-    height: calc(100% - 50px);
+    height: calc(100% - 10px);
+	right: 50%;
+	position: absolute;
 }
 
 .editor-canvas {
@@ -34,5 +35,5 @@
 }
 
 .editor-playback-widget {
-    height: 50px;
+	text-align: center;
 }

@@ -82,21 +82,27 @@
 
             Ensemble.Editor.MenuMGR.closeMenu();
             Ensemble.Editor.MenuMGR.unload();
+            Ensemble.Pages.Editor._cleanUI();
 
             let appView = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
             appView.title = "";
         },
 
         ui: {
-
+            upperSection: null,
+            canvasContainer: null,
+            playbackWidget: null
         },
 
         _refreshUI: function () {
+            this.ui.upperSection = document.getElementsByClassName("editor-section--upper")[0];
+            this.ui.canvasContainer = document.getElementsByClassName("editor-canvas-container")[0];
+            this.ui.playbackWidget = document.getElementsByClassName("editor-playback-widget")[0];
+
             $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserLocation).click(this._mediaBrowserButtonOnClickListener);
             $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserHome).click(this._mediaBrowserHomeButtonOnClickListener);
             $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserUpOneLevel).click(this._mediaBrowserUpOneLevelButtonOnClickListener);
             $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserRefresh).click(this._mediaBrowserRefreshButtonOnClickListener);
-
             window.addEventListener("resize", Ensemble.Pages.Editor.viewResized);
         },
 
@@ -106,8 +112,11 @@
             $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserHome).unbind("click");
             $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserUpOneLevel).unbind("click");
             $(Ensemble.Editor.UI.UserInput.Buttons.mediaBrowserRefresh).unbind("click");
-
             window.removeEventListener("resize", Ensemble.Pages.Editor.viewResized);
+
+            this.ui.upperSection = null;
+            this.ui.canvasContainer = null;
+            this.ui.playbackWidget = null;
         },
 
         _listeners: {
@@ -151,11 +160,11 @@
             /// <summary>Adjusts the size of all display surfaces to match the change in window dimensions.</summary>
 
             //Main display canvas
-            var maxWidth = window.innerWidth;
-            var maxHeight = Ensemble.Editor.UI.PageSections.upperHalf.canvasContainer.clientHeight;
-
-            var finalWidth = 0;
-            var finalHeight = 0;
+            let playbackControlHeight = Ensemble.Pages.Editor.ui.playbackWidget.clientHeight,
+                maxWidth = window.innerWidth,
+                maxHeight = Ensemble.Pages.Editor.ui.canvasContainer.clientHeight - (playbackControlHeight + 10),
+                finalWidth = 0,
+                finalHeight = 0;
 
             if (maxHeight >  Ensemble.Utilities.AspectGenerator.generateHeight(Ensemble.Session.projectAspect, maxWidth)) {
                 //Canvas area is taller than it is wide.
@@ -171,8 +180,9 @@
             }
 
             //Ensemble.Editor.UI.PageSections.upperHalf.canvasAndControls.style.width = finalWidth + "px";
-            Ensemble.Editor.UI.PageSections.upperHalf.canvasContainer.style.width = finalWidth + "px";
-            Ensemble.Editor.UI.RenderSurfaces.mainCanvas.style.height = finalHeight + "px";
+            Ensemble.Pages.Editor.ui.canvasContainer.style.width = finalWidth + "px";
+            Ensemble.Editor.Renderer.ui.playbackCanvas.style.height = finalHeight + "px";
+            Ensemble.Pages.Editor.ui.canvasContainer.style.marginRight = (Math.abs(Math.floor(finalWidth * 0.5)) * -1) + "px";
             try { Ensemble.Editor.Renderer.canvasResized(); }
             catch (exception) { }
             Ensemble.Editor.TimelineMGR.updateTrackSizing();
