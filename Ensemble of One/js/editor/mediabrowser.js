@@ -317,7 +317,7 @@
                 else {
                     if (!isNaN(itemIndex)) {
                         Ensemble.Editor.MediaBrowser._dragEnsembleFile = Ensemble.Editor.MediaBrowser._mediaItems[itemIndex];
-                        if (Ensemble.Editor.MediaBrowser._dragEnsembleFile.eo1type == "picture") Ensemble.Editor.MediaBrowser._dragEnsembleFile.duration = Ensemble.Settings.retrieveSetting("default-picture-duration");
+                        if (Ensemble.Editor.MediaBrowser._dragEnsembleFile.eo1type == "picture") Ensemble.Editor.MediaBrowser._dragEnsembleFile.duration = Ensemble.Settings.retrieveSetting("default-picture-duration") * 1000;
                         if (Ensemble.Editor.MediaBrowser._dragEnsembleFile.eo1type != "folder") {
                             Ensemble.Editor.MediaBrowser._dragCheck = true;
                             Ensemble.Utilities.MouseTracker.startTracking(event.clientX, event.clientY);

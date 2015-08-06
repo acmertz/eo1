@@ -54,18 +54,18 @@
 
             play: function () {
                 /// <summary>Begins playback of the Clip.</summary>
-                if (this.type != Ensemble.Editor.Clip.ClipType.picture) this._player.play();
+                if (this.type == Ensemble.Editor.Clip.ClipType.video || this.type == Ensemble.Editor.Clip.ClipType.audio) this._player.play();
             },
 
             pause: function () {
                 /// <summary>Pauses playback of the Clip.</summary>
-                if (this.type != Ensemble.Editor.Clip.ClipType.picture) this._player.pause();
+                if (this.type == Ensemble.Editor.Clip.ClipType.video || this.type == Ensemble.Editor.Clip.ClipType.audio) this._player.pause();
             },
 
             seek: function (ms) {
                 /// <summary>Seeks the Clip to the given time in milliseconds.</summary>
                 /// <param name="ms" type="Number">The time in milliseconds.</param>
-                if (this.type == Ensemble.Editor.Clip.ClipType.picture) {
+                if (this.type == Ensemble.Editor.Clip.ClipType.picture || this.type == Ensemble.Editor.Clip.ClipType.lens) {
                     Ensemble.Editor.PlaybackMGR._listeners.clipSeeked();
                 }
                 else {
@@ -139,7 +139,14 @@
                 let drawY = this.ycoord * scale;
                 let drawWidth = this.width * scale;
                 let drawHeight = this.height * scale;
-                context.drawImage(this._player, drawX, drawY, drawWidth, drawHeight);
+
+                if (this.type == Ensemble.Editor.Clip.ClipType.lens) {
+                    // apply lens effect
+                }
+
+                else context.drawImage(this._player, drawX, drawY, drawWidth, drawHeight);
+
+                if (this.type == Ensemble.Editor.Clip.ClipType.audio) console.warn("Nooo! You're rendering audio to the canvas!!!1!1!!11!!!one!!");
 
                 if (this.selected) {
                     context.beginPath();
@@ -277,19 +284,22 @@
             isRenderable: function () {
                 /// <summary>Returns whether or not the clip can be drawn to the screen (i.e., is either a video or image file).</summary>
                 /// <returns type="Boolean">Whether or not the clip is renderable.</returns>
-                if (this.type == Ensemble.Editor.Clip.ClipType.video || this.type == Ensemble.Editor.Clip.ClipType.picture) return true;
+                if (this.type == Ensemble.Editor.Clip.ClipType.video || this.type == Ensemble.Editor.Clip.ClipType.picture || this.type == Ensemble.Editor.Clip.ClipType.lens) return true;
                 return false;
             },
 
             unload: function () {
                 /// <summary>Unloads the clip and turns its file reference into a stub.</summary>
-                let domPlayer = document.getElementById(this._player.id);
-                this._player.src = null;
-                this._player = null;
-                domPlayer.parentNode.removeChild(domPlayer);
-                this.file = {
-                    path: this.file.path,
-                    token: this.file.token
+                if (this.type == Ensemble.Editor.Clip.ClipType.lens) { }
+                else {
+                    let domPlayer = document.getElementById(this._player.id);
+                    this._player.src = null;
+                    this._player = null;
+                    domPlayer.parentNode.removeChild(domPlayer);
+                    this.file = {
+                        path: this.file.path,
+                        token: this.file.token
+                    }
                 }
             }
 
@@ -300,6 +310,7 @@
                 video: "video",
                 audio: "audio",
                 picture: "picture",
+                lens: "lens",
                 unknown: "unknown"
             },
 

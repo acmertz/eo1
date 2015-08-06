@@ -762,7 +762,7 @@
             let titleEl = document.createElement("div");
             let titleIcon = document.createElement("span");
             titleIcon.className = "timeline-clip__icon";
-            titleIcon.innerHTML = clip.file.icon + "&nbsp;";
+            titleIcon.innerHTML = (clip.type == Ensemble.Editor.Clip.ClipType.lens ? "&#57807;" : clip.file.icon) + "&nbsp;";
 
             let titleText = document.createElement("span");
             titleText.className = "timeline-clip__title";
@@ -771,7 +771,7 @@
             titleEl.appendChild(titleIcon);
             titleEl.appendChild(titleText);
 
-            clipEl.appendChild(thumbEl);
+            if (clip.type != Ensemble.Editor.Clip.ClipType.lens) clipEl.appendChild(thumbEl);
             clipEl.appendChild(titleEl);
 
             clipEl.addEventListener("pointerenter", Ensemble.Editor.TimelineMGR._listeners.pointerEnteredClip);
@@ -1754,7 +1754,7 @@
                 document.getElementById("editorTimelineTracks").appendChild(ghostEl);
 
                 Ensemble.Editor.TimelineMGR._trimMaxDur = clipObj.file.duration;
-                if (clipObj.type == Ensemble.Editor.Clip.ClipType.picture) {
+                if (clipObj.type == Ensemble.Editor.Clip.ClipType.picture || clipObj.type == Ensemble.Editor.Clip.ClipType.lens) {
                     Ensemble.Editor.TimelineMGR._trimMinStart = 0;
                     Ensemble.Editor.TimelineMGR._trimMaxEnd = Infinity;
                 }

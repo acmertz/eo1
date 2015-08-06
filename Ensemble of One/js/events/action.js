@@ -123,6 +123,24 @@
                     Ensemble.Editor.TimelineMGR.changeClipVolume(this._payload.clipId, this._payload.newVolume);
                 }
 
+                else if (this._type == Ensemble.Events.Action.ActionType.createLens) {
+                    // create lens
+                    let newLens = new Ensemble.Editor.Clip(this._payload.lensId);
+
+                    this._payload.lensId = newLens.id;
+
+                    newLens.type = Ensemble.Editor.Clip.ClipType.lens;
+                    newLens.duration = Ensemble.Settings.retrieveSetting("default-picture-duration") * 1000;
+                    newLens.preExisting = false;
+
+                    newLens.name = "Untitled lens";
+                    newLens.width = Ensemble.Session.projectResolution.width;
+                    newLens.height = Ensemble.Session.projectResolution.height;
+                    newLens.xcoord = 0;
+                    newLens.ycoord = 0;
+                    Ensemble.Editor.TimelineMGR.addClipToTrack(newLens, this._payload.destinationTrack, this._payload.destinationTime);
+                }
+
                 else console.error("Unknown Action!");
             },
 
@@ -208,6 +226,11 @@
 
                 else if (this._type == Ensemble.Events.Action.ActionType.clipVolumeChanged) {
                     Ensemble.Editor.TimelineMGR.changeClipVolume(this._payload.clipId, this._payload.oldVolume);
+                }
+
+                else if (this._type == Ensemble.Events.Action.ActionType.createLens) {
+                    // undo lens creation
+                    Ensemble.Editor.TimelineMGR.removeClip(this._payload.lensId);
                 }
 
                 else console.error("Unknown Action!");
@@ -328,6 +351,9 @@
                 else if (this._type == Ensemble.Events.Action.ActionType.trimClip) {
                     return "Trimmed clip.";
                 }
+                else if (this._type == Ensemble.Events.Action.ActionType.createLens) {
+                    return "Created lens.";
+                }
                 else {
                     return "Unknown action";
                 }
@@ -348,7 +374,8 @@
                 splitClip: "splitClip",
                 positionClip: "positionClip",
                 renameClip: "renameClip",
-                clipVolumeChanged: "clipVolumeChanged"
+                clipVolumeChanged: "clipVolumeChanged",
+                createLens: "createLens"
             }
         }
     );

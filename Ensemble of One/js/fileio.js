@@ -214,6 +214,13 @@
                         xml.Attrib("newVolume", Ensemble.HistoryMGR._backStack[i]._payload.newVolume.toString());
                     }
 
+                    else if (Ensemble.HistoryMGR._backStack[i]._type == Ensemble.Events.Action.ActionType.createLens) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
+                        xml.Attrib("lensId", Ensemble.HistoryMGR._backStack[i]._payload.lensId.toString());
+                        xml.Attrib("destinationTrack", Ensemble.HistoryMGR._backStack[i]._payload.destinationTrack.toString());
+                        xml.Attrib("destinationTime", Ensemble.HistoryMGR._backStack[i]._payload.destinationTime.toString());
+                    }
+
                     else console.error("Unable to save History Action to disk - unknown type.");
                     xml.EndNode();
                 }
@@ -355,6 +362,13 @@
                         xml.Attrib("newVolume", Ensemble.HistoryMGR._forwardStack[i]._payload.newVolume.toString());
                     }
 
+                    else if (Ensemble.HistoryMGR._forwardStack[i]._type == Ensemble.Events.Action.ActionType.createLens) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
+                        xml.Attrib("lensId", Ensemble.HistoryMGR._forwardStack[i]._payload.lensId.toString());
+                        xml.Attrib("destinationTrack", Ensemble.HistoryMGR._forwardStack[i]._payload.destinationTrack.toString());
+                        xml.Attrib("destinationTime", Ensemble.HistoryMGR._forwardStack[i]._payload.destinationTime.toString());
+                    }
+
                     else {
                         console.error("Unable to save History Action to disk - unknown type.");
                     }
@@ -454,8 +468,8 @@
             xml.Attrib("width", clip.width.toString());
             xml.Attrib("height", clip.height.toString());
             xml.Attrib("aspect", Ensemble.Utilities.AspectGenerator.calcAspect(clip.width, clip.height).toString());
-            xml.Attrib("path", clip.file.path);
-            xml.Attrib("token", clip.file.token);
+            xml.Attrib("path", clip.type == Ensemble.Editor.Clip.ClipType.lens ? "" : clip.file.path);
+            xml.Attrib("token", clip.type == Ensemble.Editor.Clip.ClipType.lens ? "" : clip.file.token);
             xml.EndNode();
             return xml;
         },
@@ -793,6 +807,13 @@
                             newVolume: parseFloat(undoActions[i].getAttribute("newVolume"))
                         }));
                     }
+                    else if (actionType == Ensemble.Events.Action.ActionType.createLens) {
+                        Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.createLens, {
+                            lensId: parseInt(undoActions[i].getAttribute("lensId"), 10),
+                            destinationTrack: parseInt(undoActions[i].getAttribute("destinationTrack"), 10),
+                            destinationTime: parseInt(undoActions[i].getAttribute("destinationTime"), 10)
+                        }));
+                    }
                     else {
                         console.error("Unable to load History Action from disk - unknown type.");
                     }
@@ -965,9 +986,16 @@
                     }
                     else if (actionType == Ensemble.Events.Action.ActionType.clipVolumeChanged) {
                         Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.clipVolumeChanged, {
-                            clipId: parseInt(undoActions[i].getAttribute("clipId"), 10),
-                            oldVolume: parseFloat(undoActions[i].getAttribute("oldVolume")),
-                            newVolume: parseFloat(undoActions[i].getAttribute("newVolume"))
+                            clipId: parseInt(redoActions[i].getAttribute("clipId"), 10),
+                            oldVolume: parseFloat(redoActions[i].getAttribute("oldVolume")),
+                            newVolume: parseFloat(redoActions[i].getAttribute("newVolume"))
+                        }));
+                    }
+                    else if (actionType == Ensemble.Events.Action.ActionType.createLens) {
+                        Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.createLens, {
+                            lensId: parseInt(redoActions[i].getAttribute("lensId"), 10),
+                            destinationTrack: parseInt(redoActions[i].getAttribute("destinationTrack"), 10),
+                            destinationTime: parseInt(redoActions[i].getAttribute("destinationTime"), 10)
                         }));
                     }
                     else {
@@ -1050,29 +1078,32 @@
                 let cb = callback;
                 let continueLoad = loadClip;
 
-                if (clipObj.file.token.length > 0) {
-                    Windows.Storage.AccessCache.StorageApplicationPermissions.futureAccessList.getFileAsync(clipObj.file.token).done(function (loadedFile) {
-                        console.log("Loading file stub for clip with ID " + payloadObj + "...");
-                        let newFile = Ensemble.FileIO._mergeFileStub(loadedFile);
-                        newFile.token = clipObj.file.token;
-                        clipObj.file = newFile;
-                        if (continueLoad) {
-                            Ensemble.FileIO.loadClip(clipObj.file, clipObj, cb, null, null, true);
-                        }
-                        else cb(clipObj, payloadObj);
-                    });
-                }
+                if (clipObj.type == Ensemble.Editor.Clip.ClipType.lens) cb(clipObj, payloadObj);
                 else {
-                    Windows.Storage.StorageFile.getFileFromPathAsync(clipObj.file.path).done(function (loadedFile) {
-                        console.log("Loading file stub for clip with ID " + payloadObj + "...");
-                        let newFile = Ensemble.FileIO._mergeFileStub(loadedFile);
-                        clipObj.file = newFile;
+                    if (clipObj.file.token.length > 0) {
+                        Windows.Storage.AccessCache.StorageApplicationPermissions.futureAccessList.getFileAsync(clipObj.file.token).done(function (loadedFile) {
+                            console.log("Loading file stub for clip with ID " + payloadObj + "...");
+                            let newFile = Ensemble.FileIO._mergeFileStub(loadedFile);
+                            newFile.token = clipObj.file.token;
+                            clipObj.file = newFile;
+                            if (continueLoad) {
+                                Ensemble.FileIO.loadClip(clipObj.file, clipObj, cb, null, null, true);
+                            }
+                            else cb(clipObj, payloadObj);
+                        });
+                    }
+                    else {
+                        Windows.Storage.StorageFile.getFileFromPathAsync(clipObj.file.path).done(function (loadedFile) {
+                            console.log("Loading file stub for clip with ID " + payloadObj + "...");
+                            let newFile = Ensemble.FileIO._mergeFileStub(loadedFile);
+                            clipObj.file = newFile;
 
-                        if (continueLoad) {
-                            Ensemble.FileIO.loadClip(clipObj.file, clipObj, cb, null, null, true);
-                        }
-                        else cb(clipObj, payloadObj);
-                    });
+                            if (continueLoad) {
+                                Ensemble.FileIO.loadClip(clipObj.file, clipObj, cb, null, null, true);
+                            }
+                            else cb(clipObj, payloadObj);
+                        });
+                    }
                 }
             })();            
         },
