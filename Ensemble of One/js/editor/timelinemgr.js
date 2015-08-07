@@ -49,7 +49,9 @@
                 let entireTrack = this._buildTrackDisplay(this.tracks[i]);
                 for (let k = 0; k < this.tracks[i].clips.length; k++) {
                     entireTrack.content.appendChild(this._buildClipDisplay(this.tracks[i].clips[k]));
-                    Ensemble.FileIO.retrieveThumbnail(this.tracks[i].clips[k].file, this.tracks[i].clips[k].id, Ensemble.Editor.TimelineMGR._listeners.clipThumbnailLoaded);
+                    if (this.tracks[i].clips[k].type != Ensemble.Editor.Clip.ClipType.lens) {
+                        Ensemble.FileIO.retrieveThumbnail(this.tracks[i].clips[k].file, this.tracks[i].clips[k].id, Ensemble.Editor.TimelineMGR._listeners.clipThumbnailLoaded);
+                    }
                 }
                 Ensemble.Editor.UI.PageSections.lowerHalf.timelineHeaders.appendChild(entireTrack.header);
                 Ensemble.Editor.UI.PageSections.lowerHalf.timelineDetails.appendChild(entireTrack.detail);
@@ -396,7 +398,9 @@
             let targetTrackEl = document.getElementById(this._buildTrackDOMId(targetTrack.id));
             let newClipEl = this._buildClipDisplay(clipObj);
             targetTrackEl.appendChild(newClipEl);
-            Ensemble.FileIO.retrieveThumbnail(clipObj.file, clipObj.id, Ensemble.Editor.TimelineMGR._listeners.clipThumbnailLoaded);
+            if (clipObj.type != Ensemble.Editor.Clip.ClipType.lens) {
+                Ensemble.FileIO.retrieveThumbnail(clipObj.file, clipObj.id, Ensemble.Editor.TimelineMGR._listeners.clipThumbnailLoaded);
+            }
 
             this._rebuildIndex();
             Ensemble.Editor.PlaybackMGR.sync();

@@ -127,8 +127,10 @@
             setVolumeModifier: function (val) {
                 /// <summary>Sets the volume modifier of the clip.</summary>
                 /// <param name="val" type="Number">The volume modifier to assign to the clip. Must be a decimal value between 0.0 and 1.0.</param>
-                this.volumeModifier = val;
-                this._player.volume = this.volume * this.volumeModifier;
+                if (this.type != Ensemble.Editor.Clip.ClipType.lens) {
+                    this.volumeModifier = val;
+                    this._player.volume = this.volume * this.volumeModifier;
+                }
             },
 
             drawToCanvas: function (context, scale) {

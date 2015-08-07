@@ -1014,7 +1014,8 @@
                 Ensemble.FileIO._projectClipsFullyLoaded = 0;
                 for (let i = 0; i < Ensemble.Editor.TimelineMGR.tracks.length; i++) {
                     for (let k = 0; k < Ensemble.Editor.TimelineMGR.tracks[i].clips.length; k++) {
-                        Ensemble.FileIO._loadFileFromStub(Ensemble.Editor.TimelineMGR.tracks[i].clips[k], i, Ensemble.FileIO._projectFileStubLoaded);
+                        if (Ensemble.Editor.TimelineMGR.tracks[i].clips[k].type == Ensemble.Editor.Clip.ClipType.lens) Ensemble.FileIO._projectProjectLoadCompletionChecker();
+                        else Ensemble.FileIO._loadFileFromStub(Ensemble.Editor.TimelineMGR.tracks[i].clips[k], i, Ensemble.FileIO._projectFileStubLoaded);
                     }
                 }
             }
@@ -1034,7 +1035,8 @@
                     Ensemble.FileIO._multiClipLoadTotal = clips.length;
                     Ensemble.FileIO._multiClipLoadCb = cb;
                     for (let i = 0; i < clipArr.length; i++) {
-                        Ensemble.FileIO._loadFileFromStub(clips[i], null, Ensemble.FileIO._multiClipLoadFinish, true);
+                        if (clipArr[i].type == Ensemble.Editor.Clip.ClipType.lens) Ensemble.FileIO._multipleClipLoadCompletionChecker(clipArr[i]);
+                        else Ensemble.FileIO._loadFileFromStub(clips[i], null, Ensemble.FileIO._multiClipLoadFinish, true);
                     }
                 }
                 else {
@@ -1052,6 +1054,10 @@
             clip.setPlayer(payload.player);
             clip.setMetadata(metadata);
 
+            Ensemble.FileIO._multipleClipLoadCompletionChecker(clip);
+        },
+
+        _multipleClipLoadCompletionChecker: function (clip) {
             Ensemble.FileIO._multiClipLoadBuffer.push(clip);
             if (Ensemble.FileIO._multiClipLoadBuffer.length == Ensemble.FileIO._multiClipLoadTotal) {
                 // complete! Fire the callback.
@@ -1061,7 +1067,7 @@
                 Ensemble.FileIO._multiClipLoadBuffer = [];
                 Ensemble.FileIO._multiClipLoadTotal = 0;
                 Ensemble.FileIO._multiClipLoadCb = null;
-                
+
                 cb(clipArr);
             }
         },
@@ -1073,37 +1079,34 @@
             /// <param name="callback" type="Function">A function to execute when the file has been loaded.</param>
             /// <param name="loadClip" type="Boolean">Optional. If true, goes on and loads the clip as well before firing the callback.</param>
             (function () {
-                let clipObj = clip;
-                let payloadObj = payload;
-                let cb = callback;
-                let continueLoad = loadClip;
+                let clipObj = clip,
+                    payloadObj = payload,
+                    cb = callback,
+                    continueLoad = loadClip;
 
-                if (clipObj.type == Ensemble.Editor.Clip.ClipType.lens) cb(clipObj, payloadObj);
+                if (clipObj.file.token.length > 0) {
+                    Windows.Storage.AccessCache.StorageApplicationPermissions.futureAccessList.getFileAsync(clipObj.file.token).done(function (loadedFile) {
+                        console.log("Loading file stub for clip with ID " + payloadObj + "...");
+                        let newFile = Ensemble.FileIO._mergeFileStub(loadedFile);
+                        newFile.token = clipObj.file.token;
+                        clipObj.file = newFile;
+                        if (continueLoad) {
+                            Ensemble.FileIO.loadClip(clipObj.file, clipObj, cb, null, null, true);
+                        }
+                        else cb(clipObj, payloadObj);
+                    });
+                }
                 else {
-                    if (clipObj.file.token.length > 0) {
-                        Windows.Storage.AccessCache.StorageApplicationPermissions.futureAccessList.getFileAsync(clipObj.file.token).done(function (loadedFile) {
-                            console.log("Loading file stub for clip with ID " + payloadObj + "...");
-                            let newFile = Ensemble.FileIO._mergeFileStub(loadedFile);
-                            newFile.token = clipObj.file.token;
-                            clipObj.file = newFile;
-                            if (continueLoad) {
-                                Ensemble.FileIO.loadClip(clipObj.file, clipObj, cb, null, null, true);
-                            }
-                            else cb(clipObj, payloadObj);
-                        });
-                    }
-                    else {
-                        Windows.Storage.StorageFile.getFileFromPathAsync(clipObj.file.path).done(function (loadedFile) {
-                            console.log("Loading file stub for clip with ID " + payloadObj + "...");
-                            let newFile = Ensemble.FileIO._mergeFileStub(loadedFile);
-                            clipObj.file = newFile;
+                    Windows.Storage.StorageFile.getFileFromPathAsync(clipObj.file.path).done(function (loadedFile) {
+                        console.log("Loading file stub for clip with ID " + payloadObj + "...");
+                        let newFile = Ensemble.FileIO._mergeFileStub(loadedFile);
+                        clipObj.file = newFile;
 
-                            if (continueLoad) {
-                                Ensemble.FileIO.loadClip(clipObj.file, clipObj, cb, null, null, true);
-                            }
-                            else cb(clipObj, payloadObj);
-                        });
-                    }
+                        if (continueLoad) {
+                            Ensemble.FileIO.loadClip(clipObj.file, clipObj, cb, null, null, true);
+                        }
+                        else cb(clipObj, payloadObj);
+                    });
                 }
             })();            
         },
@@ -1167,21 +1170,25 @@
 
         _projectFilePlayerLoaded: function (payloadObj) {
             (function () {
-                let payload = payloadObj;
-                let file = payload.file;
-                let id = payload.payload;
-                let player = payload.player;
+                let payload = payloadObj,
+                    file = payload.file,
+                    id = payload.payload,
+                    player = payload.player;
                 Ensemble.FileIO._projectLoadBuffer[id].setPlayer(player);
                 console.log("Finished loading clip with ID " + id + ".");
-                Ensemble.FileIO._projectClipsFullyLoaded++;
-                if (Ensemble.FileIO._projectClipsFullyLoaded === Ensemble.Session.projectClipCount) {
-                    console.info("Finished loading all clips!");
-                    Ensemble.Editor.TimelineMGR.refreshClipVolumeModifiers();
-                    requestAnimationFrame(function () {
-                        Ensemble.MainMenu._listeners.projectFinishedLoading();
-                    });
-                }
+                Ensemble.FileIO._projectProjectLoadCompletionChecker();
             })();
+        },
+
+        _projectProjectLoadCompletionChecker: function () {
+            Ensemble.FileIO._projectClipsFullyLoaded++;
+            if (Ensemble.FileIO._projectClipsFullyLoaded === Ensemble.Session.projectClipCount) {
+                console.info("Finished loading all clips!");
+                Ensemble.Editor.TimelineMGR.refreshClipVolumeModifiers();
+                requestAnimationFrame(function () {
+                    Ensemble.MainMenu._listeners.projectFinishedLoading();
+                });
+            }
         },
 
         _loadTrackFromXML: function (xmlTrack) {
