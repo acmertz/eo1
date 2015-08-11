@@ -47,10 +47,11 @@
             type: null,
             preExisting: null,
 
-            _player: null,
-            _intAspect: null,
             _effectCanvas: null,
             _effectTexture: null,
+
+            _player: null,
+            _intAspect: null,
             selected: null,
             hovering: null,
 
@@ -148,14 +149,25 @@
 
                 if (this.type == Ensemble.Editor.Clip.ClipType.lens) {
                     // apply lens effect
-                    //let effectImg = new Image(drawWidth, drawHeight);
-                    //effectImg.src = context.getImageData(drawX, drawY, drawWidth, drawHeight);
+                    let startDrawTime = performance.now(),
+                        effectImageData = context.getImageData(drawX, drawY, drawWidth, drawHeight),
+                        imageDataLength = effectImageData.data.length;
+                    console.log("Effect base retrieval time: " + (performance.now() - startDrawTime));
 
-                    //this._effectTexture = this._effectCanvas.texture(effectImg);
-                    //this._effectCanvas.draw(this._effectTexture).swirl(drawWidth / 2, drawHeight / 2, drawX > drawY ? drawY : drawX, 3).update();
+                    let effectComputeStartTime = performance.now();
+                    for (let i = 0; i < imageDataLength; i += 4) {
+                        effectImageData.data[i] = 255 - effectImageData.data[i];
+                        effectImageData.data[i + 1] = 255 - effectImageData.data[i + 1];
+                        effectImageData.data[i + 2] = 255 - effectImageData.data[i + 2];
+                        effectImageData.data[i + 3] = 255;
+                    }
+                    console.log("Effect computation time: " + (performance.now() - effectComputeStartTime));
 
-                    //effectImg.src = this._effectCanvas.toDataURL();
-                    //context.drawImage(effectImg, drawX, drawY, drawWidth, drawHeight);
+                    let compositeStartTime = performance.now();
+                    context.putImageData(effectImageData, drawX, drawY);
+                    console.log("Effect computation time: " + (performance.now() - compositeStartTime));
+
+                    console.log("Total Lens draw time: " + (performance.now() - startDrawTime) + "ms");
                 }
 
                 else context.drawImage(this._player, drawX, drawY, drawWidth, drawHeight);
