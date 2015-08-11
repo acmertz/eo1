@@ -22,6 +22,8 @@
             this.ycoord = 0;
             this.preExisting = true;
 
+            this._effectCanvas = fx.canvas();
+
             this.selected = false;
             this.hovering = false;
         },
@@ -47,6 +49,8 @@
 
             _player: null,
             _intAspect: null,
+            _effectCanvas: null,
+            _effectTexture: null,
             selected: null,
             hovering: null,
 
@@ -144,6 +148,14 @@
 
                 if (this.type == Ensemble.Editor.Clip.ClipType.lens) {
                     // apply lens effect
+                    //let effectImg = new Image(drawWidth, drawHeight);
+                    //effectImg.src = context.getImageData(drawX, drawY, drawWidth, drawHeight);
+
+                    //this._effectTexture = this._effectCanvas.texture(effectImg);
+                    //this._effectCanvas.draw(this._effectTexture).swirl(drawWidth / 2, drawHeight / 2, drawX > drawY ? drawY : drawX, 3).update();
+
+                    //effectImg.src = this._effectCanvas.toDataURL();
+                    //context.drawImage(effectImg, drawX, drawY, drawWidth, drawHeight);
                 }
 
                 else context.drawImage(this._player, drawX, drawY, drawWidth, drawHeight);
@@ -314,6 +326,10 @@
                 picture: "picture",
                 lens: "lens",
                 unknown: "unknown"
+            },
+
+            LensType: {
+                grayscale: "grayscale"
             },
 
             CollisionType: {

@@ -45,8 +45,8 @@
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\$(WMSJSProjectDirectory)\Microsoft.VisualStudio.$(WMSJSProject).props" />
   <PropertyGroup>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion>10.0.10166.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.10166.0</TargetPlatformMinVersion>
+    <TargetPlatformVersion>10.0.10240.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.10240.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>$(VersionNumberMajor).$(VersionNumberMinor)</MinimumVisualStudioVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
     <PackageCertificateKeyFile>Ensemble of One Win10_TemporaryKey.pfx</PackageCertificateKeyFile>
@@ -166,6 +166,7 @@
     <Content Include="lib\font-awesome-4.1.0\scss\_spinning.scss" />
     <Content Include="lib\font-awesome-4.1.0\scss\_stacked.scss" />
     <Content Include="lib\font-awesome-4.1.0\scss\_variables.scss" />
+    <Content Include="lib\glfx.js" />
     <Content Include="lib\jquery-2.1.1.min.js" />
     <Content Include="lib\pure\buttons-min.css" />
     <Content Include="lib\pure\pure-min.css" />

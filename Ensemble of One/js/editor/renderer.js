@@ -93,7 +93,7 @@
                         context.closePath();
                         context.fill();
 
-                        context.drawImage(clip._player, xcoord, ycoord, xwidth, yheight);
+                        if (clip.type != Ensemble.Editor.Clip.ClipType.lens)  context.drawImage(clip._player, xcoord, ycoord, xwidth, yheight);
                         context.globalAlpha = 1;
                     }
 
@@ -165,7 +165,7 @@
                         context.closePath();
                         context.fill();
 
-                        context.drawImage(clip._player, xcoord, ycoord, xwidth, yheight);
+                        if (clip.type != Ensemble.Editor.Clip.ClipType.lens) context.drawImage(clip._player, xcoord, ycoord, xwidth, yheight);
                         context.globalAlpha = 1;
                         Ensemble.Editor.Renderer._resizedStatus = {
                             xcoord: xcoord,
