@@ -23,6 +23,7 @@
             this.preExisting = true;
 
             this._effectCanvas = fx.canvas();
+            this._effectIntermediateCanvas = document.createElement("canvas");
 
             this.selected = false;
             this.hovering = false;
@@ -48,6 +49,7 @@
             preExisting: null,
 
             _effectCanvas: null,
+            _effectIntermediateCanvas: null,
             _effectTexture: null,
 
             _player: null,
@@ -149,23 +151,18 @@
 
                 if (this.type == Ensemble.Editor.Clip.ClipType.lens) {
                     // apply lens effect
-                    let startDrawTime = performance.now(),
-                        effectImageData = context.getImageData(drawX, drawY, drawWidth, drawHeight),
-                        imageDataLength = effectImageData.data.length;
-                    console.log("Effect base retrieval time: " + (performance.now() - startDrawTime));
+                    let startDrawTime = performance.now();
+                    this._effectIntermediateCanvas.width = drawWidth;
+                    this._effectIntermediateCanvas.height = drawHeight;
+                    let tempContext = this._effectIntermediateCanvas.getContext("2d");
+                    tempContext.putImageData(context.getImageData(drawX, drawY, drawWidth, drawHeight), 0, 0);
+                    
+                    if (this._effectTexture == null) this._effectTexture = this._effectCanvas.texture(this._effectIntermediateCanvas);
+                    else this._effectTexture.loadContentsOf(this._effectIntermediateCanvas);
 
-                    let effectComputeStartTime = performance.now();
-                    for (let i = 0; i < imageDataLength; i += 4) {
-                        effectImageData.data[i] = 255 - effectImageData.data[i];
-                        effectImageData.data[i + 1] = 255 - effectImageData.data[i + 1];
-                        effectImageData.data[i + 2] = 255 - effectImageData.data[i + 2];
-                        effectImageData.data[i + 3] = 255;
-                    }
-                    console.log("Effect computation time: " + (performance.now() - effectComputeStartTime));
+                    this._effectCanvas.draw(this._effectTexture).ink(0.25).update();
 
-                    let compositeStartTime = performance.now();
-                    context.putImageData(effectImageData, drawX, drawY);
-                    console.log("Effect computation time: " + (performance.now() - compositeStartTime));
+                    let pixelArray = this._effectCanvas.getPixelArray();
 
                     console.log("Total Lens draw time: " + (performance.now() - startDrawTime) + "ms");
                 }
