@@ -26,6 +26,7 @@
             Ensemble.Editor.UI.relink();
             Ensemble.Editor.TimelineMGR.init();
             Ensemble.Editor.PlaybackMGR.init();
+            Ensemble.Editor.PopinMGR.init();
             Ensemble.Editor.Renderer.init();
             Ensemble.Editor.TimelineMGR._rebuildIndex();
             Ensemble.Editor.Renderer.renderSingleFrame();
@@ -82,6 +83,7 @@
 
             Ensemble.Editor.MenuMGR.closeMenu();
             Ensemble.Editor.MenuMGR.unload();
+            Ensemble.Editor.PopinMGR.unload();
             Ensemble.Pages.Editor._cleanUI();
 
             let appView = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
@@ -165,13 +167,15 @@
                 maxHeight = Ensemble.Pages.Editor.ui.canvasContainer.clientHeight - (playbackControlHeight + 10),
                 finalWidth = 0,
                 finalHeight = 0,
-                activeWidget = document.getElementsByClassName("editor-widget--visible")[0];
+                activeWidget = document.getElementsByClassName("editor-popin--visible")[0];
 
             if (activeWidget != null) {
                 // a widget is active. Calculate the size based on the remaining space.
                 // may need to determine screen orientation and/or match a media query to alter the correct value, but just sticking with width for now
                 maxWidth = maxWidth - activeWidget.clientWidth;
+                WinJS.Utilities.addClass(Ensemble.Pages.Editor.ui.canvasContainer, "editor-canvas-container--displaced-for-widget");
             }
+            else WinJS.Utilities.removeClass(Ensemble.Pages.Editor.ui.canvasContainer, "editor-canvas-container--displaced-for-widget");
 
             if (maxHeight >  Ensemble.Utilities.AspectGenerator.generateHeight(Ensemble.Session.projectAspect, maxWidth)) {
                 //Canvas area is taller than it is wide.

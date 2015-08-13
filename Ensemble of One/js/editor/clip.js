@@ -151,7 +151,6 @@
 
                 if (this.type == Ensemble.Editor.Clip.ClipType.lens) {
                     // apply lens effect
-                    let startDrawTime = performance.now();
                     this._effectIntermediateCanvas.width = drawWidth;
                     this._effectIntermediateCanvas.height = drawHeight;
                     let tempContext = this._effectIntermediateCanvas.getContext("2d");
@@ -163,8 +162,6 @@
                     this._effectCanvas.draw(this._effectTexture).ink(0.25).update();
 
                     let pixelArray = this._effectCanvas.getPixelArray();
-
-                    console.log("Total Lens draw time: " + (performance.now() - startDrawTime) + "ms");
                 }
 
                 else context.drawImage(this._player, drawX, drawY, drawWidth, drawHeight);

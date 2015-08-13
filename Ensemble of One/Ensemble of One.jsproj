@@ -106,6 +106,7 @@
     <Content Include="js\editor\calloutmgr.js" />
     <Content Include="js\editor\clip.js" />
     <Content Include="js\editor\mediabrowser.js" />
+    <Content Include="js\editor\popinmgr.js" />
     <Content Include="js\editor\menumgr.js" />
     <Content Include="js\editor\playbackmgr.js" />
     <Content Include="js\editor\renderer.js" />

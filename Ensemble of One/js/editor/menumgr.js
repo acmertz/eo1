@@ -68,6 +68,7 @@
             $(".editor-toolbar-command--import-media").removeAttr("disabled");
             $(".editor-toolbar-command--browse-media").removeAttr("disabled");
             $(".editor-toolbar-command--create-filter").removeAttr("disabled");
+            $(".editor-toolbar-command--record-video").removeAttr("disabled");
 
             if (Ensemble.Editor.SelectionMGR.selected.length == 1) {
                 $(".editor-toolbar-command--clear-selection").removeAttr("disabled");
@@ -204,6 +205,11 @@
                 else if (command == "clear-selection") setTimeout(function () {
                     Ensemble.Editor.SelectionMGR.clearSelection();
                 }, 0);
+
+                    // MEDIA CAPTURE
+                else if (command == "record-video") {
+                    Ensemble.Editor.PopinMGR.requestPopin(Ensemble.Editor.PopinMGR.PopinTypes.cameraCapture);
+                }
 
                 // ANIMATIONS/EFFECTS
                 else if (command == "create-filter") {

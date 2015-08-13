@@ -42,7 +42,7 @@
 	text-align: center;
 }
 
-.editor-widget {
+.editor-popin {
 	display: none;
 	width: 50%;
 	height: 100%;
@@ -50,8 +50,10 @@
 	top: 0;
 	left: 0;
 	background-color: #ececec;
+    padding: 10px;
+    box-sizing: border-box;
 }
 
-.editor-widget--visible {
+.editor-popin--visible {
 	display: inline-block;
 }
