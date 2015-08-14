@@ -34,6 +34,7 @@
             switch (popin) {
                 case Ensemble.Editor.PopinMGR.PopinTypes.cameraCapture:
                     WinJS.Utilities.removeClass(this.ui.cameraCapturePopin, "editor-popin--visible");
+                    Ensemble.Editor.MediaCaptureMGR.cancelVideoCaptureSession();
                     break;
             }
             this.activePopin = null;
@@ -44,6 +45,7 @@
             switch (popin) {
                 case Ensemble.Editor.PopinMGR.PopinTypes.cameraCapture:
                     WinJS.Utilities.addClass(this.ui.cameraCapturePopin, "editor-popin--visible");
+                    Ensemble.Editor.MediaCaptureMGR.initVideoCaptureSession();
                     break;
             }
             this.activePopin = popin;
