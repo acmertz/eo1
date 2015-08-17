@@ -64,6 +64,7 @@
     <Content Include="css\editor.css" />
     <Content Include="css\main-menu.css" />
     <Content Include="css\media-browser.css" />
+    <Content Include="css\popins.css" />
     <Content Include="css\timeline.css" />
     <Content Include="default.html" />
     <Content Include="images\logo.scale-100.png" />

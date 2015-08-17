@@ -1,0 +1,8 @@
+﻿/* Video recording popin */
+.media-capture-element--webcam {
+    background-color: black;
+    width: 320px;
+    max-width: 100%;
+    display: block;
+    margin: auto;
+}
