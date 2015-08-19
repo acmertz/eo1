@@ -258,6 +258,20 @@
     float: right;
 }
 
+.editor-titlebar-control--inverted {
+    color: black;
+}
+
+.editor-titlebar-control--inverted:hover {
+    color: #fff;
+    background-color: #ff5a76;
+}
+
+.editor-titlebar-control--inverted:active {
+    color: #fff;
+    background-color: #dc143c;
+}
+
 #editorMediaBrowserLoadingProgress {
     margin-right: 5px;
     display: none;

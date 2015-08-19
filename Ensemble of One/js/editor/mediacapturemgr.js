@@ -107,28 +107,50 @@
 
         ui: {
             videoCaptureElement: null,
+            videoCaptureSettingsButton: null,
+            videoCaptureSettingsContextMenu: null,
+            videoCaptureSettingsWebcamMenu: null,
             webcamCaptureDeviceSelect: null,
             webcamCaptureMicSelect: null
         },
 
         _refreshUI: function () {
             this.ui.videoCaptureElement = document.getElementsByClassName("media-capture-element--webcam")[0];
+            this.ui.videoCaptureSettingsButton = document.getElementsByClassName("eo1-btn--media-capture-settings")[0];
+            this.ui.videoCaptureSettingsContextMenu = document.getElementsByClassName("contextmenu--webcam-popin-options")[0];
+            this.ui.videoCaptureSettingsWebcamMenu = document.getElementsByClassName("contextmenu--webcam-device-quality")[0];
             this.ui.webcamCaptureDeviceSelect = document.getElementsByClassName("webcam-capture-device-select--webcam")[0];
             this.ui.webcamCaptureMicSelect = document.getElementsByClassName("webcam-capture-device-select--microphone")[0];
 
             this.ui.videoCaptureElement.addEventListener("playing", Ensemble.Editor.MediaCaptureMGR._listeners.mediaPreviewBegan);
+            this.ui.videoCaptureSettingsButton.addEventListener("click", Ensemble.Editor.MediaCaptureMGR._listeners.videoCaptureSettingsButtonClicked);
         },
 
         _cleanUI: function () {
             this.ui.videoCaptureElement.removeEventListener("playing", Ensemble.Editor.MediaCaptureMGR._listeners.mediaPreviewBegan);
+            this.ui.videoCaptureSettingsButton.removeEventListener("click", Ensemble.Editor.MediaCaptureMGR._listeners.videoCaptureSettingsButtonClicked);
 
             this.ui.videoCaptureElement = null;
+            this.ui.videoCaptureSettingsButton = null;
+            this.ui.videoCaptureSettingsContextMenu = null;
+            this.ui.videoCaptureSettingsWebcamMenu = null;
             this.ui.webcamCaptureDeviceSelect = null;
             this.ui.webcamCaptureMicSelect = null;
         },
 
         _listeners: {
             webcamMediaCapturerInitialized: function (success) {
+                let resolutions = Ensemble.Editor.MediaCaptureMGR._videoCapturer.videoDeviceController.getAvailableMediaStreamProperties(Windows.Media.Capture.MediaStreamType.videoRecord),
+                    resCount = resolutions.length,
+                    menuItems = [];
+                for (let i = 0; i < resCount; i++) {
+                    // add an item to the flyout
+                    let resString = resolutions[i].width + "x" + resolutions[i].height + "@" + Ensemble.Utilities.TimeConverter.convertFPS(resolutions[i].frameRate.numerator, resolutions[i].frameRate.denominator) + "fps",
+                        newItem = new WinJS.UI.MenuCommand(document.createElement("button"), { type: 'toggle', label:resString });
+                    menuItems.push(newItem);
+                }
+                Ensemble.Editor.MediaCaptureMGR.ui.videoCaptureSettingsWebcamMenu.winControl.commands = menuItems;
+
                 let captureUrl = URL.createObjectURL(Ensemble.Editor.MediaCaptureMGR._videoCapturer);
                 Ensemble.Editor.MediaCaptureMGR.ui.videoCaptureElement.src = captureUrl;
                 Ensemble.Editor.MediaCaptureMGR.ui.videoCaptureElement.play();
@@ -146,6 +168,10 @@
 
             webcamCaptureMicChanged: function (event) {
 
+            },
+
+            videoCaptureSettingsButtonClicked: function (event) {
+                Ensemble.Editor.MediaCaptureMGR.ui.videoCaptureSettingsContextMenu.winControl.show(Ensemble.Editor.MediaCaptureMGR.ui.videoCaptureSettingsButton, "auto");
             }
         }
     });

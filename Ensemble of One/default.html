@@ -299,8 +299,9 @@
                     <h3 class="win-h3">Camera capture</h3>
                     <video class="media-capture-element media-capture-element--webcam"></video>
                     <div class="media-capture-controls media-capture-controls--webcam">
-                        <button class="eo1-btn--media-capture-startstop win-button">&#9210;</button>
-                        <button class="eo1-btn--media-capture-settings win-button">&#57612;</button>
+                        <button class="editor-titlebar-control editor-titlebar-control--inverted eo1-btn--media-capture-list">&#57676;</button>
+                        <button class="editor-titlebar-control editor-titlebar-control--inverted eo1-btn--media-capture-startstop">&#9210;</button>
+                        <button class="editor-titlebar-control editor-titlebar-control--inverted eo1-btn--media-capture-settings">&#57694;</button>
                     </div>
                     <select class="webcam-capture-device-select webcam-capture-device-select--webcam win-dropdown"></select>
                     <select class="webcam-capture-device-select webcam-capture-device-select--microphone win-dropdown"></select>
@@ -440,6 +441,15 @@
             <span class="flyout--editor-clip-volume__indicator">100</span>
         </div>
         <div class="contextmenu--editor-create-lens" data-win-control="WinJS.UI.Menu"></div>
+        <div class="contextmenu--webcam-popin-options" data-win-control="WinJS.UI.Menu">
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Webcam', type:'flyout', flyout:select('.my-test-flyout')}"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Webcam quality', type:'flyout', flyout:select('.contextmenu--webcam-device-quality')}"></button>
+            <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{type:'separator'}" />
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Mic', type:'flyout', flyout:select('.my-test-flyout')}"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Mic quality', type:'flyout', flyout:select('.my-test-flyout')}"></button>
+        </div>
+        <div class="contextmenu--webcam-device-quality" data-win-control="WinJS.UI.Menu"></div>
+        <div class="my-test-flyout" data-win-control="WinJS.UI.Flyout">This is my great flyout</div>
     </div>
 
     <div class="app-page app-page--app-settings app-page--hidden">

@@ -98,6 +98,32 @@
             returnVal = returnVal.trim();
 
             return returnVal;
+        },
+
+        convertFPS: function (numerator, denominator) {
+            /// <summary>Given a numerator and denominator, returns the common name for the frames per second information.</summary>
+            /// <param name="numerator" type="Number"></param>
+            /// <param name="denominator" type="Number"></param>
+            /// <returns type="Number"></returns>
+            let knownFPS = [
+                {
+                    numerator: 30000,
+                    denominator: 1001,
+                    commonName: 29.97
+                }
+            ],
+            fpsCount = knownFPS.length,
+            returnVal = 0;
+
+            for (let i = 0; i < fpsCount; i++) {
+                if (numerator == knownFPS[i].numerator && denominator == knownFPS[i].denominator) {
+                    returnVal = knownFPS[i].commonName;
+                    break;
+                }
+            }
+
+            if (returnVal == 0) returnVal = numerator / denominator;
+            return returnVal;
         }
     });
 })();

@@ -15,3 +15,11 @@
     text-align: center;
     margin-top: 10px;
 }
+
+.eo1-btn--media-capture-settings {
+    float: right;
+}
+
+.eo1-btn--media-capture-list {
+    float: left;
+}
