@@ -245,7 +245,7 @@
                 <button data-editor-command="record-video" class="editor-toolbar-command editor-toolbar-command--record-video" data-win-control="WinJS.UI.Command" data-win-options="{
                     label:'Video',
                     section:'primary',
-                    type:'button',
+                    type:'toggle',
                     icon: 'video'}"></button>
                 <button data-editor-command="record-audio" class="editor-toolbar-command editor-toolbar-command--record-audio" data-win-control="WinJS.UI.Command" data-win-options="{
                     label:'Audio',
@@ -303,8 +303,6 @@
                         <button class="editor-titlebar-control editor-titlebar-control--inverted eo1-btn--media-capture-startstop">&#9210;</button>
                         <button class="editor-titlebar-control editor-titlebar-control--inverted eo1-btn--media-capture-settings">&#57694;</button>
                     </div>
-                    <select class="webcam-capture-device-select webcam-capture-device-select--webcam win-dropdown"></select>
-                    <select class="webcam-capture-device-select webcam-capture-device-select--microphone win-dropdown"></select>
                 </div>
                 <div class="editor-canvas-container">
                     <canvas class="editor-canvas"></canvas>
@@ -442,13 +440,16 @@
         </div>
         <div class="contextmenu--editor-create-lens" data-win-control="WinJS.UI.Menu"></div>
         <div class="contextmenu--webcam-popin-options" data-win-control="WinJS.UI.Menu">
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Webcam', type:'flyout', flyout:select('.my-test-flyout')}"></button>
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Webcam quality', type:'flyout', flyout:select('.contextmenu--webcam-device-quality')}"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Change camera', type:'flyout', flyout:select('.contextmenu--webcam-device-select')}"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Camera quality', type:'flyout', flyout:select('.contextmenu--webcam-device-quality')}"></button>
             <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{type:'separator'}" />
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Mic', type:'flyout', flyout:select('.my-test-flyout')}"></button>
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Mic quality', type:'flyout', flyout:select('.my-test-flyout')}"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Change mic', type:'flyout', flyout:select('.contextmenu--mic-device-select')}"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Mic quality', type:'flyout', flyout:select('.contextmenu--mic-device-quality')}"></button>
         </div>
         <div class="contextmenu--webcam-device-quality" data-win-control="WinJS.UI.Menu"></div>
+        <div class="contextmenu--webcam-device-select" data-win-control="WinJS.UI.Menu"></div>
+        <div class="contextmenu--mic-device-quality" data-win-control="WinJS.UI.Menu"></div>
+        <div class="contextmenu--mic-device-select" data-win-control="WinJS.UI.Menu"></div>
         <div class="my-test-flyout" data-win-control="WinJS.UI.Flyout">This is my great flyout</div>
     </div>
 
