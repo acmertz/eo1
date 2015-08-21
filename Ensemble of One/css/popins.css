@@ -1,11 +1,16 @@
 ﻿/* Video recording popin */
-.media-capture-element--webcam {
+.media-capture-preview--webcam {
     background-color: black;
-    width: 320px;
+    width: 425px;
     max-width: 100%;
     display: block;
     margin: auto;
     margin-top: 10px;
+    transition: transform 0.4s ease;
+}
+
+.media-capture-preview--mirrored {
+    transform: scaleX(-1);
 }
 
 .media-capture-controls {
@@ -13,7 +18,8 @@
     width: 320px;
     max-width: 100%;
     text-align: center;
-    margin-top: 10px;
+    border: 1px solid #dcdcdc;
+    border-top: 0;
 }
 
 .eo1-btn--media-capture-settings {
