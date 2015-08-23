@@ -7,6 +7,8 @@
                 captureInitSettings: new Windows.Media.Capture.MediaCaptureInitializationSettings(),
                 captureMGR: new Windows.Media.Capture.MediaCapture(),
                 captureReady: false,
+                captureActive: false,
+                encodingProfile: Windows.Media.MediaProperties.MediaEncodingProfile.createMp4(Windows.Media.MediaProperties.VideoEncodingQuality.hd720p),
                 videoDevices: {
                     deviceList: [],
                     properties: []
@@ -19,6 +21,8 @@
                 previewActive: false,
                 targetFiles: {
                     currentTarget: null,
+                    captureStartTime: 0,
+                    recordingStartTime: 0,
                     capturedFiles: []
                 }
             },
@@ -33,6 +37,8 @@
             this.captureSession.video.captureInitSettings = null;
             this.captureSession.video.captureMGR = null;
             this.captureSession.video.captureReady = false;
+            this.captureSession.video.captureActive = false;
+            this.captureSession.video.encodingProfile = null;
 
             this.captureSession.video.videoDevices.deviceList = [];
             this.captureSession.video.videoDevices.properties = [];
@@ -44,6 +50,8 @@
             this.captureSession.video.previewMirroring = false;
 
             this.captureSession.video.targetFiles.currentTarget = [];
+            this.captureSession.video.targetFiles.captureStartTime = null;
+            this.captureSession.video.targetFiles.recordingStartTime = null;
             this.captureSession.video.targetFiles.capturedFiles = [];
         },
 
@@ -113,6 +121,8 @@
             this.captureSession.video.captureInitSettings = null;
             this.captureSession.video.captureMGR = null;
             this.captureSession.video.captureReady = false;
+            this.captureSession.video.captureActive = false;
+            this.captureSession.video.encodingProfile = null;
 
             this.captureSession.video.videoDevices.deviceList = [];
             this.captureSession.video.videoDevices.properties = [];
@@ -124,6 +134,8 @@
             this.captureSession.video.previewMirroring = false;
 
             this.captureSession.video.targetFiles.currentTarget = [];
+            this.captureSession.video.targetFiles.captureStartTime = null;
+            this.captureSession.video.targetFiles.recordingStartTime = null;
             this.captureSession.video.targetFiles.capturedFiles = [];
         },
 
@@ -267,6 +279,7 @@
                 Ensemble.Editor.MediaCaptureMGR.refreshMicDeviceQualityContextMenu();
 
                 Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureReady = true;
+                Ensemble.Editor.MediaCaptureMGR.captureSession.video.encodingProfile = Windows.Media.MediaProperties.MediaEncodingProfile.createMp4(Windows.Media.MediaProperties.VideoEncodingQuality.auto);
                 Ensemble.Editor.MediaCaptureMGR._listeners.webcamInitializationCaptureCheck();
             },
 
@@ -286,7 +299,15 @@
                     Ensemble.Editor.MediaCaptureMGR.ui.videoCaptureElement.src = captureUrl;
                     Ensemble.Editor.MediaCaptureMGR.ui.videoCaptureElement.play();
                     WinJS.Utilities.removeClass(Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureLoadingIndicator, "media-capture-loading--visible");
+
+                    Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.startRecordToStorageFileAsync(Ensemble.Editor.MediaCaptureMGR.captureSession.video.encodingProfile, Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget).then(Ensemble.Editor.MediaCaptureMGR._listeners.webcamCaptureBegan);
                 }
+            },
+
+            webcamCaptureBegan: function (status) {
+                Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.captureStartTime = performance.now();
+                Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureActive = true;
+                console.log("Started media capture.");
             },
 
             mediaPreviewBegan: function (event) {
@@ -344,6 +365,7 @@
 
             videoCaptureStartStopButtonClicked: function (event) {
                 console.info("Starting webcam capture...");
+                // todo: add cases for karaoke recording (where capture is already technicaly running)
             }
         }
     });
