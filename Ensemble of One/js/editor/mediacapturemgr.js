@@ -54,6 +54,7 @@
 
         initVideoCaptureSession: function () {
             /// <summary>Enumerates media capture devices, sets up the video recording Popin, and initializes a video capture session.</summary>
+            WinJS.Utilities.addClass(Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureLoadingIndicator, "media-capture-loading--visible");
             Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureInitSettings = new Windows.Media.Capture.MediaCaptureInitializationSettings();
             Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureInitSettings.audioDeviceId = "";
             Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureInitSettings.videoDeviceId = "";
@@ -224,25 +225,30 @@
             webcamDeviceQualityContextMenu: null,
             webcamDeviceSelectContextMenu: null,
             micDeviceQualityContextMenu: null,
-            micDeviceSelectContextMenu: null
+            micDeviceSelectContextMenu: null,
+            webcamCaptureLoadingIndicator: null
         },
 
         _refreshUI: function () {
             this.ui.videoCaptureElement = document.getElementsByClassName("media-capture-preview--webcam")[0];
-            this.ui.videoCaptureSettingsButton = document.getElementsByClassName("eo1-btn--media-capture-settings")[0];
+            this.ui.videoCaptureSettingsButton = document.getElementsByClassName("eo1-btn--webcam-capture-settings")[0];
             this.ui.videoCaptureSettingsContextMenu = document.getElementsByClassName("contextmenu--webcam-popin-options")[0];
             this.ui.webcamDeviceQualityContextMenu = document.getElementsByClassName("contextmenu--webcam-device-quality")[0];
             this.ui.webcamDeviceSelectContextMenu = document.getElementsByClassName("contextmenu--webcam-device-select")[0];
             this.ui.micDeviceQualityContextMenu = document.getElementsByClassName("contextmenu--mic-device-quality")[0];
             this.ui.micDeviceSelectContextMenu = document.getElementsByClassName("contextmenu--mic-device-select")[0];
+            this.ui.webcamCaptureLoadingIndicator = document.getElementsByClassName("media-capture-loading--webcam")[0];
+            this.ui.webcamCaptureStartStopButton = document.getElementsByClassName("eo1-btn--webcam-capture-startstop")[0];
 
             this.ui.videoCaptureElement.addEventListener("playing", Ensemble.Editor.MediaCaptureMGR._listeners.mediaPreviewBegan);
             this.ui.videoCaptureSettingsButton.addEventListener("click", Ensemble.Editor.MediaCaptureMGR._listeners.videoCaptureSettingsButtonClicked);
+            this.ui.webcamCaptureStartStopButton.addEventListener("click", Ensemble.Editor.MediaCaptureMGR._listeners.videoCaptureStartStopButtonClicked);
         },
 
         _cleanUI: function () {
             this.ui.videoCaptureElement.removeEventListener("playing", Ensemble.Editor.MediaCaptureMGR._listeners.mediaPreviewBegan);
             this.ui.videoCaptureSettingsButton.removeEventListener("click", Ensemble.Editor.MediaCaptureMGR._listeners.videoCaptureSettingsButtonClicked);
+            this.ui.webcamCaptureStartStopButton.removeEventListener("click", Ensemble.Editor.MediaCaptureMGR._listeners.videoCaptureStartStopButtonClicked);
 
             this.ui.videoCaptureElement = null;
             this.ui.videoCaptureSettingsButton = null;
@@ -251,6 +257,8 @@
             this.ui.webcamDeviceSelectContextMenu = null;
             this.ui.micDeviceQualityContextMenu = null;
             this.ui.micDeviceSelectContextMenu = null;
+            this.ui.webcamCaptureLoadingIndicator = null;
+            this.ui.webcamCaptureStartStopButton = null;
         },
 
         _listeners: {
@@ -277,6 +285,7 @@
                     let captureUrl = URL.createObjectURL(Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR);
                     Ensemble.Editor.MediaCaptureMGR.ui.videoCaptureElement.src = captureUrl;
                     Ensemble.Editor.MediaCaptureMGR.ui.videoCaptureElement.play();
+                    WinJS.Utilities.removeClass(Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureLoadingIndicator, "media-capture-loading--visible");
                 }
             },
 
@@ -331,6 +340,10 @@
                 catch (exception) {
                     console.error("Unable to change microphone quality setting.");
                 }
+            },
+
+            videoCaptureStartStopButtonClicked: function (event) {
+                console.info("Starting webcam capture...");
             }
         }
     });

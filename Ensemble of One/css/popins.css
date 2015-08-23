@@ -1,4 +1,23 @@
-﻿/* Video recording popin */
+﻿/* All popins */
+
+.editor-popin {
+	display: none;
+	width: 50%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+    padding: 10px;
+    box-sizing: border-box;
+    overflow: auto;
+    border-right: 1px solid #dcdcdc;
+}
+
+.editor-popin--visible {
+	display: inline-block;
+}
+
+/* Video recording popin */
 .media-capture-preview--webcam {
     background-color: black;
     width: 425px;
@@ -22,10 +41,34 @@
     border-top: 0;
 }
 
-.eo1-btn--media-capture-settings {
+.eo1-btn--webcam-capture-settings {
     float: right;
 }
 
-.eo1-btn--media-capture-list {
+.eo1-btn--show-webcam-capture-list {
     float: left;
+}
+
+.media-capture-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.media-capture-loading--visible {
+    display: flex;
+}
+
+.media-capture-loading--hidden {
+    display: flex;
+    visibility: hidden;
+}
+
+.media-capture-loading progress {
+    color: #fff;
 }

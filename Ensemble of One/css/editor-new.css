@@ -41,20 +41,3 @@
 .editor-playback-widget {
 	text-align: center;
 }
-
-.editor-popin {
-	display: none;
-	width: 50%;
-	height: 100%;
-	position: absolute;
-	top: 0;
-	left: 0;
-    padding: 10px;
-    box-sizing: border-box;
-    overflow: auto;
-    border-right: 1px solid #dcdcdc;
-}
-
-.editor-popin--visible {
-	display: inline-block;
-}
