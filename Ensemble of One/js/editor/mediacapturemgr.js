@@ -103,6 +103,8 @@
                                                 
                         
                         Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR = new Windows.Media.Capture.MediaCapture();
+                        Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.addEventListener("recordlimitationexceeded", Ensemble.Editor.MediaCaptureMGR._listeners.captureRecordLimitationExceeded);
+                        Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.addEventListener("failed", Ensemble.Editor.MediaCaptureMGR._listeners.captureFailed);
                         Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.initializeAsync(Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureInitSettings).then(Ensemble.Editor.MediaCaptureMGR._listeners.webcamMediaCapturerInitialized);
                     });
                 }
@@ -147,26 +149,38 @@
             let videoDeviceId = videoDevice ? videoDevice.id : null,
                 audioDeviceId = audioDevice ? audioDevice.id : null;
             if (force || Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.mediaCaptureSettings.videoDeviceId != videoDeviceId || Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.mediaCaptureSettings.audioDeviceId != audioDeviceId) {
+                WinJS.Utilities.addClass(Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureLoadingIndicator, "media-capture-loading--visible");
                 Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureReady = false;
+                
+                Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.stopRecordAsync().then(function () {
+                    Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureActive = false;
 
-                Ensemble.Editor.MediaCaptureMGR.ui.videoCaptureElement.pause();
-                Ensemble.Editor.MediaCaptureMGR.ui.videoCaptureElement.src = "";
+                    let tempFileToDelete = Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget;
+                    Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget = null;
+                    tempFileToDelete.deleteAsync(Windows.Storage.StorageDeleteOption.permanentDelete);
+                    Windows.Storage.ApplicationData.current.temporaryFolder.createFileAsync("recording.mp4", Windows.Storage.CreationCollisionOption.generateUniqueName).then(Ensemble.Editor.MediaCaptureMGR._listeners.webcamFileCreated);
 
-                let tempInitCaptureSettings = new Windows.Media.Capture.MediaCaptureInitializationSettings();
-                tempInitCaptureSettings.audioDeviceId = (audioDeviceId && Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.mediaCaptureSettings.audioDeviceId != audioDeviceId) ? audioDeviceId : Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureInitSettings.audioDeviceId;
-                tempInitCaptureSettings.videoDeviceId = (videoDeviceId && Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.mediaCaptureSettings.videoDeviceId != videoDeviceId) ? videoDeviceId : Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureInitSettings.videoDeviceId;
-                tempInitCaptureSettings.streamingCaptureMode = Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureInitSettings.streamingCaptureMode;
-                tempInitCaptureSettings.photoCaptureSource = Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureInitSettings.photoCaptureSource;
-                Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureInitSettings = tempInitCaptureSettings;
+                    Ensemble.Editor.MediaCaptureMGR.ui.videoCaptureElement.pause();
+                    Ensemble.Editor.MediaCaptureMGR.ui.videoCaptureElement.src = "";
 
-                if (videoDevice) {
-                    if (videoDevice.enclosureLocation.panel == Windows.Devices.Enumeration.Panel.front) Ensemble.Editor.MediaCaptureMGR.captureSession.video.previewMirroring = true;
-                    else Ensemble.Editor.MediaCaptureMGR.captureSession.video.previewMirroring = false;
-                }
+                    let tempInitCaptureSettings = new Windows.Media.Capture.MediaCaptureInitializationSettings();
+                    tempInitCaptureSettings.audioDeviceId = (audioDeviceId && Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.mediaCaptureSettings.audioDeviceId != audioDeviceId) ? audioDeviceId : Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureInitSettings.audioDeviceId;
+                    tempInitCaptureSettings.videoDeviceId = (videoDeviceId && Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.mediaCaptureSettings.videoDeviceId != videoDeviceId) ? videoDeviceId : Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureInitSettings.videoDeviceId;
+                    tempInitCaptureSettings.streamingCaptureMode = Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureInitSettings.streamingCaptureMode;
+                    tempInitCaptureSettings.photoCaptureSource = Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureInitSettings.photoCaptureSource;
+                    Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureInitSettings = tempInitCaptureSettings;
 
-                Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.close();
-                Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR = new Windows.Media.Capture.MediaCapture();
-                Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.initializeAsync(Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureInitSettings).then(Ensemble.Editor.MediaCaptureMGR._listeners.webcamMediaCapturerInitialized);
+                    if (videoDevice) {
+                        if (videoDevice.enclosureLocation.panel == Windows.Devices.Enumeration.Panel.front) Ensemble.Editor.MediaCaptureMGR.captureSession.video.previewMirroring = true;
+                        else Ensemble.Editor.MediaCaptureMGR.captureSession.video.previewMirroring = false;
+                    }
+
+                    Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.close();
+                    Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR = new Windows.Media.Capture.MediaCapture();
+                    Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.addEventListener("recordlimitationexceeded", Ensemble.Editor.MediaCaptureMGR._listeners.captureRecordLimitationExceeded);
+                    Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.addEventListener("failed", Ensemble.Editor.MediaCaptureMGR._listeners.captureFailed);
+                    Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.initializeAsync(Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureInitSettings).then(Ensemble.Editor.MediaCaptureMGR._listeners.webcamMediaCapturerInitialized);
+                });
             }
         },
 
@@ -366,6 +380,14 @@
             videoCaptureStartStopButtonClicked: function (event) {
                 console.info("Starting webcam capture...");
                 // todo: add cases for karaoke recording (where capture is already technicaly running)
+            },
+
+            captureRecordLimitationExceeded: function (event) {
+                console.error("Recording limitation exceeded: " + event);
+            },
+
+            captureFailed: function (event) {
+                console.error("Media capture failed.");
             }
         }
     });
