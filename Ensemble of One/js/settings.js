@@ -4,7 +4,8 @@
         defaults: [
             { name: "sticky-edges-clip", value: true },
             { name: "sticky-edges-canvas", value: true },
-            { name: "default-picture-duration", value: 3}
+            { name: "default-picture-duration", value: 3},
+            { name: "last-used-camera-quality", value: ""}
         ],
 
         init: function () {
@@ -46,6 +47,13 @@
             /// <param name="name" type="String">The name of the setting to lookup.</param>
             /// <returns>The value of the setting.</returns>
             return Windows.Storage.ApplicationData.current.roamingSettings.values[name];
+        },
+
+        saveSetting: function (name, value) {
+            /// <summary>Saves the value of the named app setting.</summary>
+            /// <param name="name" type="String">The name of the setting to save.</param>
+            /// <param name="value">The value to save.</param>
+            Windows.Storage.ApplicationData.current.roamingSettings.values[name] = value;
         },
 
         refreshSettingsDialog: function () {

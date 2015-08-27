@@ -233,37 +233,101 @@
         },
 
         refreshWebcamDeviceQualityContextMenu: function () {
-            let currentResolution = Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.videoDeviceController.getMediaStreamProperties(Windows.Media.Capture.MediaStreamType.videoRecord),
-                    allResolutions = Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.videoDeviceController.getAvailableMediaStreamProperties(Windows.Media.Capture.MediaStreamType.videoRecord),
-                    resCount = allResolutions.length,
-                    menuItems = [];
-            for (let i = 0; i < resCount; i++) {
+            let captureResolutions = Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.videoDeviceController.getAvailableMediaStreamProperties(Windows.Media.Capture.MediaStreamType.videoRecord),
+                previewResolutions = Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.videoDeviceController.getAvailableMediaStreamProperties(Windows.Media.Capture.MediaStreamType.videoPreview),
+                resCount = captureResolutions.length,
+                prunedCaptureResolutions = Ensemble.Editor.MediaCaptureMGR.pruneDuplicateVideoQualities(captureResolutions),
+                prunedResLen = prunedCaptureResolutions.length,
+                menuItems = [];
+
+            // retrieve saved quality setting, or default to the highest available capture quality
+            let retrievedQuality = Ensemble.Settings.retrieveSetting("last-used-camera-quality"),
+                selectedQuality = null;
+            try {
+                retrievedQuality = JSON.parse(retrievedQuality);
+                selectedQuality = Ensemble.Editor.MediaCaptureMGR.matchVideoQuality(retrievedQuality.width, retrievedQuality.height, retrievedQuality.frameRate.numerator, retrievedQuality.frameRate.denominator, captureResolutions);
+            }
+            catch (exception) {
+                console.log("Unable to determine previous quality -- defaulting to highest available.");
+                selectedQuality = prunedCaptureResolutions[prunedResLen - 1];
+                Ensemble.Settings.saveSetting("last-used-camera-quality", JSON.stringify({
+                    width: selectedQuality.width,
+                    height: selectedQuality.height,
+                    frameRate: {
+                        numerator: selectedQuality.frameRate.numerator,
+                        denominator: selectedQuality.frameRate.denominator
+                    }
+                }));
+            }
+
+            // populate the webcam quality flyout menu
+            for (let i = 0; i < prunedResLen; i++) {
                 // add an item to the flyout
-                let resString = allResolutions[i].width + "x" + allResolutions[i].height + "@" + Ensemble.Utilities.TimeConverter.convertFPS(allResolutions[i].frameRate.numerator, allResolutions[i].frameRate.denominator) + "fps, " + (allResolutions[i].bitrate * 0.000001) + "Mbps",
+                let resString = prunedCaptureResolutions[i].width + "x" + prunedCaptureResolutions[i].height + ", " + Ensemble.Utilities.TimeConverter.convertFPS(prunedCaptureResolutions[i].frameRate.numerator, prunedCaptureResolutions[i].frameRate.denominator) + "fps",
                     newItem = new WinJS.UI.MenuCommand(document.createElement("button"), { type: 'toggle', label: resString, onclick: Ensemble.Editor.MediaCaptureMGR._listeners.webcamQualitySelected });
                 newItem.element.dataset.webcamStreamIndex = i;
                 menuItems.push(newItem);
-                if (Ensemble.Editor.MediaCaptureMGR.webcamStreamPropertiesEqual(currentResolution, allResolutions[i])) menuItems[menuItems.length - 1].selected = true;
+                if (Ensemble.Editor.MediaCaptureMGR.webcamStreamPropertiesEqual(selectedQuality, prunedCaptureResolutions[i])) menuItems[menuItems.length - 1].selected = true;
             }
             Ensemble.Editor.MediaCaptureMGR.ui.webcamDeviceQualityContextMenu.winControl.commands = menuItems;
-            Ensemble.Editor.MediaCaptureMGR.captureSession.video.videoDevices.properties = allResolutions;
+
+            // select a preview quality that matches the capture aspect ratio. try to match (but not exceed) the selected capture resolution.
+
+            // store the list of retrieved capture quality settings so we don't have to enumerate it again as long as the same camera remains active
+            Ensemble.Editor.MediaCaptureMGR.captureSession.video.videoDevices.properties = prunedCaptureResolutions;
         },
 
-        refreshMicDeviceQualityContextMenu: function () {
-            let currentQuality = Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.audioDeviceController.getMediaStreamProperties(Windows.Media.Capture.MediaStreamType.audio),
-                    allQualities = [currentQuality],
-                    qualityCount = allQualities.length,
-                    menuItems = [];
-            for (let i = 0; i < qualityCount; i++) {
-                // add an item to the flyout
-                let resString = +(allQualities[i].sampleRate * 0.001) + "kHz, " + allQualities[i].channelCount + " channels, " + (allQualities[i].bitrate * 0.001) + "Kbps",
-                    newItem = new WinJS.UI.MenuCommand(document.createElement("button"), { type: 'toggle', label: resString, onclick: Ensemble.Editor.MediaCaptureMGR._listeners.micQualitySelected });
-                newItem.element.dataset.micStreamIndex = i;
-                menuItems.push(newItem);
-                if (Ensemble.Editor.MediaCaptureMGR.micStreamPropertiesEqual(currentQuality, allQualities[i])) menuItems[menuItems.length - 1].selected = true;
+        pruneDuplicateVideoQualities: function (captureResolutions) {
+            let resCount = captureResolutions.length,
+                prunedCaptureResolutions = [];
+            for (let i = 0; i < resCount; i++) {
+                if (prunedCaptureResolutions.length > 0) {
+                    // there is already at least one item in the list. Check to see if it should be replaced.
+                    let prunedLen = prunedCaptureResolutions.length,
+                        previousRes = prunedCaptureResolutions[prunedLen - 1];
+                    if (previousRes.width == captureResolutions[i].width && previousRes.height == captureResolutions[i].height && previousRes.frameRate.numerator == captureResolutions[i].frameRate.numerator && previousRes.frameRate.denominator == captureResolutions[i].frameRate.denominator) {
+                        // there is already a duplicate resolution in this list. Since we're going in order of increasing quality, simply replace it.
+                        prunedCaptureResolutions[prunedLen - 1] = captureResolutions[i];
+                    }
+                    else prunedCaptureResolutions.push(captureResolutions[i]);
+                }
+                else prunedCaptureResolutions.push(captureResolutions[i]);
             }
-            Ensemble.Editor.MediaCaptureMGR.ui.micDeviceQualityContextMenu.winControl.commands = menuItems;
-            Ensemble.Editor.MediaCaptureMGR.captureSession.video.audioDevices.properties = allQualities;
+            return prunedCaptureResolutions;
+        },
+
+        matchVideoQuality: function (width, height, fpsNum, fpsDenom, captureResolutions) {
+            /// <summary>Returns the webcam capture quality that matches the given parameters.</summary>
+            /// <param name="width" type="Number">Width of the video stream.</param>
+            /// <param name="height" type="Number">Height of the video stream.</param>
+            /// <param name="fpsNum" type="Number">FPS numerator of the video stream.</param>
+            /// <param name="fpsDenom" type="Number">FPS denominator of the video stream.</param>
+            /// <param name="captureResolutions" type="Array">An array of resolutions from which to pick a match.</param>
+            /// <returns type="Object">The matched resolution.</returns>
+            let resCount = captureResolutions.length,
+                returnVal = null;
+
+            for (let i = 0; i < resCount; i++) {
+                let currentRes = captureResolutions[i];
+                if (currentRes.width == width && currentRes.height == height && currentRes.frameRate.numerator == fpsNum && currentRes.frameRate.denominator == fpsDenom) {
+                    returnVal = currentRes;
+                    break;
+                }
+            }
+
+            if (returnVal == null) {
+                // match resolution as closely as possible. ignore fps.
+                let pixelCount = width * height,
+                    closestRes = captureResolutions[0];
+                for (let i = 0; i < resCount; i++) {
+                    let currentRes = captureResolutions[i],
+                        currentProduct = currentRes.width * currentRes.height;
+                    if (Math.abs(currentProduct - (currentRes.width * currentRes.height)) < Math.abs(currentProduct - (closestRes.width * closestRes.height))) closestRes = currentRes;
+                }
+                returnVal = closestRes;
+            }
+
+            return returnVal;
         },
 
         ui: {
@@ -272,7 +336,6 @@
             videoCaptureSettingsContextMenu: null,
             webcamDeviceQualityContextMenu: null,
             webcamDeviceSelectContextMenu: null,
-            micDeviceQualityContextMenu: null,
             micDeviceSelectContextMenu: null,
             webcamCaptureLoadingIndicator: null
         },
@@ -283,7 +346,6 @@
             this.ui.videoCaptureSettingsContextMenu = document.getElementsByClassName("contextmenu--webcam-popin-options")[0];
             this.ui.webcamDeviceQualityContextMenu = document.getElementsByClassName("contextmenu--webcam-device-quality")[0];
             this.ui.webcamDeviceSelectContextMenu = document.getElementsByClassName("contextmenu--webcam-device-select")[0];
-            this.ui.micDeviceQualityContextMenu = document.getElementsByClassName("contextmenu--mic-device-quality")[0];
             this.ui.micDeviceSelectContextMenu = document.getElementsByClassName("contextmenu--mic-device-select")[0];
             this.ui.webcamCaptureLoadingIndicator = document.getElementsByClassName("media-capture-loading--webcam")[0];
             this.ui.webcamCaptureStartStopButton = document.getElementsByClassName("eo1-btn--webcam-capture-startstop")[0];
@@ -303,7 +365,6 @@
             this.ui.videoCaptureSettingsContextMenu = null;
             this.ui.webcamDeviceQualityContextMenu = null;
             this.ui.webcamDeviceSelectContextMenu = null;
-            this.ui.micDeviceQualityContextMenu = null;
             this.ui.micDeviceSelectContextMenu = null;
             this.ui.webcamCaptureLoadingIndicator = null;
             this.ui.webcamCaptureStartStopButton = null;
@@ -312,7 +373,6 @@
         _listeners: {
             webcamMediaCapturerInitialized: function (success) {
                 Ensemble.Editor.MediaCaptureMGR.refreshWebcamDeviceQualityContextMenu();
-                Ensemble.Editor.MediaCaptureMGR.refreshMicDeviceQualityContextMenu();
 
                 Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureReady = true;
                 Ensemble.Editor.MediaCaptureMGR.captureSession.video.encodingProfile = Windows.Media.MediaProperties.MediaEncodingProfile.createMp4(Windows.Media.MediaProperties.VideoEncodingQuality.auto);
@@ -390,22 +450,6 @@
                 }
                 event.currentTarget.winControl.selected = true;
                 Ensemble.Editor.MediaCaptureMGR.changeCameraPreviewDevice(null, Ensemble.Editor.MediaCaptureMGR.captureSession.video.audioDevices.deviceList[event.currentTarget.dataset.micDeviceIndex]);
-            },
-
-            micQualitySelected: function (event) {
-                let allButtons = $(Ensemble.Editor.MediaCaptureMGR.ui.micDeviceQualityContextMenu).find("button"),
-                    buttonCount = allButtons.length;
-                for (let i = 0; i < buttonCount; i++) {
-                    allButtons[i].winControl.selected = false;
-                }
-                event.currentTarget.winControl.selected = true;
-                Ensemble.Editor.MediaCaptureMGR.changeCameraPreviewQuality(null, Ensemble.Editor.MediaCaptureMGR.captureSession.video.audioDevices.properties[event.currentTarget.dataset.micStreamIndex]);
-                //try {
-                //    Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.audioDeviceController.setMediaStreamPropertiesAsync(Windows.Media.Capture.MediaStreamType.audio, Ensemble.Editor.MediaCaptureMGR.captureSession.video.audioDevices.properties[event.currentTarget.dataset.micStreamIndex]);
-                //}
-                //catch (exception) {
-                //    console.error("Unable to change microphone quality setting.");
-                //}
             },
 
             videoCaptureStartStopButtonClicked: function (event) {

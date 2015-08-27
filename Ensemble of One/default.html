@@ -444,10 +444,11 @@
         <div class="contextmenu--editor-create-lens" data-win-control="WinJS.UI.Menu"></div>
         <div class="contextmenu--webcam-popin-options" data-win-control="WinJS.UI.Menu">
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Change camera', type:'flyout', flyout:select('.contextmenu--webcam-device-select')}"></button>
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Camera quality', type:'flyout', flyout:select('.contextmenu--webcam-device-quality')}"></button>
-            <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{type:'separator'}" />
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Change mic', type:'flyout', flyout:select('.contextmenu--mic-device-select')}"></button>
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Mic quality', type:'flyout', flyout:select('.contextmenu--mic-device-quality')}" disabled></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Recording quality', type:'flyout', flyout:select('.contextmenu--webcam-device-quality')}"></button>
+            <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{type:'separator'}" />
+            
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Karaoke mode', type:'toggle'}" disabled></button>
         </div>
         <div class="contextmenu--webcam-device-quality" data-win-control="WinJS.UI.Menu"></div>
         <div class="contextmenu--webcam-device-select" data-win-control="WinJS.UI.Menu"></div>
