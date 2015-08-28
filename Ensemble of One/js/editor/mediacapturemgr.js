@@ -8,10 +8,12 @@
                 captureMGR: new Windows.Media.Capture.MediaCapture(),
                 captureReady: false,
                 captureActive: false,
+                recordingActive: false,
                 encodingProfile: Windows.Media.MediaProperties.MediaEncodingProfile.createMp4(Windows.Media.MediaProperties.VideoEncodingQuality.hd720p),
                 videoDevices: {
                     deviceList: [],
-                    properties: []
+                    captureProperties: [],
+                    previewProperties: []
                 },
                 audioDevices: {
                     deviceList: [],
@@ -38,10 +40,12 @@
             this.captureSession.video.captureMGR = null;
             this.captureSession.video.captureReady = false;
             this.captureSession.video.captureActive = false;
+            this.captureSession.video.recordingActive = false;
             this.captureSession.video.encodingProfile = null;
 
             this.captureSession.video.videoDevices.deviceList = [];
-            this.captureSession.video.videoDevices.properties = [];
+            this.captureSession.video.videoDevices.captureProperties = [];
+            this.captureSession.video.videoDevices.previewProperties = [];
 
             this.captureSession.video.audioDevices.deviceList = [];
             this.captureSession.video.audioDevices.properties = [];
@@ -114,8 +118,8 @@
 
         cancelVideoCaptureSession: function () {
             /// <summary>Cancels the current capture session. All video previews will be stopped and any pending recordings will be lost.</summary>
-            this.ui.videoCaptureElement.pause();
-            this.ui.videoCaptureElement.src = "";
+            this.ui.webcamCapturePreview.pause();
+            this.ui.webcamCapturePreview.src = "";
             this.captureSession.video.previewActive = false;
 
             this.captureSession.video.captureMGR.close();
@@ -124,10 +128,12 @@
             this.captureSession.video.captureMGR = null;
             this.captureSession.video.captureReady = false;
             this.captureSession.video.captureActive = false;
+            this.captureSession.video.recordingActive = false;
             this.captureSession.video.encodingProfile = null;
 
             this.captureSession.video.videoDevices.deviceList = [];
-            this.captureSession.video.videoDevices.properties = [];
+            this.captureSession.video.videoDevices.captureProperties = [];
+            this.captureSession.video.videoDevices.previewProperties = [];
 
             this.captureSession.video.audioDevices.deviceList = [];
             this.captureSession.video.audioDevices.properties = [];
@@ -158,8 +164,8 @@
                     Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget = null;
                     Windows.Storage.ApplicationData.current.temporaryFolder.createFileAsync("recording.mp4", Windows.Storage.CreationCollisionOption.generateUniqueName).then(Ensemble.Editor.MediaCaptureMGR._listeners.webcamFileCreated);
 
-                    Ensemble.Editor.MediaCaptureMGR.ui.videoCaptureElement.pause();
-                    Ensemble.Editor.MediaCaptureMGR.ui.videoCaptureElement.src = "";
+                    Ensemble.Editor.MediaCaptureMGR.ui.webcamCapturePreview.pause();
+                    Ensemble.Editor.MediaCaptureMGR.ui.webcamCapturePreview.src = "";
 
                     let tempInitCaptureSettings = new Windows.Media.Capture.MediaCaptureInitializationSettings();
                     tempInitCaptureSettings.audioDeviceId = (audioDeviceId && Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.mediaCaptureSettings.audioDeviceId != audioDeviceId) ? audioDeviceId : Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureInitSettings.audioDeviceId;
@@ -182,8 +188,8 @@
             }
         },
 
-        changeCameraPreviewQuality: function (videoQuality, audioQuality, force) {
-            if (force || videoQuality != null || audioQuality != null) {
+        changeCameraPreviewQuality: function (videoQuality, force) {
+            if (force || videoQuality != null) {
                 WinJS.Utilities.addClass(Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureLoadingIndicator, "media-capture-loading--visible");
                 Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureReady = false;
                 Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.stopRecordAsync().then(function () {
@@ -192,14 +198,12 @@
                     Windows.Storage.ApplicationData.current.temporaryFolder.createFileAsync("recording.mp4", Windows.Storage.CreationCollisionOption.generateUniqueName).then(function (resultFile) {
                         Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget = resultFile;
                         if (videoQuality != null) {
-                            Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.videoDeviceController.setMediaStreamPropertiesAsync(Windows.Media.Capture.MediaStreamType.videoRecord, videoQuality).done(
-                                Ensemble.Editor.MediaCaptureMGR._listeners.webcamCaptureQualityChanged
-                            );
-                        }
-                        else if (audioQuality != null) {
-                            Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.audioDeviceController.setMediaStreamPropertiesAsync(Windows.Media.Capture.MediaStreamType.audio, audioQuality).done(
-                                Ensemble.Editor.MediaCaptureMGR._listeners.webcamCaptureQualityChanged, Ensemble.Editor.MediaCaptureMGR._listeners.webcamCaptureQualityChanged
-                            );
+                            Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.videoDeviceController.setMediaStreamPropertiesAsync(Windows.Media.Capture.MediaStreamType.videoRecord, videoQuality).then(function () {
+                                let previewQuality = Ensemble.Editor.MediaCaptureMGR.matchPreviewToCaptureQuality(videoQuality, Ensemble.Editor.MediaCaptureMGR.captureSession.video.videoDevices.previewProperties);
+                                Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.videoDeviceController.setMediaStreamPropertiesAsync(Windows.Media.Capture.MediaStreamType.videoPreview, previewQuality).done(
+                                    Ensemble.Editor.MediaCaptureMGR._listeners.webcamCaptureQualityChanged
+                                );
+                            });
                         }
                     });
                 });
@@ -238,6 +242,8 @@
                 resCount = captureResolutions.length,
                 prunedCaptureResolutions = Ensemble.Editor.MediaCaptureMGR.pruneDuplicateVideoQualities(captureResolutions),
                 prunedResLen = prunedCaptureResolutions.length,
+                prunedPreviewResolutions = Ensemble.Editor.MediaCaptureMGR.pruneDuplicateVideoQualities(previewResolutions),
+                prunedPreviewResLen = prunedPreviewResolutions.length,
                 menuItems = [];
 
             // retrieve saved quality setting, or default to the highest available capture quality
@@ -272,9 +278,18 @@
             Ensemble.Editor.MediaCaptureMGR.ui.webcamDeviceQualityContextMenu.winControl.commands = menuItems;
 
             // select a preview quality that matches the capture aspect ratio. try to match (but not exceed) the selected capture resolution.
+            let selectedPreview = Ensemble.Editor.MediaCaptureMGR.matchPreviewToCaptureQuality(selectedQuality, prunedPreviewResolutions);
 
             // store the list of retrieved capture quality settings so we don't have to enumerate it again as long as the same camera remains active
-            Ensemble.Editor.MediaCaptureMGR.captureSession.video.videoDevices.properties = prunedCaptureResolutions;
+            Ensemble.Editor.MediaCaptureMGR.captureSession.video.videoDevices.captureProperties = prunedCaptureResolutions;
+            Ensemble.Editor.MediaCaptureMGR.captureSession.video.videoDevices.previewProperties = prunedPreviewResolutions;
+
+            // finally, set the device's capture and preview qualities to match the selected values
+            Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.videoDeviceController.setMediaStreamPropertiesAsync(Windows.Media.Capture.MediaStreamType.videoRecord, selectedQuality).then(function () {
+                Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.videoDeviceController.setMediaStreamPropertiesAsync(Windows.Media.Capture.MediaStreamType.videoPreview, selectedPreview).done(
+                    Ensemble.Editor.MediaCaptureMGR._listeners.webcamAutosetQuality
+                );
+            });
         },
 
         pruneDuplicateVideoQualities: function (captureResolutions) {
@@ -330,53 +345,69 @@
             return returnVal;
         },
 
+        matchPreviewToCaptureQuality: function (captureQuality, previewCandidates) {
+            let selectedPreview = previewCandidates[0],
+                prunedPreviewResLen = previewCandidates.length,
+                selectedQualityAspect = captureQuality.width / captureQuality.height;
+            for (let i = 0; i < prunedPreviewResLen; i++) {
+                let currentPreview = previewCandidates[i],
+                    currentDif = Math.abs((currentPreview.width / currentPreview.height) - selectedQualityAspect),
+                    selectedDif = Math.abs((selectedPreview.width / selectedPreview.height) - selectedQualityAspect);
+                if (selectedDif >= currentDif && captureQuality.width >= currentPreview.width && captureQuality.height >= currentPreview.height) {
+                    selectedPreview = currentPreview;
+                }
+            }
+            return selectedPreview;
+        },
+
         ui: {
-            videoCaptureElement: null,
-            videoCaptureSettingsButton: null,
-            videoCaptureSettingsContextMenu: null,
+            webcamCapturePreview: null,
+            webcamCaptureSettingsButton: null,
+            webcamCaptureSettingsContextMenu: null,
             webcamDeviceQualityContextMenu: null,
             webcamDeviceSelectContextMenu: null,
             micDeviceSelectContextMenu: null,
-            webcamCaptureLoadingIndicator: null
+            webcamCaptureLoadingIndicator: null,
+            webcamCaptureStartStopButton: null,
+            webcamCaptureListButton: null
         },
 
         _refreshUI: function () {
-            this.ui.videoCaptureElement = document.getElementsByClassName("media-capture-preview--webcam")[0];
-            this.ui.videoCaptureSettingsButton = document.getElementsByClassName("eo1-btn--webcam-capture-settings")[0];
-            this.ui.videoCaptureSettingsContextMenu = document.getElementsByClassName("contextmenu--webcam-popin-options")[0];
+            this.ui.webcamCapturePreview = document.getElementsByClassName("media-capture-preview--webcam")[0];
+            this.ui.webcamCaptureSettingsButton = document.getElementsByClassName("eo1-btn--webcam-capture-settings")[0];
+            this.ui.webcamCaptureSettingsContextMenu = document.getElementsByClassName("contextmenu--webcam-popin-options")[0];
             this.ui.webcamDeviceQualityContextMenu = document.getElementsByClassName("contextmenu--webcam-device-quality")[0];
             this.ui.webcamDeviceSelectContextMenu = document.getElementsByClassName("contextmenu--webcam-device-select")[0];
             this.ui.micDeviceSelectContextMenu = document.getElementsByClassName("contextmenu--mic-device-select")[0];
             this.ui.webcamCaptureLoadingIndicator = document.getElementsByClassName("media-capture-loading--webcam")[0];
             this.ui.webcamCaptureStartStopButton = document.getElementsByClassName("eo1-btn--webcam-capture-startstop")[0];
+            this.ui.webcamCaptureListButton = document.getElementsByClassName("eo1-btn--show-webcam-capture-list")[0];
 
-            this.ui.videoCaptureElement.addEventListener("playing", Ensemble.Editor.MediaCaptureMGR._listeners.mediaPreviewBegan);
-            this.ui.videoCaptureSettingsButton.addEventListener("click", Ensemble.Editor.MediaCaptureMGR._listeners.videoCaptureSettingsButtonClicked);
+            this.ui.webcamCapturePreview.addEventListener("playing", Ensemble.Editor.MediaCaptureMGR._listeners.mediaPreviewBegan);
+            this.ui.webcamCaptureSettingsButton.addEventListener("click", Ensemble.Editor.MediaCaptureMGR._listeners.webcamCaptureSettingsButtonClicked);
             this.ui.webcamCaptureStartStopButton.addEventListener("click", Ensemble.Editor.MediaCaptureMGR._listeners.videoCaptureStartStopButtonClicked);
         },
 
         _cleanUI: function () {
-            this.ui.videoCaptureElement.removeEventListener("playing", Ensemble.Editor.MediaCaptureMGR._listeners.mediaPreviewBegan);
-            this.ui.videoCaptureSettingsButton.removeEventListener("click", Ensemble.Editor.MediaCaptureMGR._listeners.videoCaptureSettingsButtonClicked);
+            this.ui.webcamCapturePreview.removeEventListener("playing", Ensemble.Editor.MediaCaptureMGR._listeners.mediaPreviewBegan);
+            this.ui.webcamCaptureSettingsButton.removeEventListener("click", Ensemble.Editor.MediaCaptureMGR._listeners.webcamCaptureSettingsButtonClicked);
             this.ui.webcamCaptureStartStopButton.removeEventListener("click", Ensemble.Editor.MediaCaptureMGR._listeners.videoCaptureStartStopButtonClicked);
 
-            this.ui.videoCaptureElement = null;
-            this.ui.videoCaptureSettingsButton = null;
-            this.ui.videoCaptureSettingsContextMenu = null;
+            this.ui.webcamCapturePreview = null;
+            this.ui.webcamCaptureSettingsButton = null;
+            this.ui.webcamCaptureSettingsContextMenu = null;
             this.ui.webcamDeviceQualityContextMenu = null;
             this.ui.webcamDeviceSelectContextMenu = null;
             this.ui.micDeviceSelectContextMenu = null;
             this.ui.webcamCaptureLoadingIndicator = null;
             this.ui.webcamCaptureStartStopButton = null;
+            this.ui.webcamCaptureListButton = null;
         },
 
         _listeners: {
             webcamMediaCapturerInitialized: function (success) {
-                Ensemble.Editor.MediaCaptureMGR.refreshWebcamDeviceQualityContextMenu();
-
-                Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureReady = true;
                 Ensemble.Editor.MediaCaptureMGR.captureSession.video.encodingProfile = Windows.Media.MediaProperties.MediaEncodingProfile.createMp4(Windows.Media.MediaProperties.VideoEncodingQuality.auto);
-                Ensemble.Editor.MediaCaptureMGR._listeners.webcamInitializationCaptureCheck();
+                Ensemble.Editor.MediaCaptureMGR.refreshWebcamDeviceQualityContextMenu();
             },
 
             webcamFileCreated: function (file) {
@@ -385,16 +416,21 @@
                 Ensemble.Editor.MediaCaptureMGR._listeners.webcamInitializationCaptureCheck();
             },
 
+            webcamAutosetQuality: function () {
+                Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureReady = true;
+                Ensemble.Editor.MediaCaptureMGR._listeners.webcamInitializationCaptureCheck();
+            },
+
             webcamInitializationCaptureCheck: function () {
                 /// <summary>Checks if both the media capture manager and the target file have been initialized and starts the camera preview if they have.</summary>
                 if (Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget != null && Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureReady) {
 
-                    if (Ensemble.Editor.MediaCaptureMGR.captureSession.video.previewMirroring) WinJS.Utilities.addClass(Ensemble.Editor.MediaCaptureMGR.ui.videoCaptureElement, "media-capture-preview--mirrored");
-                    else WinJS.Utilities.removeClass(Ensemble.Editor.MediaCaptureMGR.ui.videoCaptureElement, "media-capture-preview--mirrored");
+                    if (Ensemble.Editor.MediaCaptureMGR.captureSession.video.previewMirroring) WinJS.Utilities.addClass(Ensemble.Editor.MediaCaptureMGR.ui.webcamCapturePreview, "media-capture-preview--mirrored");
+                    else WinJS.Utilities.removeClass(Ensemble.Editor.MediaCaptureMGR.ui.webcamCapturePreview, "media-capture-preview--mirrored");
 
                     let captureUrl = URL.createObjectURL(Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR);
-                    Ensemble.Editor.MediaCaptureMGR.ui.videoCaptureElement.src = captureUrl;
-                    Ensemble.Editor.MediaCaptureMGR.ui.videoCaptureElement.play();
+                    Ensemble.Editor.MediaCaptureMGR.ui.webcamCapturePreview.src = captureUrl;
+                    Ensemble.Editor.MediaCaptureMGR.ui.webcamCapturePreview.play();
                     // wait for media preview to begin before attempting to start capture
                 }
             },
@@ -417,8 +453,8 @@
                 Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.startRecordToStorageFileAsync(Ensemble.Editor.MediaCaptureMGR.captureSession.video.encodingProfile, Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget).then(Ensemble.Editor.MediaCaptureMGR._listeners.webcamCaptureBegan);
             },
 
-            videoCaptureSettingsButtonClicked: function (event) {
-                Ensemble.Editor.MediaCaptureMGR.ui.videoCaptureSettingsContextMenu.winControl.show(Ensemble.Editor.MediaCaptureMGR.ui.videoCaptureSettingsButton, "auto");
+            webcamCaptureSettingsButtonClicked: function (event) {
+                Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureSettingsContextMenu.winControl.show(Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureSettingsButton, "auto");
             },
 
             webcamDeviceSelected: function (event) {
@@ -438,8 +474,8 @@
                     allButtons[i].winControl.selected = false;
                 }
                 event.currentTarget.winControl.selected = true;
-                //Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.videoDeviceController.setMediaStreamPropertiesAsync(Windows.Media.Capture.MediaStreamType.videoRecord, Ensemble.Editor.MediaCaptureMGR.captureSession.video.videoDevices.properties[event.currentTarget.dataset.webcamStreamIndex]);
-                Ensemble.Editor.MediaCaptureMGR.changeCameraPreviewQuality(Ensemble.Editor.MediaCaptureMGR.captureSession.video.videoDevices.properties[event.currentTarget.dataset.webcamStreamIndex]);
+                //Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.videoDeviceController.setMediaStreamPropertiesAsync(Windows.Media.Capture.MediaStreamType.videoRecord, Ensemble.Editor.MediaCaptureMGR.captureSession.video.videoDevices.captureProperties[event.currentTarget.dataset.webcamStreamIndex]);
+                Ensemble.Editor.MediaCaptureMGR.changeCameraPreviewQuality(Ensemble.Editor.MediaCaptureMGR.captureSession.video.videoDevices.captureProperties[event.currentTarget.dataset.webcamStreamIndex]);
             },
 
             micDeviceSelected: function (event) {
@@ -454,6 +490,20 @@
 
             videoCaptureStartStopButtonClicked: function (event) {
                 console.info("Starting webcam capture...");
+                if (Ensemble.Editor.MediaCaptureMGR.captureSession.video.recordingActive) {
+                    // currently recording. stop recording and move temp file into the import list.
+                    Ensemble.Editor.MediaCaptureMGR.captureSession.video.recordingActive = false;
+                    Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureStartStopButton.innerHTML = "&#9210;";
+                    Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureSettingsButton.removeAttribute("disabled");
+                    Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureListButton.removeAttribute("disabled");
+                }
+                else {
+                    // not recording. start the recording stream and disable all buttons.
+                    Ensemble.Editor.MediaCaptureMGR.captureSession.video.recordingActive = true;
+                    Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureStartStopButton.innerHTML = "&#57691;";
+                    Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureSettingsButton.disabled = "disabled";
+                    Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureListButton.disabled = "disabled";
+                }
                 // todo: add cases for karaoke recording (where capture is already technicaly running)
             },
 
