@@ -25,6 +25,7 @@
                     currentTarget: null,
                     captureStartTime: 0,
                     recordingStartTime: 0,
+                    projectTimeAtStart: 0,
                     capturedFiles: []
                 }
             },
@@ -56,6 +57,7 @@
             this.captureSession.video.targetFiles.currentTarget = [];
             this.captureSession.video.targetFiles.captureStartTime = null;
             this.captureSession.video.targetFiles.recordingStartTime = null;
+            this.captureSession.video.targetFiles.projectTimeAtStart = null;
             this.captureSession.video.targetFiles.capturedFiles = [];
         },
 
@@ -144,6 +146,7 @@
             this.captureSession.video.targetFiles.currentTarget = [];
             this.captureSession.video.targetFiles.captureStartTime = null;
             this.captureSession.video.targetFiles.recordingStartTime = null;
+            this.captureSession.video.targetFiles.projectTimeAtStart = null;
             this.captureSession.video.targetFiles.capturedFiles = [];
         },
 
@@ -496,9 +499,23 @@
                     Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureStartStopButton.innerHTML = "&#9210;";
                     Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureSettingsButton.removeAttribute("disabled");
                     Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureListButton.removeAttribute("disabled");
+                    WinJS.Utilities.addClass(Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureLoadingIndicator, "media-capture-loading--visible");
+                    Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.stopRecordAsync().then(function () {
+                        Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.capturedFiles.push({
+                            file: Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget,
+                            projectTime: Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.projectTimeAtStart,
+                            startTrim: Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.recordingStartTime - Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.captureStartTime
+                        });
+                        Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget = null;
+                        Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.projectTimeAtStart = null;
+                        Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.captureStartTime = null;
+                        // init a new capture session
+                    });
                 }
                 else {
                     // not recording. start the recording stream and disable all buttons.
+                    Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.recordingStartTime = performance.now();
+                    Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.projectTimeAtStart = Ensemble.Editor.PlaybackMGR.lastTime;
                     Ensemble.Editor.MediaCaptureMGR.captureSession.video.recordingActive = true;
                     Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureStartStopButton.innerHTML = "&#57691;";
                     Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureSettingsButton.disabled = "disabled";
