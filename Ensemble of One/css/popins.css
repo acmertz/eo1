@@ -34,19 +34,18 @@
 
 .media-capture-controls {
     margin: auto;
-    width: 320px;
+    width: 425px;
     max-width: 100%;
     text-align: center;
-    border: 1px solid #dcdcdc;
     border-top: 0;
 }
 
 .eo1-btn--webcam-capture-settings {
-    float: right;
+    float: left;
 }
 
 .eo1-btn--show-webcam-capture-list {
-    float: left;
+    float: right;
 }
 
 .media-capture-loading {
@@ -71,4 +70,30 @@
 
 .media-capture-loading progress {
     color: #fff;
+}
+
+.media-capture-import-dialog {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    box-sizing: border-box;
+    padding: 10px;
+    flex-direction: column;
+}
+
+.media-capture-import-dialog--visible {
+    display: flex;
+}
+
+.media-capture-import-dialog__listview {
+    flex: 1;
+    margin: 10px 0;
+}
+
+.media-capture-import-dialog__controls {
+    text-align: right;
 }

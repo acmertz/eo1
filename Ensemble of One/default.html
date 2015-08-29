@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="/css/editor.css" />
     <link rel="stylesheet" href="/css/editor-menu.css" />
     <link rel="stylesheet" href="/css/editor-new.css" />
+    <link rel="stylesheet" href="/css/listviews.css" />
     <link rel="stylesheet" href="/css/main-menu.css" />
     <link rel="stylesheet" href="/css/media-browser.css" />
     <link rel="stylesheet" href="/css/popins.css" />
@@ -75,6 +76,14 @@
     <script src="/js/default.js"></script>
 </head>
 <body class="win-type-body">
+    <div>
+        <div class="listview-template listview-template--webcam-capture-import" data-win-control="WinJS.Binding.Template" style="display: none">
+            <div class="eo1-list-item">
+                <h4 class="win-h4" data-win-bind="textContent: title"></h4>
+                <h6 class="win-h6">Sample list item</h6>
+            </div>
+        </div>
+    </div>
     <div class="editor-media-container"></div>
     <div class="app-page app-page--main-menu">
         <nav class="main-menu__nav-container">
@@ -299,9 +308,26 @@
                     <h3 class="win-h3">Camera capture</h3>
                     <video class="media-capture-preview media-capture-preview--webcam"></video>
                     <div class="media-capture-controls media-capture-controls--webcam">
-                        <button class="editor-titlebar-control editor-titlebar-control--inverted eo1-btn--show-webcam-capture-list">&#57676;</button>
                         <button class="editor-titlebar-control editor-titlebar-control--inverted eo1-btn--webcam-capture-startstop">&#9210;</button>
                         <button class="editor-titlebar-control editor-titlebar-control--inverted eo1-btn--webcam-capture-settings">&#57694;</button>
+                        <button class="editor-titlebar-control editor-titlebar-control--inverted eo1-btn--show-webcam-capture-list">&#57611; Done</button>
+                    </div>
+                    <div class="media-capture-import-dialog media-capture-import-dialog--webcam">
+                        <h3 class="win-h3">
+                            <button class="editor-titlebar-control editor-titlebar-control--inverted eo1-btn--hide-webcam-capture-list">&#57557;</button>
+                            <span>Import recordings</span>
+                        </h3>
+                        <div class="media-capture-import-dialog__listview media-capture-import-dialog__listview--webcam" data-win-control="WinJS.UI.ListView"
+                             data-win-options="{
+                                itemTemplate: select('.listview-template--webcam-capture-import'),
+                                layout: { type: WinJS.UI.ListLayout },
+                                selectionMode: WinJS.UI.SelectionMode.multi,
+                                tapBehavior: WinJS.UI.TapBehavior.toggleSelect
+                             }"></div>
+                        <div class="media-capture-import-dialog__controls media-capture-import-dialog__controls--webcam">
+                            <button class="win-button eo1-btn eo1-btn--radius-all eo1-btn--clear">Discard selected</button>
+                            <button class="win-button eo1-btn eo1-btn--radius-all">Import all</button>
+                        </div>
                     </div>
                     <div class="media-capture-loading media-capture-loading--webcam">
                         <progress class="win-progress-ring win-large"></progress>

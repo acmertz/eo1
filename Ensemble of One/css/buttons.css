@@ -6,17 +6,30 @@
 }
 
 .eo1-btn:hover {
-    background: #df2b4f;
+    background: #e34262;
 }
 
 .eo1-btn:active {
-    background: #e65a76;
+    background: #ea728a;
 }
 
 .eo1-btn:disabled {
     background: rgba(0,0,0,0.2);
     color: rgba(0,0,0,0.2);
     pointer-events: none;
+}
+
+.eo1-btn--clear {
+    background: #fff;
+    color: #dc143c;
+}
+
+.eo1-btn--clear:hover {
+    background: #f8d0d8;
+}
+
+.eo1-btn--clear:active {
+    background: #f1a1b1;
 }
 
 .eo1-btn--radius-tr {
