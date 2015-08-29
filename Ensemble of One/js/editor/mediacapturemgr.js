@@ -26,7 +26,7 @@
                     captureStartTime: 0,
                     recordingStartTime: 0,
                     projectTimeAtStart: 0,
-                    capturedFiles: []
+                    capturedFiles: new WinJS.Binding.List([])
                 }
             },
             audio: {
@@ -54,11 +54,13 @@
             this.captureSession.video.previewActive = false;
             this.captureSession.video.previewMirroring = false;
 
-            this.captureSession.video.targetFiles.currentTarget = [];
+            this.captureSession.video.targetFiles.currentTarget = null;
             this.captureSession.video.targetFiles.captureStartTime = null;
             this.captureSession.video.targetFiles.recordingStartTime = null;
             this.captureSession.video.targetFiles.projectTimeAtStart = null;
-            this.captureSession.video.targetFiles.capturedFiles = [];
+            this.captureSession.video.targetFiles.capturedFiles = new WinJS.Binding.List([]);
+
+            this.ui.webcamImportListview.winControl.itemDataSource = this.captureSession.video.targetFiles.capturedFiles.dataSource;
         },
 
         unload: function () {
@@ -143,11 +145,14 @@
             this.captureSession.video.previewActive = false;
             this.captureSession.video.previewMirroring = false;
 
-            this.captureSession.video.targetFiles.currentTarget = [];
+            this.captureSession.video.targetFiles.currentTarget.deleteAsync();
+            this.captureSession.video.targetFiles.currentTarget = null;
             this.captureSession.video.targetFiles.captureStartTime = null;
             this.captureSession.video.targetFiles.recordingStartTime = null;
             this.captureSession.video.targetFiles.projectTimeAtStart = null;
-            this.captureSession.video.targetFiles.capturedFiles = [];
+            this.captureSession.video.targetFiles.capturedFiles = new WinJS.Binding.List([]);
+
+            this.ui.webcamImportListview.winControl.itemDataSource = this.captureSession.video.targetFiles.capturedFiles.dataSource;
         },
 
         changeCameraPreviewDevice: function (videoDevice, audioDevice, force) {
@@ -164,6 +169,7 @@
                 Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.stopRecordAsync().then(function () {
                     Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureActive = false;
 
+                    Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget.deleteAsync();
                     Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget = null;
                     Windows.Storage.ApplicationData.current.temporaryFolder.createFileAsync("recording.mp4", Windows.Storage.CreationCollisionOption.generateUniqueName).then(Ensemble.Editor.MediaCaptureMGR._listeners.webcamFileCreated);
 
@@ -197,6 +203,7 @@
                 Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureReady = false;
                 Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.stopRecordAsync().then(function () {
                     Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureActive = false;
+                    Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget.deleteAsync();
                     Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget = null;
                     Windows.Storage.ApplicationData.current.temporaryFolder.createFileAsync("recording.mp4", Windows.Storage.CreationCollisionOption.generateUniqueName).then(function (resultFile) {
                         Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget = resultFile;
@@ -375,7 +382,9 @@
             webcamCaptureListButton: null,
             webcamCaptureImportDialog: null,
             webcamHideCaptureListButton: null,
-            webcamImportListview: null
+            webcamImportListview: null,
+            webcamDiscardSelectedButton: null,
+            webcamImportAllButton: null
         },
 
         _refreshUI: function () {
@@ -391,12 +400,16 @@
             this.ui.webcamCaptureImportDialog = document.getElementsByClassName("media-capture-import-dialog--webcam")[0];
             this.ui.webcamHideCaptureListButton = document.getElementsByClassName("eo1-btn--hide-webcam-capture-list")[0];
             this.ui.webcamImportListview = document.getElementsByClassName("media-capture-import-dialog__listview--webcam")[0];
+            this.ui.webcamDiscardSelectedButton = document.getElementsByClassName("eo1-btn--media-capture-discard-selected")[0];
+            this.ui.webcamImportAllButton = document.getElementsByClassName("eo1-btn--media-capture-import-all")[0];
 
             this.ui.webcamCapturePreview.addEventListener("playing", Ensemble.Editor.MediaCaptureMGR._listeners.mediaPreviewBegan);
             this.ui.webcamCaptureSettingsButton.addEventListener("click", Ensemble.Editor.MediaCaptureMGR._listeners.webcamCaptureSettingsButtonClicked);
             this.ui.webcamCaptureStartStopButton.addEventListener("click", Ensemble.Editor.MediaCaptureMGR._listeners.videoCaptureStartStopButtonClicked);
             this.ui.webcamCaptureListButton.addEventListener("click", Ensemble.Editor.MediaCaptureMGR._listeners.webcamCaptureListButtonClicked);
             this.ui.webcamHideCaptureListButton.addEventListener("click", Ensemble.Editor.MediaCaptureMGR._listeners.webcamHideCaptureListButtonClicked);
+            this.ui.webcamDiscardSelectedButton.addEventListener("click", Ensemble.Editor.MediaCaptureMGR._listeners.webcamDiscardSelectedButtonClicked);
+            this.ui.webcamImportAllButton.addEventListener("click", Ensemble.Editor.MediaCaptureMGR._listeners.webcamImportAllButtonClicked);
         },
 
         _cleanUI: function () {
@@ -405,6 +418,8 @@
             this.ui.webcamCaptureStartStopButton.removeEventListener("click", Ensemble.Editor.MediaCaptureMGR._listeners.videoCaptureStartStopButtonClicked);
             this.ui.webcamCaptureListButton.removeEventListener("click", Ensemble.Editor.MediaCaptureMGR._listeners.webcamCaptureListButtonClicked);
             this.ui.webcamHideCaptureListButton.removeEventListener("click", Ensemble.Editor.MediaCaptureMGR._listeners.webcamHideCaptureListButtonClicked);
+            this.ui.webcamDiscardSelectedButton.removeEventListener("click", Ensemble.Editor.MediaCaptureMGR._listeners.webcamDiscardSelectedButtonClicked);
+            this.ui.webcamImportAllButton.removeEventListener("click", Ensemble.Editor.MediaCaptureMGR._listeners.webcamImportAllButtonClicked);
 
             this.ui.webcamCapturePreview = null;
             this.ui.webcamCaptureSettingsButton = null;
@@ -418,6 +433,8 @@
             this.ui.webcamCaptureImportDialog = null;
             this.ui.webcamHideCaptureListButton = null;
             this.ui.webcamImportListview = null;
+            this.ui.webcamDiscardSelectedButton = null;
+            this.ui.webcamImportAllButton = null;
         },
 
         _listeners: {
@@ -505,7 +522,6 @@
             },
 
             videoCaptureStartStopButtonClicked: function (event) {
-                console.info("Starting webcam capture...");
                 if (Ensemble.Editor.MediaCaptureMGR.captureSession.video.recordingActive) {
                     // currently recording. stop recording and move temp file into the import list.
                     Ensemble.Editor.MediaCaptureMGR.captureSession.video.recordingActive = false;
@@ -516,6 +532,7 @@
                     Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.stopRecordAsync().then(function () {
                         Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.capturedFiles.push({
                             file: Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget,
+                            title: Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget.displayName,
                             projectTime: Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.projectTimeAtStart,
                             startTrim: Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.recordingStartTime - Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.captureStartTime
                         });
@@ -550,24 +567,30 @@
             },
 
             webcamCaptureListButtonClicked: function (event) {
-                console.log("Showing webcam capture list.");
-                let observableList = [],
-                    fileCount = Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.capturedFiles.length;
-                for (let i = 0; i < fileCount; i++) {
-                    observableList.push({
-                        title: Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.capturedFiles[i].file.displayName
-                    });
-                }
-
-                let importList = new WinJS.Binding.List(observableList);
-                Ensemble.Editor.MediaCaptureMGR.ui.webcamImportListview.winControl.itemDataSource = importList.dataSource;
-
                 WinJS.Utilities.addClass(Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureImportDialog, "media-capture-import-dialog--visible");
             },
 
             webcamHideCaptureListButtonClicked: function (event) {
-                console.log("Hiding webcam capture list.");
                 WinJS.Utilities.removeClass(Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureImportDialog, "media-capture-import-dialog--visible");
+            },
+
+            webcamDiscardSelectedButtonClicked: function (event) {
+                Ensemble.OSDialogMGR.showDialog("Discard selected media clips?", "…but you worked so hard on them! This will immediately delete the selected recordings. Are you sure you want to do this?",
+                    [{label: "Discard", handler: Ensemble.Editor.MediaCaptureMGR._listeners.webcamConfirmDiscardSelectedRecordings}, {label: "Cancel", handler: null}], 0, 1);
+            },
+
+            webcamConfirmDiscardSelectedRecordings: function (event) {
+                let selection = Ensemble.Editor.MediaCaptureMGR.ui.webcamImportListview.winControl.selection.getIndices(),
+                    selectionLen = selection.length;
+                for (let i = selectionLen - 1; i >= 0; i--) {
+                    let removedItem = Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.capturedFiles.splice(selection[i], 1)[0];
+                    removedItem.file.deleteAsync();
+                }
+                console.info("Discard the media files in this list: " + selection);
+            },
+
+            webcamImportAllButtonClicked: function (event) {
+                console.log("Import all of the captured media files.");
             }
         }
     });
