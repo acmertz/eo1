@@ -376,6 +376,9 @@
                 renameClip: "renameClip",
                 clipVolumeChanged: "clipVolumeChanged",
                 createLens: "createLens"
+            },
+            BatchType: {
+                importMultipleClips: "importMultipleClips"
             }
         }
     );

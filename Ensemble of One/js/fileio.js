@@ -1026,7 +1026,7 @@
         },
 
         _loadMultipleClips: function (clipArr, payload, callback) {
-            /// <summary>Loads all the clips in the given array and calls the specified callback upon completion.</summary>
+            /// <summary>Loads all the Clip objects in the given array and calls the specified callback upon completion. Assumes that each Clip already exists within a Track object and does not assign the loaded Clips to any Tracks.</summary>
             (function () {
                 if (clipArr.length > 0) {
                     let clips = clipArr;

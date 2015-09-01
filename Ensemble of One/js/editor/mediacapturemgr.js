@@ -78,7 +78,7 @@
             Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureInitSettings.photoCaptureSource = Windows.Media.Capture.PhotoCaptureSource.videoPreview;
             Windows.Devices.Enumeration.DeviceInformation.findAllAsync(Windows.Devices.Enumeration.DeviceClass.videoCapture).then(function (videoDevices) {
                 if (videoDevices.length > 0) {
-                    Windows.Storage.ApplicationData.current.temporaryFolder.createFileAsync("recording.mp4", Windows.Storage.CreationCollisionOption.generateUniqueName).then(Ensemble.Editor.MediaCaptureMGR._listeners.webcamFileCreated);
+                    Ensemble.Editor.MediaCaptureMGR.createVideoFile(null, Ensemble.Editor.MediaCaptureMGR._listeners.webcamFileCreated);
 
                     Ensemble.Editor.MediaCaptureMGR.captureSession.video.videoDevices.deviceList = videoDevices;
 
@@ -169,9 +169,9 @@
                 Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.stopRecordAsync().then(function () {
                     Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureActive = false;
 
-                    Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget.deleteAsync();
+                    let oldTarget = Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget;
                     Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget = null;
-                    Windows.Storage.ApplicationData.current.temporaryFolder.createFileAsync("recording.mp4", Windows.Storage.CreationCollisionOption.generateUniqueName).then(Ensemble.Editor.MediaCaptureMGR._listeners.webcamFileCreated);
+                    Ensemble.Editor.MediaCaptureMGR.replaceVideoFile(oldTarget, Ensemble.Editor.MediaCaptureMGR._listeners.webcamFileCreated);
 
                     Ensemble.Editor.MediaCaptureMGR.ui.webcamCapturePreview.pause();
                     Ensemble.Editor.MediaCaptureMGR.ui.webcamCapturePreview.src = "";
@@ -197,24 +197,22 @@
             }
         },
 
-        changeCameraPreviewQuality: function (videoQuality, force) {
-            if (force || videoQuality != null) {
+        changeCameraPreviewQuality: function (videoQuality) {
+            if (videoQuality != null) {
                 WinJS.Utilities.addClass(Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureLoadingIndicator, "media-capture-loading--visible");
                 Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureReady = false;
                 Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.stopRecordAsync().then(function () {
                     Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureActive = false;
-                    Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget.deleteAsync();
+                    let oldTarget = Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget;
                     Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget = null;
-                    Windows.Storage.ApplicationData.current.temporaryFolder.createFileAsync("recording.mp4", Windows.Storage.CreationCollisionOption.generateUniqueName).then(function (resultFile) {
-                        Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget = resultFile;
-                        if (videoQuality != null) {
-                            Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.videoDeviceController.setMediaStreamPropertiesAsync(Windows.Media.Capture.MediaStreamType.videoRecord, videoQuality).then(function () {
-                                let previewQuality = Ensemble.Editor.MediaCaptureMGR.matchPreviewToCaptureQuality(videoQuality, Ensemble.Editor.MediaCaptureMGR.captureSession.video.videoDevices.previewProperties);
-                                Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.videoDeviceController.setMediaStreamPropertiesAsync(Windows.Media.Capture.MediaStreamType.videoPreview, previewQuality).done(
-                                    Ensemble.Editor.MediaCaptureMGR._listeners.webcamCaptureQualityChanged
-                                );
-                            });
-                        }
+                    Ensemble.Editor.MediaCaptureMGR.replaceVideoFile(oldTarget, function (file) {
+                        Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget = file;
+                        Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.videoDeviceController.setMediaStreamPropertiesAsync(Windows.Media.Capture.MediaStreamType.videoRecord, videoQuality).then(function () {
+                            let previewQuality = Ensemble.Editor.MediaCaptureMGR.matchPreviewToCaptureQuality(videoQuality, Ensemble.Editor.MediaCaptureMGR.captureSession.video.videoDevices.previewProperties);
+                            Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.videoDeviceController.setMediaStreamPropertiesAsync(Windows.Media.Capture.MediaStreamType.videoPreview, previewQuality).done(
+                                Ensemble.Editor.MediaCaptureMGR._listeners.webcamCaptureQualityChanged
+                            );
+                        });
                     });
                 });
             }
@@ -368,6 +366,27 @@
                 }
             }
             return selectedPreview;
+        },
+
+        createVideoFile: function (name, cb) {
+            /// <summary>Creates a new video file for webcam capture.</summary>
+            /// <param name="name" type="String">The name for the file, omitting the extension. Defaults to "Recording" if null.</param>
+            /// <param name="cb" type="Function">The callback to execute when the file has been created.</param>
+            Windows.Storage.KnownFolders.videosLibrary.createFolderAsync("Ensemble of One Recordings", Windows.Storage.CreationCollisionOption.openIfExists).then(function (createdFolder) {
+                let fileType = ".mp4",
+                    fileName = name || "Recording";
+                createdFolder.createFileAsync(fileName + fileType, Windows.Storage.CreationCollisionOption.generateUniqueName).done(cb);
+            });
+        },
+
+        replaceVideoFile: function (file, cb) {
+            /// <summary>Deletes the given StorageFile and creates a new file with the same name. Calls the provided callback upon copmletion.</summary>
+            /// <param name="file" type="Windows.Storage.StorageFile">The file to replace.</param>
+            /// <param name="cb" type="Function">The callback to execute when the file has been replaced.</param>
+            let fileName = file.displayName;
+            file.deleteAsync().then(function () {
+                Ensemble.Editor.MediaCaptureMGR.createVideoFile(fileName, cb);
+            });
         },
 
         ui: {
@@ -543,7 +562,7 @@
                         // init a new capture session
                         Ensemble.Editor.MediaCaptureMGR.ui.webcamCapturePreview.pause();
                         Ensemble.Editor.MediaCaptureMGR.ui.webcamCapturePreview.src = "";
-                        Windows.Storage.ApplicationData.current.temporaryFolder.createFileAsync("recording.mp4", Windows.Storage.CreationCollisionOption.generateUniqueName).then(Ensemble.Editor.MediaCaptureMGR._listeners.webcamFileCreated);
+                        Ensemble.Editor.MediaCaptureMGR.createVideoFile(null, Ensemble.Editor.MediaCaptureMGR._listeners.webcamFileCreated);
                     });
                 }
                 else {

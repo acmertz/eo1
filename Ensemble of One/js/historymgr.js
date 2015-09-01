@@ -28,6 +28,26 @@
             }
         },
 
+        performBatch: function (batchType, actions, cb) {
+            /// <summary>Performs all of the given actions and saves the project after they have completed.</summary>
+            /// <param name="batchType">Any of the types present in the Ensemble.Events.Action.BatchType enumeration.</param>
+            /// <param name="actions" type="Array">An array of Actions to perform.</param>
+            /// <param name="cb" type="Function">Optional. The callback to execute upon completion of all Actions.</param>
+            let actionCount = actions.length,
+                validChain = true;
+            for (let i = 0; i < actionCount; i++) {
+                if (actions[i]._type != Ensemble.Events.Action.ActionType.createTrack && actions[i]._type != Ensemble.Events.Action.ActionType.importClip) {
+                    validChain = false;
+                    break;
+                }
+            }
+
+            if (validChain) {
+                // Chain the given Actions together.
+            }
+            else console.error("The given actions are not valid for chaining. Only instances of Ensemble.Events.Action with type Ensemble.Events.Action.ActionType.createTrack or Ensemble.Events.Action.ActionType.importClip are supported at this time.");
+        },
+
         _importActionCompleted: function (params, metadata) {
             params.file.bitrate = metadata.bitrate;
             params.file.duration = metadata.duration;
