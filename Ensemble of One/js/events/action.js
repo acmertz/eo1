@@ -248,7 +248,7 @@
                     let player = params.player;
 
                     if (!clip.preExisting) {
-                        clip.duration = eFile.duration;
+                        clip.duration = eFile.duration - clip.startTrim;
                         clip.name = eFile.title || eFile.displayName;
                         clip.file = eFile;
                         switch (eFile.eo1type) {
@@ -376,9 +376,6 @@
                 renameClip: "renameClip",
                 clipVolumeChanged: "clipVolumeChanged",
                 createLens: "createLens"
-            },
-            BatchType: {
-                importMultipleClips: "importMultipleClips"
             }
         }
     );

@@ -7,6 +7,10 @@
         _pendingAction: null,
         _pendingCallback: null,
 
+        _batchActions: [],
+        _batchPos: -1,
+        _batchCallback: null,
+
         performAction: function (action, cb) {
             /// <summary>Adds an action to the history stack and performs the action.</summary>
             /// <param name="action" type="Ensemble.Events.Action">The action to perform.</param>
@@ -20,32 +24,42 @@
             else {
                 action.performAction();
                 Ensemble.HistoryMGR._backStack.push(action);
-                Ensemble.HistoryMGR._forwardStack = [];
-                Ensemble.HistoryMGR.refreshMessage();
-                Ensemble.FileIO.saveProject();
-                Ensemble.Editor.MenuMGR._reevaluateState();
-                if (Ensemble.Editor.SelectionMGR.selected.length == 1) Ensemble.Editor.TimelineMGR.showTrimControls(Ensemble.Editor.SelectionMGR.selected[0]);
+
+                // Only save and cleanup if the Action is not part of a batch
+                if (Ensemble.HistoryMGR._batchPos == -1) {
+                    Ensemble.HistoryMGR._forwardStack = [];
+                    Ensemble.HistoryMGR.refreshMessage();
+                    Ensemble.FileIO.saveProject();
+                    Ensemble.Editor.MenuMGR._reevaluateState();
+                    if (Ensemble.Editor.SelectionMGR.selected.length == 1) Ensemble.Editor.TimelineMGR.showTrimControls(Ensemble.Editor.SelectionMGR.selected[0]);
+                }
+                else cb();
             }
         },
 
-        performBatch: function (batchType, actions, cb) {
+        performBatch: function (actions, cb) {
             /// <summary>Performs all of the given actions and saves the project after they have completed.</summary>
-            /// <param name="batchType">Any of the types present in the Ensemble.Events.Action.BatchType enumeration.</param>
-            /// <param name="actions" type="Array">An array of Actions to perform.</param>
-            /// <param name="cb" type="Function">Optional. The callback to execute upon completion of all Actions.</param>
-            let actionCount = actions.length,
-                validChain = true;
-            for (let i = 0; i < actionCount; i++) {
-                if (actions[i]._type != Ensemble.Events.Action.ActionType.createTrack && actions[i]._type != Ensemble.Events.Action.ActionType.importClip) {
-                    validChain = false;
-                    break;
-                }
-            }
+            /// <param name="actions" type="Array">An array of Action objects to batch together. Executes them in the given order.</param>
+            /// <param name="cb" type="Function">Optional. The callback to execute upon completion of all Actions. Only called in the event that the batch operation was successful.</param>
+            this._batchActions = actions;
+            this._batchPos = -1;
+            this._batchCallback = cb;
+            this._performNextBatchAction();
+        },
 
-            if (validChain) {
-                // Chain the given Actions together.
+        _performNextBatchAction: function () {
+            Ensemble.HistoryMGR._batchPos++;
+            let currentAction = Ensemble.HistoryMGR._batchActions[Ensemble.HistoryMGR._batchPos];
+            if (currentAction == null || currentAction == undefined) {
+                // no more actions in the current batch.
+                Ensemble.HistoryMGR._batchPos = -1;
+                Ensemble.HistoryMGR._batchActions = [];
+                Ensemble.HistoryMGR._batchCallback();
+                Ensemble.HistoryMGR._batchCallback = null;
             }
-            else console.error("The given actions are not valid for chaining. Only instances of Ensemble.Events.Action with type Ensemble.Events.Action.ActionType.createTrack or Ensemble.Events.Action.ActionType.importClip are supported at this time.");
+            else {
+                Ensemble.HistoryMGR.performAction(currentAction, Ensemble.HistoryMGR._performNextBatchAction);
+            }
         },
 
         _importActionCompleted: function (params, metadata) {
@@ -56,15 +70,17 @@
             params.file.title = metadata.title;
             Ensemble.HistoryMGR._pendingAction.finish(params);
             Ensemble.HistoryMGR._backStack.push(Ensemble.HistoryMGR._pendingAction);
-            Ensemble.HistoryMGR._forwardStack = [];
             if (Ensemble.HistoryMGR._pendingCallback && Ensemble.HistoryMGR._pendingCallback != null) {
                 Ensemble.HistoryMGR._pendingCallback();
                 Ensemble.HistoryMGR._pendingCallback = null;
             }
-            Ensemble.HistoryMGR.refreshMessage();
-            Ensemble.Editor.MenuMGR._reevaluateState();
-            Ensemble.Editor.TimelineMGR.refreshClipVolumeModifiers();
-            Ensemble.FileIO.saveProject();
+            if (Ensemble.HistoryMGR._batchPos == -1) {
+                Ensemble.HistoryMGR._forwardStack = [];
+                Ensemble.HistoryMGR.refreshMessage();
+                Ensemble.Editor.MenuMGR._reevaluateState();
+                Ensemble.Editor.TimelineMGR.refreshClipVolumeModifiers();
+                Ensemble.FileIO.saveProject();
+            }
         },
 
         _undoRemoveTrackComplete: function (loadedClips) {

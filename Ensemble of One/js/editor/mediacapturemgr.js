@@ -502,7 +502,10 @@
             mediaPreviewBegan: function (event) {
                 console.log("Started media preview.");
                 Ensemble.Editor.MediaCaptureMGR.captureSession.video.previewActive = true;
-                Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.startRecordToStorageFileAsync(Ensemble.Editor.MediaCaptureMGR.captureSession.video.encodingProfile, Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget).then(Ensemble.Editor.MediaCaptureMGR._listeners.webcamCaptureBegan);
+                setTimeout(function () {
+                    Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.startRecordToStorageFileAsync(Ensemble.Editor.MediaCaptureMGR.captureSession.video.encodingProfile, Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget).then(Ensemble.Editor.MediaCaptureMGR._listeners.webcamCaptureBegan);
+                }, 200);
+                
             },
 
             webcamCaptureSettingsButtonClicked: function (event) {
@@ -553,7 +556,7 @@
                             file: Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget,
                             title: Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget.displayName,
                             projectTime: Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.projectTimeAtStart,
-                            startTrim: Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.recordingStartTime - Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.captureStartTime
+                            startTrim: Math.floor(Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.recordingStartTime - Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.captureStartTime)
                         });
                         Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget = null;
                         Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.projectTimeAtStart = null;
@@ -605,11 +608,48 @@
                     let removedItem = Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.capturedFiles.splice(selection[i], 1)[0];
                     removedItem.file.deleteAsync();
                 }
-                console.info("Discard the media files in this list: " + selection);
+                console.info("Discarded " + selectionLen + " items in the capture session.");
             },
 
             webcamImportAllButtonClicked: function (event) {
-                console.log("Import all of the captured media files.");
+                console.log("Importing captured video files into project...");
+                let importCount = Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.capturedFiles.length,
+                    tempActions = [];
+                for (let i = 0; i < importCount; i++) {
+                    let tempItem = Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.capturedFiles.getAt(i),
+                        rawFile = tempItem.file,
+                        ensembleFile = Ensemble.FileIO._createFileFromSrc(rawFile),
+                        newClip = new Ensemble.Editor.Clip(null),
+                        importTime = tempItem.projectTime,
+                        importTrim = tempItem.startTrim,
+                        newTrackId = Ensemble.Editor.TimelineMGR.generateNewTrackId(),
+                        trackCreateAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.createTrack, {
+                            trackId: newTrackId
+                        });
+
+                    newClip.file = {
+                        path: ensembleFile.path,
+                        token: ensembleFile.token
+                    };
+                    newClip.preExisting = false;
+                    newClip.startTrim = importTrim;
+
+                    let clipImportAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.importClip,
+                        {
+                            clipId: newClip.id,
+                            clipObj: newClip,
+                            destinationTrack: newTrackId,
+                            destinationTime: importTime
+                        }
+                    );
+
+                    tempActions.push(trackCreateAction, clipImportAction);
+                }
+                Ensemble.HistoryMGR.performBatch(tempActions, Ensemble.Editor.MediaCaptureMGR._listeners.webcamImportAllFinished);
+            },
+
+            webcamImportAllFinished: function (event) {
+                console.info("Finished importing all clips in the capture session!");
             }
         }
     });
