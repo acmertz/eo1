@@ -49,16 +49,16 @@
 
         _performNextBatchAction: function () {
             Ensemble.HistoryMGR._batchPos++;
-            let currentAction = Ensemble.HistoryMGR._batchActions[Ensemble.HistoryMGR._batchPos];
-            if (currentAction == null || currentAction == undefined) {
+            if (Ensemble.HistoryMGR._batchPos < Ensemble.HistoryMGR._batchActions.length) Ensemble.HistoryMGR.performAction(
+                Ensemble.HistoryMGR._batchActions[Ensemble.HistoryMGR._batchPos],
+                Ensemble.HistoryMGR._performNextBatchAction
+            );
+            else {
                 // no more actions in the current batch.
                 Ensemble.HistoryMGR._batchPos = -1;
                 Ensemble.HistoryMGR._batchActions = [];
                 Ensemble.HistoryMGR._batchCallback();
                 Ensemble.HistoryMGR._batchCallback = null;
-            }
-            else {
-                Ensemble.HistoryMGR.performAction(currentAction, Ensemble.HistoryMGR._performNextBatchAction);
             }
         },
 
@@ -71,8 +71,9 @@
             Ensemble.HistoryMGR._pendingAction.finish(params);
             Ensemble.HistoryMGR._backStack.push(Ensemble.HistoryMGR._pendingAction);
             if (Ensemble.HistoryMGR._pendingCallback && Ensemble.HistoryMGR._pendingCallback != null) {
-                Ensemble.HistoryMGR._pendingCallback();
+                let tempCb = Ensemble.HistoryMGR._pendingCallback;
                 Ensemble.HistoryMGR._pendingCallback = null;
+                tempCb();
             }
             if (Ensemble.HistoryMGR._batchPos == -1) {
                 Ensemble.HistoryMGR._forwardStack = [];

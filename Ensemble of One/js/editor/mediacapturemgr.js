@@ -589,11 +589,24 @@
             },
 
             webcamCaptureListButtonClicked: function (event) {
+                Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.stopRecordAsync().then(function () {
+                    let file = Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget;
+                    file.deleteAsync();
+                    Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget = null;
+                    Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.projectTimeAtStart = null;
+                    Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.captureStartTime = null;
+
+                    // init a new capture session
+                    Ensemble.Editor.MediaCaptureMGR.ui.webcamCapturePreview.pause();
+                    Ensemble.Editor.MediaCaptureMGR.ui.webcamCapturePreview.src = "";
+                });
                 WinJS.Utilities.addClass(Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureImportDialog, "media-capture-import-dialog--visible");
             },
 
             webcamHideCaptureListButtonClicked: function (event) {
                 WinJS.Utilities.removeClass(Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureImportDialog, "media-capture-import-dialog--visible");
+                WinJS.Utilities.addClass(Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureLoadingIndicator, "media-capture-loading--visible");
+                Ensemble.Editor.MediaCaptureMGR.createVideoFile(null, Ensemble.Editor.MediaCaptureMGR._listeners.webcamFileCreated);
             },
 
             webcamDiscardSelectedButtonClicked: function (event) {
