@@ -59,6 +59,7 @@
                 Ensemble.HistoryMGR._batchActions = [];
                 Ensemble.HistoryMGR._batchCallback();
                 Ensemble.HistoryMGR._batchCallback = null;
+                Ensemble.FileIO.saveProject();
             }
         },
 
@@ -70,17 +71,17 @@
             params.file.title = metadata.title;
             Ensemble.HistoryMGR._pendingAction.finish(params);
             Ensemble.HistoryMGR._backStack.push(Ensemble.HistoryMGR._pendingAction);
-            if (Ensemble.HistoryMGR._pendingCallback && Ensemble.HistoryMGR._pendingCallback != null) {
-                let tempCb = Ensemble.HistoryMGR._pendingCallback;
-                Ensemble.HistoryMGR._pendingCallback = null;
-                tempCb();
-            }
             if (Ensemble.HistoryMGR._batchPos == -1) {
                 Ensemble.HistoryMGR._forwardStack = [];
                 Ensemble.HistoryMGR.refreshMessage();
                 Ensemble.Editor.MenuMGR._reevaluateState();
                 Ensemble.Editor.TimelineMGR.refreshClipVolumeModifiers();
                 Ensemble.FileIO.saveProject();
+            }
+            if (Ensemble.HistoryMGR._pendingCallback && Ensemble.HistoryMGR._pendingCallback != null) {
+                let tempCb = Ensemble.HistoryMGR._pendingCallback;
+                Ensemble.HistoryMGR._pendingCallback = null;
+                tempCb();
             }
         },
 
