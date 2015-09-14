@@ -27,14 +27,14 @@
                 // No popins active. Show the popin.
                 this._showPopin(popin);
             }
-            
+            this._evaluateMenuToggles();
         },
 
         _hidePopin: function (popin) {
             switch (popin) {
                 case Ensemble.Editor.PopinMGR.PopinTypes.cameraCapture:
                     WinJS.Utilities.removeClass(this.ui.cameraCapturePopin, "editor-popin--visible");
-                    Ensemble.Editor.MediaCaptureMGR.cancelVideoCaptureSession();
+                    Ensemble.Editor.MediaCaptureMGR.cleanupVideoCaptureSession();
                     break;
             }
             this.activePopin = null;
@@ -50,6 +50,13 @@
             }
             this.activePopin = popin;
             Ensemble.Pages.Editor.viewResized();
+        },
+
+        _evaluateMenuToggles: function () {
+            /// <summary>Checks for any active Popins and updates their menu toggles to function accordingly.</summary>
+            let cameraCaptureMenuToggle = document.getElementsByClassName("editor-toolbar-command--record-video")[0];
+            if (WinJS.Utilities.hasClass(this.ui.cameraCapturePopin, "editor-popin--visible")) cameraCaptureMenuToggle.winControl.selected = true;
+            else cameraCaptureMenuToggle.winControl.selected = false;
         },
 
         ui: {

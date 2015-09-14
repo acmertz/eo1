@@ -6,6 +6,7 @@
         _backStack: [],
         _pendingAction: null,
         _pendingCallback: null,
+        _isActionRedo: false,
 
         _batchActions: [],
         _batchPos: -1,
@@ -59,6 +60,7 @@
                 Ensemble.HistoryMGR._batchActions = [];
                 Ensemble.HistoryMGR._batchCallback();
                 Ensemble.HistoryMGR._batchCallback = null;
+                Ensemble.Editor.MenuMGR._reevaluateState();
                 Ensemble.FileIO.saveProject();
             }
         },
@@ -72,7 +74,10 @@
             Ensemble.HistoryMGR._pendingAction.finish(params);
             Ensemble.HistoryMGR._backStack.push(Ensemble.HistoryMGR._pendingAction);
             if (Ensemble.HistoryMGR._batchPos == -1) {
-                Ensemble.HistoryMGR._forwardStack = [];
+                if (!Ensemble.HistoryMGR._isActionRedo) {
+                    Ensemble.HistoryMGR._forwardStack = [];
+                    Ensemble.HistoryMGR._isActionRedo = false;
+                }
                 Ensemble.HistoryMGR.refreshMessage();
                 Ensemble.Editor.MenuMGR._reevaluateState();
                 Ensemble.Editor.TimelineMGR.refreshClipVolumeModifiers();
@@ -124,7 +129,8 @@
 
         redoNext: function () {
             if (Ensemble.HistoryMGR._forwardStack.length > 0) {
-                var actionToRedo = Ensemble.HistoryMGR._forwardStack.pop();
+                Ensemble.HistoryMGR._isActionRedo = true;
+                let actionToRedo = Ensemble.HistoryMGR._forwardStack.pop();
 
                 if (actionToRedo.isCompound()) {
                     this._pendingAction = actionToRedo;
@@ -135,7 +141,8 @@
                     actionToRedo.performAction();
                     this._backStack.push(actionToRedo);
                     this.refreshMessage();
-                    setTimeout(function () { Ensemble.FileIO.saveProject(); }, 0);
+                    this._isActionRedo = false;
+                    Ensemble.FileIO.saveProject();
                 }
                 Ensemble.Editor.MenuMGR._reevaluateState();
                 if (Ensemble.Editor.SelectionMGR.selected.length == 1) Ensemble.Editor.TimelineMGR.showTrimControls(Ensemble.Editor.SelectionMGR.selected[0]);
@@ -168,6 +175,7 @@
             this._backStack = [];
             this._pendingAction = null;
             this._pendingCallback = null;
+            this._isActionRedo = false;
         }
     });
 })();

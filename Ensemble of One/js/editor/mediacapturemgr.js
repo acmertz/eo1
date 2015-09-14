@@ -34,6 +34,8 @@
             }
         },
 
+        displayRequest: null,
+
         init: function () {
             this._refreshUI();
 
@@ -60,11 +62,13 @@
             this.captureSession.video.targetFiles.projectTimeAtStart = null;
             this.captureSession.video.targetFiles.capturedFiles = new WinJS.Binding.List([]);
 
+            this.displayRequest = new Windows.System.Display.DisplayRequest();
+
             this.ui.webcamImportListview.winControl.itemDataSource = this.captureSession.video.targetFiles.capturedFiles.dataSource;
         },
 
         unload: function () {
-            if (this.captureSession.video.previewActive) this.cancelVideoCaptureSession();
+            if (this.captureSession.video.previewActive) this.cleanupVideoCaptureSession();
             this._cleanUI();
         },
 
@@ -120,11 +124,15 @@
             });
         },
 
-        cancelVideoCaptureSession: function () {
+        cleanupVideoCaptureSession: function () {
             /// <summary>Cancels the current capture session. All video previews will be stopped and any pending recordings will be lost.</summary>
             this.ui.webcamCapturePreview.pause();
             this.ui.webcamCapturePreview.src = "";
             this.captureSession.video.previewActive = false;
+            try {
+                this.displayRequest.requestRelease();
+            }
+            catch (exception) { }
 
             this.captureSession.video.captureMGR.close();
 
@@ -145,7 +153,7 @@
             this.captureSession.video.previewActive = false;
             this.captureSession.video.previewMirroring = false;
 
-            this.captureSession.video.targetFiles.currentTarget.deleteAsync();
+            if (this.captureSession.video.targetFiles.currentTarget) this.captureSession.video.targetFiles.currentTarget.deleteAsync();
             this.captureSession.video.targetFiles.currentTarget = null;
             this.captureSession.video.targetFiles.captureStartTime = null;
             this.captureSession.video.targetFiles.recordingStartTime = null;
@@ -153,6 +161,9 @@
             this.captureSession.video.targetFiles.capturedFiles = new WinJS.Binding.List([]);
 
             this.ui.webcamImportListview.winControl.itemDataSource = this.captureSession.video.targetFiles.capturedFiles.dataSource;
+
+            WinJS.Utilities.removeClass(Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureLoadingIndicator, "media-capture-loading--visible");
+            WinJS.Utilities.removeClass(Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureImportDialog, "media-capture-import-dialog--visible");
         },
 
         changeCameraPreviewDevice: function (videoDevice, audioDevice, force) {
@@ -175,6 +186,7 @@
 
                     Ensemble.Editor.MediaCaptureMGR.ui.webcamCapturePreview.pause();
                     Ensemble.Editor.MediaCaptureMGR.ui.webcamCapturePreview.src = "";
+                    Ensemble.Editor.MediaCaptureMGR.displayRequest.requestRelease();
 
                     let tempInitCaptureSettings = new Windows.Media.Capture.MediaCaptureInitializationSettings();
                     tempInitCaptureSettings.audioDeviceId = (audioDeviceId && Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.mediaCaptureSettings.audioDeviceId != audioDeviceId) ? audioDeviceId : Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureInitSettings.audioDeviceId;
@@ -482,6 +494,7 @@
 
                     let captureUrl = URL.createObjectURL(Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR);
                     Ensemble.Editor.MediaCaptureMGR.ui.webcamCapturePreview.src = captureUrl;
+                    Ensemble.Editor.MediaCaptureMGR.displayRequest.requestActive();
                     Ensemble.Editor.MediaCaptureMGR.ui.webcamCapturePreview.play();
                     // wait for media preview to begin before attempting to start capture
                 }
@@ -565,6 +578,7 @@
                         // init a new capture session
                         Ensemble.Editor.MediaCaptureMGR.ui.webcamCapturePreview.pause();
                         Ensemble.Editor.MediaCaptureMGR.ui.webcamCapturePreview.src = "";
+                        Ensemble.Editor.MediaCaptureMGR.displayRequest.requestRelease();
                         Ensemble.Editor.MediaCaptureMGR.createVideoFile(null, Ensemble.Editor.MediaCaptureMGR._listeners.webcamFileCreated);
                     });
                 }
@@ -599,6 +613,7 @@
                     // init a new capture session
                     Ensemble.Editor.MediaCaptureMGR.ui.webcamCapturePreview.pause();
                     Ensemble.Editor.MediaCaptureMGR.ui.webcamCapturePreview.src = "";
+                    Ensemble.Editor.MediaCaptureMGR.displayRequest.requestRelease();
                 });
                 WinJS.Utilities.addClass(Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureImportDialog, "media-capture-import-dialog--visible");
             },
@@ -663,6 +678,7 @@
 
             webcamImportAllFinished: function (event) {
                 console.info("Finished importing all clips in the capture session!");
+                Ensemble.Editor.PopinMGR.requestPopin(Ensemble.Editor.PopinMGR.PopinTypes.cameraCapture);
             }
         }
     });
