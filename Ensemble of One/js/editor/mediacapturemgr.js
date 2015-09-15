@@ -124,8 +124,10 @@
             });
         },
 
-        cleanupVideoCaptureSession: function () {
-            /// <summary>Cancels the current capture session. All video previews will be stopped and any pending recordings will be lost.</summary>
+        cleanupVideoCaptureSession: function (cancelSession) {
+            /// <summary>Cleans up the current recording session.</summary>
+            /// <param name="cancelSession" type="Boolean">If true, deletes any pending imports.</param>
+
             this.ui.webcamCapturePreview.pause();
             this.ui.webcamCapturePreview.src = "";
             this.captureSession.video.previewActive = false;
@@ -158,6 +160,16 @@
             this.captureSession.video.targetFiles.captureStartTime = null;
             this.captureSession.video.targetFiles.recordingStartTime = null;
             this.captureSession.video.targetFiles.projectTimeAtStart = null;
+
+            if (cancelSession) {
+                // iterate over captured files and delete them.
+                let importCount = Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.capturedFiles.length;
+                for (let i = 0; i < importCount; i++) {
+                    let tempItem = Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.capturedFiles.getAt(i),
+                        rawFile = tempItem.file;
+                    rawFile.deleteAsync();
+                }
+            }
             this.captureSession.video.targetFiles.capturedFiles = new WinJS.Binding.List([]);
 
             this.ui.webcamImportListview.winControl.itemDataSource = this.captureSession.video.targetFiles.capturedFiles.dataSource;
@@ -399,6 +411,13 @@
             file.deleteAsync().then(function () {
                 Ensemble.Editor.MediaCaptureMGR.createVideoFile(fileName, cb);
             });
+        },
+
+        webcamSessionInProgress: function () {
+            /// <summary>Returns whether or not a webcam capture session is currently in progress.</summary>
+            /// <returns type="Boolean"></returns>
+            if (Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.capturedFiles.length > 0) return true;
+            return false;
         },
 
         ui: {

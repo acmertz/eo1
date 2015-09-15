@@ -19,7 +19,7 @@
                 this._hidePopin(popin);
             }
             else if (this.activePopin != null) {
-                // Popin is already active. Depending on its state, request confirmation from the user.
+                // Different popin is already active. Depending on its state, request confirmation from the user.
                 this._hidePopin(this.activePopin);
                 this._showPopin(popin);
             }
@@ -33,12 +33,24 @@
         _hidePopin: function (popin) {
             switch (popin) {
                 case Ensemble.Editor.PopinMGR.PopinTypes.cameraCapture:
-                    WinJS.Utilities.removeClass(this.ui.cameraCapturePopin, "editor-popin--visible");
-                    Ensemble.Editor.MediaCaptureMGR.cleanupVideoCaptureSession();
+                    if (Ensemble.Editor.MediaCaptureMGR.webcamSessionInProgress()) {
+                        // request confirmation from user
+                        Ensemble.OSDialogMGR.showDialog("Abandon webcam recording session?", "If you abandon your recording session, your pending clips will be discarded. Are you sure you want to do this?",
+                            [
+                                { label: "Abandon recording session", handler: Ensemble.Editor.PopinMGR._listeners.confirmAbandonWebcamCaptureSession },
+                                { label: "Cancel", handler: null }
+                            ],
+                            1, 1);
+                    }
+                    else {
+                        // immediately cleanup the session
+                        Ensemble.Editor.MediaCaptureMGR.cleanupVideoCaptureSession();
+                        WinJS.Utilities.removeClass(this.ui.cameraCapturePopin, "editor-popin--visible");
+                        this.activePopin = null;
+                        Ensemble.Pages.Editor.viewResized();
+                    }
                     break;
             }
-            this.activePopin = null;
-            Ensemble.Pages.Editor.viewResized();
         },
 
         _showPopin: function (popin) {
@@ -72,6 +84,12 @@
         },
 
         _listeners: {
+            confirmAbandonWebcamCaptureSession: function () {
+                Ensemble.Editor.MediaCaptureMGR.cleanupVideoCaptureSession(true);
+                WinJS.Utilities.removeClass(Ensemble.Editor.PopinMGR.ui.cameraCapturePopin, "editor-popin--visible");
+                this.activePopin = null;
+                Ensemble.Pages.Editor.viewResized();
+            }
         },
 
         PopinTypes: {
