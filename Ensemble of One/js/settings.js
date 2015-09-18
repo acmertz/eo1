@@ -5,7 +5,8 @@
             { name: "sticky-edges-clip", value: true },
             { name: "sticky-edges-canvas", value: true },
             { name: "default-picture-duration", value: 3},
-            { name: "last-used-camera-quality", value: ""}
+            { name: "last-used-camera-quality", value: ""},
+            { name: "last-used-camera-device", value: ""}
         ],
 
         init: function () {
