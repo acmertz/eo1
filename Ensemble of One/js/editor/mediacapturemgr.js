@@ -712,6 +712,7 @@
 
             webcamImportAllFinished: function (event) {
                 console.info("Finished importing all clips in the capture session!");
+                Ensemble.Editor.MediaCaptureMGR.cleanupVideoCaptureSession(false);
                 Ensemble.Editor.PopinMGR.requestPopin(Ensemble.Editor.PopinMGR.PopinTypes.cameraCapture);
             }
         }
