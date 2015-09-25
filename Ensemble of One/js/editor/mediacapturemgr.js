@@ -25,6 +25,7 @@
                     currentTarget: null,
                     captureStartTime: 0,
                     recordingStartTime: 0,
+                    recordingStopTime: 0,
                     projectTimeAtStart: 0,
                     capturedFiles: new WinJS.Binding.List([])
                 }
@@ -59,6 +60,7 @@
             this.captureSession.video.targetFiles.currentTarget = null;
             this.captureSession.video.targetFiles.captureStartTime = null;
             this.captureSession.video.targetFiles.recordingStartTime = null;
+            this.captureSession.video.targetFiles.recordingStopTime = null;
             this.captureSession.video.targetFiles.projectTimeAtStart = null;
             this.captureSession.video.targetFiles.capturedFiles = new WinJS.Binding.List([]);
 
@@ -169,6 +171,7 @@
             this.captureSession.video.targetFiles.currentTarget = null;
             this.captureSession.video.targetFiles.captureStartTime = null;
             this.captureSession.video.targetFiles.recordingStartTime = null;
+            this.captureSession.video.targetFiles.recordingStopTime = null;
             this.captureSession.video.targetFiles.projectTimeAtStart = null;
 
             if (cancelSession) {
@@ -180,9 +183,8 @@
                     rawFile.deleteAsync();
                 }
             }
-            this.captureSession.video.targetFiles.capturedFiles = new WinJS.Binding.List([]);
 
-            this.ui.webcamImportListview.winControl.itemDataSource = this.captureSession.video.targetFiles.capturedFiles.dataSource;
+            while (this.captureSession.video.targetFiles.capturedFiles.length > 0) this.captureSession.video.targetFiles.capturedFiles.pop();
 
             WinJS.Utilities.removeClass(Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureLoadingIndicator, "media-capture-loading--visible");
             WinJS.Utilities.removeClass(Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureImportDialog, "media-capture-import-dialog--visible");
@@ -599,11 +601,14 @@
                     Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureListButton.removeAttribute("disabled");
                     WinJS.Utilities.addClass(Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureLoadingIndicator, "media-capture-loading--visible");
                     Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureMGR.stopRecordAsync().then(function () {
+                        Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.recordingStopTime = performance.now();
                         Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.capturedFiles.push({
                             file: Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget,
                             title: Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget.displayName,
                             projectTime: Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.projectTimeAtStart,
-                            startTrim: Math.floor(Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.recordingStartTime - Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.captureStartTime)
+                            startTrim: Math.floor(Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.recordingStartTime - Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.captureStartTime),
+                            friendlyProjectTime: Ensemble.Utilities.TimeConverter.convertTime(Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.projectTimeAtStart, true),
+                            friendlyDuration: Ensemble.Utilities.TimeConverter.convertTime(Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.recordingStopTime - Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.recordingStartTime, true)
                         });
                         Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.currentTarget = null;
                         Ensemble.Editor.MediaCaptureMGR.captureSession.video.targetFiles.projectTimeAtStart = null;

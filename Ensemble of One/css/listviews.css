@@ -3,3 +3,12 @@
     padding: 5px;
     box-sizing: border-box;
 }
+
+.eo1-list-item__row {
+    display: table;
+    width: 100%;
+}
+
+.eo1-list-item__column {
+    display: table-cell;
+}

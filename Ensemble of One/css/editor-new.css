@@ -20,6 +20,8 @@
     padding: 10px 0;
     top: 50%;
     display: flex;
+    border-top: 1px solid #ccc;
+    background-color: #efefef;
 }
 
 .editor-canvas-container {

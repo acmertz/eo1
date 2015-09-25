@@ -22,9 +22,6 @@
             this.ycoord = 0;
             this.preExisting = true;
 
-            this._effectCanvas = fx.canvas();
-            this._effectIntermediateCanvas = document.createElement("canvas");
-
             this.selected = false;
             this.hovering = false;
         },
@@ -47,10 +44,6 @@
             ycoord: null,
             type: null,
             preExisting: null,
-
-            _effectCanvas: null,
-            _effectIntermediateCanvas: null,
-            _effectTexture: null,
 
             _player: null,
             _intAspect: null,
@@ -151,17 +144,6 @@
 
                 if (this.type == Ensemble.Editor.Clip.ClipType.lens) {
                     // apply lens effect
-                    this._effectIntermediateCanvas.width = drawWidth;
-                    this._effectIntermediateCanvas.height = drawHeight;
-                    let tempContext = this._effectIntermediateCanvas.getContext("2d");
-                    tempContext.putImageData(context.getImageData(drawX, drawY, drawWidth, drawHeight), 0, 0);
-                    
-                    if (this._effectTexture == null) this._effectTexture = this._effectCanvas.texture(this._effectIntermediateCanvas);
-                    else this._effectTexture.loadContentsOf(this._effectIntermediateCanvas);
-
-                    this._effectCanvas.draw(this._effectTexture).ink(0.25).update();
-
-                    let pixelArray = this._effectCanvas.getPixelArray();
                 }
 
                 else context.drawImage(this._player, drawX, drawY, drawWidth, drawHeight);

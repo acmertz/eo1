@@ -3,6 +3,7 @@
     border: 1px solid #dc143c;
     color: #fff;
     cursor: pointer;
+    border-radius: 3px;
 }
 
 .eo1-btn:hover {
@@ -30,26 +31,6 @@
 
 .eo1-btn--clear:active {
     background: #f1a1b1;
-}
-
-.eo1-btn--radius-tr {
-    border-top-right-radius: 3px;
-}
-
-.eo1-btn--radius-tl {
-    border-top-left-radius: 3px;
-}
-
-.eo1-btn--radius-br {
-    border-bottom-right-radius: 3px;
-}
-
-.eo1-btn--radius-bl {
-    border-bottom-left-radius: 3px;
-}
-
-.eo1-btn--radius-all {
-    border-radius: 3px;
 }
 
 .eo1-btn--timeline {

@@ -16,9 +16,6 @@
 .timeline-track-header-container {
     width: 50px;
     position: relative;
-    border: 1px solid #000;
-    border-top: 0;
-    border-right: 0;
 }
 
 .timeline-track-header-container__ruler-spacer {
@@ -27,7 +24,6 @@
     left: 0;
     height: 50px;
     width: 51px;
-    background-color: #fff;
     border-bottom: 1px solid #000;
 }
 
@@ -39,6 +35,7 @@
     display: flex;
     flex-direction: column;
     cursor: default;
+    border-left: 1px solid #000;
 }
 
 .timeline-track--header .trackNum, .timeline-track--header .trackEditButton {

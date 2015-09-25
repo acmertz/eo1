@@ -80,7 +80,16 @@
         <div class="listview-template listview-template--webcam-capture-import" data-win-control="WinJS.Binding.Template" style="display: none">
             <div class="eo1-list-item">
                 <h4 class="win-h4" data-win-bind="textContent: title"></h4>
-                <h6 class="win-h6">Sample list item</h6>
+                <div class="eo1-list-item__row">
+                    <div class="eo1-list-item__column">
+                        <span>Duration:</span>
+                        <span data-win-bind="textContent: friendlyDuration"></span>
+                    </div>
+                    <div class="eo1-list-item__column">
+                        <span>Import at:</span>
+                        <span data-win-bind="textContent: friendlyProjectTime"></span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -149,13 +158,13 @@
                     </select>
                     <p>Decide what shape you want your video to be. HDTVs usually have a ratio of 16:9, so in most cases this'll probably be your best shot.</p>
                 </div>
-                <p><button class="win-button eo1-btn eo1-btn--radius-all menu-create-project-param menu-create-project-param--submit">Create</button></p>
+                <p><button class="win-button eo1-btn menu-create-project-param menu-create-project-param--submit">Create</button></p>
             </section>
             <section class="main-menu__content-section main-menu__content-section--open-project main-menu__content-section--hidden" data-menu="open-project">
                 <div>
                     <h2 class="win-h2">Open project</h2>
                     <p>
-                        <button class="win-button eo1-btn eo1-btn--radius-all menu-open-project-param menu-open-project-param--browse">Browse...</button>
+                        <button class="win-button eo1-btn menu-open-project-param menu-open-project-param--browse">Browse...</button>
                     </p>
                     </div>
                 <div>
@@ -328,8 +337,8 @@
                                 tapBehavior: WinJS.UI.TapBehavior.toggleSelect
                              }"></div>
                         <div class="media-capture-import-dialog__controls media-capture-import-dialog__controls--webcam">
-                            <button class="win-button eo1-btn eo1-btn--radius-all eo1-btn--clear eo1-btn--media-capture-discard-selected">Discard selected</button>
-                            <button class="win-button eo1-btn eo1-btn--radius-all eo1-btn--media-capture-import-all">Import all</button>
+                            <button class="win-button eo1-btn eo1-btn--clear eo1-btn--media-capture-discard-selected">Discard selected</button>
+                            <button class="win-button eo1-btn eo1-btn--media-capture-import-all">Import all</button>
                         </div>
                     </div>
                     <div class="media-capture-unavailable-dialog media-capture-unavailable-dialog--webcam">
@@ -343,7 +352,7 @@
                     <div class="editor-playback-widget">
                         <div class="editor-time-display">00:00:00.000</div>
                         <div>
-                            <button class="win-button eo1-btn eo1-btn--editor-playpause eo1-btn--radius-all" title="Play">&#xE102;</button>
+                            <button class="win-button eo1-btn eo1-btn--editor-playpause" title="Play">&#xE102;</button>
                         </div>
                     </div>
                 </div>
@@ -352,7 +361,7 @@
             <section class="editor-section editor-section--lower">
                 <div class="timeline-button-container timeline-button-container--left">
                     <div class="timeline-button-container__section">
-                        <button class="win-button eo1-btn eo1-btn--timeline eo1-btn--timeline-new-track eo1-btn--radius-tr eo1-btn--radius-br" title="New track">&#xE109;</button>
+                        <button class="win-button eo1-btn eo1-btn--timeline eo1-btn--timeline-new-track" title="New track">&#xE109;</button>
                     </div>
                 </div>
                 <div id="timeline-track-container">
@@ -374,13 +383,13 @@
                 </div>
                 <div class="timeline-button-container timeline-button-container--right">
                     <div class="timeline-button-container__section">
-                        <button class="win-button eo1-btn eo1-btn--radius-tl eo1-btn--radius-bl eo1-btn--timeline eo1-btn--timeline-zoom-in" title="Zoom in">&#xE12E;</button>
-                        <button class="win-button eo1-btn eo1-btn--radius-tl eo1-btn--radius-bl eo1-btn--timeline eo1-btn--timeline-zoom-out" title="Zoom out">&#xE1A4;</button>
+                        <button class="win-button eo1-btn eo1-btn--timeline eo1-btn--timeline-zoom-in" title="Zoom in">&#xE12E;</button>
+                        <button class="win-button eo1-btn eo1-btn--timeline eo1-btn--timeline-zoom-out" title="Zoom out">&#xE1A4;</button>
                     </div>
                     <div class="timeline-button-container__section timeline-button-container__section--spacer"></div>
                     <div class="timeline-button-container__section">
-                        <button class="win-button fa-rotate-270 eo1-btn eo1-btn--radius-tl eo1-btn--radius-bl eo1-btn--timeline eo1-btn--timeline-scroll-up" title="Scroll up">&#xE111;</button>
-                        <button class="win-button fa-rotate-270 eo1-btn eo1-btn--radius-tl eo1-btn--radius-bl eo1-btn--timeline eo1-btn--timeline-scroll-down" title="Scroll down">&#xE112;</button>
+                        <button class="win-button fa-rotate-270 eo1-btn eo1-btn--timeline eo1-btn--timeline-scroll-up" title="Scroll up">&#xE111;</button>
+                        <button class="win-button fa-rotate-270 eo1-btn eo1-btn--timeline eo1-btn--timeline-scroll-down" title="Scroll down">&#xE112;</button>
                     </div>
                 </div>
             </section>
@@ -434,7 +443,7 @@
                 <span>Remove &quot;</span><span id="remove-track-confirmation__name">Untitled Track</span><span>?&quot;</span>
             </h3>
             <p>This will also remove all the clips inside it.</p>
-            <button id="remove-track-confirmation__button" class="win-button eo1-btn eo1-btn--radius-all">Remove</button>
+            <button id="remove-track-confirmation__button" class="win-button eo1-btn">Remove</button>
         </div>
         <div id="flyout--editor-media-browser-add-to-project" data-win-control="WinJS.UI.Menu"></div>
         <div class="media-browser__preview-flyout" data-win-control="WinJS.UI.Flyout" aria-label="{Preview clip}">
@@ -454,7 +463,7 @@
         </div>
         <div class="flyout--editor-track-rename" data-win-control="WinJS.UI.Flyout" aria-label="{Rename track}">
             <input type="text" class="win-textbox flyout--editor-track-rename__name-textbox" /><br />
-            <button class="win-button eo1-btn eo1-btn--radius-all flyout--editor-track-rename__confirm-button">Rename track</button>
+            <button class="win-button eo1-btn flyout--editor-track-rename__confirm-button">Rename track</button>
         </div>
         <div id="contextmenu--editor-clip-selected" data-win-control="WinJS.UI.Menu">
             <button data-win-control="WinJS.UI.MenuCommand" class="clip-selected-contextmenu__command clip-selected-contextmenu__command--volume" data-contextmenu-command="volume" data-win-options="{id:'',label:'Volume'}"></button>
@@ -465,7 +474,7 @@
         <div class="contextmenu-position-helper"></div>
         <div class="flyout--editor-clip-rename" data-win-control="WinJS.UI.Flyout" aria-label="{Rename clip}">
             <input type="text" class="win-textbox flyout--editor-clip-rename__name-textbox" /><br />
-            <button class="win-button eo1-btn eo1-btn--radius-all flyout--editor-clip-rename__confirm-button">Rename clip</button>
+            <button class="win-button eo1-btn flyout--editor-clip-rename__confirm-button">Rename clip</button>
         </div>
         <div class="flyout--editor-clip-volume" data-win-control="WinJS.UI.Flyout" aria-label="{Clip volume}">
             <span class="flyout--editor-clip-volume__icon clip-volume-icon clip-volume-icon--high"></span>
@@ -504,9 +513,9 @@
             </div>
             <div class="settings-menu-section">
                 <h3 class="win-h3">Danger Zone</h3>
-                <p><button class="win-button eo1-btn eo1-btn--radius-all app-setting app-setting--reset-settings" data-app-setting="reset-settings" data-setting-type="instant">Reset settings</button></p>
-                <p><button class="win-button eo1-btn eo1-btn--radius-all app-setting app-setting--clear-recent-projects" data-app-setting="clear-recent-projects" data-setting-type="instant">Clear recent projects</button></p>
-                <p><button class="win-button eo1-btn eo1-btn--radius-all app-setting app-setting--delete-all-projects" data-app-setting="delete-all-projects" data-setting-type="instant">Delete temporary projects</button></p>
+                <p><button class="win-button eo1-btn app-setting app-setting--reset-settings" data-app-setting="reset-settings" data-setting-type="instant">Reset settings</button></p>
+                <p><button class="win-button eo1-btn app-setting app-setting--clear-recent-projects" data-app-setting="clear-recent-projects" data-setting-type="instant">Clear recent projects</button></p>
+                <p><button class="win-button eo1-btn app-setting app-setting--delete-all-projects" data-app-setting="delete-all-projects" data-setting-type="instant">Delete temporary projects</button></p>
             </div>
         </div>
     </div>
