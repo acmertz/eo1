@@ -12,7 +12,7 @@
 }
 
 .editor-section--upper {
-    padding: 10px 10px 0 10px;
+    padding: 10px;
     top: 0;
 }
 
@@ -20,13 +20,13 @@
     padding: 10px 0;
     top: 50%;
     display: flex;
-    border-top: 1px solid #ccc;
-    background-color: #efefef;
+    border-top: 1px solid #aaa;
+    background-color: #e6e6e6;
 }
 
 .editor-canvas-container {
     display: inline-block;
-    height: calc(100% - 10px);
+    height: calc(100% - 20px);
 	right: 50%;
 	position: absolute;
 }
@@ -38,8 +38,22 @@
 .editor-canvas {
     background-color: #000;
     width: 100%;
+    display: block;
 }
 
 .editor-playback-widget {
-	text-align: center;
+	display: flex;
+}
+
+.editor-playback-widget__section {
+    flex: 1;
+    line-height: 45px;
+}
+
+.editor-playback-widget__section:last-of-type {
+    text-align: right;
+}
+
+.editor-playback-widget__section--no-flex {
+    flex: none;
 }

@@ -314,7 +314,6 @@
         <main class="editor-content">
             <section class="editor-section editor-section--upper">
                 <div class="editor-popin editor-popin--camera-capture">
-                    <h3 class="win-h3">Camera capture</h3>
                     <video class="media-capture-preview media-capture-preview--webcam"></video>
                     <div class="media-capture-controls media-capture-controls--webcam">
                         <button class="editor-titlebar-control editor-titlebar-control--inverted eo1-btn--webcam-capture-startstop">&#9210;</button>
@@ -350,9 +349,14 @@
                 <div class="editor-canvas-container">
                     <canvas class="editor-canvas"></canvas>
                     <div class="editor-playback-widget">
-                        <div class="editor-time-display">00:00:00.000</div>
-                        <div>
+                        <div class="editor-playback-widget__section">
+                            <div class="editor-time-display">00:00:00.000</div>
+                        </div>
+                        <div class="editor-playback-widget__section editor-playback-widget__section--no-flex">
                             <button class="win-button eo1-btn eo1-btn--editor-playpause" title="Play">&#xE102;</button>
+                        </div>
+                        <div class="editor-playback-widget__section">
+                            <button class="editor-titlebar-control editor-titlebar-control--inverted eo1-btn--editor-fullscreen" disabled title="Fullscreen">&#57817;</button>
                         </div>
                     </div>
                 </div>

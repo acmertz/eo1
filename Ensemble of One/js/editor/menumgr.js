@@ -89,7 +89,7 @@
 
             let menuBarButtons = document.getElementsByClassName("editor-menubar__tab");
             for (let i = 0; i < menuBarButtons.length; i++) {
-                menuBarButtons[i].addEventListener("click", Ensemble.Editor.MenuMGR._listeners.menubarButtonClicked);
+                menuBarButtons[i].addEventListener("pointerdown", Ensemble.Editor.MenuMGR._listeners.menubarButtonClicked);
             }
 
             let toolbarCommands = document.getElementsByClassName("editor-toolbar-command");
@@ -110,7 +110,7 @@
 
             let menuBarButtons = document.getElementsByClassName("editor-menubar__tab");
             for (let i = 0; i < menuBarButtons.length; i++) {
-                menuBarButtons[i].removeEventListener("click", Ensemble.Editor.MenuMGR._listeners.menubarButtonClicked);
+                menuBarButtons[i].removeEventListener("pointerdown", Ensemble.Editor.MenuMGR._listeners.menubarButtonClicked);
             }
 
             let toolbarCommands = document.getElementsByClassName("editor-toolbar-command");

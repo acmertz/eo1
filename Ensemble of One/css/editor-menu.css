@@ -69,7 +69,7 @@
 }
 
 .editor-menubar__toolbar {
-    border-bottom: 1px solid #dc143c;
+    border-bottom: 1px solid #aaa;
     margin-top: -1px;
     display: none;
 }

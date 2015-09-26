@@ -166,7 +166,7 @@
             //Main display canvas
             let playbackControlHeight = Ensemble.Pages.Editor.ui.playbackWidget.clientHeight,
                 maxWidth = Ensemble.Pages.Editor.ui.upperSection.clientWidth,
-                maxHeight = Ensemble.Pages.Editor.ui.canvasContainer.clientHeight - (playbackControlHeight + 10),
+                maxHeight = Ensemble.Pages.Editor.ui.canvasContainer.clientHeight - (playbackControlHeight),
                 finalWidth = 0,
                 finalHeight = 0,
                 activeWidget = document.getElementsByClassName("editor-popin--visible")[0];
