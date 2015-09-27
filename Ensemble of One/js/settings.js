@@ -18,6 +18,9 @@
                     case "slider":
                         listenerType = "change";
                         break;
+                    case "dropdown-num":
+                        listenerType = "change";
+                        break;
                     case "instant":
                         listenerType = "click";
                         break;
@@ -69,6 +72,9 @@
                         allSettings[i].winControl.checked = retrievedValue;
                         break;
                     case "slider":
+                        allSettings[i].value = retrievedValue;
+                        break;
+                    case "dropdown-num":
                         allSettings[i].value = retrievedValue;
                         break;
                 }
@@ -157,6 +163,9 @@
                     case "slider":
                         valueToSave = parseInt(event.currentTarget.value, 10);
                         break;
+                    case "dropdown-num":
+                        valueToSave = parseInt(event.currentTarget.value, 10);
+                        break;
                     case "instant":
                         break;
                 }
@@ -171,7 +180,7 @@
                     switch (event.currentTarget.dataset.appSetting) {
                         case "reset-settings":
                             dialogTitle = "Reset all settings?";
-                            dialogMsg = "This will reset all settings to their factory defaults and apply a fresh layer of new-app scent to everything. No takebacks — are you sure you want to reset your settings?";
+                            dialogMsg = "No takebacks — are you sure you want to reset your settings?";
                             dialogCommands = [
                                 {
                                     label: "Reset settings",
@@ -185,7 +194,7 @@
                             break;
                         case "clear-recent-projects":
                             dialogTitle = "Clear recent projects?";
-                            dialogMsg = "Maybe you're in the mood for some spring cleaning... or maybe you just don't want THAT project showing up on the main screen. Either way, are you sure you want to clear your recent project list?";
+                            dialogMsg = "Are you sure you want to clear your recent project list?";
                             dialogCommands = [
                                 {
                                     label: "Clear recent projects",
@@ -199,7 +208,7 @@
                             break;
                         case "delete-all-projects":
                             dialogTitle = "Delete all projects?";
-                            dialogMsg = "This will delete all projects saved within Ensemble of One. This only affects projects saved within the app — if you copied your project to another location (a flash drive or SD card, for instance) or chose \"Save as\" from the Editor, we won't touch it. This can't be undone, so don't continue unless you're absolutely sure.";
+                            dialogMsg = "Are you sure you want to delete all projects in your Ensemble of One folder?";
                             dialogCommands = [
                                 {
                                     label: "Delete all projects",
@@ -238,6 +247,7 @@
             },
 
             settingsTriggerClicked: function (event) {
+                Ensemble.Settings.refreshSettingsDialog();
                 let settingsPane = document.getElementsByClassName("app-page--app-settings")[0];
                 $(settingsPane).removeClass("app-page--hidden");
                 $(settingsPane).addClass("app-page--settings-enter");

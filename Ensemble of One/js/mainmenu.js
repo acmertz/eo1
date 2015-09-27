@@ -31,7 +31,7 @@
             this.ui.recentProjectContainer = document.getElementsByClassName("home-menu__recent-projects")[0];
 
             for (let i = 0; i < this.ui.navItems.length; i++) {
-                this.ui.navItems[i].addEventListener("click", this._listeners.navItemClicked);
+                this.ui.navItems[i].addEventListener("pointerdown", this._listeners.navItemClicked);
             }
             for (let i = 0; i < this.ui.quickStartItems.length; i++) {
                 this.ui.quickStartItems[i].addEventListener("pointerdown", this._listeners.pointerDown);
@@ -49,7 +49,7 @@
 
         _cleanUI: function () {
             for (let i = 0; i < this.ui.navItems.length; i++) {
-                this.ui.navItems[i].removeEventListener("click", this._listeners.navItemClicked);
+                this.ui.navItems[i].removeEventListener("pointerdown", this._listeners.navItemClicked);
             }
             for (let i = 0; i < this.ui.quickStartItems.length; i++) {
                 this.ui.navItems[i].removeEventListener("pointerdown", this._listeners.pointerDown);
@@ -72,20 +72,22 @@
         _listeners: {
             navItemClicked: function (event) {
                 if (!WinJS.Utilities.hasClass(event.currentTarget, "app-trigger")) {
-                    let outgoing = document.getElementsByClassName("main-menu__content-section--visible")[0];
-                    let incoming = document.getElementsByClassName("main-menu__content-section--" + event.currentTarget.dataset.menu)[0];
-                    $(".main-menu__nav-item--active").removeClass("main-menu__nav-item--active");
+                    let parentMenuContainer = $(event.currentTarget).closest(".main-menu__nav-container").parent()[0],
+                        outgoing = $(parentMenuContainer).find(".main-menu__content-section--visible")[0],
+                        incoming = $(parentMenuContainer).find(".main-menu__content-section--" + event.currentTarget.dataset.menu)[0];
+                    $(parentMenuContainer).find(".main-menu__nav-item--active").removeClass("main-menu__nav-item--active");
                     $(event.currentTarget).addClass("main-menu__nav-item--active");
                     if (outgoing != incoming) {
                         WinJS.UI.Animation.exitPage(outgoing.children, null).done(function () {
                             $(outgoing).removeClass("main-menu__content-section--visible").addClass("main-menu__content-section--hidden");
                             $(incoming).removeClass("main-menu__content-section--hidden").addClass("main-menu__content-section--visible");
                             WinJS.UI.Animation.enterPage(incoming.children, null);
+
+                            // special cases for certain menu pages
                             if (incoming.dataset.menu == "open-project") Ensemble.FileIO.enumerateLocalProjects(Ensemble.MainMenu._listeners.enumeratedLocalProjects);
                             else if (incoming.dataset.menu == "home") Ensemble.FileIO.enumerateRecentProjects(Ensemble.MainMenu._listeners.enumeratedRecentProjects);
                             else $(Ensemble.MainMenu.ui.localProjectContainer.children).css("opacity", "0");
                         });
-                        Ensemble.Settings.refreshSettingsDialog();
                     }
                 }
             },

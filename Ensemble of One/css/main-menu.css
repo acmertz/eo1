@@ -198,6 +198,10 @@
         text-align: left;
     }
 
+    .main-menu-nav-item__icon {
+        margin-right: 1em;
+    }
+
     .main-menu-nav-item__label {
         display: inline;
     }

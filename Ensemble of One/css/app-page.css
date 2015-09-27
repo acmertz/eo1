@@ -171,14 +171,13 @@
 
 .app-page__inner--app-settings {
     top: 0;
-    left: 50%;
-    width: 900px;
+    left: 0;
+    width: 100%;
     height: 100%;
-    transform: translate(-50%, 0);
     background-color: #fff;
     box-sizing: border-box;
-    padding: 20px;
     z-index: 100;
+    display: flex;
 }
 
 .app-page--settings-enter {
@@ -188,7 +187,7 @@
 
 @keyframes settingsEnter {
     0% {
-        transform: scale(1.2);
+        transform: scale(0.9);
         z-index: 100;
         opacity: 0;
     }
@@ -200,7 +199,7 @@
 }
 
 .app-page--settings-exit {
-    animation: settingsExit 0.1s ease;
+    animation: settingsExit 0.2s ease;
     z-index: 100;
     opacity: 0;
 }
@@ -212,7 +211,7 @@
         opacity: 1;
     }
     100% {
-        transform: scale(1.1);
+        transform: scale(0.9);
         z-index: 100;
         opacity: 0;
     }
