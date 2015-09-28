@@ -23,10 +23,6 @@
     height: 100%;
 }
 
-.ensemble-clickeater--editor-menu {
-    z-index: 99;
-}
-
 .ensemble-clickeater--ew-cursor {
     z-index: 99;
     cursor: ew-resize;
@@ -42,26 +38,44 @@
     background-color: #fff;
 }
 
-.app-page--enter-right {
-    animation: pageEnterForward 0.4s ease;
+.app-page--editor-menu {
+    width: 320px;
+    max-width: 100%;
+    background-color: #fff;
+    border-right: 1px solid #aaa;
+    box-shadow: 5px 0px 10px 0px rgba(50,50,50,0.5);
+}
+
+.app-page--media-browser {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    width: 600px;
+    max-width: 100%;
+    box-shadow: 5px 0px 10px 0px rgba(50,50,50,0.5);
+}
+
+.app-page--enter {
+    animation: pageEnterForward 0.2s ease;
     pointer-events: all;
 }
 
 @keyframes pageEnterForward {
     0% {
-        transform: translateX(100%);
+        transform: scale(0.9);
+        opacity: 0;
     }
     100% {
-        transform: translateX(0);
+        transform: scale(1);
+        opacity: 1;
     }
 }
 
-.app-page--exit-right {
-    left: 100%;
-    animation: pageExitBackward 0.4s ease;
-    pointer-events: all;
+.app-page--enter-left {
+    animation: pageEnterFromLeft 0.3s ease;
 }
-@keyframes pageExitBackward {
+
+@keyframes pageEnterFromLeft {
     0% {
         transform: translateX(-100%);
     }
@@ -70,69 +84,34 @@
     }
 }
 
-.app-page--exit-right-from-displace-320 {
-    left: calc(100% + 320px);
-    animation: pageExitBackward 0.4s ease;
+.app-page--exit {
+    animation: pageExitBackward 0.2s ease;
+    pointer-events: all;
 }
-
-.app-page--displace {
-    box-shadow: 0px 0px 10px 0px #666;
-}
-
-.app-page--displace-right-600 {
-    left: 600px;
-    animation: pageDisplaceRight600 0.3s ease;
-}
-
-@keyframes pageDisplaceRight600 {
+@keyframes pageExitBackward {
     0% {
-        transform: translateX(-600px);
+        transform: scale(1);
+        opacity: 1;
     }
     100% {
-        transform: translateX(0);
+        transform: scale(0.9);
+        opacity: 0;
     }
 }
 
-.app-page--close-displace-right-600 {
-    animation: pageCloseDisplaceRight600 0.3s ease;
+.app-page--exit-left {
+    animation: pageExitToLeft 0.3s ease;
+    transform: translateX(-100%);
 }
 
-@keyframes pageCloseDisplaceRight600 {
+@keyframes pageExitToLeft {
     0% {
-        transform: translateX(600px);
+        transform: translateX(0);
     }
     100% {
-        transform: translateX(0);
+        transform: translateX(-100%);
     }
 }
-
-.app-page--displace-right-320 {
-    left: 320px;
-    animation: pageDisplaceRight320 0.3s ease;
-}
-
-@keyframes pageDisplaceRight320 {
-    0% {
-        transform: translateX(-320px);
-    }
-    100% {
-        transform: translateX(0);
-    }
-}
-
-.app-page--close-displace-right-320 {
-    animation: pageCloseDisplaceRight320 0.3s ease;
-}
-
-@keyframes pageCloseDisplaceRight320 {
-    0% {
-        transform: translateX(320px);
-    }
-    100% {
-        transform: translateX(0);
-    }
-}
-
 
 .app-page--hidden {
     display: none;
@@ -146,22 +125,12 @@
     left: 0;
 }
 
-.app-page__inner--320 {
-    width: 320px;
-}
-
-.app-page__inner--600 {
-    width: 600px;
-}
-
 .app-page__inner--editor-menu {
     background: #fff;
 }
 
 .app-page__inner--media-browser {
-    display: flex;
-    flex-direction: column;
-    background: #fff;
+    
 }
 
 .app-page--app-settings {

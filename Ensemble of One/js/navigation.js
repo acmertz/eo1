@@ -10,7 +10,12 @@
             let clickeaters = document.getElementsByClassName("ensemble-clickeater--backnav"),
                 clickeaterCount = clickeaters.length;
             for (let i = 0; i < clickeaterCount; i++) {
-                clickeaters[i].addEventListener("click", Ensemble.Navigation.navigateBack);
+                clickeaters[i].addEventListener("pointerdown", Ensemble.Navigation.navigateBack);
+            }
+            let backbuttons = document.getElementsByClassName("app-trigger--backnav"),
+                backbuttonCount = backbuttons.length;
+            for (let i = 0; i < backbuttonCount; i++) {
+                backbuttons[i].addEventListener("click", Ensemble.Navigation.navigateBack);
             }
         },
 

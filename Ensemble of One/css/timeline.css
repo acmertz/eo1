@@ -211,7 +211,6 @@
     background-color: black;
     color: black;
     cursor: ew-resize;
-    z-index: 1;
 }
 
 .timeline__drop-preview {

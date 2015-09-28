@@ -72,13 +72,11 @@
             if (pending) $(".app-page--loading-editor").removeClass("app-page--hidden");
             else $(".app-page--loading-main-menu").removeClass("app-page--hidden");
 
+            if (Ensemble.Editor.MenuMGR.isFileMenuOpen()) Ensemble.Editor.MenuMGR.closeFileMenu();
+
             let editorPage = document.getElementsByClassName("app-page--editor")[0];
-            if ($(editorPage).hasClass("app-page--displace")) {
-                $(editorPage).removeClass("app-page--displace").removeClass("app-page--displace-right-320").addClass("app-page--exit-right-from-displace-320");
-            }
-            else {
-                $(editorPage).addClass("app-page--exit-right");
-            }
+            $(editorPage).addClass("app-page--exit");
+            
             editorPage.addEventListener("animationend", Ensemble.Pages.Editor._listeners.exitAnimationFinished);
             Ensemble.Session.setCurrentPage(Ensemble.Session.PageStates.loadingToMainMenu);
 
@@ -127,7 +125,7 @@
             exitAnimationFinished: function (event) {
                 let editorPage = document.getElementsByClassName("app-page--editor")[0];
                 editorPage.removeEventListener("animationend", Ensemble.Pages.Editor._listeners.exitAnimationFinished);
-                $(editorPage).removeClass("app-page--exit-right-from-displace-320").removeClass("app-page--exit-right").addClass("app-page--hidden");
+                $(editorPage).removeClass("app-page--exit-right-from-displace-320").removeClass("app-page--exit").addClass("app-page--hidden");
                 
                 Ensemble.Editor.TimelineMGR.unload();
                 Ensemble.Editor.PlaybackMGR.unload();
@@ -141,7 +139,7 @@
                 if (Ensemble.Pages.Editor.pendingLoad == null) {
                     setTimeout(function () {
                         let loadingPage = document.getElementsByClassName("app-page--loading-main-menu")[0];
-                        $(loadingPage).addClass("app-page--exit-right");
+                        $(loadingPage).addClass("app-page--exit");
                         loadingPage.addEventListener("animationend", Ensemble.Pages.Editor._listeners.loadingMenuExitFinished);
                         Ensemble.FileIO.enumerateLocalProjects(Ensemble.MainMenu._listeners.enumeratedLocalProjects);
                         Ensemble.FileIO.enumerateRecentProjects(Ensemble.MainMenu._listeners.enumeratedRecentProjects);
@@ -156,7 +154,7 @@
 
             loadingMenuExitFinished: function (event) {
                 event.currentTarget.removeEventListener("animationend", Ensemble.Pages.Editor._listeners.loadingMenuExitFinished);
-                $(event.currentTarget).removeClass("app-page--exit-right").addClass("app-page--hidden");
+                $(event.currentTarget).removeClass("app-page--exit").addClass("app-page--hidden");
             }
         },
 

@@ -40,7 +40,7 @@
                         console.log("Load the activated file here.");
                         if (Ensemble.Session.getCurrentPage() == Ensemble.Session.PageStates.mainMenu) {
                             let loadingPage = document.getElementsByClassName("app-page--loading-editor")[0];
-                            $(loadingPage).removeClass("app-page--hidden").addClass("app-page--enter-right");
+                            $(loadingPage).removeClass("app-page--hidden").addClass("app-page--enter");
                             Ensemble.Session.setCurrentPage(Ensemble.Session.PageStates.loadingToEditor);
                             setTimeout(function () {
                                 Ensemble.FileIO.loadInternalProject(args.detail.files[0].name, args.detail.files[0]);

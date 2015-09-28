@@ -20,14 +20,14 @@
 
             let editorMenu = document.getElementsByClassName("app-page--editor-menu")[0];
             if (!$(editorMenu).hasClass("app-page--hidden")) {
-                $(editorMenu).addClass("app-page--exit-right");
+                $(editorMenu).addClass("app-page--exit");
                 editorMenu.addEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.exitAnimationFinished);
             }
         },
 
         hideMenus: function () {
             /// <summary>Hides any active menus, but keeps the menu in the "Open" state. Useful for swapping menues.</summary>
-            if (this.currentMenu) this.currentMenu.removeEventListener("transitionend", Ensemble.Editor.MenuMGR._listeners.importMenuTransitioned);
+            if (this.currentMenu) this.currentMenu.removeEventListener("transitionend", Ensemble.Editor.MenuMGR._listeners.importMenuEntered);
             $(".editor-menu").removeClass("editor-menu--visible");
             //$(".editor-menubar__tab--active").removeClass("editor-menubar__tab--active");
             this.currentMenu = null;
@@ -42,16 +42,20 @@
 
         closeFileMenu: function () {
             $(Ensemble.Editor.MenuMGR.ui.clickEater).removeClass("ensemble-clickeater--active");
-
-            $(".app-page--editor").removeClass("app-page--displace-right-320").addClass("app-page--close-displace-right-320");
-            document.getElementsByClassName("app-page--editor")[0].addEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.projectMenuExited)
+            $(".app-page--editor-menu").addClass("app-page--exit-left");
+            document.getElementsByClassName("app-page--editor-menu")[0].addEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.fileMenuExited);
         },
 
         closeMediaMenu: function () {
             $(Ensemble.Editor.MenuMGR.ui.clickEater).removeClass("ensemble-clickeater--active");
 
-            $(".app-page--editor").removeClass("app-page--displace-right-600").addClass("app-page--close-displace-right-600");
-            document.getElementsByClassName("app-page--editor")[0].addEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.importMenuExited)
+            let mediaBrowser = document.getElementsByClassName("app-page--media-browser")[0];
+            $(mediaBrowser).addClass("app-page--exit-left");
+            mediaBrowser.addEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.importMenuExited);
+        },
+
+        isFileMenuOpen: function () {
+            return !($(".app-page--editor-menu").hasClass("app-page--hidden"));
         },
 
         _reevaluateState: function () {
@@ -127,7 +131,7 @@
         _listeners: {
             exitAnimationFinished: function (event) {
                 let editorMenu = document.getElementsByClassName("app-page--editor-menu")[0];
-                $(editorMenu).removeClass("app-page--exit-right").addClass("app-page--hidden");;
+                $(editorMenu).removeClass("app-page--exit").addClass("app-page--hidden");;
                 editorMenu.removeEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.exitAnimationFinished);
             },
 
@@ -138,7 +142,8 @@
                     Ensemble.Editor.MenuMGR.ui.projectThumb.src = Ensemble.Session.projectThumb;
 
                     $(".app-page--editor-menu").removeClass("app-page--hidden");
-                    $(".app-page--editor").addClass("app-page--displace app-page--displace-right-320");
+                    $(".app-page--editor-menu").addClass("app-page--enter-left");
+                    document.getElementsByClassName("app-page--editor-menu")[0].addEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.fileMenuEntered);
 
                     Ensemble.Editor.MenuMGR.menuOpen = true;
                     $(Ensemble.Editor.MenuMGR.ui.clickEater).addClass("ensemble-clickeater--active");
@@ -169,9 +174,10 @@
                 let command = event.currentTarget.dataset.editorCommand;
 
                 if (command == "show-library") {
-                    $(".app-page--media-browser").removeClass("app-page--hidden");
-                    $(".app-page--editor").addClass("app-page--displace app-page--displace-right-600");
-                    document.getElementsByClassName("app-page--editor")[0].addEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.importMenuTransitioned)
+                    let mediaBrowser = document.getElementsByClassName("app-page--media-browser")[0];
+                    $(mediaBrowser).removeClass("app-page--hidden");
+                    $(mediaBrowser).addClass("app-page--enter-left");
+                    mediaBrowser.addEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.importMenuEntered)
 
                     Ensemble.Editor.MenuMGR.menuOpen = true;
                     $(Ensemble.Editor.MenuMGR.ui.clickEater).addClass("ensemble-clickeater--active");
@@ -229,21 +235,16 @@
                 }
             },
 
-            importMenuTransitioned: function (event) {
-                event.currentTarget.removeEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.importMenuTransitioned);
+            importMenuEntered: function (event) {
+                event.currentTarget.removeEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.importMenuEntered);
+                $(event.currentTarget).removeClass("app-page--enter-left");
                 Ensemble.Editor.MediaBrowser.refresh();
             },
 
             importMenuExited: function (event) {
-                document.getElementsByClassName("app-page--editor")[0].removeEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.importMenuExited);
-                $(".app-page--media-browser").addClass("app-page--hidden");
-                $(".app-page--editor").removeClass("app-page--displace app-page--close-displace-right-600");
-            },
-
-            projectMenuExited: function (event) {
-                document.getElementsByClassName("app-page--editor")[0].removeEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.projectMenuExited);
-                $(".app-page--editor-menu").addClass("app-page--hidden");
-                $(".app-page--editor").removeClass("app-page--displace app-page--close-displace-right-320");
+                let mediaBrowser = document.getElementsByClassName("app-page--media-browser")[0];
+                $(mediaBrowser).removeClass("app-page--exit-left").addClass("app-page--hidden");
+                mediaBrowser.removeEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.importMenuExited);
             },
 
             browseMediaReturned: function (file, payload) {
@@ -259,6 +260,17 @@
                         destinationTime: Ensemble.Editor.PlaybackMGR.lastTime
                     });
                 Ensemble.HistoryMGR.performAction(createLensAction);
+            },
+
+            fileMenuEntered: function (event) {
+                $(".app-page--editor-menu").removeClass("app-page--enter-left");
+                document.getElementsByClassName("app-page--editor-menu")[0].removeEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.fileMenuEntered);
+            },
+
+            fileMenuExited: function (event) {
+                $(".app-page--editor-menu").removeClass("app-page--exit-left");
+                document.getElementsByClassName("app-page--editor-menu")[0].removeEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.fileMenuExited);
+                $(".app-page--editor-menu").addClass("app-page--hidden");
             }
         },
     });

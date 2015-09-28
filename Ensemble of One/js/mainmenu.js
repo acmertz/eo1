@@ -164,7 +164,7 @@
                 let text = event.currentTarget.dataset.projectname;
                 
                 let loadingPage = document.getElementsByClassName("app-page--loading-editor")[0];
-                $(loadingPage).removeClass("app-page--hidden").addClass("app-page--enter-right");
+                $(loadingPage).removeClass("app-page--hidden").addClass("app-page--enter");
                 Ensemble.Session.setCurrentPage(Ensemble.Session.PageStates.loadingToEditor);
                 window.setTimeout(function () {
                     Ensemble.FileIO.loadInternalProject(filename);
@@ -182,7 +182,7 @@
                     projectFile = Ensemble.MainMenu._recentProjects[index];
 
                 let loadingPage = document.getElementsByClassName("app-page--loading-editor")[0];
-                $(loadingPage).removeClass("app-page--hidden").addClass("app-page--enter-right");
+                $(loadingPage).removeClass("app-page--hidden").addClass("app-page--enter");
                 Ensemble.Session.setCurrentPage(Ensemble.Session.PageStates.loadingToEditor);
                 window.setTimeout(function () {
                     Ensemble.FileIO.loadInternalProject(filename, projectFile.src);
@@ -201,7 +201,7 @@
                 $(editorPage).removeClass("app-page--hidden")
                 Ensemble.Pages.Editor.init();
                 editorPage.addEventListener("animationend", Ensemble.MainMenu._listeners.editorEntranceFinished);
-                $(editorPage).addClass("app-page--enter-right");
+                $(editorPage).addClass("app-page--enter");
 
                 let appView = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
                 appView.title = Ensemble.Session.projectName;
@@ -210,8 +210,8 @@
             editorEntranceFinished: function (event) {
                 if (event.animationName == "pageEnterForward") {
                     event.currentTarget.removeEventListener("animationend", Ensemble.MainMenu._listeners.editorEntranceFinished);
-                    $(event.currentTarget).removeClass("app-page--enter-right");
-                    $(".app-page--loading-editor").removeClass("app-page--enter-right").addClass("app-page--hidden");
+                    $(event.currentTarget).removeClass("app-page--enter");
+                    $(".app-page--loading-editor").removeClass("app-page--enter").addClass("app-page--hidden");
                     Ensemble.Navigation.pushBackState(Ensemble.Pages.Editor.unload);
                 }
             },
@@ -244,7 +244,7 @@
                 openPicker.pickSingleFileAsync().then(function (file) {
                     if (file) {
                         let loadingPage = document.getElementsByClassName("app-page--loading-editor")[0];
-                        $(loadingPage).removeClass("app-page--hidden").addClass("app-page--enter-right");
+                        $(loadingPage).removeClass("app-page--hidden").addClass("app-page--enter");
 
                         window.setTimeout(function () {
                             Ensemble.FileIO.loadExternalProject(file);

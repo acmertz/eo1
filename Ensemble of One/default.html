@@ -199,42 +199,6 @@
         <h1 class="win-h1"><progress class="win-ring win-medium"></progress>&nbsp;Closing your project&hellip;</h1>
     </div>
 
-    <div class="app-page app-page--media-browser app-page--hidden">
-        <div class="app-page__inner app-page__inner--600 app-page__inner--media-browser">
-            <div class="mediaBrowserHeaderContainer">
-                <div id="editorMediaBrowserLocationButtonContainer"><span id="editorMediaBrowserLocationButton">Videos library</span><span>&nbsp;&rsaquo;</span></div>
-                <div id="editorMediaBrowserCurrentPathContainer"></div>
-                <div id="editorMediaBrowserFolderControlContainer">
-                    <progress class="win-ring win-medium" id="editorMediaBrowserLoadingProgress"></progress>
-                    <button class="editor-titlebar-control" id="editorMediaBrowserHomeButton">&#xE10F;</button>
-                    <button class="editor-titlebar-control" id="editorMediaBrowserUpOneLevelButton">&#xE110;</button>
-                    <button class="editor-titlebar-control" id="editorMediaBrowserRefreshButton">&#xE117;</button>
-                </div>
-            </div>
-            <div id="editorMenuMediaBrowserFileList"></div>
-        </div>
-    </div>
-
-    <div class="app-page app-page--editor-menu app-page--hidden">
-        <div class="app-page__inner app-page__inner--320 app-page__inner--editor-menu">
-            <section class="editor-menu-titlebar">
-                <button class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--close-project" data-editor-command="close-project" title="Close project"></button>
-                <button class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--force-save" data-editor-command="force-save" title="Save"></button>
-                <button class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--save-as" data-editor-command="save-as" title="Save as..."></button>
-                <button class="editor-titlebar-control app-trigger app-trigger--settings" title="Settings"></button>
-            </section>
-
-            <section class="editor-menu-section">
-                <h2 class="win-h2" id="editorProjectNameDisplay">Project Name Here</h2>
-                <p><img src="" alt="Project thumbnail" class="editor-project-details__thumb" /></p>
-                <p id="editorMenuDurationDisplay">[Placeholder Duration Here]</p>
-                <p><span id="editorMenuNumberOfTracksDisplay">[Placeholder]</span> tracks</p>
-                <p><span id="editorMenuNumberOfClipsDisplay">[Placeholder]</span><span> clips</span></p>
-                <p id="editorMenuAspectRatioDisplay">[Placeholder Aspect Ratio Here]</p>
-            </section>
-        </div>
-    </div>
-
     <div class="app-page app-page--hidden app-page--editor" id="editorPageContainer">
         <nav class="editor-menubar">
             <div class="editor-menubar__tab-list">
@@ -414,8 +378,6 @@
 
         <div id="editor-history-msg">Placeholder history message.</div>
 
-        <div class="ensemble-clickeater ensemble-clickeater--backnav ensemble-clickeater--editor-menu"></div>
-
         <div class="editorTimelineDragPreviewFlyout" tabindex="-1">00:00:00.000</div>
         <div class="timeline-selection-callout" tabindex="-1">
             <div class="selection-callout__state selection-callout__state--standard">
@@ -439,7 +401,41 @@
 
         <div class="media-browser__drag-preview"></div>
 
+        <div class="ensemble-clickeater ensemble-clickeater--backnav ensemble-clickeater--editor-menu"></div>
         <div class="ensemble-clickeater ensemble-clickeater--ew-cursor"></div>
+    </div>
+
+    <div class="app-page app-page--media-browser app-page--hidden">
+        <div class="mediaBrowserHeaderContainer">
+            <div id="editorMediaBrowserLocationButtonContainer"><span id="editorMediaBrowserLocationButton">Videos library</span><span>&nbsp;&rsaquo;</span></div>
+            <div id="editorMediaBrowserCurrentPathContainer"></div>
+            <div id="editorMediaBrowserFolderControlContainer">
+                <progress class="win-ring win-medium" id="editorMediaBrowserLoadingProgress"></progress>
+                <button class="editor-titlebar-control" id="editorMediaBrowserHomeButton">&#xE10F;</button>
+                <button class="editor-titlebar-control" id="editorMediaBrowserUpOneLevelButton">&#xE110;</button>
+                <button class="editor-titlebar-control" id="editorMediaBrowserRefreshButton">&#xE117;</button>
+            </div>
+        </div>
+        <div id="editorMenuMediaBrowserFileList"></div>
+    </div>
+
+    <div class="app-page app-page--editor-menu app-page--hidden">
+        <section class="editor-menu-titlebar">
+            <button class="editor-titlebar-control app-trigger app-trigger--backnav" title="Back">&#57557;</button>
+            <button class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--close-project" data-editor-command="close-project" title="Close project"></button>
+            <button class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--force-save" data-editor-command="force-save" title="Save"></button>
+            <button class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--save-as" data-editor-command="save-as" title="Save as..."></button>
+            <button class="editor-titlebar-control app-trigger app-trigger--settings" title="Settings"></button>
+        </section>
+
+        <section class="editor-menu-section">
+            <h2 class="win-h2" id="editorProjectNameDisplay">Project Name Here</h2>
+            <p><img src="" alt="Project thumbnail" class="editor-project-details__thumb" /></p>
+            <p id="editorMenuDurationDisplay">[Placeholder Duration Here]</p>
+            <p><span id="editorMenuNumberOfTracksDisplay">[Placeholder]</span> tracks</p>
+            <p><span id="editorMenuNumberOfClipsDisplay">[Placeholder]</span><span> clips</span></p>
+            <p id="editorMenuAspectRatioDisplay">[Placeholder Aspect Ratio Here]</p>
+        </section>
     </div>
 
     <div>
