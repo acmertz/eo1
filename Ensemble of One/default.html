@@ -318,7 +318,6 @@
                     </div>
                     <div class="media-capture-unavailable-dialog media-capture-unavailable-dialog--webcam">
                         <h3 class="win-h3">We can't find your camera</h3>
-                        <p>Either your device doesn't have a camera, or another app is preventing Ensemble of One from accessing it.</p>
                         <p>Close any other apps that could be using your camera and then try opening media capture again.</p>
                     </div>
                 </div>
@@ -407,6 +406,7 @@
 
     <div class="app-page app-page--media-browser app-page--hidden">
         <div class="mediaBrowserHeaderContainer">
+            <button class="editor-titlebar-control app-trigger app-trigger--backnav" title="Back">&#57557;</button>
             <div id="editorMediaBrowserLocationButtonContainer"><span id="editorMediaBrowserLocationButton">Videos library</span><span>&nbsp;&rsaquo;</span></div>
             <div id="editorMediaBrowserCurrentPathContainer"></div>
             <div id="editorMediaBrowserFolderControlContainer">
@@ -423,18 +423,14 @@
         <section class="editor-menu-titlebar">
             <button class="editor-titlebar-control app-trigger app-trigger--backnav" title="Back">&#57557;</button>
             <button class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--close-project" data-editor-command="close-project" title="Close project"></button>
-            <button class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--force-save" data-editor-command="force-save" title="Save"></button>
-            <button class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--save-as" data-editor-command="save-as" title="Save as..."></button>
-            <button class="editor-titlebar-control app-trigger app-trigger--settings" title="Settings"></button>
+            <button class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--force-save" data-editor-command="force-save" title="Save">&#57605;</button>
+            <button class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--save-as" data-editor-command="save-as" title="Save as...">&#57999;</button>
+            <button class="editor-titlebar-control app-trigger app-trigger--settings" title="Settings">&#57621;</button>
         </section>
 
         <section class="editor-menu-section">
-            <h2 class="win-h2" id="editorProjectNameDisplay">Project Name Here</h2>
-            <p><img src="" alt="Project thumbnail" class="editor-project-details__thumb" /></p>
-            <p id="editorMenuDurationDisplay">[Placeholder Duration Here]</p>
-            <p><span id="editorMenuNumberOfTracksDisplay">[Placeholder]</span> tracks</p>
-            <p><span id="editorMenuNumberOfClipsDisplay">[Placeholder]</span><span> clips</span></p>
-            <p id="editorMenuAspectRatioDisplay">[Placeholder Aspect Ratio Here]</p>
+            <h2 class="win-h2">Editor</h2>
+            <p>Editor menu content here.</p>
         </section>
     </div>
 

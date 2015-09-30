@@ -36,14 +36,6 @@
             Ensemble.Editor.CalloutMGR.init();
             Ensemble.Editor.MediaBrowser.init();
 
-            //Perform UI setup operations (project name, thumbnail, etc.)
-            var projectSubmenu = Ensemble.Editor.UI.PageSections.menu.actionMenu.project;
-            projectSubmenu.nameDisplay.innerText = Ensemble.Session.projectName;
-            projectSubmenu.durationDisplay.innerText = Ensemble.Utilities.TimeConverter.verboseTime(Ensemble.Session.projectDuration);
-            projectSubmenu.numberOfTracksDisplay.innerText = Ensemble.Session.projectTrackCount.toString();
-            projectSubmenu.numberOfClipsDisplay.innerText = Ensemble.Session.projectClipCount.toString();
-            projectSubmenu.aspectRatioDisplay.innerText = Ensemble.Session.projectAspect;
-
             //Update the Editor with the current settings
             Ensemble.Editor.TimelineMGR.newRulerScale();            
 

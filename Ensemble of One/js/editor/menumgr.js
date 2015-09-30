@@ -82,13 +82,11 @@
 
         ui: {
             clickEater: null,
-            projectThumb: null,
             createLensFlyout: null
         },
 
         _refreshUI: function () {
             this.ui.clickEater = document.getElementsByClassName("ensemble-clickeater--editor-menu")[0];
-            this.ui.projectThumb = document.getElementsByClassName("editor-project-details__thumb")[0];
             this.ui.createLensFlyout = document.getElementsByClassName("contextmenu--editor-create-lens")[0];
 
             let menuBarButtons = document.getElementsByClassName("editor-menubar__tab");
@@ -109,7 +107,6 @@
 
         _cleanUI: function () {
             this.ui.clickEater = null;
-            this.ui.projectThumb = null;
             this.ui.createLensFlyout = null;
 
             let menuBarButtons = document.getElementsByClassName("editor-menubar__tab");
@@ -139,8 +136,6 @@
                 let targetToolbarId = event.currentTarget.dataset.ensembleMenu;
                 let targetToolbar = document.getElementsByClassName("editor-toolbar--" + event.currentTarget.dataset.ensembleMenu)[0];
                 if (targetToolbarId == "file") {
-                    Ensemble.Editor.MenuMGR.ui.projectThumb.src = Ensemble.Session.projectThumb;
-
                     $(".app-page--editor-menu").removeClass("app-page--hidden");
                     $(".app-page--editor-menu").addClass("app-page--enter-left");
                     document.getElementsByClassName("app-page--editor-menu")[0].addEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.fileMenuEntered);

@@ -148,12 +148,6 @@
     box-sizing: border-box;
 }
 
-#editorProjectNameDisplay {
-    display: inline-block;
-    line-height: 41px;
-    vertical-align: top;
-}
-
 .editor-project-details {
     margin-bottom: 10px;
 }
@@ -161,12 +155,6 @@
 .editor-project-details__column {
     flex: 1;
     padding-right: 10px;
-}
-
-.editor-project-details__thumb {
-    width: 100%;
-    height: auto;
-    background-color: black;
 }
 
 /* IMPORT MENU */
