@@ -33,8 +33,9 @@
             });
         },
 
-        play: function () {
+        play: function (callback) {
             /// <summary>Begins playback from the current position in the project.</summary>
+            /// <param name="callback" type="Function">Optional. The callback to execute after playback has begun.</param>
             let playbackList = Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].playbackList,
                 clipCount = playbackList.length;
 
@@ -47,6 +48,7 @@
 
             Ensemble.Editor.Renderer.start();
             this.ui.buttonPlayPause.innerHTML = "&#xE103;";
+            if (callback != null) callback();
         },
 
         pause: function () {

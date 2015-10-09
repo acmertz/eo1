@@ -35,9 +35,9 @@
                 case Ensemble.Editor.PopinMGR.PopinTypes.cameraCapture:
                     if (Ensemble.Editor.MediaCaptureMGR.webcamSessionInProgress()) {
                         // request confirmation from user
-                        Ensemble.OSDialogMGR.showDialog("Abandon webcam recording session?", "If you abandon your recording session, your pending clips will be discarded. Are you sure you want to do this?",
+                        Ensemble.OSDialogMGR.showDialog("Abandon webcam recording?", "You're in the middle of a webcam recording session. Abandoning the session will cause the clip-in-progress to be discarded.",
                             [
-                                { label: "Abandon recording session", handler: Ensemble.Editor.PopinMGR._listeners.confirmAbandonWebcamCaptureSession },
+                                { label: "Abandon recording", handler: Ensemble.Editor.PopinMGR._listeners.confirmAbandonWebcamCaptureSession },
                                 { label: "Cancel", handler: null }
                             ],
                             1, 1);
