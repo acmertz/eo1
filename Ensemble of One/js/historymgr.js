@@ -163,10 +163,6 @@
 
         refreshMessage: function () {
             /// <summary>Refreshes the recent action message in the Editor.</summary>
-            if (this._backStack.length > 0) {
-                document.getElementById("editor-history-msg").innerText = this._backStack[this._backStack.length - 1].getMessage();
-            }
-            else document.getElementById("editor-history-msg").innerText = "No recent history. Start editing!";
         },
 
         unload: function () {

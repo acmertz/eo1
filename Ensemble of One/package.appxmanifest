@@ -16,8 +16,11 @@
   <Applications>
     <Application Id="App" StartPage="default.html">
       <uap:VisualElements DisplayName="Ensemble of One" Description="A no-nonsense, desktop-grade video editor built for Windows universal devices." BackgroundColor="#dc143c" Square150x150Logo="img\packaging\logo_sq150.png" Square44x44Logo="img\packaging\taskbar.png">
-        <uap:SplashScreen Image="img\packaging\splashScreen.png" BackgroundColor="#dc143c" />
-        <uap:DefaultTile ShortName="Eo1" Square71x71Logo="img\packaging\logo_sq71.png">
+        <uap:SplashScreen Image="img\packaging\splashscreen.png" BackgroundColor="#dc143c" />
+        <uap:DefaultTile Square71x71Logo="img\packaging\logo_sq71.png">
+          <uap:ShowNameOnTiles>
+            <uap:ShowOn Tile="square150x150Logo" />
+          </uap:ShowNameOnTiles>
         </uap:DefaultTile>
       </uap:VisualElements>
       <Extensions>

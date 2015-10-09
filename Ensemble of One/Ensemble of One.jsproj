@@ -52,6 +52,8 @@
     <PackageCertificateKeyFile>Ensemble of One Win10_TemporaryKey.pfx</PackageCertificateKeyFile>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundlePlatforms>neutral</AppxBundlePlatforms>
+    <AppxPackageDir>C:\Users\Aaron\Desktop\eo1 pkg\</AppxPackageDir>
+    <AppxBundle>Always</AppxBundle>
   </PropertyGroup>
   <ItemGroup>
     <AppxManifest Include="package.appxmanifest">
@@ -87,16 +89,20 @@
     <Content Include="img\packaging\logo_store.scale-150.png" />
     <Content Include="img\packaging\logo_store.scale-200.png" />
     <Content Include="img\packaging\logo_store.scale-400.png" />
-    <Content Include="img\packaging\splashScreen.scale-100.png" />
+    <Content Include="img\packaging\splashscreen.scale-100.png" />
+    <Content Include="img\packaging\splashscreen.scale-125.png" />
+    <Content Include="img\packaging\splashscreen.scale-150.png" />
+    <Content Include="img\packaging\splashscreen.scale-200.png" />
+    <Content Include="img\packaging\splashscreen.scale-400.png" />
     <Content Include="img\packaging\taskbar.scale-100.png" />
     <Content Include="img\packaging\taskbar.scale-125.png" />
     <Content Include="img\packaging\taskbar.scale-150.png" />
     <Content Include="img\packaging\taskbar.scale-200.png" />
     <Content Include="img\packaging\taskbar.scale-400.png" />
-    <Content Include="img\packaging\taskbar.targetsize-48_altform-unplated.png" />
-    <Content Include="img\packaging\taskbar.targetsize-256_altform-unplated.png" />
-    <Content Include="img\packaging\taskbar.targetsize-24_altform-unplated.png" />
     <Content Include="img\packaging\taskbar.targetsize-16_altform-unplated.png" />
+    <Content Include="img\packaging\taskbar.targetsize-24_altform-unplated.png" />
+    <Content Include="img\packaging\taskbar.targetsize-256_altform-unplated.png" />
+    <Content Include="img\packaging\taskbar.targetsize-48_altform-unplated.png" />
     <Content Include="img\placeholder_logo.png" />
     <Content Include="img\projectThumbnails\1610.jpg" />
     <Content Include="img\projectThumbnails\169.jpg" />

@@ -131,13 +131,3 @@
     white-space: nowrap;
     position: relative;
 }
-
-#editor-history-msg {
-    position: absolute;
-    top: 45px;
-    right: 0px;
-    padding: 5px 10px 0 10px;
-    line-height: 41px;
-    color: #000;
-    z-index: 1;
-}
