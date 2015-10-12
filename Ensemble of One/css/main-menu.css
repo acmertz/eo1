@@ -4,7 +4,7 @@
 }
 
 .main-menu__nav-container {
-    width: 80px;
+    width: 56px;
     flex-shrink: 0;
     max-width: 100%;
     display: flex;
@@ -51,7 +51,7 @@
     display: block;
     color: #fff;
     padding: 20px;
-    font-size: 24px;
+    font-size: 18px;
     text-align: center;
 }
 
@@ -85,7 +85,7 @@
 .home-menu__quick-start-item {
     background-color: #ececec;
     position: relative;
-    width: 256px;
+    width: calc(50% - 10px);
     max-width: 100%;
     margin: 0 10px 20px 0;
     display: inline-block;
@@ -181,13 +181,19 @@
     margin: 20px 0 0 0;
 }
 
-@media screen and (min-width: 568px) {
+@media screen and (min-width: 512px) {
 
 }
 
 @media screen and (min-width: 768px) {
+    .home-menu__quick-start-item {
+        width: calc(25% - 10px);
+    }
+}
+
+@media screen and (min-width: 1024px) {
     .main-menu__nav-container {
-        width: 320px;
+        width: 240px;
     }
 
     .main-menu__app-logo {
@@ -205,8 +211,4 @@
     .main-menu-nav-item__label {
         display: inline;
     }
-}
-
-@media screen and (min-width: 1024px) {
-
 }
