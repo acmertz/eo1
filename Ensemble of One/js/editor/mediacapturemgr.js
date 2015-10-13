@@ -71,7 +71,7 @@
         },
 
         initVideoCaptureSession: function () {
-            /// <summary>Enumerates media capture devices, sets up the video recording Popin, and initializes a video capture session.</summary>
+            /// <summary>Enumerates media capture devices, sets up the video recording Panel, and initializes a video capture session.</summary>
             WinJS.Utilities.addClass(Ensemble.Editor.MediaCaptureMGR.ui.webcamCaptureLoadingIndicator, "media-capture-loading--visible");
             Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureInitSettings = new Windows.Media.Capture.MediaCaptureInitializationSettings();
             Ensemble.Editor.MediaCaptureMGR.captureSession.video.captureInitSettings.audioDeviceId = "";
@@ -432,14 +432,14 @@
         _refreshUI: function () {
             this.ui.webcamCapturePreview = document.getElementsByClassName("media-capture-preview--webcam")[0];
             this.ui.webcamCaptureSettingsButton = document.getElementsByClassName("eo1-btn--webcam-capture-settings")[0];
-            this.ui.webcamCaptureSettingsContextMenu = document.getElementsByClassName("contextmenu--webcam-popin-options")[0];
+            this.ui.webcamCaptureSettingsContextMenu = document.getElementsByClassName("contextmenu--webcam-panel-options")[0];
             this.ui.webcamDeviceQualityContextMenu = document.getElementsByClassName("contextmenu--webcam-device-quality")[0];
             this.ui.webcamDeviceSelectContextMenu = document.getElementsByClassName("contextmenu--webcam-device-select")[0];
             this.ui.micDeviceSelectContextMenu = document.getElementsByClassName("contextmenu--mic-device-select")[0];
             this.ui.webcamCaptureLoadingIndicator = document.getElementsByClassName("media-capture-loading--webcam")[0];
             this.ui.webcamCaptureStartStopButton = document.getElementsByClassName("eo1-btn--webcam-capture-startstop")[0];
             this.ui.webcamCaptureUnavailableDialog = document.getElementsByClassName("media-capture-unavailable-dialog--webcam")[0];
-            this.ui.webcamKaraokeToggle = document.getElementsByClassName("contextmenu--webcam-popin-options__karaoke-toggle")[0];
+            this.ui.webcamKaraokeToggle = document.getElementsByClassName("contextmenu--webcam-panel-options__karaoke-toggle")[0];
 
             this.ui.webcamCapturePreview.addEventListener("playing", Ensemble.Editor.MediaCaptureMGR._listeners.mediaPreviewBegan);
             this.ui.webcamCaptureSettingsButton.addEventListener("click", Ensemble.Editor.MediaCaptureMGR._listeners.webcamCaptureSettingsButtonClicked);

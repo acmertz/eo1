@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="/css/listviews.css" />
     <link rel="stylesheet" href="/css/main-menu.css" />
     <link rel="stylesheet" href="/css/media-browser.css" />
-    <link rel="stylesheet" href="/css/popins.css" />
+    <link rel="stylesheet" href="/css/panels.css" />
     <link rel="stylesheet" href="/css/timeline.css" />
 
     <!-- Libraries -->
@@ -39,7 +39,7 @@
     <script src="/js/editor/mediacapturemgr.js"></script>
     <script src="/js/editor/menumgr.js"></script>
     <script src="/js/editor/playbackmgr.js"></script>
-    <script src="/js/editor/popinmgr.js"></script>
+    <script src="/js/editor/panelmgr.js"></script>
     <script src="/js/editor/renderer.js"></script>
     <script src="/js/editor/selectionmgr.js"></script>
     <script src="/js/editor/timelinemgr.js"></script>
@@ -286,20 +286,31 @@
         </nav>
         <main class="editor-content">
             <section class="editor-section editor-section--upper">
-                <div class="editor-popin editor-popin--camera-capture">
-                    <video class="media-capture-preview media-capture-preview--webcam"></video>
-                    <div class="media-capture-controls media-capture-controls--webcam">
-                        <button class="editor-titlebar-control editor-titlebar-control--inverted eo1-btn--webcam-capture-startstop">&#9210;</button>
-                        <button class="editor-titlebar-control editor-titlebar-control--inverted eo1-btn--webcam-capture-settings">&#57694;</button>
+                <div class="editor-panel-container">
+                    <div class="editor-panel-container__panels">
+                        <div class="editor-panel editor-panel--camera-capture">
+                            <video class="media-capture-preview media-capture-preview--webcam"></video>
+                            <div class="media-capture-controls media-capture-controls--webcam">
+                                <button class="editor-titlebar-control editor-titlebar-control--inverted eo1-btn--webcam-capture-startstop">&#9210;</button>
+                                <button class="editor-titlebar-control editor-titlebar-control--inverted eo1-btn--webcam-capture-settings">&#57694;</button>
+                            </div>
+                            <div class="media-capture-loading media-capture-loading--webcam">
+                                <progress class="win-progress-ring win-large"></progress>
+                            </div>
+                            <div class="media-capture-unavailable-dialog media-capture-unavailable-dialog--webcam">
+                                <h3 class="win-h3">We can't find your camera</h3>
+                                <p>Close any other apps that could be using your camera and then try opening media capture again.</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="media-capture-loading media-capture-loading--webcam">
-                        <progress class="win-progress-ring win-large"></progress>
-                    </div>
-                    <div class="media-capture-unavailable-dialog media-capture-unavailable-dialog--webcam">
-                        <h3 class="win-h3">We can't find your camera</h3>
-                        <p>Close any other apps that could be using your camera and then try opening media capture again.</p>
+                    <div class="editor-panel-container__tabs">
+                        <div class="editor-panel-tab">
+                            <div class="editor-panel-tab__close-button">&#57610;</div>
+                            <div class="editor-panel-tab__icon">&#57622;</div>
+                        </div>
                     </div>
                 </div>
+                
                 <div class="editor-canvas-container">
                     <canvas class="editor-canvas"></canvas>
                     <div class="editor-playback-widget">
@@ -466,12 +477,12 @@
             <span class="flyout--editor-clip-volume__indicator">100</span>
         </div>
         <div class="contextmenu--editor-create-lens" data-win-control="WinJS.UI.Menu"></div>
-        <div class="contextmenu--webcam-popin-options" data-win-control="WinJS.UI.Menu">
+        <div class="contextmenu--webcam-panel-options" data-win-control="WinJS.UI.Menu">
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Change camera', type:'flyout', flyout:select('.contextmenu--webcam-device-select')}"></button>
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Change mic', type:'flyout', flyout:select('.contextmenu--mic-device-select')}"></button>
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Recording quality', type:'flyout', flyout:select('.contextmenu--webcam-device-quality')}"></button>
             <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{type:'separator'}" />
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Karaoke mode', type:'toggle'}" class="contextmenu--webcam-popin-options__karaoke-toggle"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Karaoke mode', type:'toggle'}" class="contextmenu--webcam-panel-options__karaoke-toggle"></button>
         </div>
         <div class="contextmenu--webcam-device-quality" data-win-control="WinJS.UI.Menu"></div>
         <div class="contextmenu--webcam-device-select" data-win-control="WinJS.UI.Menu"></div>

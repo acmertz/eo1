@@ -26,7 +26,7 @@
             Ensemble.Editor.UI.relink();
             Ensemble.Editor.TimelineMGR.init();
             Ensemble.Editor.PlaybackMGR.init();
-            Ensemble.Editor.PopinMGR.init();
+            Ensemble.Editor.PanelMGR.init();
             Ensemble.Editor.Renderer.init();
             Ensemble.Editor.TimelineMGR._rebuildIndex();
             Ensemble.Editor.Renderer.renderSingleFrame();
@@ -75,7 +75,7 @@
             Ensemble.Editor.MediaCaptureMGR.unload();
             Ensemble.Editor.MenuMGR.closeMenu();
             Ensemble.Editor.MenuMGR.unload();
-            Ensemble.Editor.PopinMGR.unload();
+            Ensemble.Editor.PanelMGR.unload();
             Ensemble.Pages.Editor._cleanUI();
 
             let appView = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
@@ -159,7 +159,7 @@
                 maxHeight = Ensemble.Pages.Editor.ui.canvasContainer.clientHeight - (playbackControlHeight),
                 finalWidth = 0,
                 finalHeight = 0,
-                activeWidget = document.getElementsByClassName("editor-popin--visible")[0];
+                activeWidget = document.getElementsByClassName("editor-panel-container--visible")[0];
 
             if (activeWidget != null) {
                 // a widget is active. Calculate the size based on the remaining space.

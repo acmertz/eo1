@@ -209,7 +209,7 @@
 
                     // MEDIA CAPTURE
                 else if (command == "record-video") {
-                    Ensemble.Editor.PopinMGR.requestPopin(Ensemble.Editor.PopinMGR.PopinTypes.cameraCapture);
+                    Ensemble.Editor.PanelMGR.requestPanel(Ensemble.Editor.PanelMGR.PanelTypes.cameraCapture);
                 }
 
                 // ANIMATIONS/EFFECTS

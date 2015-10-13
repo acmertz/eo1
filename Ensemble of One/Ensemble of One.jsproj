@@ -67,7 +67,7 @@
     <Content Include="css\listviews.css" />
     <Content Include="css\main-menu.css" />
     <Content Include="css\media-browser.css" />
-    <Content Include="css\popins.css" />
+    <Content Include="css\panels.css" />
     <Content Include="css\timeline.css" />
     <Content Include="default.html" />
     <Content Include="images\logo.scale-100.png" />
@@ -115,7 +115,7 @@
     <Content Include="js\editor\clip.js" />
     <Content Include="js\editor\mediabrowser.js" />
     <Content Include="js\editor\mediacapturemgr.js" />
-    <Content Include="js\editor\popinmgr.js" />
+    <Content Include="js\editor\panelmgr.js" />
     <Content Include="js\editor\menumgr.js" />
     <Content Include="js\editor\playbackmgr.js" />
     <Content Include="js\editor\renderer.js" />
