@@ -51,23 +51,28 @@
 }
 
 .editor-panel-tab {
-    position: relative;
+    font-size:24px;
+    line-height: 50px;
+    text-align: center;
+    border-bottom: 1px solid #aaa;
+    display: none;
 }
 
-.editor-panel-tab__close-button {
+.editor-panel-tab--visible {
+    display: block;
+}
+
+.editor-panel-tab--active {
+    background-color: #fff;
+}
+
+.editor-panel-close-button {
     position: absolute;
     top: 0;
-    left: 0;
-    transform: translateX(-100%);
+    right: 0;
     line-height: 24px;
     width: 24px;
     text-align: center;
-}
-
-.editor-panel-tab__icon {
-    font-size: 36px;
-    text-align: center;
-    line-height: 48px;
 }
 
 /* Video recording panel */

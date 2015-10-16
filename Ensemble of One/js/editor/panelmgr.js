@@ -2,35 +2,15 @@
     WinJS.Namespace.define("Ensemble.Editor.PanelMGR", {
         /// <summary>Manages Editor pop-in experiences, such as camera capture, metronome, or animation configuration.</summary>
 
-        activePanel: null,
-
         init: function () {
             this._refreshUI();
         },
 
         unload: function () {
             this._cleanUI();
-            this.activePanel = null;
         },
 
-        requestPanel: function (panel) {
-            if (this.activePanel == panel) {
-                // Requested the same panel.
-                this._hidePanel(panel);
-            }
-            else if (this.activePanel != null) {
-                // Different panel is already active. Depending on its state, request confirmation from the user.
-                this._hidePanel(this.activePanel);
-                this._showPanel(panel);
-            }
-            else {
-                // No panels active. Show the panel.
-                this._showPanel(panel);
-            }
-            this._evaluateMenuToggles();
-        },
-
-        _hidePanel: function (panel) {
+        closePanel: function (panel) {
             switch (panel) {
                 case Ensemble.Editor.PanelMGR.PanelTypes.cameraCapture:
                     if (Ensemble.Editor.MediaCaptureMGR.webcamSessionInProgress()) {
@@ -45,63 +25,107 @@
                     else {
                         // immediately cleanup the session
                         Ensemble.Editor.MediaCaptureMGR.cleanupVideoCaptureSession();
-                        WinJS.Utilities.removeClass(this.ui.cameraCapturePanel, "editor-panel--visible");
-                        this.activePanel = null;
-                        Ensemble.Pages.Editor.viewResized();
                     }
                     break;
+                case Ensemble.Editor.PanelMGR.PanelTypes.micCapture:
+
+                    break;
             }
+
+            let hidingPanel = document.getElementsByClassName("editor-panel--" + panel)[0];
+            WinJS.Utilities.removeClass(hidingPanel, "editor-panel--visible");
+
+            let hidingTab = document.getElementsByClassName("editor-panel-tab--" + panel)[0];
+            WinJS.Utilities.removeClass(hidingTab, "editor-panel-tab--visible");
+            WinJS.Utilities.removeClass(hidingTab, "editor-panel-tab--active");
+
             if (document.getElementsByClassName("editor-panel--visible").length == 0) {
                 WinJS.Utilities.removeClass(Ensemble.Editor.PanelMGR.ui.panelContainer, "editor-panel-container--visible");
                 Ensemble.Pages.Editor.viewResized();
             }
         },
 
-        _showPanel: function (panel) {
+        showPanel: function (panel) {
             WinJS.Utilities.addClass(Ensemble.Editor.PanelMGR.ui.panelContainer, "editor-panel-container--visible");
             switch (panel) {
                 case Ensemble.Editor.PanelMGR.PanelTypes.cameraCapture:
-                    WinJS.Utilities.addClass(this.ui.cameraCapturePanel, "editor-panel--visible");
                     Ensemble.Editor.MediaCaptureMGR.initVideoCaptureSession();
                     break;
             }
-            this.activePanel = panel;
-            Ensemble.Pages.Editor.viewResized();
-        },
 
-        _evaluateMenuToggles: function () {
-            /// <summary>Checks for any active Panels and updates their menu toggles to function accordingly.</summary>
-            let cameraCaptureMenuToggle = document.getElementsByClassName("editor-toolbar-command--record-video")[0];
-            if (WinJS.Utilities.hasClass(this.ui.cameraCapturePanel, "editor-panel--visible")) cameraCaptureMenuToggle.winControl.selected = true;
-            else cameraCaptureMenuToggle.winControl.selected = false;
+            let showingPanel = document.getElementsByClassName("editor-panel--" + panel)[0];
+            WinJS.Utilities.addClass(showingPanel, "editor-panel--visible");
+            
+            let showingTab = document.getElementsByClassName("editor-panel-tab--" + panel)[0],
+                allTabs = document.getElementsByClassName("editor-panel-tab"),
+                tabCount = allTabs.length;
+
+            for (let i=0; i<tabCount; i++) {
+                WinJS.Utilities.removeClass(allTabs[i], "editor-panel-tab--active");
+            }
+
+            WinJS.Utilities.addClass(showingTab, "editor-panel-tab--visible");
+            WinJS.Utilities.addClass(showingTab, "editor-panel-tab--active");
+            Ensemble.Pages.Editor.viewResized();
         },
 
         ui: {
             panelContainer: null,
-            cameraCapturePanel: null
+            cameraCapturePanel: null,
+            panelCloseButton: null
         },
 
         _refreshUI: function () {
             this.ui.panelContainer = document.getElementsByClassName("editor-panel-container")[0];
-            this.ui.cameraCapturePanel = document.getElementsByClassName("editor-panel--camera-capture")[0];
+            this.ui.cameraCapturePanel = document.getElementsByClassName("editor-panel--webcam")[0];
+            this.ui.panelCloseButton = document.getElementsByClassName("editor-panel-close-button")[0];
+
+            this.ui.panelCloseButton.addEventListener("pointerdown", Ensemble.Editor.PanelMGR._listeners.panelCloseClicked);
+
+            let panelTabs = document.getElementsByClassName("editor-panel-tab"),
+                tabCount = panelTabs.length;
+            for (let i = 0; i < tabCount; i++) {
+                panelTabs[i].addEventListener("pointerdown", Ensemble.Editor.PanelMGR._listeners.panelTabClicked);
+            }
         },
 
         _cleanUI: function () {
+            this.ui.panelCloseButton.removeEventListener("pointerdown", Ensemble.Editor.PanelMGR._listeners.panelCloseClicked);
+
+            let panelTabs = document.getElementsByClassName("editor-panel-tab"),
+                tabCount = panelTabs.length;
+            for (let i = 0; i < tabCount; i++) {
+                panelTabs[i].removeEventListener("pointerdown", Ensemble.Editor.PanelMGR._listeners.panelTabClicked);
+            }
+
             this.ui.panelContainer = null;
             this.ui.cameraCapturePanel = null;
+            this.ui.panelCloseButton = null;
         },
 
         _listeners: {
             confirmAbandonWebcamCaptureSession: function () {
-                Ensemble.Editor.MediaCaptureMGR.cleanupVideoCaptureSession(true);
-                WinJS.Utilities.removeClass(Ensemble.Editor.PanelMGR.ui.cameraCapturePanel, "editor-panel--visible");
-                this.activePanel = null;
-                Ensemble.Pages.Editor.viewResized();
+                Ensemble.Editor.MediaCaptureMGR.cancelCurrentWebcamSession()
+                Ensemble.Editor.PanelMGR.closePanel(Ensemble.Editor.PanelMGR.PanelTypes.cameraCapture);
+            },
+
+            panelTabClicked: function (event) {
+                let targetPanel = event.currentTarget.dataset.editorPanel;
+                if (targetPanel.length > 0) console.log("Switch to panel \"" + targetPanel + "\"");
+                else console.error("Invalid panel tab clicked.");
+            },
+
+            panelCloseClicked: function (event) {
+                console.log("Close the visible panel.");
+                let activePanel = document.getElementsByClassName("editor-panel--visible")[0],
+                    panelId = activePanel.dataset.editorPanel;
+                Ensemble.Editor.PanelMGR.closePanel(panelId);
             }
         },
 
         PanelTypes: {
-            cameraCapture: "cameraCapture"
+            cameraCapture: "webcam",
+            micCapture: "mic"
         }
     });
 })();

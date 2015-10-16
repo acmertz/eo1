@@ -236,7 +236,7 @@
                 <button data-editor-command="record-video" class="editor-toolbar-command editor-toolbar-command--record-video" data-win-control="WinJS.UI.Command" data-win-options="{
                     label:'Video',
                     section:'primary',
-                    type:'toggle',
+                    type:'button',
                     icon: 'video'}"></button>
                 <button data-editor-command="record-audio" class="editor-toolbar-command editor-toolbar-command--record-audio" data-win-control="WinJS.UI.Command" data-win-options="{
                     label:'Audio',
@@ -288,7 +288,7 @@
             <section class="editor-section editor-section--upper">
                 <div class="editor-panel-container">
                     <div class="editor-panel-container__panels">
-                        <div class="editor-panel editor-panel--camera-capture">
+                        <div class="editor-panel editor-panel--webcam" data-editor-panel="webcam">
                             <video class="media-capture-preview media-capture-preview--webcam"></video>
                             <div class="media-capture-controls media-capture-controls--webcam">
                                 <button class="editor-titlebar-control editor-titlebar-control--inverted eo1-btn--webcam-capture-startstop">&#9210;</button>
@@ -302,12 +302,14 @@
                                 <p>Close any other apps that could be using your camera and then try opening media capture again.</p>
                             </div>
                         </div>
-                    </div>
-                    <div class="editor-panel-container__tabs">
-                        <div class="editor-panel-tab">
-                            <div class="editor-panel-tab__close-button">&#57610;</div>
-                            <div class="editor-panel-tab__icon">&#57622;</div>
+                        <div class="editor-panel editor-panel--mic" data-editor-panel="mic">
+                            This is the mic panel.
                         </div>
+                        <div class="editor-panel-close-button">&#57610;</div>
+                        </div>
+                    <div class="editor-panel-container__tabs">
+                        <div class="editor-panel-tab editor-panel-tab--webcam" data-editor-panel="webcam">&#57622;</div>
+                        <div class="editor-panel-tab editor-panel-tab--mic" data-editor-panel="mic">&#57814;</div>
                     </div>
                 </div>
                 

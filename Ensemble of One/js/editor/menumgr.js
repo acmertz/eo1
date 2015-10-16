@@ -73,6 +73,7 @@
             $(".editor-toolbar-command--browse-media").removeAttr("disabled");
             $(".editor-toolbar-command--create-filter").removeAttr("disabled");
             $(".editor-toolbar-command--record-video").removeAttr("disabled");
+            $(".editor-toolbar-command--record-audio").removeAttr("disabled");
 
             if (Ensemble.Editor.SelectionMGR.selected.length == 1) {
                 $(".editor-toolbar-command--clear-selection").removeAttr("disabled");
@@ -209,7 +210,10 @@
 
                     // MEDIA CAPTURE
                 else if (command == "record-video") {
-                    Ensemble.Editor.PanelMGR.requestPanel(Ensemble.Editor.PanelMGR.PanelTypes.cameraCapture);
+                    Ensemble.Editor.PanelMGR.showPanel(Ensemble.Editor.PanelMGR.PanelTypes.cameraCapture);
+                }
+                else if (command == "record-audio") {
+                    Ensemble.Editor.PanelMGR.showPanel(Ensemble.Editor.PanelMGR.PanelTypes.micCapture);
                 }
 
                 // ANIMATIONS/EFFECTS

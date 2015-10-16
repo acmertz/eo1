@@ -132,9 +132,8 @@
             });
         },
 
-        cleanupVideoCaptureSession: function (cancelSession) {
+        cleanupVideoCaptureSession: function () {
             /// <summary>Cleans up the current recording session.</summary>
-            /// <param name="cancelSession" type="Boolean">If true, deletes any pending imports.</param>
 
             this.ui.webcamCapturePreview.pause();
             this.ui.webcamCapturePreview.src = "";
@@ -414,6 +413,11 @@
             /// <summary>Returns whether or not a webcam capture session is currently in progress.</summary>
             /// <returns type="Boolean"></returns>
             return Ensemble.Editor.MediaCaptureMGR.captureSession.video.recordingActive;
+        },
+
+        cancelCurrentWebcamSession: function () {
+            /// <summary>Cancels the current recording session.</summary>
+            Ensemble.Editor.MediaCaptureMGR.captureSession.video.recordingActive = false;
         },
 
         ui: {
