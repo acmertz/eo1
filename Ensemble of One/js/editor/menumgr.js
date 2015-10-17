@@ -9,7 +9,6 @@
         init: function () {
             this._refreshUI();
             this._reevaluateState();
-            $(".editor-toolbar--home").removeClass("editor-toolbar--hidden").addClass("editor-toolbar--visible");
         },
 
         unload: function () {
@@ -29,7 +28,6 @@
             /// <summary>Hides any active menus, but keeps the menu in the "Open" state. Useful for swapping menues.</summary>
             if (this.currentMenu) this.currentMenu.removeEventListener("transitionend", Ensemble.Editor.MenuMGR._listeners.importMenuEntered);
             $(".editor-menu").removeClass("editor-menu--visible");
-            //$(".editor-menubar__tab--active").removeClass("editor-menubar__tab--active");
             this.currentMenu = null;
         },
 
@@ -69,7 +67,7 @@
             if (Ensemble.HistoryMGR.canUndo()) $(".app-trigger--undo").removeAttr("disabled");
             if (Ensemble.HistoryMGR.canRedo()) $(".app-trigger--redo").removeAttr("disabled");
 
-            $(".editor-toolbar-command--import-media").removeAttr("disabled");
+            $(".editor-toolbar-command--add-button").removeAttr("disabled");
             $(".editor-toolbar-command--browse-media").removeAttr("disabled");
             $(".editor-toolbar-command--create-filter").removeAttr("disabled");
             $(".editor-toolbar-command--record-video").removeAttr("disabled");
@@ -83,17 +81,18 @@
 
         ui: {
             clickEater: null,
-            createLensFlyout: null
+            createLensFlyout: null,
+            addItemFlyout: null,
+            hamburgerButton: null
         },
 
         _refreshUI: function () {
             this.ui.clickEater = document.getElementsByClassName("ensemble-clickeater--editor-menu")[0];
             this.ui.createLensFlyout = document.getElementsByClassName("contextmenu--editor-create-lens")[0];
+            this.ui.addItemFlyout = document.getElementsByClassName("flyout--editor-add-button")[0];
+            this.ui.hamburgerButton = document.getElementsByClassName("editor-hamburger-button")[0];
 
-            let menuBarButtons = document.getElementsByClassName("editor-menubar__tab");
-            for (let i = 0; i < menuBarButtons.length; i++) {
-                menuBarButtons[i].addEventListener("pointerdown", Ensemble.Editor.MenuMGR._listeners.menubarButtonClicked);
-            }
+            this.ui.hamburgerButton.addEventListener("click", Ensemble.Editor.MenuMGR._listeners.hamburgerButtonClicked);
 
             let toolbarCommands = document.getElementsByClassName("editor-toolbar-command");
             for (let i = 0; i < toolbarCommands.length; i++) {
@@ -107,13 +106,12 @@
         },
 
         _cleanUI: function () {
+            this.ui.hamburgerButton.removeEventListener("click", Ensemble.Editor.MenuMGR._listeners.hamburgerButtonClicked);
+
             this.ui.clickEater = null;
             this.ui.createLensFlyout = null;
-
-            let menuBarButtons = document.getElementsByClassName("editor-menubar__tab");
-            for (let i = 0; i < menuBarButtons.length; i++) {
-                menuBarButtons[i].removeEventListener("pointerdown", Ensemble.Editor.MenuMGR._listeners.menubarButtonClicked);
-            }
+            this.ui.addItemFlyout = null;
+            this.ui.hamburgerButton = null;
 
             let toolbarCommands = document.getElementsByClassName("editor-toolbar-command");
             for (let i = 0; i < toolbarCommands.length; i++) {
@@ -127,39 +125,20 @@
         },
 
         _listeners: {
+            hamburgerButtonClicked: function (event) {
+                $(".app-page--editor-menu").removeClass("app-page--hidden");
+                $(".app-page--editor-menu").addClass("app-page--enter-left");
+                document.getElementsByClassName("app-page--editor-menu")[0].addEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.fileMenuEntered);
+
+                Ensemble.Editor.MenuMGR.menuOpen = true;
+                $(Ensemble.Editor.MenuMGR.ui.clickEater).addClass("ensemble-clickeater--active");
+                Ensemble.Navigation.pushBackState(Ensemble.Editor.MenuMGR.closeFileMenu);
+            },
+
             exitAnimationFinished: function (event) {
                 let editorMenu = document.getElementsByClassName("app-page--editor-menu")[0];
                 $(editorMenu).removeClass("app-page--exit").addClass("app-page--hidden");;
                 editorMenu.removeEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.exitAnimationFinished);
-            },
-
-            menubarButtonClicked: function (event) {
-                let targetToolbarId = event.currentTarget.dataset.ensembleMenu;
-                let targetToolbar = document.getElementsByClassName("editor-toolbar--" + event.currentTarget.dataset.ensembleMenu)[0];
-                if (targetToolbarId == "file") {
-                    $(".app-page--editor-menu").removeClass("app-page--hidden");
-                    $(".app-page--editor-menu").addClass("app-page--enter-left");
-                    document.getElementsByClassName("app-page--editor-menu")[0].addEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.fileMenuEntered);
-
-                    Ensemble.Editor.MenuMGR.menuOpen = true;
-                    $(Ensemble.Editor.MenuMGR.ui.clickEater).addClass("ensemble-clickeater--active");
-                    Ensemble.Navigation.pushBackState(Ensemble.Editor.MenuMGR.closeFileMenu);
-                }
-                else {
-                    let activeToolbar = document.getElementsByClassName("editor-toolbar--visible")[0];
-                    let activeToolbarId = null;
-                    if (activeToolbar) {
-                        activeToolbarId = activeToolbar.dataset.ensembleMenu;
-                        $(activeToolbar).removeClass("editor-toolbar--visible").addClass("editor-toolbar--hidden");
-                        $(".editor-menubar__tab--" + activeToolbarId).removeClass("editor-menubar__tab--active");
-                    }
-                    
-                    if (targetToolbarId != activeToolbarId) {
-                        $(targetToolbar).removeClass("editor-toolbar--hidden").addClass("editor-toolbar--visible");
-                        $(".editor-menubar__tab--" + targetToolbarId).addClass("editor-menubar__tab--active");
-                    }
-                    Ensemble.Pages.Editor.viewResized();
-                }
             },
 
             clickEaterClicked: function (event) {
@@ -168,6 +147,10 @@
 
             menuCommandClick: function (event) {
                 let command = event.currentTarget.dataset.editorCommand;
+
+                if (command == "add-item") {
+                    Ensemble.Editor.MenuMGR.ui.addItemFlyout.winControl.show(event.currentTarget);
+                }
 
                 if (command == "show-library") {
                     let mediaBrowser = document.getElementsByClassName("app-page--media-browser")[0];

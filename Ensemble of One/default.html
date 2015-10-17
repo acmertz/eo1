@@ -198,29 +198,58 @@
 
     <div class="app-page app-page--hidden app-page--editor" id="editorPageContainer">
         <nav class="editor-menubar">
-            <div class="editor-menubar__tab-list">
-                <span class="editor-menubar__tab editor-menubar__tab--file" data-ensemble-menu="file">&#59136;</span>
-                <span class="editor-menubar__tab editor-menubar__tab--home editor-menubar__tab--active" data-ensemble-menu="home">Home</span>
-                <span class="editor-menubar__tab editor-menubar__tab--record" data-ensemble-menu="record">Record</span>
-                <span class="editor-menubar__tab editor-menubar__tab--effects" data-ensemble-menu="effects">Animations</span>
-                <span class="editor-menubar__tab editor-menubar__tab--export" data-ensemble-menu="export">Export</span>
-                <span class="editor-menu-titlebar editor-menu-titlebar--tab-list">
-                    <button title="Undo" class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--undo" data-editor-command="undo">&#xE10E;</button>
-                    <button title="Redo" class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--redo" data-editor-command="redo">&#xE10D;</button>
-                </span>
-            </div>
-            <div data-win-control="WinJS.UI.ToolBar" class="editor-menubar__toolbar editor-toolbar--home" data-ensemble-menu="home">
-                <button data-editor-command="show-library" class="editor-toolbar-command editor-toolbar-command--import-media" data-win-control="WinJS.UI.Command" data-win-options="{
-                    label:'Import',
+            <span class="editor-hamburger-button">&#59136;</span>
+            
+            <div data-win-control="WinJS.UI.ToolBar" class="editor-toolbar">
+                <button data-editor-command="add-item" class="editor-toolbar-command editor-toolbar-command--add-button" data-win-control="WinJS.UI.Command" data-win-options="{
+                    label:'New track',
                     section:'primary',
                     type:'button',
                     icon: 'add'}"></button>
                 <button data-editor-command="browse-media" class="editor-toolbar-command editor-toolbar-command--browse-media" data-win-control="WinJS.UI.Command" data-win-options="{
-                    label:'Browse',
+                    label:'Browse…',
                     section:'primary',
                     type:'button',
                     icon: 'openfile'}"></button>
+
                 <hr data-win-control="WinJS.UI.Command" class="editor-toolbar-command" data-win-options="{type:'separator'}" />
+
+                <button data-editor-command="record-video" class="editor-toolbar-command editor-toolbar-command--record-video" data-win-control="WinJS.UI.Command" data-win-options="{
+                    label:'Webcam',
+                    section:'primary',
+                    type:'button',
+                    icon: 'video'}"></button>
+                <button data-editor-command="record-audio" class="editor-toolbar-command editor-toolbar-command--record-audio" data-win-control="WinJS.UI.Command" data-win-options="{
+                    label:'Mic',
+                    section:'primary',
+                    type:'button',
+                    icon: 'microphone'}"></button>
+                <button data-editor-command="record-photo" class="editor-toolbar-command editor-toolbar-command--record-photo" data-win-control="WinJS.UI.Command" data-win-options="{
+                    label:'Take picture',
+                    section:'primary',
+                    type:'button',
+                    icon: 'camera'}"></button>
+
+                <hr data-win-control="WinJS.UI.Command" class="editor-toolbar-command" data-win-options="{type:'separator'}" />
+
+                <button data-editor-command="create-title" class="editor-toolbar-command editor-toolbar-command--create-title" data-win-control="WinJS.UI.Command" data-win-options="{
+                    label:'Title',
+                    section:'primary',
+                    type:'button',
+                    icon: 'previewlink'}"></button>
+                <button data-editor-command="create-filter" class="editor-toolbar-command editor-toolbar-command--create-filter" data-win-control="WinJS.UI.Command" data-win-options="{
+                    label:'Lens',
+                    section:'primary',
+                    type:'button',
+                    icon: 'favorite'}"></button>
+                <button data-editor-command="edit-animation" class="editor-toolbar-command editor-toolbar-command--edit-animation" data-win-control="WinJS.UI.Command" data-win-options="{
+                    label:'Animation',
+                    section:'primary',
+                    type:'button',
+                    icon: 'list'}"></button>
+
+                <hr data-win-control="WinJS.UI.Command" class="editor-toolbar-command" data-win-options="{type:'separator'}" />
+
                 <button data-editor-command="split-clip" class="editor-toolbar-command editor-toolbar-command--split-clip" data-win-control="WinJS.UI.Command" data-win-options="{
                     label:'Split',
                     section:'primary',
@@ -232,57 +261,11 @@
                     type:'button',
                     icon: 'clearselection'}"></button>
             </div>
-            <div data-win-control="WinJS.UI.ToolBar" class="editor-menubar__toolbar editor-toolbar--record" data-ensemble-menu="record">
-                <button data-editor-command="record-video" class="editor-toolbar-command editor-toolbar-command--record-video" data-win-control="WinJS.UI.Command" data-win-options="{
-                    label:'Video',
-                    section:'primary',
-                    type:'button',
-                    icon: 'video'}"></button>
-                <button data-editor-command="record-audio" class="editor-toolbar-command editor-toolbar-command--record-audio" data-win-control="WinJS.UI.Command" data-win-options="{
-                    label:'Audio',
-                    section:'primary',
-                    type:'button',
-                    icon: 'microphone'}"></button>
-                <button data-editor-command="record-photo" class="editor-toolbar-command editor-toolbar-command--record-photo" data-win-control="WinJS.UI.Command" data-win-options="{
-                    label:'Photo',
-                    section:'primary',
-                    type:'button',
-                    icon: 'camera'}"></button>
-            </div>
-            <div data-win-control="WinJS.UI.ToolBar" class="editor-menubar__toolbar editor-toolbar--effects" data-ensemble-menu="effects">
-                <button data-editor-command="create-title" class="editor-toolbar-command editor-toolbar-command--create-title" data-win-control="WinJS.UI.Command" data-win-options="{
-                    label:'Title',
-                    section:'primary',
-                    type:'button',
-                    icon: 'previewlink'}"></button>
-                <button data-editor-command="create-filter" class="editor-toolbar-command editor-toolbar-command--create-filter" data-win-control="WinJS.UI.Command" data-win-options="{
-                    label:'Filter',
-                    section:'primary',
-                    type:'button',
-                    icon: 'favorite'}"></button>
-                <button data-editor-command="edit-animation" class="editor-toolbar-command editor-toolbar-command--edit-animation" data-win-control="WinJS.UI.Command" data-win-options="{
-                    label:'Animation',
-                    section:'primary',
-                    type:'button',
-                    icon: 'list'}"></button>
-            </div>
-            <div data-win-control="WinJS.UI.ToolBar" class="editor-menubar__toolbar editor-toolbar--export" data-ensemble-menu="export">
-                <button data-editor-command="export-video" class="editor-toolbar-command editor-toolbar-command--export-video" data-win-control="WinJS.UI.Command" data-win-options="{
-                    label:'Video',
-                    section:'primary',
-                    type:'button',
-                    icon: 'videochat'}"></button>
-                <button data-editor-command="export-audio" class="editor-toolbar-command editor-toolbar-command--export-audio" data-win-control="WinJS.UI.Command" data-win-options="{
-                    label:'Audio',
-                    section:'primary',
-                    type:'button',
-                    icon: 'audio'}"></button>
-                <button data-editor-command="export-photo" class="editor-toolbar-command editor-toolbar-command--export-photo" data-win-control="WinJS.UI.Command" data-win-options="{
-                    label:'Photo',
-                    section:'primary',
-                    type:'button',
-                    icon: 'pictures'}"></button>
-            </div>
+
+            <span class="editor-history-controls">
+                <button title="Undo" class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--undo" data-editor-command="undo">&#xE10E;</button>
+                <button title="Redo" class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--redo" data-editor-command="redo">&#xE10D;</button>
+            </span>
         </nav>
         <main class="editor-content">
             <section class="editor-section editor-section--upper">
@@ -490,6 +473,17 @@
         <div class="contextmenu--webcam-device-select" data-win-control="WinJS.UI.Menu"></div>
         <div class="contextmenu--mic-device-quality" data-win-control="WinJS.UI.Menu"></div>
         <div class="contextmenu--mic-device-select" data-win-control="WinJS.UI.Menu"></div>
+        <div class="flyout--editor-add-button" data-win-control="WinJS.UI.Menu">
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Browse…'}"></button>
+            <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',type:'separator'}" />
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Record video'}"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Record audio'}"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Take picture'}"></button>
+            <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',type:'separator'}" />
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'New title'}"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'New Lens effect'}"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'New animation'}"></button>
+        </div>
         <div class="my-test-flyout" data-win-control="WinJS.UI.Flyout">This is my great flyout</div>
     </div>
 

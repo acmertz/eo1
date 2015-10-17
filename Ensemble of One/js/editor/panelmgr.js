@@ -11,6 +11,7 @@
         },
 
         closePanel: function (panel) {
+            /// <summary>Closes the panel with the given identifier.</summary>
             switch (panel) {
                 case Ensemble.Editor.PanelMGR.PanelTypes.cameraCapture:
                     if (Ensemble.Editor.MediaCaptureMGR.webcamSessionInProgress()) {
@@ -34,18 +35,24 @@
 
             let hidingPanel = document.getElementsByClassName("editor-panel--" + panel)[0];
             WinJS.Utilities.removeClass(hidingPanel, "editor-panel--visible");
+            WinJS.Utilities.removeClass(hidingPanel, "editor-panel--active");
 
             let hidingTab = document.getElementsByClassName("editor-panel-tab--" + panel)[0];
             WinJS.Utilities.removeClass(hidingTab, "editor-panel-tab--visible");
             WinJS.Utilities.removeClass(hidingTab, "editor-panel-tab--active");
 
-            if (document.getElementsByClassName("editor-panel--visible").length == 0) {
+            let remainingActivePanels = document.getElementsByClassName("editor-panel--active");
+            if (remainingActivePanels.length > 0) {
+                Ensemble.Editor.PanelMGR.switchToPanel(remainingActivePanels[0].dataset.editorPanel);
+            }
+            else {
                 WinJS.Utilities.removeClass(Ensemble.Editor.PanelMGR.ui.panelContainer, "editor-panel-container--visible");
                 Ensemble.Pages.Editor.viewResized();
             }
         },
 
         showPanel: function (panel) {
+            /// <summary>Shows the panel with the given identifier, initializing it if it was not previously open.</summary>
             WinJS.Utilities.addClass(Ensemble.Editor.PanelMGR.ui.panelContainer, "editor-panel-container--visible");
             switch (panel) {
                 case Ensemble.Editor.PanelMGR.PanelTypes.cameraCapture:
@@ -54,7 +61,7 @@
             }
 
             let showingPanel = document.getElementsByClassName("editor-panel--" + panel)[0];
-            WinJS.Utilities.addClass(showingPanel, "editor-panel--visible");
+            WinJS.Utilities.addClass(showingPanel, "editor-panel--active");
             
             let showingTab = document.getElementsByClassName("editor-panel-tab--" + panel)[0],
                 allTabs = document.getElementsByClassName("editor-panel-tab"),
@@ -65,8 +72,22 @@
             }
 
             WinJS.Utilities.addClass(showingTab, "editor-panel-tab--visible");
-            WinJS.Utilities.addClass(showingTab, "editor-panel-tab--active");
+            Ensemble.Editor.PanelMGR.switchToPanel(panel);
             Ensemble.Pages.Editor.viewResized();
+        },
+
+        switchToPanel: function (panel) {
+            /// <summary>Switches the panel area to show the panel with given identifier.</summary>
+            let existingPanel = document.getElementsByClassName("editor-panel--visible")[0],
+                existingTab = document.getElementsByClassName("editor-panel-tab--active")[0],
+                newPanel = document.getElementsByClassName("editor-panel--" + panel)[0],
+                newTab = document.getElementsByClassName("editor-panel-tab--" + panel)[0];
+            if (existingPanel != newPanel) {
+                if (existingPanel != null) WinJS.Utilities.removeClass(existingPanel, "editor-panel--visible");
+                if (existingTab != null) WinJS.Utilities.removeClass(existingTab, "editor-panel-tab--active");
+                WinJS.Utilities.addClass(newPanel, "editor-panel--visible");
+                WinJS.Utilities.addClass(newTab, "editor-panel-tab--active");
+            }
         },
 
         ui: {
@@ -111,7 +132,18 @@
 
             panelTabClicked: function (event) {
                 let targetPanel = event.currentTarget.dataset.editorPanel;
-                if (targetPanel.length > 0) console.log("Switch to panel \"" + targetPanel + "\"");
+                if (targetPanel.length > 0) {
+                    switch (event.button) {
+                        case 0:
+                            Ensemble.Editor.PanelMGR.switchToPanel(targetPanel);
+                            break;
+                        case 1:
+                            Ensemble.Editor.PanelMGR.closePanel(targetPanel);
+                            break;
+                        case 2:
+                            break;
+                    }
+                }
                 else console.error("Invalid panel tab clicked.");
             },
 
