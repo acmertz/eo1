@@ -114,7 +114,8 @@
     <Content Include="js\editor\calloutmgr.js" />
     <Content Include="js\editor\clip.js" />
     <Content Include="js\editor\mediabrowser.js" />
-    <Content Include="js\editor\mediacapturemgr.js" />
+    <Content Include="js\editor\audiocapturemgr.js" />
+    <Content Include="js\editor\videocapturemgr.js" />
     <Content Include="js\editor\panelmgr.js" />
     <Content Include="js\editor\menumgr.js" />
     <Content Include="js\editor\playbackmgr.js" />

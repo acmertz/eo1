@@ -31,7 +31,8 @@
             Ensemble.Editor.TimelineMGR._rebuildIndex();
             Ensemble.Editor.Renderer.renderSingleFrame();
             Ensemble.HistoryMGR.refreshMessage();
-            Ensemble.Editor.MediaCaptureMGR.init();
+            Ensemble.Editor.VideoCaptureMGR.init();
+            Ensemble.Editor.AudioCaptureMGR.init();
             Ensemble.Editor.MenuMGR.init();
             Ensemble.Editor.CalloutMGR.init();
             Ensemble.Editor.MediaBrowser.init();
@@ -72,7 +73,8 @@
             editorPage.addEventListener("animationend", Ensemble.Pages.Editor._listeners.exitAnimationFinished);
             Ensemble.Session.setCurrentPage(Ensemble.Session.PageStates.loadingToMainMenu);
 
-            Ensemble.Editor.MediaCaptureMGR.unload();
+            Ensemble.Editor.VideoCaptureMGR.unload();
+            Ensemble.Editor.AudioCaptureMGR.unload();
             Ensemble.Editor.MenuMGR.closeMenu();
             Ensemble.Editor.MenuMGR.unload();
             Ensemble.Editor.PanelMGR.unload();

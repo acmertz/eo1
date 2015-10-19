@@ -11,6 +11,7 @@
     display: flex;
     position: relative;
     border-bottom: 1px solid #000;
+    padding-left: 10px;
 }
 
 .timeline-track-header-container {
@@ -25,6 +26,7 @@
     height: 50px;
     width: 51px;
     border-bottom: 1px solid #000;
+    margin-left: 10px;
 }
 
 .timeline-track--header, .timeline-track--controls, .timeline-track--content {

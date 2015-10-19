@@ -10,11 +10,19 @@
             this._cleanUI();
         },
 
+        requestPanel: function (panel) {
+            /// <summary>Requests that the specified panel be displayed. Initializes it if it was not previously open; switches to it if it's already open.</summary>
+            let requestedPanel = document.getElementsByClassName("editor-panel--" + panel)[0];
+            if (WinJS.Utilities.hasClass(requestedPanel, "editor-panel--active")) Ensemble.Editor.PanelMGR.switchToPanel(panel);
+            else Ensemble.Editor.PanelMGR.openPanel(panel);
+        },
+
         closePanel: function (panel) {
             /// <summary>Closes the panel with the given identifier.</summary>
+            let safeToClose = false;
             switch (panel) {
                 case Ensemble.Editor.PanelMGR.PanelTypes.cameraCapture:
-                    if (Ensemble.Editor.MediaCaptureMGR.webcamSessionInProgress()) {
+                    if (Ensemble.Editor.VideoCaptureMGR.webcamSessionInProgress()) {
                         // request confirmation from user
                         Ensemble.OSDialogMGR.showDialog("Abandon webcam recording?", "You're in the middle of a webcam recording session. Abandoning the session will cause the clip-in-progress to be discarded.",
                             [
@@ -25,38 +33,55 @@
                     }
                     else {
                         // immediately cleanup the session
-                        Ensemble.Editor.MediaCaptureMGR.cleanupVideoCaptureSession();
+                        Ensemble.Editor.VideoCaptureMGR.cleanupVideoCaptureSession();
+                        safeToClose = true;
                     }
                     break;
                 case Ensemble.Editor.PanelMGR.PanelTypes.micCapture:
-
+                    if (Ensemble.Editor.AudioCaptureMGR.sessionInProgress()) {
+                        Ensemble.OSDialogMGR.showDialog("Abandon microphone recording?", "You're in the middle of a microphone recording session. Abandoning the session will cause the clip-in-progress to be discarded.",
+                            [
+                                { label: "Abandon recording", handler: Ensemble.Editor.PanelMGR._listeners.confirmAbandonMicCaptureSession },
+                                { label: "Cancel", handler: null }
+                            ],
+                            1, 1);
+                    }
+                    else {
+                        Ensemble.Editor.AudioCaptureMGR.cleanupCaptureSession();
+                        safeToClose = true;
+                    }
                     break;
             }
 
-            let hidingPanel = document.getElementsByClassName("editor-panel--" + panel)[0];
-            WinJS.Utilities.removeClass(hidingPanel, "editor-panel--visible");
-            WinJS.Utilities.removeClass(hidingPanel, "editor-panel--active");
+            if (safeToClose) {
+                let hidingPanel = document.getElementsByClassName("editor-panel--" + panel)[0];
+                WinJS.Utilities.removeClass(hidingPanel, "editor-panel--visible");
+                WinJS.Utilities.removeClass(hidingPanel, "editor-panel--active");
 
-            let hidingTab = document.getElementsByClassName("editor-panel-tab--" + panel)[0];
-            WinJS.Utilities.removeClass(hidingTab, "editor-panel-tab--visible");
-            WinJS.Utilities.removeClass(hidingTab, "editor-panel-tab--active");
+                let hidingTab = document.getElementsByClassName("editor-panel-tab--" + panel)[0];
+                WinJS.Utilities.removeClass(hidingTab, "editor-panel-tab--visible");
+                WinJS.Utilities.removeClass(hidingTab, "editor-panel-tab--active");
 
-            let remainingActivePanels = document.getElementsByClassName("editor-panel--active");
-            if (remainingActivePanels.length > 0) {
-                Ensemble.Editor.PanelMGR.switchToPanel(remainingActivePanels[0].dataset.editorPanel);
-            }
-            else {
-                WinJS.Utilities.removeClass(Ensemble.Editor.PanelMGR.ui.panelContainer, "editor-panel-container--visible");
-                Ensemble.Pages.Editor.viewResized();
+                let remainingActivePanels = document.getElementsByClassName("editor-panel--active");
+                if (remainingActivePanels.length > 0) {
+                    Ensemble.Editor.PanelMGR.switchToPanel(remainingActivePanels[0].dataset.editorPanel);
+                }
+                else {
+                    WinJS.Utilities.removeClass(Ensemble.Editor.PanelMGR.ui.panelContainer, "editor-panel-container--visible");
+                    Ensemble.Pages.Editor.viewResized();
+                }
             }
         },
 
-        showPanel: function (panel) {
+        openPanel: function (panel) {
             /// <summary>Shows the panel with the given identifier, initializing it if it was not previously open.</summary>
             WinJS.Utilities.addClass(Ensemble.Editor.PanelMGR.ui.panelContainer, "editor-panel-container--visible");
             switch (panel) {
                 case Ensemble.Editor.PanelMGR.PanelTypes.cameraCapture:
-                    Ensemble.Editor.MediaCaptureMGR.initVideoCaptureSession();
+                    Ensemble.Editor.VideoCaptureMGR.initCaptureSession();
+                    break;
+                case Ensemble.Editor.PanelMGR.PanelTypes.micCapture:
+                    Ensemble.Editor.AudioCaptureMGR.initCaptureSession();
                     break;
             }
 
@@ -126,8 +151,13 @@
 
         _listeners: {
             confirmAbandonWebcamCaptureSession: function () {
-                Ensemble.Editor.MediaCaptureMGR.cancelCurrentWebcamSession()
+                Ensemble.Editor.VideoCaptureMGR.cancelCurrentWebcamSession()
                 Ensemble.Editor.PanelMGR.closePanel(Ensemble.Editor.PanelMGR.PanelTypes.cameraCapture);
+            },
+
+            confirmAbandonMicCaptureSession: function () {
+                Ensemble.Editor.AudioCaptureMGR.cancelCurrentSession();
+                Ensemble.Editor.PanelMGR.closePanel(Ensemble.Editor.PanelMGR.PanelTypes.micCapture);
             },
 
             panelTabClicked: function (event) {

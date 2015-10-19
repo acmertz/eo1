@@ -12,11 +12,24 @@
     font-family: "Segoe MDL2 Assets", "Symbols";
     font-size: 20px;
     width: 24px;
-    height: 24px;
     line-height: 24px;
     vertical-align: middle;
     padding: 11px 21px;
-    color: white;
+    color: #fff;
+    border-bottom: 1px solid #aaa;
+}
+
+.editor-hamburger-button:hover {
+    background-color: #e34262;
+}
+
+.editor-hamburger-button:active {
+    background-color: #ea728a;
+}
+
+.editor-history-controls {
+    background-color: #e6e6e6;
+    border-bottom: 1px solid #aaa;
 }
 
 .editor-menu-titlebar {
@@ -186,10 +199,6 @@
 
 .editor-titlebar-control--hidden {
     display: none;
-}
-
-.editor-titlebar-control.app-trigger--settings {
-    float: right;
 }
 
 .editor-titlebar-control--inverted {

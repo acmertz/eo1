@@ -998,7 +998,6 @@
             buttonScrollDown: null,
             buttonZoomIn: null,
             buttonZoomOut: null,
-            buttonNewTrack: null,
             timeCursor: null,
             timeCursorPreview: null,
             trackContainer: null,
@@ -1025,7 +1024,6 @@
             this.ui.buttonScrollDown = document.getElementsByClassName("eo1-btn--timeline-scroll-down")[0];
             this.ui.buttonZoomIn = document.getElementsByClassName("eo1-btn--timeline-zoom-in")[0];
             this.ui.buttonZoomOut = document.getElementsByClassName("eo1-btn--timeline-zoom-out")[0];
-            this.ui.buttonNewTrack = document.getElementsByClassName("eo1-btn--timeline-new-track")[0];
             this.ui.timeCursor = document.getElementsByClassName("timeline__cursor")[0];
             this.ui.timeCursorPreview = document.getElementsByClassName("editorTimelineDragPreviewFlyout")[0];
             this.ui.trackContainer = document.getElementById("timeline-track-container");
@@ -1050,7 +1048,6 @@
             this.ui.buttonScrollDown.addEventListener("click", this._listeners.buttonScrollDown);
             this.ui.buttonZoomIn.addEventListener("click", this._listeners.buttonZoomIn);
             this.ui.buttonZoomOut.addEventListener("click", this._listeners.buttonZoomOut);
-            this.ui.buttonNewTrack.addEventListener("click", this._listeners.buttonNewTrack);
             this.ui.timeCursor.addEventListener("pointerdown", this._listeners.timeCursorMousedown);
             Ensemble.Editor.UI.PageSections.lowerHalf.timelineTracks.addEventListener("pointerdown", this._listeners.timelineTrackContainerPointerDown);
             this.ui.scrollableContainer.addEventListener("scroll", Ensemble.Editor.TimelineMGR._listeners.timelineScrolled);
@@ -1072,7 +1069,6 @@
             this.ui.buttonScrollDown.removeEventListener("click", this._listeners.buttonScrollDown);
             this.ui.buttonZoomIn.removeEventListener("click", this._listeners.buttonZoomIn);
             this.ui.buttonZoomOut.removeEventListener("click", this._listeners.buttonZoomOut);
-            this.ui.buttonNewTrack.removeEventListener("click", this._listeners.buttonNewTrack);
             this.ui.timeCursor.removeEventListener("pointerdown", this._listeners.timeCursorMousedown);
             Ensemble.Editor.UI.PageSections.lowerHalf.timelineTracks.removeEventListener("pointerdown", this._listeners.timelineTrackContainerPointerDown);
             this.ui.scrollableContainer.removeEventListener("scroll", Ensemble.Editor.TimelineMGR._listeners.timelineScrolled);
@@ -1086,7 +1082,6 @@
             this.ui.buttonScrollDown = null;
             this.ui.buttonZoomIn = null;
             this.ui.buttonZoomOut = null;
-            this.ui.buttonNewTrack = null;
             this.ui.timeCursor = null;
             this.ui.timeCursorPreview = null;
             this.ui.trackContainer = null;
@@ -1171,11 +1166,6 @@
 
             buttonZoomOut: function (event) {
                 Ensemble.Editor.TimelineMGR.zoomOut();
-            },
-
-            buttonNewTrack: function (event) {
-                var action = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.createTrack);
-                Ensemble.HistoryMGR.performAction(action);
             },
 
             timeCursorMousedown: function (event) {

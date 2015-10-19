@@ -82,17 +82,20 @@
         ui: {
             clickEater: null,
             createLensFlyout: null,
-            addItemFlyout: null,
+            hamburgerFlyout: null,
             hamburgerButton: null
         },
 
         _refreshUI: function () {
             this.ui.clickEater = document.getElementsByClassName("ensemble-clickeater--editor-menu")[0];
             this.ui.createLensFlyout = document.getElementsByClassName("contextmenu--editor-create-lens")[0];
-            this.ui.addItemFlyout = document.getElementsByClassName("flyout--editor-add-button")[0];
+            this.ui.hamburgerFlyout = document.getElementsByClassName("flyout--editor-hamburger-button")[0];
             this.ui.hamburgerButton = document.getElementsByClassName("editor-hamburger-button")[0];
 
             this.ui.hamburgerButton.addEventListener("click", Ensemble.Editor.MenuMGR._listeners.hamburgerButtonClicked);
+            document.getElementsByClassName("app-trigger--force-save")[0].addEventListener("click", Ensemble.Editor.MenuMGR._listeners.forceSaveClicked);
+            document.getElementsByClassName("app-trigger--save-as")[0].addEventListener("click", Ensemble.Editor.MenuMGR._listeners.saveAsClicked);
+            document.getElementsByClassName("app-trigger--close-project")[0].addEventListener("click", Ensemble.Editor.MenuMGR._listeners.closeProjectClicked);
 
             let toolbarCommands = document.getElementsByClassName("editor-toolbar-command");
             for (let i = 0; i < toolbarCommands.length; i++) {
@@ -107,10 +110,13 @@
 
         _cleanUI: function () {
             this.ui.hamburgerButton.removeEventListener("click", Ensemble.Editor.MenuMGR._listeners.hamburgerButtonClicked);
+            document.getElementsByClassName("app-trigger--force-save")[0].removeEventListener("click", Ensemble.Editor.MenuMGR._listeners.forceSaveClicked);
+            document.getElementsByClassName("app-trigger--save-as")[0].removeEventListener("click", Ensemble.Editor.MenuMGR._listeners.saveAsClicked);
+            document.getElementsByClassName("app-trigger--close-project")[0].removeEventListener("click", Ensemble.Editor.MenuMGR._listeners.closeProjectClicked);
 
             this.ui.clickEater = null;
             this.ui.createLensFlyout = null;
-            this.ui.addItemFlyout = null;
+            this.ui.hamburgerFlyout = null;
             this.ui.hamburgerButton = null;
 
             let toolbarCommands = document.getElementsByClassName("editor-toolbar-command");
@@ -126,13 +132,26 @@
 
         _listeners: {
             hamburgerButtonClicked: function (event) {
-                $(".app-page--editor-menu").removeClass("app-page--hidden");
-                $(".app-page--editor-menu").addClass("app-page--enter-left");
-                document.getElementsByClassName("app-page--editor-menu")[0].addEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.fileMenuEntered);
+                Ensemble.Editor.MenuMGR.ui.hamburgerFlyout.winControl.show(event.currentTarget);
+                //$(".app-page--editor-menu").removeClass("app-page--hidden");
+                //$(".app-page--editor-menu").addClass("app-page--enter-left");
+                //document.getElementsByClassName("app-page--editor-menu")[0].addEventListener("animationend", Ensemble.Editor.MenuMGR._listeners.fileMenuEntered);
 
-                Ensemble.Editor.MenuMGR.menuOpen = true;
-                $(Ensemble.Editor.MenuMGR.ui.clickEater).addClass("ensemble-clickeater--active");
-                Ensemble.Navigation.pushBackState(Ensemble.Editor.MenuMGR.closeFileMenu);
+                //Ensemble.Editor.MenuMGR.menuOpen = true;
+                //$(Ensemble.Editor.MenuMGR.ui.clickEater).addClass("ensemble-clickeater--active");
+                //Ensemble.Navigation.pushBackState(Ensemble.Editor.MenuMGR.closeFileMenu);
+            },
+
+            forceSaveClicked: function (event) {
+                Ensemble.FileIO.saveProject();
+            },
+
+            saveAsClicked: function (event) {
+                Ensemble.FileIO.requestSaveAs();
+            },
+
+            closeProjectClicked: function (event) {
+                Ensemble.Pages.Editor.unload();
             },
 
             exitAnimationFinished: function (event) {
@@ -147,10 +166,6 @@
 
             menuCommandClick: function (event) {
                 let command = event.currentTarget.dataset.editorCommand;
-
-                if (command == "add-item") {
-                    Ensemble.Editor.MenuMGR.ui.addItemFlyout.winControl.show(event.currentTarget);
-                }
 
                 if (command == "show-library") {
                     let mediaBrowser = document.getElementsByClassName("app-page--media-browser")[0];
@@ -169,12 +184,14 @@
                     });
                 }
 
+                else if (command == "add-item") {
+                    let action = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.createTrack);
+                    Ensemble.HistoryMGR.performAction(action);
+                }
+
                 // HOME
                 else if (command == "undo") Ensemble.HistoryMGR.undoLast();
                 else if (command == "redo") Ensemble.HistoryMGR.redoNext();
-                else if (command == "close-project") Ensemble.Pages.Editor.unload();
-                else if (command == "force-save") Ensemble.FileIO.saveProject();
-                else if (command == "save-as") Ensemble.FileIO.requestSaveAs();
 
                 // CLIP
                 else if (command == "split-clip") {
@@ -193,10 +210,10 @@
 
                     // MEDIA CAPTURE
                 else if (command == "record-video") {
-                    Ensemble.Editor.PanelMGR.showPanel(Ensemble.Editor.PanelMGR.PanelTypes.cameraCapture);
+                    Ensemble.Editor.PanelMGR.requestPanel(Ensemble.Editor.PanelMGR.PanelTypes.cameraCapture);
                 }
                 else if (command == "record-audio") {
-                    Ensemble.Editor.PanelMGR.showPanel(Ensemble.Editor.PanelMGR.PanelTypes.micCapture);
+                    Ensemble.Editor.PanelMGR.requestPanel(Ensemble.Editor.PanelMGR.PanelTypes.micCapture);
                 }
 
                 // ANIMATIONS/EFFECTS

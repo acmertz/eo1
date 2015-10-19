@@ -33,10 +33,10 @@
 
     <!-- Classes, functions, and global variables -->
     <!-- Editor -->
+    <script src="/js/editor/audiocapturemgr.js"></script>
     <script src="/js/editor/calloutmgr.js"></script>
     <script src="/js/editor/clip.js"></script>
     <script src="/js/editor/mediabrowser.js"></script>
-    <script src="/js/editor/mediacapturemgr.js"></script>
     <script src="/js/editor/menumgr.js"></script>
     <script src="/js/editor/playbackmgr.js"></script>
     <script src="/js/editor/panelmgr.js"></script>
@@ -45,6 +45,7 @@
     <script src="/js/editor/timelinemgr.js"></script>
     <script src="/js/editor/timelinezoommgr.js"></script>
     <script src="/js/editor/track.js"></script>
+    <script src="/js/editor/videocapturemgr.js"></script>
 
     <!-- Events -->
     <script src="/js/events/action.js"></script>
@@ -263,8 +264,8 @@
             </div>
 
             <span class="editor-history-controls">
-                <button title="Undo" class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--undo" data-editor-command="undo">&#xE10E;</button>
-                <button title="Redo" class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--redo" data-editor-command="redo">&#xE10D;</button>
+                <button title="Undo" class="editor-titlebar-control editor-titlebar-control--inverted app-trigger app-trigger--editor app-trigger--undo" data-editor-command="undo">&#xE10E;</button>
+                <button title="Redo" class="editor-titlebar-control editor-titlebar-control--inverted app-trigger app-trigger--editor app-trigger--redo" data-editor-command="redo">&#xE10D;</button>
             </span>
         </nav>
         <main class="editor-content">
@@ -275,10 +276,10 @@
                             <video class="media-capture-preview media-capture-preview--webcam"></video>
                             <div class="media-capture-controls media-capture-controls--webcam">
                                 <button class="editor-titlebar-control editor-titlebar-control--inverted eo1-btn--webcam-capture-startstop">&#9210;</button>
-                                <button class="editor-titlebar-control editor-titlebar-control--inverted eo1-btn--webcam-capture-settings">&#57694;</button>
+                                <button class="editor-titlebar-control editor-titlebar-control--inverted media-capture-control--settings eo1-btn--webcam-capture-settings">&#57694;</button>
                             </div>
                             <div class="media-capture-loading media-capture-loading--webcam">
-                                <progress class="win-progress-ring win-large"></progress>
+                                <progress class="win-progress-ring win-medium"></progress>
                             </div>
                             <div class="media-capture-unavailable-dialog media-capture-unavailable-dialog--webcam">
                                 <h3 class="win-h3">We can't find your camera</h3>
@@ -286,7 +287,15 @@
                             </div>
                         </div>
                         <div class="editor-panel editor-panel--mic" data-editor-panel="mic">
-                            This is the mic panel.
+                            <div class="media-capture-preview media-capture-preview--mic">
+                                <progress class="win-progress-ring win-medium media-capture-preview__mic-animation"></progress>
+                                <div class="media-capture-preview__mic-message media-capture-preview__mic-message--ready">Tap or click below to start recording.</div>
+                                <div class="media-capture-preview__mic-message media-capture-preview__mic-message--recording">Recording&hellip;</div>
+                            </div>
+                            <div class="media-capture-controls media-capture-controls--mic">
+                                <button class="editor-titlebar-control editor-titlebar-control--inverted eo1-btn--mic-capture-startstop">&#9210;</button>
+                                <button class="editor-titlebar-control editor-titlebar-control--inverted media-capture-control--settings eo1-btn--mic-capture-settings">&#57694;</button>
+                            </div>
                         </div>
                         <div class="editor-panel-close-button">&#57610;</div>
                         </div>
@@ -313,11 +322,6 @@
             </section>
 
             <section class="editor-section editor-section--lower">
-                <div class="timeline-button-container timeline-button-container--left">
-                    <div class="timeline-button-container__section">
-                        <button class="win-button eo1-btn eo1-btn--timeline eo1-btn--timeline-new-track" title="New track">&#xE109;</button>
-                    </div>
-                </div>
                 <div id="timeline-track-container">
                     <div class="timeline-track-header-container timeline-track-header-container--standard timeline-scrollable-container">
                         <div class="timeline-ruler-placeholder"></div>
@@ -394,10 +398,10 @@
     <div class="app-page app-page--editor-menu app-page--hidden">
         <section class="editor-menu-titlebar">
             <button class="editor-titlebar-control app-trigger app-trigger--backnav" title="Back">&#57557;</button>
-            <button class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--close-project" data-editor-command="close-project" title="Close project"></button>
-            <button class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--force-save" data-editor-command="force-save" title="Save">&#57605;</button>
-            <button class="editor-titlebar-control app-trigger app-trigger--editor app-trigger--save-as" data-editor-command="save-as" title="Save as...">&#57999;</button>
-            <button class="editor-titlebar-control app-trigger app-trigger--settings" title="Settings">&#57621;</button>
+            <button class="editor-titlebar-control" data-editor-command="close-project" title="Close project"></button>
+            <button class="editor-titlebar-control" data-editor-command="force-save" title="Save">&#57605;</button>
+            <button class="editor-titlebar-control" data-editor-command="save-as" title="Save as...">&#57999;</button>
+            <button class="editor-titlebar-control" title="Settings">&#57621;</button>
         </section>
 
         <section class="editor-menu-section">
@@ -469,20 +473,22 @@
             <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{type:'separator'}" />
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Karaoke mode', type:'toggle'}" class="contextmenu--webcam-panel-options__karaoke-toggle"></button>
         </div>
+        <div class="contextmenu--mic-panel-options" data-win-control="WinJS.UI.Menu">
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Change mic', type:'flyout', flyout:select('.contextmenu--mic-device-select')}"></button>
+            <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{type:'separator'}" />
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Karaoke mode', type:'toggle'}" class="contextmenu--mic-panel-options__karaoke-toggle"></button>
+        </div>
         <div class="contextmenu--webcam-device-quality" data-win-control="WinJS.UI.Menu"></div>
         <div class="contextmenu--webcam-device-select" data-win-control="WinJS.UI.Menu"></div>
         <div class="contextmenu--mic-device-quality" data-win-control="WinJS.UI.Menu"></div>
         <div class="contextmenu--mic-device-select" data-win-control="WinJS.UI.Menu"></div>
-        <div class="flyout--editor-add-button" data-win-control="WinJS.UI.Menu">
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Browse…'}"></button>
+        <div class="flyout--editor-hamburger-button" data-win-control="WinJS.UI.Menu">
+            <button class="app-trigger app-trigger--editor app-trigger--force-save" data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:' Save'}"></button>
+            <button class="app-trigger app-trigger--editor app-trigger--save-as" data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:' Save as…'}"></button>
             <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',type:'separator'}" />
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Record video'}"></button>
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Record audio'}"></button>
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'Take picture'}"></button>
-            <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',type:'separator'}" />
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'New title'}"></button>
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'New Lens effect'}"></button>
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',label:'New animation'}"></button>
+            <button class="app-trigger app-trigger--settings" data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:' Settings'}"></button>
+            <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{type:'separator'}" />
+            <button class="app-trigger app-trigger--editor app-trigger--close-project" data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:' Close project'}"></button>
         </div>
         <div class="my-test-flyout" data-win-control="WinJS.UI.Flyout">This is my great flyout</div>
     </div>
