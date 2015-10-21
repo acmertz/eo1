@@ -33,6 +33,7 @@
             Ensemble.HistoryMGR.refreshMessage();
             Ensemble.Editor.VideoCaptureMGR.init();
             Ensemble.Editor.AudioCaptureMGR.init();
+            Ensemble.Editor.EffectMGR.init();
             Ensemble.Editor.MenuMGR.init();
             Ensemble.Editor.CalloutMGR.init();
             Ensemble.Editor.MediaBrowser.init();
@@ -75,6 +76,7 @@
 
             Ensemble.Editor.VideoCaptureMGR.unload();
             Ensemble.Editor.AudioCaptureMGR.unload();
+            Ensemble.Editor.EffectMGR.unload();
             Ensemble.Editor.MenuMGR.closeMenu();
             Ensemble.Editor.MenuMGR.unload();
             Ensemble.Editor.PanelMGR.unload();

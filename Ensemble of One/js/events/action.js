@@ -138,6 +138,7 @@
                     newLens.height = Ensemble.Session.projectResolution.height;
                     newLens.xcoord = 0;
                     newLens.ycoord = 0;
+                    newLens.effectDetails = Ensemble.Editor.EffectMGR.generateDefaultValues(this._payload.lensType);
                     Ensemble.Editor.TimelineMGR.addClipToTrack(newLens, this._payload.destinationTrack, this._payload.destinationTime);
                 }
 

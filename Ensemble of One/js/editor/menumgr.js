@@ -218,19 +218,20 @@
 
                 // ANIMATIONS/EFFECTS
                 else if (command == "create-filter") {
+                    //Ensemble.Editor.EffectMGR.initNewEffect(event.currentTarget);
                     console.log("Create a new filter.");
-                    let allCommands = [],
-                        trackCount = Ensemble.Editor.TimelineMGR.tracks.length;
-                    for (let i = 0; i < trackCount; i++) {
-                        //Create a new menu item for each track.
-                        let menuItem = new WinJS.UI.MenuCommand();
-                        menuItem.label = (i + 1) + ".) " + Ensemble.Editor.TimelineMGR.tracks[i].name;
-                        menuItem.element.dataset.trackId = Ensemble.Editor.TimelineMGR.tracks[i].id;
-                        menuItem.addEventListener("click", Ensemble.Editor.MenuMGR._listeners.addLensTrackSelected);
-                        allCommands.push(menuItem);
-                    }
-                   Ensemble.Editor.MenuMGR.ui.createLensFlyout.winControl.commands = allCommands;
-                   Ensemble.Editor.MenuMGR.ui.createLensFlyout.winControl.show(event.currentTarget, "autovertical");
+                   // let allCommands = [],
+                   //     trackCount = Ensemble.Editor.TimelineMGR.tracks.length;
+                   // for (let i = 0; i < trackCount; i++) {
+                   //     //Create a new menu item for each track.
+                   //     let menuItem = new WinJS.UI.MenuCommand();
+                   //     menuItem.label = (i + 1) + ".) " + Ensemble.Editor.TimelineMGR.tracks[i].name;
+                   //     menuItem.element.dataset.trackId = Ensemble.Editor.TimelineMGR.tracks[i].id;
+                   //     menuItem.addEventListener("click", Ensemble.Editor.MenuMGR._listeners.addLensTrackSelected);
+                   //     allCommands.push(menuItem);
+                   // }
+                   //Ensemble.Editor.MenuMGR.ui.createLensFlyout.winControl.commands = allCommands;
+                   //Ensemble.Editor.MenuMGR.ui.createLensFlyout.winControl.show(event.currentTarget, "autovertical");
                 }
             },
 

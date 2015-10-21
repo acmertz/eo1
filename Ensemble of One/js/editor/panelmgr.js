@@ -51,6 +51,9 @@
                         safeToClose = true;
                     }
                     break;
+                default:
+                    safeToClose = true;
+                    break;
             }
 
             if (safeToClose) {
@@ -82,6 +85,8 @@
                     break;
                 case Ensemble.Editor.PanelMGR.PanelTypes.micCapture:
                     Ensemble.Editor.AudioCaptureMGR.initCaptureSession();
+                    break;
+                case Ensemble.Editor.PanelMGR.PanelTypes.effect:
                     break;
             }
 
@@ -187,7 +192,8 @@
 
         PanelTypes: {
             cameraCapture: "webcam",
-            micCapture: "mic"
+            micCapture: "mic",
+            effect: "effect"
         }
     });
 })();

@@ -217,6 +217,7 @@
                     else if (Ensemble.HistoryMGR._backStack[i]._type == Ensemble.Events.Action.ActionType.createLens) {
                         xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
                         xml.Attrib("lensId", Ensemble.HistoryMGR._backStack[i]._payload.lensId.toString());
+                        xml.Attrib("lensType", Ensemble.HistoryMGR._backStack[i]._payload.lensType);
                         xml.Attrib("destinationTrack", Ensemble.HistoryMGR._backStack[i]._payload.destinationTrack.toString());
                         xml.Attrib("destinationTime", Ensemble.HistoryMGR._backStack[i]._payload.destinationTime.toString());
                     }
@@ -365,6 +366,7 @@
                     else if (Ensemble.HistoryMGR._forwardStack[i]._type == Ensemble.Events.Action.ActionType.createLens) {
                         xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
                         xml.Attrib("lensId", Ensemble.HistoryMGR._forwardStack[i]._payload.lensId.toString());
+                        xml.Attrib("lensType", Ensemble.HistoryMGR._forwardStack[i]._payload.lensType);
                         xml.Attrib("destinationTrack", Ensemble.HistoryMGR._forwardStack[i]._payload.destinationTrack.toString());
                         xml.Attrib("destinationTime", Ensemble.HistoryMGR._forwardStack[i]._payload.destinationTime.toString());
                     }
@@ -470,6 +472,7 @@
             xml.Attrib("aspect", Ensemble.Utilities.AspectGenerator.calcAspect(clip.width, clip.height).toString());
             xml.Attrib("path", clip.type == Ensemble.Editor.Clip.ClipType.lens ? "" : clip.file.path);
             xml.Attrib("token", clip.type == Ensemble.Editor.Clip.ClipType.lens ? "" : clip.file.token);
+            xml.Attrib("effectDetails", clip.type == Ensemble.Editor.Clip.ClipType.lens ? JSON.stringify(clip.effectDetails) : "");
             xml.EndNode();
             return xml;
         },
@@ -810,6 +813,7 @@
                     else if (actionType == Ensemble.Events.Action.ActionType.createLens) {
                         Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.createLens, {
                             lensId: parseInt(undoActions[i].getAttribute("lensId"), 10),
+                            lensType: undoActions[i].getAttribute("lensType"),
                             destinationTrack: parseInt(undoActions[i].getAttribute("destinationTrack"), 10),
                             destinationTime: parseInt(undoActions[i].getAttribute("destinationTime"), 10)
                         }));
@@ -994,6 +998,7 @@
                     else if (actionType == Ensemble.Events.Action.ActionType.createLens) {
                         Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.createLens, {
                             lensId: parseInt(redoActions[i].getAttribute("lensId"), 10),
+                            lensType: redoActions[i].getAttribute("lensType"),
                             destinationTrack: parseInt(redoActions[i].getAttribute("destinationTrack"), 10),
                             destinationTime: parseInt(redoActions[i].getAttribute("destinationTime"), 10)
                         }));
@@ -1225,6 +1230,7 @@
                 token: xmlClip.getAttribute("token")
             };
             createdClip.preExisting = true;
+            if (createdClip.type == Ensemble.Editor.Clip.ClipType.lens) createdClip.effectDetails = JSON.parse(xmlClip.getAttribute("effectDetails"));
             return createdClip;
         },
 

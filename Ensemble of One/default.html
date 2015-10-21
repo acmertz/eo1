@@ -36,6 +36,7 @@
     <script src="/js/editor/audiocapturemgr.js"></script>
     <script src="/js/editor/calloutmgr.js"></script>
     <script src="/js/editor/clip.js"></script>
+    <script src="/js/editor/effectmgr.js"></script>
     <script src="/js/editor/mediabrowser.js"></script>
     <script src="/js/editor/menumgr.js"></script>
     <script src="/js/editor/playbackmgr.js"></script>
@@ -239,10 +240,11 @@
                     type:'button',
                     icon: 'previewlink'}"></button>
                 <button data-editor-command="create-filter" class="editor-toolbar-command editor-toolbar-command--create-filter" data-win-control="WinJS.UI.Command" data-win-options="{
-                    label:'Lens',
+                    label:'Effect',
                     section:'primary',
-                    type:'button',
-                    icon: 'favorite'}"></button>
+                    type:'flyout',
+                    icon: 'favorite',
+                    flyout:select('.flyout--editor-new-effect')}"></button>
                 <button data-editor-command="edit-animation" class="editor-toolbar-command editor-toolbar-command--edit-animation" data-win-control="WinJS.UI.Command" data-win-options="{
                     label:'Animation',
                     section:'primary',
@@ -297,11 +299,33 @@
                                 <button class="editor-titlebar-control editor-titlebar-control--inverted media-capture-control--settings eo1-btn--mic-capture-settings">&#57694;</button>
                             </div>
                         </div>
+                        <div class="editor-panel editor-panel--effect" data-editor-panel="effect">
+                            <h3 class="win-h3">Edit effect</h3>
+                            <div class="editor-effect editor-effect--solid-color">
+                                <p>
+                                    <h4 class="win-h4">Color</h4>
+                                    <select class="win-dropdown">
+                                        <option>Red</option>
+                                        <option>Orange</option>
+                                        <option>Yellow</option>
+                                        <option>Green</option>
+                                        <option>Blue</option>
+                                        <option>Violet</option>
+                                        <option disabled>Custom</option>
+                                    </select>
+                                </p>
+                                <p>
+                                    <h4 class="win-h4">Opacity</h4>
+                                    <input type="range" class="win-slider" min="0" max="100" step="1" />
+                                </p>
+                            </div>
+                        </div>
                         <div class="editor-panel-close-button">&#57610;</div>
                         </div>
                     <div class="editor-panel-container__tabs">
                         <div class="editor-panel-tab editor-panel-tab--webcam" data-editor-panel="webcam">&#57622;</div>
                         <div class="editor-panel-tab editor-panel-tab--mic" data-editor-panel="mic">&#57814;</div>
+                        <div class="editor-panel-tab editor-panel-tab--effect" data-editor-panel="effect">&#57619;</div>
                     </div>
                 </div>
                 
@@ -489,6 +513,17 @@
             <button class="app-trigger app-trigger--settings" data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:' Settings'}"></button>
             <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{type:'separator'}" />
             <button class="app-trigger app-trigger--editor app-trigger--close-project" data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:' Close project'}"></button>
+        </div>
+        <div class="flyout--editor-new-effect" data-win-control="WinJS.UI.Flyout" aria-label="{New effect}">
+            <h3 class="win-h3">New effect</h3>
+            <p>
+                <select class="win-dropdown editor-new-effect-dropdown">
+                    <option value="solid-color">Solid color</option>
+                </select>
+            </p>
+            <p>
+                <button class="win-button eo1-btn eo1-btn--create-effect">Create</button>
+            </p>
         </div>
         <div class="my-test-flyout" data-win-control="WinJS.UI.Flyout">This is my great flyout</div>
     </div>

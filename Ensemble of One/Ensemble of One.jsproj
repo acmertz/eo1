@@ -111,6 +111,7 @@
     <Content Include="img\tiny_grid.png" />
     <Content Include="js\default.js" />
     <Content Include="css\default.css" />
+    <Content Include="js\editor\effectmgr.js" />
     <Content Include="js\editor\calloutmgr.js" />
     <Content Include="js\editor\clip.js" />
     <Content Include="js\editor\mediabrowser.js" />

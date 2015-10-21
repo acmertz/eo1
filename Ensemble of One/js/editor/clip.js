@@ -21,6 +21,10 @@
             this.xcoord = 0;
             this.ycoord = 0;
             this.preExisting = true;
+            this.effectDetails = {
+                effectType: "",
+                effectProperties: []
+            };
 
             this.selected = false;
             this.hovering = false;
@@ -44,6 +48,7 @@
             ycoord: null,
             type: null,
             preExisting: null,
+            effectDetails: null,
 
             _player: null,
             _intAspect: null,
@@ -143,7 +148,10 @@
                 let drawHeight = this.height * scale;
 
                 if (this.type == Ensemble.Editor.Clip.ClipType.lens) {
-                    // apply lens effect
+                    switch (this.effectDetails.effectType) {
+                        case Ensemble.Editor.EffectMGR.EffectType.solidColor:
+                            break;
+                    }
                 }
 
                 else context.drawImage(this._player, drawX, drawY, drawWidth, drawHeight);
@@ -314,10 +322,6 @@
                 picture: "picture",
                 lens: "lens",
                 unknown: "unknown"
-            },
-
-            LensType: {
-                grayscale: "grayscale"
             },
 
             CollisionType: {
