@@ -17,6 +17,11 @@
             Ensemble.HistoryMGR.performBatch([trackCreateAction, createLensAction], Ensemble.Editor.EffectMGR._listeners.createdNewEffect);
         },
 
+        initEffectPanel: function (panelId) {
+            /// <summary>Initializes the effect panel to display the appropriate settings for the effect.</summary>
+            /// <param name="panelId" type="Number">The ID of the effect.</param>
+        },
+
         generateDefaultValues: function (effectType) {
             /// <summary>Generates default values for the given lens Clip.</summary>
             /// <param name="clip" type="String">The type of effect.</param>

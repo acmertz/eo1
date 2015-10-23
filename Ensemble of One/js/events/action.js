@@ -140,6 +140,8 @@
                     newLens.ycoord = 0;
                     newLens.effectDetails = Ensemble.Editor.EffectMGR.generateDefaultValues(this._payload.lensType);
                     Ensemble.Editor.TimelineMGR.addClipToTrack(newLens, this._payload.destinationTrack, this._payload.destinationTime);
+                    Ensemble.Editor.SelectionMGR.replaceSelection(newLens.id);
+                    Ensemble.Editor.PanelMGR.requestPanel(Ensemble.Editor.PanelMGR.PanelTypes.effect, newLens.id);
                 }
 
                 else console.error("Unknown Action!");

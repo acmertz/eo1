@@ -10,11 +10,13 @@
             this._cleanUI();
         },
 
-        requestPanel: function (panel) {
+        requestPanel: function (panel, options) {
             /// <summary>Requests that the specified panel be displayed. Initializes it if it was not previously open; switches to it if it's already open.</summary>
+            /// <param name="panel" type="String">The panel type to request.</param>
+            /// <param name="options" type="Object">An object to pass to the panel's initializer.</param>
             let requestedPanel = document.getElementsByClassName("editor-panel--" + panel)[0];
             if (WinJS.Utilities.hasClass(requestedPanel, "editor-panel--active")) Ensemble.Editor.PanelMGR.switchToPanel(panel);
-            else Ensemble.Editor.PanelMGR.openPanel(panel);
+            else Ensemble.Editor.PanelMGR.openPanel(panel, options);
         },
 
         closePanel: function (panel) {
@@ -76,8 +78,10 @@
             }
         },
 
-        openPanel: function (panel) {
+        openPanel: function (panel, options) {
             /// <summary>Shows the panel with the given identifier, initializing it if it was not previously open.</summary>
+            /// <param name="panel" type="String">The panel type to request.</param>
+            /// <param name="options" type="Object">An object to pass to the panel's initializer.</param>
             WinJS.Utilities.addClass(Ensemble.Editor.PanelMGR.ui.panelContainer, "editor-panel-container--visible");
             switch (panel) {
                 case Ensemble.Editor.PanelMGR.PanelTypes.cameraCapture:
@@ -87,6 +91,7 @@
                     Ensemble.Editor.AudioCaptureMGR.initCaptureSession();
                     break;
                 case Ensemble.Editor.PanelMGR.PanelTypes.effect:
+                    Ensemble.Editor.EffectMGR.initEffectPanel(options);
                     break;
             }
 

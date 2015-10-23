@@ -44,12 +44,12 @@
             this.selected = [];
             this.selected.push(clipId);
 
-            Ensemble.Editor.Renderer._currentPointerTargetSize = event.pointerType == "mouse" ? Ensemble.Editor.Renderer.PointerTargetSize.mouse : Ensemble.Editor.Renderer.PointerTargetSize.touch;
-
             if (needFrame) Ensemble.Editor.Renderer.requestFrame();
             if (updateCallout && event.pointerType != "mouse") Ensemble.Editor.CalloutMGR.show(clipId, event)
             Ensemble.Editor.MenuMGR._reevaluateState();
             Ensemble.Editor.TimelineMGR.showTrimControls(clipId);
+
+            if (event) Ensemble.Editor.Renderer._currentPointerTargetSize = event.pointerType == "mouse" ? Ensemble.Editor.Renderer.PointerTargetSize.mouse : Ensemble.Editor.Renderer.PointerTargetSize.touch;
         },
 
         clearSelection: function () {
