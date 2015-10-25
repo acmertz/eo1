@@ -52,6 +52,30 @@
             if (event) Ensemble.Editor.Renderer._currentPointerTargetSize = event.pointerType == "mouse" ? Ensemble.Editor.Renderer.PointerTargetSize.mouse : Ensemble.Editor.Renderer.PointerTargetSize.touch;
         },
 
+        removeFromSelection: function (clipId) {
+            /// <summary>Removes the Clip with the given ID from the selection.</summary>
+            /// <param name="clipId" type="Number">The ID of the clip to remove.
+            let found = false,
+                clipIndex = null;
+            for (let i = 0; i < this.selected.length; i++) {
+                if (this.selected[i] == clipId) {
+                    found = true;
+                    clipIndex = i;
+                    break;
+                }
+            }
+
+            if (found) {
+                // selection changing.
+                let clip = Ensemble.Editor.TimelineMGR.getClipById(this.selected.splice(clipIndex, 1)[0]);
+                clip.deselect();
+                $(Ensemble.Editor.TimelineMGR._trimGripperArr).remove();
+                Ensemble.Editor.TimelineMGR._trimGripperArr = [];
+                $("#" + Ensemble.Editor.TimelineMGR._buildClipDOMId(clipId)).removeClass("timeline-clip--selected");
+                //if (clip.isRenderable() && Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList.indexOf(clip) > -1) Ensemble.Editor.Renderer.requestFrame();
+            }
+        },
+
         clearSelection: function () {
             /// <summary>Clears the list of selected clips.</summary>
 
@@ -102,8 +126,8 @@
         removeFromHovering: function (clipId) {
             /// <summary>Removes the clip with the given ID from the current hovering array.</summary>
             /// <param name="clipId" type="Number">The ID of the clip.</param>
-            let found = false;
-            let clipIndex = null;
+            let found = false,
+                clipIndex = null;
             for (let i = 0; i < this.hovering.length; i++) {
                 if (this.hovering[i].id == clipId) {
                     found = true;
@@ -136,8 +160,8 @@
         replaceHovering: function (clipId) {
             /// <summary>Removes all clips from the current hovering array except for the clip with the given ID.</summary>
             /// <param name="clipId" type="Number">The ID of the clip.</param>
-            let needFrame = false;
-            let found = false;
+            let needFrame = false,
+                found = false;
             for (let i = 0; i < this.hovering.length; i++) {
                 if (this.hovering[i] == clipId) {
                     // clip already hovering.

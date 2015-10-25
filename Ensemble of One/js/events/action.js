@@ -369,6 +369,9 @@
                 else if (this._type == Ensemble.Events.Action.ActionType.createLens) {
                     return "Created lens.";
                 }
+                else if (this._type == Ensemble.Events.Action.ActionType.editLens) {
+                    return "Edited lens.";
+                }
                 else {
                     return "Unknown action";
                 }
