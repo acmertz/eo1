@@ -161,10 +161,22 @@
                 if (this.type == Ensemble.Editor.Clip.ClipType.lens) {
                     switch (this.effectDetails.effectType) {
                         case Ensemble.Editor.EffectMGR.EffectType.solidColor:
-                            context.beginPath();
-                            context.fillStyle = "rgba(" + this.effectDetails.effectProperties.r + ", " + this.effectDetails.effectProperties.g + ", " + this.effectDetails.effectProperties.b + ", " + this.effectDetails.effectProperties.a + ")";
-                            context.rect(drawX, drawY, drawWidth, drawHeight);
-                            context.fill();
+                            if (this.effectDetails.effectProperties.a > 0) {
+                                context.beginPath();
+                                context.fillStyle = "rgba(" + this.effectDetails.effectProperties.r + ", " + this.effectDetails.effectProperties.g + ", " + this.effectDetails.effectProperties.b + ", " + this.effectDetails.effectProperties.a + ")";
+                                context.rect(drawX, drawY, drawWidth, drawHeight);
+                                context.closePath();
+                                context.fill();
+                            }
+                            if (this.effectDetails.effectProperties.borderA > 0 && this.effectDetails.effectProperties.borderWidth > 0) {
+                                context.beginPath();
+                                context.strokeStyle = "rgba(" + this.effectDetails.effectProperties.borderR + ", " + this.effectDetails.effectProperties.borderG + ", " + this.effectDetails.effectProperties.borderB + ", " + this.effectDetails.effectProperties.borderA + ")";
+                                context.lineWidth = this.effectDetails.effectProperties.borderWidth;
+                                context.rect(drawX, drawY, drawWidth, drawHeight);
+                                context.closePath();
+                                context.stroke();
+                            }
+                            
                             break;
                     }
                 }
@@ -177,6 +189,7 @@
                     context.beginPath();
                     context.strokeStyle = "blue";
                     context.fillStyle = "lightgray";
+                    context.lineWidth = 1;
                     let cornerTargetSize = Ensemble.Editor.Renderer._currentPointerTargetSize;
                     context.rect(drawX, drawY, cornerTargetSize, cornerTargetSize);
                     context.rect((drawX + drawWidth) - cornerTargetSize, drawY, cornerTargetSize, cornerTargetSize);
@@ -186,7 +199,6 @@
                     context.stroke();
                     context.beginPath();
                     context.strokeStyle = "lightgray";
-                    context.lineWidth = "1";
                     context.rect(drawX, drawY, drawWidth, drawHeight);
                     context.stroke();
                 }

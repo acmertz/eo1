@@ -174,3 +174,23 @@
 .media-capture-preview__mic-animation--visible {
     display: block;
 }
+
+/* Effect panel */
+.editor-effect-column {
+    display: inline-block;
+    width: 49%;
+    box-sizing: border-box;
+    vertical-align: top;
+}
+
+.editor-effect-column:first-of-type {
+    padding-right: 5px;
+}
+
+.editor-effect-column:last-of-type {
+    padding-left: 5px;
+}
+
+.effect-param {
+    width: 100%;
+}

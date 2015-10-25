@@ -33,6 +33,11 @@
                         Ensemble.Editor.EffectMGR.ui.solidColorGreen.value = clip.effectDetails.effectProperties.g;
                         Ensemble.Editor.EffectMGR.ui.solidColorBlue.value = clip.effectDetails.effectProperties.b;
                         Ensemble.Editor.EffectMGR.ui.solidColorOpacity.value = clip.effectDetails.effectProperties.a * 100;
+                        Ensemble.Editor.EffectMGR.ui.solidColorBorderRed.value = clip.effectDetails.effectProperties.borderR;
+                        Ensemble.Editor.EffectMGR.ui.solidColorBorderGreen.value = clip.effectDetails.effectProperties.borderG;
+                        Ensemble.Editor.EffectMGR.ui.solidColorBorderBlue.value = clip.effectDetails.effectProperties.borderB;
+                        Ensemble.Editor.EffectMGR.ui.solidColorBorderOpacity.value = clip.effectDetails.effectProperties.borderA * 100;
+                        Ensemble.Editor.EffectMGR.ui.solidColorBorderWidth.value = clip.effectDetails.effectProperties.borderWidth;
                         break;
                 }
             }
@@ -53,6 +58,12 @@
                     returnVal.effectProperties["g"] = 255;
                     returnVal.effectProperties["b"] = 255;
                     returnVal.effectProperties["a"] = 1.0;
+
+                    returnVal.effectProperties["borderR"] = 0;
+                    returnVal.effectProperties["borderG"] = 0;
+                    returnVal.effectProperties["borderB"] = 0;
+                    returnVal.effectProperties["borderA"] = 1.0;
+                    returnVal.effectProperties["borderWidth"] = 1;
                     break;
             }
 
@@ -76,7 +87,12 @@
             solidColorRed: null,
             solidColorGreen: null,
             solidColorBlue: null,
-            solidColorOpacity: null
+            solidColorOpacity: null,
+            solidColorBorderRed: null,
+            solidColorBorderGreen: null,
+            solidColorBorderBlue: null,
+            solidColorBorderOpacity: null,
+            solidColorBorderWidth: null
         },
 
         _refreshUI: function () {
@@ -87,6 +103,11 @@
             this.ui.solidColorGreen = document.getElementsByClassName("effect-param--solid-color-green")[0];
             this.ui.solidColorBlue = document.getElementsByClassName("effect-param--solid-color-blue")[0];
             this.ui.solidColorOpacity = document.getElementsByClassName("effect-param--solid-color-opacity")[0];
+            this.ui.solidColorBorderRed = document.getElementsByClassName("effect-param--solid-color-border-red")[0];
+            this.ui.solidColorBorderGreen = document.getElementsByClassName("effect-param--solid-color-border-green")[0];
+            this.ui.solidColorBorderBlue = document.getElementsByClassName("effect-param--solid-color-border-blue")[0];
+            this.ui.solidColorBorderOpacity = document.getElementsByClassName("effect-param--solid-color-border-opacity")[0];
+            this.ui.solidColorBorderWidth = document.getElementsByClassName("effect-param--solid-color-border-width")[0];
 
             this.ui.newEffectConfirmationButton.addEventListener("click", this._listeners.newEffectButtonClicked);
 
@@ -107,6 +128,11 @@
             this.ui.solidColorGreen = null;
             this.ui.solidColorBlue = null;
             this.ui.solidColorOpacity = null;
+            this.ui.solidColorBorderRed = null;
+            this.ui.solidColorBorderGreen = null;
+            this.ui.solidColorBorderBlue = null;
+            this.ui.solidColorBorderOpacity = null;
+            this.ui.solidColorBorderWidth = null;
         },
 
         _listeners: {
@@ -140,6 +166,21 @@
                         break;
                     case "solid-color-opacity":
                         newEffectDetails.effectProperties.a = newValue / 100;
+                        break;
+                    case "solid-color-border-red":
+                        newEffectDetails.effectProperties.borderR = newValue;
+                        break;
+                    case "solid-color-border-green":
+                        newEffectDetails.effectProperties.borderG = newValue;
+                        break;
+                    case "solid-color-border-blue":
+                        newEffectDetails.effectProperties.borderB = newValue;
+                        break;
+                    case "solid-color-border-opacity":
+                        newEffectDetails.effectProperties.borderA = newValue / 100;
+                        break;
+                    case "solid-color-border-width":
+                        newEffectDetails.effectProperties.borderWidth = newValue;
                         break;
                 }
 
