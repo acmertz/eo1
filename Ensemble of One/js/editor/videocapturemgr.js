@@ -65,6 +65,10 @@
             this._cleanUI();
         },
 
+        switchedTo: function (options) {
+            /// <summary>Notifies the VideoCaptureMGR that the user switched to its panel.</summary>
+        },
+
         initCaptureSession: function () {
             /// <summary>Enumerates media capture devices, sets up the video recording Panel, and initializes a video capture session.</summary>
             WinJS.Utilities.addClass(Ensemble.Editor.VideoCaptureMGR.ui.webcamCaptureLoadingIndicator, "media-capture-loading--visible");

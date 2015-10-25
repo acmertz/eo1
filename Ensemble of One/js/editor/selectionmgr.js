@@ -28,7 +28,7 @@
                 }
                 if (this.selected[i] != clipId) {
                     let targetClip = Ensemble.Editor.TimelineMGR.getClipById(this.selected[i]);
-                    targetClip.selected = false;
+                    targetClip.deselect();
                     $("#" + Ensemble.Editor.TimelineMGR._buildClipDOMId(this.selected[i])).removeClass("timeline-clip--selected");
                     if (targetClip.isRenderable() && Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList.indexOf(targetClip) > -1) needFrame = true;
                 }
@@ -36,7 +36,7 @@
 
             if (!found) {
                 let targetClip = Ensemble.Editor.TimelineMGR.getClipById(clipId);
-                targetClip.selected = true;
+                targetClip.select();
                 if (targetClip.isRenderable() && Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList.indexOf(targetClip) > -1) needFrame = true;
                 $("#" + Ensemble.Editor.TimelineMGR._buildClipDOMId(clipId)).addClass("timeline-clip--selected");
                 console.log("Selected clip " + clipId + ".");
@@ -65,7 +65,7 @@
             let needFrame = false;
             if (this.selected.length > 0) needFrame = true;
             for (let i = 0; i < this.selected.length; i++) {
-                Ensemble.Editor.TimelineMGR.getClipById(this.selected[i]).selected = false;
+                Ensemble.Editor.TimelineMGR.getClipById(this.selected[i]).deselect();
                 $("#" + Ensemble.Editor.TimelineMGR._buildClipDOMId(this.selected[i])).removeClass("timeline-clip--selected");
             }
             this.selected = [];

@@ -123,6 +123,7 @@
                     Ensemble.FileIO.saveProject();
                 }
                 Ensemble.Editor.MenuMGR._reevaluateState();
+                if (actionToUndo._type == Ensemble.Events.Action.ActionType.editLens) Ensemble.Editor.EffectMGR.switchedTo(actionToUndo._payload.lensId);
                 if (Ensemble.Editor.SelectionMGR.selected.length == 1) Ensemble.Editor.TimelineMGR.showTrimControls(Ensemble.Editor.SelectionMGR.selected[0]);
             }
         },
@@ -145,6 +146,7 @@
                     Ensemble.FileIO.saveProject();
                 }
                 Ensemble.Editor.MenuMGR._reevaluateState();
+                if (actionToRedo._type == Ensemble.Events.Action.ActionType.editLens) Ensemble.Editor.EffectMGR.switchedTo(actionToRedo._payload.lensId);
                 if (Ensemble.Editor.SelectionMGR.selected.length == 1) Ensemble.Editor.TimelineMGR.showTrimControls(Ensemble.Editor.SelectionMGR.selected[0]);
             }
         },

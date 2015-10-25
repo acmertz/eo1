@@ -302,34 +302,17 @@
                         <div class="editor-panel editor-panel--effect" data-editor-panel="effect">
                             <h3 class="win-h3">Edit effect</h3>
                             <div class="editor-effect editor-effect--solid-color">
-                                <h4 class="win-h4">Color</h4>
-                                <p>
-                                    <select class="win-dropdown">
-                                        <option>Red</option>
-                                        <option>Orange</option>
-                                        <option>Yellow</option>
-                                        <option>Green</option>
-                                        <option>Blue</option>
-                                        <option>Violet</option>
-                                        <option disabled>Custom</option>
-                                    </select>
-                                </p>
+                                <h4 class="win-h4">R</h4>
+                                <p><input type="range" class="win-slider effect-param effect-param--solid-color-red" data-effect-param="solid-color-red" min="0" max="255" step="1" /></p>
 
-                                <h4 class="win-h4">RGB</h4>
-                                <p>
-                                    <label>R</label><br />
-                                    <input type="range" class="win-slider" min="0" max="255" step="1" /><br />
-                                    <label>G</label><br />
-                                    <input type="range" class="win-slider" min="0" max="255" step="1" /><br />
-                                    <label>B</label><br />
-                                    <input type="range" class="win-slider" min="0" max="255" step="1" />
-                                </p>
+                                <h4 class="win-h4">G</h4>
+                                <p><input type="range" class="win-slider effect-param effect-param--solid-color-green" data-effect-param="solid-color-green" min="0" max="255" step="1" /></p>
 
+                                <h4 class="win-h4">B</h4>
+                                <p><input type="range" class="win-slider effect-param effect-param--solid-color-blue" data-effect-param="solid-color-blue" min="0" max="255" step="1" /></p>
 
-                                <p>
-                                    <h4 class="win-h4">Opacity</h4>
-                                    <input type="range" class="win-slider" min="0" max="100" step="1" />
-                                </p>
+                                <h4 class="win-h4">Opacity</h4>
+                                <p><input type="range" class="win-slider effect-param effect-param--solid-color-opacity" data-effect-param="solid-color-opacity" min="0" max="100" step="1" /></p>
                             </div>
                         </div>
                         <div class="editor-panel-close-button">&#57610;</div>
@@ -487,6 +470,7 @@
         </div>
         <div id="contextmenu--editor-clip-selected" data-win-control="WinJS.UI.Menu">
             <button data-win-control="WinJS.UI.MenuCommand" class="clip-selected-contextmenu__command clip-selected-contextmenu__command--volume" data-contextmenu-command="volume" data-win-options="{id:'',label:'Volume'}"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" class="clip-selected-contextmenu__command clip-selected-contextmenu__command--edit-effect" data-contextmenu-command="edit-effect" data-win-options="{id:'',label:'Edit effect…'}"></button>
             <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',type:'separator'}" />
             <button data-win-control="WinJS.UI.MenuCommand" class="clip-selected-contextmenu__command clip-selected-contextmenu__command--remove" data-contextmenu-command="remove" data-win-options="{id:'',label:'Remove'}"></button>
             <button data-win-control="WinJS.UI.MenuCommand" class="clip-selected-contextmenu__command clip-selected-contextmenu__command--rename" data-contextmenu-command="rename" data-win-options="{id:'',label:'Rename'}"></button>

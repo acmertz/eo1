@@ -222,6 +222,13 @@
                         xml.Attrib("destinationTime", Ensemble.HistoryMGR._backStack[i]._payload.destinationTime.toString());
                     }
 
+                    else if (Ensemble.HistoryMGR._backStack[i]._type == Ensemble.Events.Action.ActionType.editLens) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._backStack[i]._type);
+                        xml.Attrib("lensId", Ensemble.HistoryMGR._backStack[i]._payload.lensId.toString());
+                        xml.Attrib("oldEffectDetails", JSON.stringify(Ensemble.HistoryMGR._backStack[i]._payload.oldEffectDetails));
+                        xml.Attrib("newEffectDetails", JSON.stringify(Ensemble.HistoryMGR._backStack[i]._payload.newEffectDetails));
+                    }
+
                     else console.error("Unable to save History Action to disk - unknown type.");
                     xml.EndNode();
                 }
@@ -369,6 +376,13 @@
                         xml.Attrib("lensType", Ensemble.HistoryMGR._forwardStack[i]._payload.lensType);
                         xml.Attrib("destinationTrack", Ensemble.HistoryMGR._forwardStack[i]._payload.destinationTrack.toString());
                         xml.Attrib("destinationTime", Ensemble.HistoryMGR._forwardStack[i]._payload.destinationTime.toString());
+                    }
+
+                    else if (Ensemble.HistoryMGR._forwardStack[i]._type == Ensemble.Events.Action.ActionType.editLens) {
+                        xml.Attrib("type", Ensemble.HistoryMGR._forwardStack[i]._type);
+                        xml.Attrib("lensId", Ensemble.HistoryMGR._forwardStack[i]._payload.lensId.toString());
+                        xml.Attrib("oldEffectDetails", JSON.stringify(Ensemble.HistoryMGR._forwardStack[i]._payload.oldEffectDetails));
+                        xml.Attrib("newEffectDetails", JSON.stringify(Ensemble.HistoryMGR._forwardStack[i]._payload.newEffectDetails));
                     }
 
                     else {
@@ -818,6 +832,13 @@
                             destinationTime: parseInt(undoActions[i].getAttribute("destinationTime"), 10)
                         }));
                     }
+                    else if (actionType == Ensemble.Events.Action.ActionType.editLens) {
+                        Ensemble.HistoryMGR._backStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.editLens, {
+                            lensId: parseInt(undoActions[i].getAttribute("lensId"), 10),
+                            oldEffectDetails: JSON.parse(undoActions[i].getAttribute("oldEffectDetails")),
+                            newEffectDetails: JSON.parse(undoActions[i].getAttribute("newEffectDetails")),
+                        }));
+                    }
                     else {
                         console.error("Unable to load History Action from disk - unknown type.");
                     }
@@ -1001,6 +1022,13 @@
                             lensType: redoActions[i].getAttribute("lensType"),
                             destinationTrack: parseInt(redoActions[i].getAttribute("destinationTrack"), 10),
                             destinationTime: parseInt(redoActions[i].getAttribute("destinationTime"), 10)
+                        }));
+                    }
+                    else if (actionType == Ensemble.Events.Action.ActionType.editLens) {
+                        Ensemble.HistoryMGR._forwardStack.push(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.editLens, {
+                            lensId: parseInt(redoActions[i].getAttribute("lensId"), 10),
+                            oldEffectDetails: JSON.parse(redoActions[i].getAttribute("oldEffectDetails")),
+                            newEffectDetails: JSON.parse(redoActions[i].getAttribute("newEffectDetails")),
                         }));
                     }
                     else {

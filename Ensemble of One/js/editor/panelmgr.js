@@ -15,7 +15,7 @@
             /// <param name="panel" type="String">The panel type to request.</param>
             /// <param name="options" type="Object">An object to pass to the panel's initializer.</param>
             let requestedPanel = document.getElementsByClassName("editor-panel--" + panel)[0];
-            if (WinJS.Utilities.hasClass(requestedPanel, "editor-panel--active")) Ensemble.Editor.PanelMGR.switchToPanel(panel);
+            if (WinJS.Utilities.hasClass(requestedPanel, "editor-panel--active")) Ensemble.Editor.PanelMGR.switchToPanel(panel, options);
             else Ensemble.Editor.PanelMGR.openPanel(panel, options);
         },
 
@@ -91,7 +91,6 @@
                     Ensemble.Editor.AudioCaptureMGR.initCaptureSession();
                     break;
                 case Ensemble.Editor.PanelMGR.PanelTypes.effect:
-                    Ensemble.Editor.EffectMGR.initEffectPanel(options);
                     break;
             }
 
@@ -107,11 +106,11 @@
             }
 
             WinJS.Utilities.addClass(showingTab, "editor-panel-tab--visible");
-            Ensemble.Editor.PanelMGR.switchToPanel(panel);
+            Ensemble.Editor.PanelMGR.switchToPanel(panel, options);
             Ensemble.Pages.Editor.viewResized();
         },
 
-        switchToPanel: function (panel) {
+        switchToPanel: function (panel, options) {
             /// <summary>Switches the panel area to show the panel with given identifier.</summary>
             let existingPanel = document.getElementsByClassName("editor-panel--visible")[0],
                 existingTab = document.getElementsByClassName("editor-panel-tab--active")[0],
@@ -122,6 +121,20 @@
                 if (existingTab != null) WinJS.Utilities.removeClass(existingTab, "editor-panel-tab--active");
                 WinJS.Utilities.addClass(newPanel, "editor-panel--visible");
                 WinJS.Utilities.addClass(newTab, "editor-panel-tab--active");
+            }
+
+            switch (panel) {
+                case Ensemble.Editor.PanelMGR.PanelTypes.cameraCapture:
+                    Ensemble.Editor.VideoCaptureMGR.switchedTo(options);
+                    break;
+                
+                case Ensemble.Editor.PanelMGR.PanelTypes.micCapture:
+                    Ensemble.Editor.AudioCaptureMGR.switchedTo(options);
+                    break;
+
+                case Ensemble.Editor.PanelMGR.PanelTypes.effect:
+                    Ensemble.Editor.EffectMGR.switchedTo(options);
+                    break;
             }
         },
 

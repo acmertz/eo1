@@ -138,6 +138,17 @@
                 }
             },
 
+            select: function () {
+                /// <summary>Changes the clip to its "selected" state.</summary>
+                this.selected = true;
+            },
+
+            deselect: function () {
+                /// <summary>Changes the clip to its "deselected" state.</summary>
+                this.selected = false;
+                if (this.id === Ensemble.Editor.EffectMGR.currentClipId) Ensemble.Editor.PanelMGR.closePanel(Ensemble.Editor.PanelMGR.PanelTypes.effect);
+            },
+
             drawToCanvas: function (context, scale) {
                 /// <summary>Draws the clip to the specified canvas at the given scale.</summary>
                 /// <param name="canvas" type="Canvas">The canvas to use as a rendering target.</param>
@@ -150,6 +161,10 @@
                 if (this.type == Ensemble.Editor.Clip.ClipType.lens) {
                     switch (this.effectDetails.effectType) {
                         case Ensemble.Editor.EffectMGR.EffectType.solidColor:
+                            context.beginPath();
+                            context.fillStyle = "rgba(" + this.effectDetails.effectProperties.r + ", " + this.effectDetails.effectProperties.g + ", " + this.effectDetails.effectProperties.b + ", " + this.effectDetails.effectProperties.a + ")";
+                            context.rect(drawX, drawY, drawWidth, drawHeight);
+                            context.fill();
                             break;
                     }
                 }

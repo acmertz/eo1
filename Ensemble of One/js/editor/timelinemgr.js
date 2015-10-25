@@ -1250,7 +1250,8 @@
 
             pointerDownOnClip: function (event) {
                 event.stopPropagation();
-                let clipId = parseInt(event.currentTarget.id.match(/\d+$/)[0], 10);
+                let clipId = parseInt(event.currentTarget.id.match(/\d+$/)[0], 10),
+                    clipObj = Ensemble.Editor.TimelineMGR.getClipById(clipId);
                 console.log("Pointer down on clip " + clipId + "!");
 
                 Ensemble.Editor.SelectionMGR.replaceSelection(clipId, event, true);
@@ -1268,6 +1269,14 @@
                     else if (event.button == 2) {
                         event.stopPropagation();
                         event.preventDefault();
+
+                        if (clipObj.type == Ensemble.Editor.Clip.ClipType.lens) {
+                            document.getElementsByClassName("clip-selected-contextmenu__command--edit-effect")[0].style.display = "";
+                        }
+                        else {
+                            document.getElementsByClassName("clip-selected-contextmenu__command--edit-effect")[0].style.display = "none";
+                        }
+
                         Ensemble.Editor.TimelineMGR.ui.contextmenuPositionHelper.style.left = event.pageX + "px";
                         Ensemble.Editor.TimelineMGR.ui.contextmenuPositionHelper.style.top = event.pageY + "px";
                         Ensemble.Editor.TimelineMGR.ui.timelineSelectionContextMenu.dataset.clipId = clipId;
@@ -1935,6 +1944,9 @@
                             Ensemble.Editor.TimelineMGR.ui.clipVolumeFlyout.addEventListener("afterhide", Ensemble.Editor.TimelineMGR._listeners.clipVolumeFlyoutDismissed);
                             Ensemble.Editor.TimelineMGR.ui.clipVolumeFlyout.winControl.show(Ensemble.Editor.TimelineMGR.ui.contextmenuPositionHelper, "autovertical");
                         }
+                        break;
+                    case "edit-effect":
+                        Ensemble.Editor.PanelMGR.requestPanel(Ensemble.Editor.PanelMGR.PanelTypes.effect, clipId);
                         break;
                     case "remove":
                         let removeAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.removeClip, {

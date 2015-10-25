@@ -47,6 +47,10 @@
             this._cleanUI();
         },
 
+        switchedTo: function (options) {
+            /// <summary>Notifies the AudioCaptureMGR that the user switched to its panel.</summary>
+        },
+
         refreshPreviewMessage: function () {
             if (Ensemble.Editor.AudioCaptureMGR.session.recordingActive) {
                 WinJS.Utilities.removeClass(Ensemble.Editor.AudioCaptureMGR.ui.messageReady, "media-capture-preview__mic-message--visible");

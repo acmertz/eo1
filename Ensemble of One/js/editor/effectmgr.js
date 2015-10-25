@@ -2,6 +2,8 @@
     WinJS.Namespace.define("Ensemble.Editor.EffectMGR", {
         /// <summary>Manages the effects panel for creating and editing lens effects.</summary>
 
+        currentClipId: -1,
+
         initNewEffect: function (effectType) {
             /// <summary>Creates a new effect Lens with the specified type.</summary>
             let newTrackId = Ensemble.Editor.TimelineMGR.generateNewTrackId(),
@@ -17,9 +19,23 @@
             Ensemble.HistoryMGR.performBatch([trackCreateAction, createLensAction], Ensemble.Editor.EffectMGR._listeners.createdNewEffect);
         },
 
-        initEffectPanel: function (panelId) {
-            /// <summary>Initializes the effect panel to display the appropriate settings for the effect.</summary>
-            /// <param name="panelId" type="Number">The ID of the effect.</param>
+        switchedTo: function (options) {
+            /// <summary>Notifies the VideoCaptureMGR that the user switched to its panel.</summary>
+            if (options !== undefined) {
+                Ensemble.Editor.EffectMGR.currentClipId = options;
+
+                let clip = Ensemble.Editor.TimelineMGR.getClipById(options),
+                effectDetails = clip.effectDetails;
+
+                switch (effectDetails.effectType) {
+                    case Ensemble.Editor.EffectMGR.EffectType.solidColor:
+                        Ensemble.Editor.EffectMGR.ui.solidColorRed.value = clip.effectDetails.effectProperties.r;
+                        Ensemble.Editor.EffectMGR.ui.solidColorGreen.value = clip.effectDetails.effectProperties.g;
+                        Ensemble.Editor.EffectMGR.ui.solidColorBlue.value = clip.effectDetails.effectProperties.b;
+                        Ensemble.Editor.EffectMGR.ui.solidColorOpacity.value = clip.effectDetails.effectProperties.a * 100;
+                        break;
+                }
+            }
         },
 
         generateDefaultValues: function (effectType) {
@@ -45,24 +61,40 @@
 
         init: function () {
             this._refreshUI();
+            this.currentClipId = -1;
         },
 
         unload: function () {
             this._cleanUI();
+            this.currentClipId = -1;
         },
 
         ui: {
             newEffectConfirmationButton: null,
             newEffectDropdown: null,
-            newEffectFlyout: null
+            newEffectFlyout: null,
+            solidColorRed: null,
+            solidColorGreen: null,
+            solidColorBlue: null,
+            solidColorOpacity: null
         },
 
         _refreshUI: function () {
             this.ui.newEffectConfirmationButton = document.getElementsByClassName("eo1-btn--create-effect")[0];
             this.ui.newEffectDropdown = document.getElementsByClassName("editor-new-effect-dropdown")[0];
             this.ui.newEffectFlyout = document.getElementsByClassName("flyout--editor-new-effect")[0];
+            this.ui.solidColorRed = document.getElementsByClassName("effect-param--solid-color-red")[0];
+            this.ui.solidColorGreen = document.getElementsByClassName("effect-param--solid-color-green")[0];
+            this.ui.solidColorBlue = document.getElementsByClassName("effect-param--solid-color-blue")[0];
+            this.ui.solidColorOpacity = document.getElementsByClassName("effect-param--solid-color-opacity")[0];
 
             this.ui.newEffectConfirmationButton.addEventListener("click", this._listeners.newEffectButtonClicked);
+
+            let effectParams = document.getElementsByClassName("effect-param"),
+                paramCount = effectParams.length;
+            for (let i = 0; i < paramCount; i++) {
+                effectParams[i].addEventListener("change", this._listeners.effectParamChanged);
+            }
         },
 
         _cleanUI: function () {
@@ -71,6 +103,10 @@
             this.ui.newEffectConfirmationButton = null;
             this.ui.newEffectDropdown = null;
             this.ui.newEffectFlyout = null;
+            this.ui.solidColorRed = null;
+            this.ui.solidColorGreen = null;
+            this.ui.solidColorBlue = null;
+            this.ui.solidColorOpacity = null;
         },
 
         _listeners: {
@@ -82,6 +118,38 @@
 
             createdNewEffect: function (event) {
                 console.log("Created the new effect!");
+            },
+
+            effectParamChanged: function (event) {
+                console.log("Effect \"" + event.currentTarget.dataset.effectParam + "\" changed.");
+                let clip = Ensemble.Editor.TimelineMGR.getClipById(Ensemble.Editor.EffectMGR.currentClipId),
+                    oldEffectDetails = clip.effectDetails,
+                    newEffectDetails = JSON.parse(JSON.stringify(oldEffectDetails)),
+                    changeEffectAction = null,
+                    newValue = parseInt(event.currentTarget.value, 10);
+
+                switch (event.currentTarget.dataset.effectParam) {
+                    case "solid-color-red":
+                        newEffectDetails.effectProperties.r = newValue;
+                        break;
+                    case "solid-color-green":
+                        newEffectDetails.effectProperties.g = newValue;
+                        break;
+                    case "solid-color-blue":
+                        newEffectDetails.effectProperties.b = newValue;
+                        break;
+                    case "solid-color-opacity":
+                        newEffectDetails.effectProperties.a = newValue / 100;
+                        break;
+                }
+
+                changeEffectAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.editLens, {
+                    lensId: clip.id,
+                    oldEffectDetails: clip.effectDetails,
+                    newEffectDetails: newEffectDetails
+                });
+
+                Ensemble.HistoryMGR.performAction(changeEffectAction);
             }
         },
 

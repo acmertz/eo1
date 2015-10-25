@@ -144,6 +144,12 @@
                     Ensemble.Editor.PanelMGR.requestPanel(Ensemble.Editor.PanelMGR.PanelTypes.effect, newLens.id);
                 }
 
+                else if (this._type == Ensemble.Events.Action.ActionType.editLens) {
+                    let clip = Ensemble.Editor.TimelineMGR.getClipById(this._payload.lensId);
+                    clip.effectDetails = this._payload.newEffectDetails;
+                    Ensemble.Editor.Renderer.requestFrame();
+                }
+
                 else console.error("Unknown Action!");
             },
 
@@ -234,6 +240,12 @@
                 else if (this._type == Ensemble.Events.Action.ActionType.createLens) {
                     // undo lens creation
                     Ensemble.Editor.TimelineMGR.removeClip(this._payload.lensId);
+                }
+
+                else if (this._type == Ensemble.Events.Action.ActionType.editLens) {
+                    let clip = Ensemble.Editor.TimelineMGR.getClipById(this._payload.lensId);
+                    clip.effectDetails = this._payload.oldEffectDetails;
+                    Ensemble.Editor.Renderer.requestFrame();
                 }
 
                 else console.error("Unknown Action!");
@@ -378,7 +390,8 @@
                 positionClip: "positionClip",
                 renameClip: "renameClip",
                 clipVolumeChanged: "clipVolumeChanged",
-                createLens: "createLens"
+                createLens: "createLens",
+                editLens: "editLens"
             }
         }
     );
