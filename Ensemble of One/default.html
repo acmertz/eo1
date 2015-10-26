@@ -263,6 +263,20 @@
                     section:'primary',
                     type:'button',
                     icon: 'clearselection'}"></button>
+
+                <hr data-win-control="WinJS.UI.Command" class="editor-toolbar-command" data-win-options="{type:'separator'}" />
+
+                <button data-editor-command="zoom-in" class="editor-toolbar-command editor-toolbar-command--zoom-in" data-win-control="WinJS.UI.Command" data-win-options="{
+                    label:'Zoom in',
+                    section:'primary',
+                    type:'button',
+                    icon: 'zoomin'}"></button>
+
+                <button data-editor-command="zoom-out" class="editor-toolbar-command editor-toolbar-command--zoom-out" data-win-control="WinJS.UI.Command" data-win-options="{
+                    label:'Zoom out',
+                    section:'primary',
+                    type:'button',
+                    icon: 'zoomout'}"></button>
             </div>
 
             <span class="editor-history-controls">
@@ -363,31 +377,16 @@
 
             <section class="editor-section editor-section--lower">
                 <div id="timeline-track-container">
-                    <div class="timeline-track-header-container timeline-track-header-container--standard timeline-scrollable-container">
-                        <div class="timeline-ruler-placeholder"></div>
-                    </div>
                     <div class="timeline-track-widget-container timeline-track-widget-container--standard timeline-scrollable-container">
                         <div class="timeline-ruler-placeholder"></div>
                     </div>
                     <div class="timeline-track-container-wrap">
                         <div class="timeline-ruler-placeholder"></div>
-                        <div id="editorTimelineTracks" class="timeline-scrollable-container">
+                        <div id="editorTimelineTracks" class="timeline-scrollable-container timeline-scrollable-container--tracks">
                             <div class="timeline__cursor"></div>
                             <div class="timeline__drop-preview"></div>
                         </div>
                         <canvas class="timeline-ruler__inner"></canvas>
-                    </div>
-                    <div class="timeline-track-header-container__ruler-spacer"></div>
-                </div>
-                <div class="timeline-button-container timeline-button-container--right">
-                    <div class="timeline-button-container__section">
-                        <button class="win-button eo1-btn eo1-btn--timeline eo1-btn--timeline-zoom-in" title="Zoom in">&#xE12E;</button>
-                        <button class="win-button eo1-btn eo1-btn--timeline eo1-btn--timeline-zoom-out" title="Zoom out">&#xE1A4;</button>
-                    </div>
-                    <div class="timeline-button-container__section timeline-button-container__section--spacer"></div>
-                    <div class="timeline-button-container__section">
-                        <button class="win-button fa-rotate-270 eo1-btn eo1-btn--timeline eo1-btn--timeline-scroll-up" title="Scroll up">&#xE111;</button>
-                        <button class="win-button fa-rotate-270 eo1-btn eo1-btn--timeline eo1-btn--timeline-scroll-down" title="Scroll down">&#xE112;</button>
                     </div>
                 </div>
             </section>
@@ -457,10 +456,10 @@
             <button class="media-browser-location-flyout__command" data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Pictures library'}" data-mediabrowser-location="picture"></button>
         </div>
         <div id="flyout--editor-move-track" data-win-control="WinJS.UI.Menu">
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMoveTrackTop',label:'Move to top'}"></button>
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMoveTrackUp',label:'Move up'}"></button>
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMoveTrackDown',label:'Move down'}"></button>
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMoveTrackBottom',label:'Move to bottom'}"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMoveTrackTop',label:'Move to top'}" data-move-direction="top" class="timeline-move-track-command"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMoveTrackUp',label:'Move up'}" data-move-direction="up" class="timeline-move-track-command"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMoveTrackDown',label:'Move down'}" data-move-direction="down" class="timeline-move-track-command"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMoveTrackBottom',label:'Move to bottom'}" data-move-direction="bottom" class="timeline-move-track-command"></button>
         </div>
         <div id="flyout--editor-track-delete" data-win-control="WinJS.UI.Flyout">
             <h3 class="win-h3">
@@ -541,6 +540,13 @@
             <p>
                 <button class="win-button eo1-btn eo1-btn--create-effect">Create</button>
             </p>
+        </div>
+        <div class="contextmenu--editor-track" data-win-control="WinJS.UI.Menu">
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Rename'}" class="timeline-edit-track-command" data-track-command="rename"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Volume'}" class="timeline-edit-track-command" data-track-command="volume"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Move', type:'flyout', flyout:select('#flyout--editor-move-track')}"></button>
+            <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',type:'separator'}" />
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Delete'}" class="timeline-edit-track-command" data-track-command="delete"></button>
         </div>
         <div class="my-test-flyout" data-win-control="WinJS.UI.Flyout">This is my great flyout</div>
     </div>

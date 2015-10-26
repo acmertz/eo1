@@ -73,6 +73,9 @@
             $(".editor-toolbar-command--record-video").removeAttr("disabled");
             $(".editor-toolbar-command--record-audio").removeAttr("disabled");
 
+            $(".editor-toolbar-command--zoom-in").removeAttr("disabled");
+            $(".editor-toolbar-command--zoom-out").removeAttr("disabled");
+
             if (Ensemble.Editor.SelectionMGR.selected.length == 1) {
                 $(".editor-toolbar-command--clear-selection").removeAttr("disabled");
                 $(".editor-toolbar-command--split-clip").removeAttr("disabled");
@@ -208,30 +211,20 @@
                     Ensemble.Editor.SelectionMGR.clearSelection();
                 }, 0);
 
+                // TRACK
+                else if (command == "zoom-in") {
+                    Ensemble.Editor.TimelineMGR.zoomIn();
+                }
+                else if (command == "zoom-out") {
+                    Ensemble.Editor.TimelineMGR.zoomOut();
+                }
+
                     // MEDIA CAPTURE
                 else if (command == "record-video") {
                     Ensemble.Editor.PanelMGR.requestPanel(Ensemble.Editor.PanelMGR.PanelTypes.cameraCapture);
                 }
                 else if (command == "record-audio") {
                     Ensemble.Editor.PanelMGR.requestPanel(Ensemble.Editor.PanelMGR.PanelTypes.micCapture);
-                }
-
-                // ANIMATIONS/EFFECTS
-                else if (command == "create-filter") {
-                    //Ensemble.Editor.EffectMGR.initNewEffect(event.currentTarget);
-                    console.log("Create a new filter.");
-                   // let allCommands = [],
-                   //     trackCount = Ensemble.Editor.TimelineMGR.tracks.length;
-                   // for (let i = 0; i < trackCount; i++) {
-                   //     //Create a new menu item for each track.
-                   //     let menuItem = new WinJS.UI.MenuCommand();
-                   //     menuItem.label = (i + 1) + ".) " + Ensemble.Editor.TimelineMGR.tracks[i].name;
-                   //     menuItem.element.dataset.trackId = Ensemble.Editor.TimelineMGR.tracks[i].id;
-                   //     menuItem.addEventListener("click", Ensemble.Editor.MenuMGR._listeners.addLensTrackSelected);
-                   //     allCommands.push(menuItem);
-                   // }
-                   //Ensemble.Editor.MenuMGR.ui.createLensFlyout.winControl.commands = allCommands;
-                   //Ensemble.Editor.MenuMGR.ui.createLensFlyout.winControl.show(event.currentTarget, "autovertical");
                 }
             },
 
@@ -250,16 +243,6 @@
             browseMediaReturned: function (file, payload) {
                 Ensemble.Editor.MediaBrowser._currentPreview = file;
                 Ensemble.Editor.MediaBrowser._addPreviewToProject(payload);
-            },
-
-            addLensTrackSelected: function (event) {
-                let trackId = parseInt(event.currentTarget.dataset.trackId, 10),
-                    createLensAction = new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.createLens, {
-                        lensId: null,
-                        destinationTrack: trackId,
-                        destinationTime: Ensemble.Editor.PlaybackMGR.lastTime
-                    });
-                Ensemble.HistoryMGR.performAction(createLensAction);
             },
 
             fileMenuEntered: function (event) {

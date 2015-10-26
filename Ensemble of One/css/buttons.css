@@ -32,14 +32,3 @@
 .eo1-btn--clear:active {
     background: #f1a1b1;
 }
-
-.eo1-btn--timeline {
-    min-width: 0;
-    width: 50px;
-    height: 50px;
-    margin-top: 10px;
-}
-
-.eo1-btn--timeline:first-child {
-    margin-top: 0;
-}

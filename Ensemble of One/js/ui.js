@@ -7,7 +7,6 @@
             this.PageSections.upperHalf.canvasContainer = document.getElementsByClassName("editor-canvas-container")[0];
 
             this.PageSections.lowerHalf.timeline = document.getElementById("timeline-track-container");
-            this.PageSections.lowerHalf.timelineHeaders = document.getElementsByClassName("timeline-track-header-container--standard")[0];
             this.PageSections.lowerHalf.timelineDetails = document.getElementsByClassName("timeline-track-widget-container--standard")[0];
             this.PageSections.lowerHalf.timelineTracks = document.getElementById("editorTimelineTracks");
 
@@ -46,7 +45,6 @@
             lowerHalf: {
                 //The entire lower half of the page.
                 timeline: null,
-                timelineHeaders: null,
                 timelineDetails: null,
                 timelineTracks: null
             },

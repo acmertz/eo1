@@ -1,131 +1,45 @@
-﻿.timeline-scrollable-container {
-    position: relative;
-    top: 0px;
-    min-height: 100%;
-}
-
-#timeline-track-container {
+﻿#timeline-track-container {
     flex: 1;
     height: 100%;
     overflow: hidden;
     display: flex;
     position: relative;
-    border-bottom: 1px solid #000;
-    padding-left: 10px;
+    margin: 0 10px;
 }
 
-.timeline-track-header-container {
-    width: 50px;
-    position: relative;
-}
-
-.timeline-track-header-container__ruler-spacer {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 50px;
-    width: 51px;
-    border-bottom: 1px solid #000;
-    margin-left: 10px;
-}
-
-.timeline-track--header, .timeline-track--controls, .timeline-track--content {
+.timeline-track--controls, .timeline-track--content {
     box-sizing: border-box;
-}
-
-.timeline-track--header {
-    display: flex;
-    flex-direction: column;
-    cursor: default;
-    border-left: 1px solid #000;
-}
-
-.timeline-track--header .trackNum, .timeline-track--header .trackEditButton {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex: 1;
-    box-sizing: border-box;
-    border: 1px solid lightgray;
-    border-left: none;
-    font-weight: bold;
-    font-size: 1.25em;
-}
-
-.timeline-track--header .trackNum {
-}
-
-.timeline-track--header .trackEditButton {
-    border-top: none;
-}
-
-.timeline-track--header .trackEditButton:active {
-    color: white;
-    background-color: black;
 }
 
 .timeline-track-widget-container {
-    width: 0px;
     white-space: nowrap;
     overflow: hidden;
-    border-bottom: 1px solid #000;
 }
 
-.timeline-track-widget-container.detailsExpanded, .timelineDetailRow.timelineDetailControls {
+.timeline-track-widget-container {
     width: 150px;
-}
-
-.timeline-track-header-container__ruler-spacer.detailsExpanded {
-    width: 201px;
 }
 
 .timeline-track--controls {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    border: 1px solid #aaa;
+    border-right: 0;
+    border-bottom: 0;
 }
 
-.timeline-track--controls .timelineDetailRow {
-    flex: 1;
-    align-items: center;
-    box-sizing: border-box;
-    border: 1px solid lightgray;
-    border-left: none;
-}
-
-.timelineDetailRow.timelineDetailName {
-    font-weight: bold;
-    border-bottom: none;
-    overflow-x: hidden;
-}
-
-.timelineDetailRow.timelineDetailControls {
-    justify-content: center;
-    border-top: none;
-    display: flex;
-}
-
-.timelineControl {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-}
-
-.timelineControl:active {
-    color: white;
-    background-color: black;
+.timeline-track--controls:last-of-type {
+    border-bottom: 1px solid #aaa;
+    height: 51px;
 }
 
 .timeline-track-container-wrap {
     flex: 1;
     overflow-x: scroll;
-    overflow-y: hidden;
+    overflow-y: scroll;
     position: relative;
-    border: 1px solid #000;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-    border-bottom: 0;
+    border: 1px solid #aaa;
+    border-radius: 3px;
 }
 
 #timeline-track-container .timeline-track--content {

@@ -192,7 +192,6 @@
             Ensemble.Pages.Editor.ui.canvasContainer.style.marginRight = (Math.abs(Math.floor(finalWidth * 0.5)) * -1) + "px";
             try { Ensemble.Editor.Renderer.canvasResized(); }
             catch (exception) { }
-            Ensemble.Editor.TimelineMGR.updateTrackSizing();
         },
 
         refreshMediaBrowser: function () {
