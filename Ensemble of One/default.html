@@ -376,17 +376,15 @@
             </section>
 
             <section class="editor-section editor-section--lower">
-                <div id="timeline-track-container">
-                    <div class="timeline-track-widget-container timeline-track-widget-container--standard timeline-scrollable-container">
-                        <div class="timeline-ruler-placeholder"></div>
-                    </div>
-                    <div class="timeline-track-container-wrap">
-                        <div class="timeline-ruler-placeholder"></div>
-                        <div id="editorTimelineTracks" class="timeline-scrollable-container timeline-scrollable-container--tracks">
-                            <div class="timeline__cursor"></div>
+                <div class="timeline">
+                    <div class="timeline__header-container"></div>
+                    <div class="timeline__header-mask"></div>
+                    <div class="timeline__track-container">
+                        <div class="timeline__inner-track-wrap">
                             <div class="timeline__drop-preview"></div>
                         </div>
-                        <canvas class="timeline-ruler__inner"></canvas>
+                        <canvas class="timeline__ruler"></canvas>
+                        <div class="timeline__cursor"></div>
                     </div>
                 </div>
             </section>

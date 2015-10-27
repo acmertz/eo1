@@ -6,9 +6,8 @@
 
             this.PageSections.upperHalf.canvasContainer = document.getElementsByClassName("editor-canvas-container")[0];
 
-            this.PageSections.lowerHalf.timeline = document.getElementById("timeline-track-container");
-            this.PageSections.lowerHalf.timelineDetails = document.getElementsByClassName("timeline-track-widget-container--standard")[0];
-            this.PageSections.lowerHalf.timelineTracks = document.getElementById("editorTimelineTracks");
+            this.PageSections.lowerHalf.timelineDetails = document.getElementsByClassName("timeline__header-container")[0];
+            this.PageSections.lowerHalf.timelineTracks = document.getElementsByClassName("timeline__inner-track-wrap")[0];
 
             this.PageSections.menu.mediaMenu.entireSection = document.getElementById("editorMediaMenu");
             this.PageSections.menu.mediaMenu.local.mediaList = document.getElementById("editorMenuMediaBrowserFileList");
@@ -44,7 +43,6 @@
             },
             lowerHalf: {
                 //The entire lower half of the page.
-                timeline: null,
                 timelineDetails: null,
                 timelineTracks: null
             },

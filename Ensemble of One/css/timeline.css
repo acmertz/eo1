@@ -1,45 +1,6 @@
 ﻿/* TIMELINE RULER */
-.timeline-ruler {
-    position: relative;
-    border: 2px solid #000;
-    border-bottom: none;
-    flex: 1;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-    background-color: white;
-    overflow: hidden;
-    white-space: nowrap;
-}
 
-.timeline-ruler__mark {
-    display: inline-block;
-    margin: 25px 0 0 0;
-    box-sizing: border-box;
-    height: 6px;
-    border-left: 1px solid #999;
-    overflow: visible;
-}
-
-.timeline-ruler__mark--sub {
-    height: 12px;
-    border-left: 1px solid #333;
-}
-
-.timeline-ruler__mark--interval {
-    height: 25px;
-    border-left: 1px solid #333;
-}
-
-.timeline-ruler__mark:first-child {
-    border: 0
-}
-
-.timeline-ruler__time {
-    position: absolute;
-    transform: translateX(-50%);
-}
-
-.timeline-ruler__inner {
+.timeline__ruler {
     position: absolute;
     left: 0;
     top: 0;
@@ -50,25 +11,18 @@
     box-sizing: border-box;
 }
 
-.timeline-ruler-placeholder {
-    width: 100%;
-    height: 50px;
-}
-
 /* TIMELINE TRACK */
-.timeline-scrollable-container {
-    position: relative;
-    top: 0px;
-    min-height: 100%;
-}
 
-.timeline-scrollable-container--tracks {
+.timeline__inner-track-wrap {
     background: repeating-linear-gradient(
       #fff,
       #fff 50px,
       #e5e5e5 50px,
       #e5e5e5 100px
     );
+    transition: transform 0.1s ease;
+    position: relative;
+    min-height: 100%;
 }
 
 .timeline-track {
@@ -230,7 +184,7 @@
 
 .timeline__cursor {
     position: absolute;
-    top: -50px;
+    top: 0;
     left: 0;
     height: 100%;
     width: 6px;

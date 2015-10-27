@@ -1,4 +1,4 @@
-﻿#timeline-track-container {
+﻿.timeline {
     flex: 1;
     height: 100%;
     overflow: hidden;
@@ -11,13 +11,21 @@
     box-sizing: border-box;
 }
 
-.timeline-track-widget-container {
+.timeline__header-container {
     white-space: nowrap;
     overflow: hidden;
+    width: 150px;
+    padding-top: 50px;
+    transition: transform 0.1s ease;
 }
 
-.timeline-track-widget-container {
+.timeline__header-mask {
     width: 150px;
+    height: 50px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #e6e6e6;
 }
 
 .timeline-track--controls {
@@ -33,16 +41,17 @@
     height: 51px;
 }
 
-.timeline-track-container-wrap {
+.timeline__track-container {
     flex: 1;
     overflow-x: scroll;
-    overflow-y: scroll;
+    overflow-y: hidden;
     position: relative;
     border: 1px solid #aaa;
     border-radius: 3px;
+    padding-top: 50px;
 }
 
-#timeline-track-container .timeline-track--content {
+.timeline .timeline-track--content {
     box-sizing: border-box;
     white-space: nowrap;
     position: relative;
