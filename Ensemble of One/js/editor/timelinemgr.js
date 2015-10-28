@@ -1914,6 +1914,7 @@
                         Ensemble.Editor.TimelineMGR._wheelScrollPos += event.deltaY > 0 ? -50 : 50;
                         if (Ensemble.Editor.TimelineMGR._wheelScrollPos > 0) Ensemble.Editor.TimelineMGR._wheelScrollPos = 0;
                         Ensemble.Editor.TimelineMGR.ui.scrollableTrackContainer.style.transform = Ensemble.Editor.UI.PageSections.lowerHalf.timelineDetails.style.transform = "translateY(" + Ensemble.Editor.TimelineMGR._wheelScrollPos + "px)";
+                        Ensemble.Editor.TimelineMGR.ui.scrollableContainer.style.backgroundPosition = "0 " + Ensemble.Editor.TimelineMGR._wheelScrollPos + "px";
 
                         return false;
                     }

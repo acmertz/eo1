@@ -49,6 +49,9 @@
     border: 1px solid #aaa;
     border-radius: 3px;
     padding-top: 50px;
+    background: repeating-linear-gradient(#fff, #fff 50px, #e5e5e5 50px, #e5e5e5 100px);
+    background-size: 100% 100px;
+    transition: background-position 0.1s ease;
 }
 
 .timeline .timeline-track--content {

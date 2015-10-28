@@ -14,12 +14,6 @@
 /* TIMELINE TRACK */
 
 .timeline__inner-track-wrap {
-    background: repeating-linear-gradient(
-      #fff,
-      #fff 50px,
-      #e5e5e5 50px,
-      #e5e5e5 100px
-    );
     transition: transform 0.1s ease;
     position: relative;
     min-height: 100%;
