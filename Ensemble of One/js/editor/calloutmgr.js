@@ -46,7 +46,7 @@
                     calloutWidth = $(Ensemble.Editor.CalloutMGR.ui.callout).outerWidth(),
                     centeredX = clipLeft + (0.5 * clipWidth),
                     timelineOffsetFromRight = $(".timeline-button-container").outerWidth(),
-                    timelineOffsetFromLeft = $(Ensemble.Editor.TimelineMGR.ui.scrollableContainer).offset().left;
+                    timelineOffsetFromLeft = $(Ensemble.Editor.TimelineMGR.ui.trackContainer).offset().left;
 
                 if (centeredX + (0.5 * calloutWidth) > screen.width - (10 + timelineOffsetFromRight)) {
                     centeredX = screen.width - (10 + timelineOffsetFromRight + (0.5 * calloutWidth));
@@ -111,7 +111,7 @@
                         calloutLeft = $(Ensemble.Editor.CalloutMGR.ui.callout).offset().left,
                         centeredX = xPos + (0.5 * clipWidth),
                         timelineOffsetFromRight = $(".timeline-button-container").outerWidth(),
-                        timelineOffsetFromLeft = $(Ensemble.Editor.TimelineMGR.ui.scrollableContainer).offset().left;
+                        timelineOffsetFromLeft = $(Ensemble.Editor.TimelineMGR.ui.trackContainer).offset().left;
 
                     if (xPos <= calloutLeft + (0.5 * calloutWidth) && calloutLeft + (0.5 * calloutWidth) <= xPos + clipWidth) {
                         // do nothing

@@ -182,9 +182,99 @@
     left: 0;
     height: 100%;
     width: 6px;
-    background-color: black;
-    color: black;
+    background-color: #333;
     cursor: ew-resize;
+}
+
+.timeline__hover-cursor {
+    position: absolute;
+    top: 0;
+    left: 50px;
+    height: 100%;
+    width: 1px;
+    background-color: #666;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease 0.4s;
+    overflow: visible;
+}
+
+.timeline__hover-cursor--visible {
+    opacity: 1;
+    transition-delay: 0s;
+}
+
+.timeline__cursor-label-container {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    height: 50px;
+    width: 26px;
+    margin-left: -14px;
+}
+
+.timeline__cursor-label-text {
+    position: absolute;
+    top: 11px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fff;
+    color: #333;
+    padding: 0 5px;
+    width: 100px;
+    height: 25px;
+    line-height: 25px;
+    border: 1px solid #333;
+    text-align: center;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+}
+
+.timeline__cursor-label-text--hidden {
+    opacity: 0;
+}
+
+.timeline__cursor-label-triangle {
+	width: 0; 
+	height: 0;
+    position: absolute;
+	border-left: 12px solid transparent;
+	border-right: 12px solid transparent;
+    left: 50%;
+    margin-left: -11px;
+}
+
+.timeline__cursor-label-triangle--upper {
+    border-bottom: 12px solid #333;
+    top: 0;
+}
+
+.timeline__cursor-label-triangle--lower {
+    border-top: 12px solid #333;
+    bottom: 0;
+}
+
+.timeline__cursor-label-rect {
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    top: 50%;
+    margin-top: -13px;
+    margin-left: -12px;
+    left: 50%;
+    background-color: #333;
+}
+
+.timeline__cursor-label-container--hover .timeline__cursor-label-text {
+    border-color: #666;
+}
+
+.timeline__cursor-label-container--hover .timeline__cursor-label-triangle--upper {
+    border-bottom-color: #666;
+}
+
+.timeline__cursor-label-container--hover .timeline__cursor-label-triangle--lower {
+    border-top-color: #666;
 }
 
 .timeline__drop-preview {

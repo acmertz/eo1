@@ -376,8 +376,8 @@
             $(Ensemble.Editor.MenuMGR.ui.clickEater).click();
             Ensemble.Editor.Renderer.disableStandardInteraction();
 
-            Ensemble.Editor.TimelineMGR.ui.scrollableContainer.addEventListener("pointerenter", Ensemble.Editor.MediaBrowser._listeners.draggedClipEnteredTimeline);
-            Ensemble.Editor.TimelineMGR.ui.scrollableContainer.addEventListener("pointerleave", Ensemble.Editor.MediaBrowser._listeners.draggedClipLeftTimeline);
+            Ensemble.Editor.TimelineMGR.ui.trackContainer.addEventListener("pointerenter", Ensemble.Editor.MediaBrowser._listeners.draggedClipEnteredTimeline);
+            Ensemble.Editor.TimelineMGR.ui.trackContainer.addEventListener("pointerleave", Ensemble.Editor.MediaBrowser._listeners.draggedClipLeftTimeline);
         },
 
         _listItemDragUpdate: function (event) {
@@ -388,7 +388,7 @@
                 let offsetY = Ensemble.Utilities.MouseTracker.y - Ensemble.Editor.MediaBrowser._dragOffset.top;
                 
                 let trackDragIndex = Math.floor(offsetY / Ensemble.Editor.TimelineMGR._currentTrackHeight) - Ensemble.Editor.TimelineMGR._currentScrollIndex;
-                let dragTime = (offsetX + Ensemble.Editor.TimelineMGR.ui.scrollableContainer.scrollLeft) * zoomRatio;
+                let dragTime = (offsetX + Ensemble.Editor.TimelineMGR.ui.trackContainer.scrollLeft) * zoomRatio;
 
                 if (0 > trackDragIndex) trackDragIndex = 0;
                 else if (trackDragIndex >= Ensemble.Editor.TimelineMGR.tracks.length) trackDragIndex = Ensemble.Editor.TimelineMGR.tracks.length - 1;
@@ -418,8 +418,8 @@
 
             Ensemble.Editor.Renderer.enableStandardInteraction();
 
-            Ensemble.Editor.TimelineMGR.ui.scrollableContainer.removeEventListener("pointerenter", Ensemble.Editor.MediaBrowser._listeners.draggedClipEnteredTimeline);
-            Ensemble.Editor.TimelineMGR.ui.scrollableContainer.removeEventListener("pointerleave", Ensemble.Editor.MediaBrowser._listeners.draggedClipLeftTimeline);
+            Ensemble.Editor.TimelineMGR.ui.trackContainer.removeEventListener("pointerenter", Ensemble.Editor.MediaBrowser._listeners.draggedClipEnteredTimeline);
+            Ensemble.Editor.TimelineMGR.ui.trackContainer.removeEventListener("pointerleave", Ensemble.Editor.MediaBrowser._listeners.draggedClipLeftTimeline);
 
             if (Ensemble.Editor.MediaBrowser._dragTimeline) {
                 // import the clip

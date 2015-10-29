@@ -384,13 +384,26 @@
                             <div class="timeline__drop-preview"></div>
                         </div>
                         <canvas class="timeline__ruler"></canvas>
-                        <div class="timeline__cursor"></div>
+                        <div class="timeline__hover-cursor">
+                            <div class="timeline__cursor-label-container timeline__cursor-label-container--hover">
+                                <div class="timeline__cursor-label-text timeline__cursor-label-text--hover-cursor">00:00:00.000</div>
+                                <div class="timeline__cursor-label-triangle timeline__cursor-label-triangle--upper"></div>
+                                <div class="timeline__cursor-label-triangle timeline__cursor-label-triangle--lower"></div>
+                            </div>
+                        </div>
+                        <div class="timeline__cursor">
+                            <div class="timeline__cursor-label-container">
+                                <div class="timeline__cursor-label-triangle timeline__cursor-label-triangle--upper"></div>
+                                <div class="timeline__cursor-label-triangle timeline__cursor-label-triangle--lower"></div>
+                                <div class="timeline__cursor-label-rect"></div>
+                                <div class="timeline__cursor-label-text timeline__cursor-label-text--main-cursor timeline__cursor-label-text--hidden">00:00:00.000</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
         </main>
 
-        <div class="editorTimelineDragPreviewFlyout" tabindex="-1">00:00:00.000</div>
         <div class="timeline-selection-callout" tabindex="-1">
             <div class="selection-callout__state selection-callout__state--standard">
                 <div class="selection-callout__command callout-command--move-track-clip" data-callout-command="move-track-clip">&#xE174;</div>
