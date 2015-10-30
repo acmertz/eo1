@@ -803,7 +803,7 @@
             this.ui.innerTrackWrap = document.getElementsByClassName("timeline__inner-track-wrap")[0];
 
             this.ui.cursor.addEventListener("pointerdown", this._listeners.cursorMousedown);
-            this.ui.timelineOuter.addEventListener("pointerdown", this._listeners.timelineOuterPointerDown);
+            this.ui.trackContainer.addEventListener("pointerdown", this._listeners.trackContainerPointerDown);
             this.ui.trackContainer.addEventListener("scroll", this._listeners.timelineScrolled);
             this.ui.trackContainer.addEventListener("wheel", this._listeners.trackContainerMouseWheel);
             this.ui.trackContainer.addEventListener("pointerenter", this._listeners.trackContainerPointerEntered);
@@ -835,7 +835,7 @@
 
         _cleanUI: function () {
             this.ui.cursor.removeEventListener("pointerdown", this._listeners.cursorMousedown);
-            this.ui.timelineOuter.removeEventListener("pointerdown", this._listeners.timelineOuterPointerDown);
+            this.ui.trackContainer.removeEventListener("pointerdown", this._listeners.trackContainerPointerDown);
             this.ui.trackContainer.removeEventListener("scroll", Ensemble.Editor.TimelineMGR._listeners.timelineScrolled);
             this.ui.trackContainer.removeEventListener("wheel", Ensemble.Editor.TimelineMGR._listeners.trackContainerMouseWheel);
             this.ui.trackContainer.addEventListener("pointerenter", this._listeners.trackContainerPointerEntered);
@@ -990,6 +990,7 @@
                 if (Ensemble.Editor.TimelineMGR._cursorLastFinalPos != candidatePos) {
                     Ensemble.Editor.TimelineMGR._cursorLastFinalPos = candidatePos;
                     Ensemble.Editor.TimelineMGR.ui.cursor.style.transform = "translateX(" + Math.floor(candidatePos) + "px)";
+                    Ensemble.Editor.TimelineMGR.ui.cursorLabelText.innerText = Ensemble.Utilities.TimeConverter.convertTime(candidateTime, true);
                     Ensemble.Editor.TimelineMGR._cursorPos = candidatePos;
                 }
 
@@ -1049,12 +1050,14 @@
                 return false;
             },
 
-            timelineOuterPointerDown: function (event) {
-                if (Ensemble.Editor.TimelineMGR._clipTrimming) {
-                    Ensemble.Editor.TimelineMGR.rejectTrim();
-                }
-                else {
-                    Ensemble.Editor.SelectionMGR.clearSelection();
+            trackContainerPointerDown: function (event) {
+                if (event.pointerType != "touch") {
+                    if (Ensemble.Editor.TimelineMGR._clipTrimming) {
+                        Ensemble.Editor.TimelineMGR.rejectTrim();
+                    }
+                    else {
+                        Ensemble.Editor.SelectionMGR.clearSelection();
+                    }
                 }
             },
 
