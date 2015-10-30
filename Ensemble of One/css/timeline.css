@@ -195,13 +195,12 @@
     background-color: #666;
     pointer-events: none;
     opacity: 0;
-    transition: opacity 0.2s ease 0.4s;
+    transition: opacity 0.2s ease;
     overflow: visible;
 }
 
 .timeline__hover-cursor--visible {
     opacity: 1;
-    transition-delay: 0s;
 }
 
 .timeline__cursor-label-container {

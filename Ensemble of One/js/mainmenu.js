@@ -28,7 +28,9 @@
             this.ui.navItems = document.getElementsByClassName("main-menu__nav-item");
             this.ui.quickStartItems = document.getElementsByClassName("home-menu__quick-start-item");
             this.ui.localProjectContainer = document.getElementsByClassName("open-menu__local-projects")[0];
-            this.ui.recentProjectContainer = document.getElementsByClassName("home-menu__recent-projects")[0];
+            this.ui.recentProjectContainer = document.getElementsByClassName("home-menu__recent-projects-listview")[0];
+
+            this.ui.recentProjectContainer.addEventListener("iteminvoked", this._listeners.recentListItemInvoked);
 
             for (let i = 0; i < this.ui.navItems.length; i++) {
                 this.ui.navItems[i].addEventListener("pointerdown", this._listeners.navItemClicked);
@@ -59,6 +61,8 @@
                 this.ui.navItems[i].removeEventListener("touchend", this._listeners.pointerUp);
                 this.ui.navItems[i].removeEventListener("mouseup", this._listeners.pointerUp);
             }
+
+            this.ui.recentProjectContainer.removeEventListener("iteminvoked", this._listeners.recentListItemInvoked);
 
             this.ui.navItems = [];
             this.ui.quickStartItems = [];
@@ -123,32 +127,9 @@
             enumeratedRecentProjects: function (projects) {
                 console.log("Received a list of recent projects.");
                 Ensemble.MainMenu._recentProjects = projects;
-                Ensemble.MainMenu.ui.recentProjectContainer.innerHTML = "";
-                for (let i = projects.length - 1; i >= 0; i--) {
-                    let thumb = "<img class='open-menu__item-thumb' src='" + projects[i].thumbnail + "'/>",
-                        title = "<h4 class='win-h4'>" + projects[i].name + "</h4>",
-                        dateModified = "<span>" + projects[i].modified.toLocaleDateString() + "</span>";
 
-                    let entireItem = document.createElement("li");
-                    entireItem.className = "open-menu__project-item";
-                    entireItem.innerHTML = thumb + title + dateModified;
-
-                    entireItem.addEventListener("click", Ensemble.MainMenu._listeners.recentMenuItemClicked);
-                    entireItem.addEventListener("contextmenu", Ensemble.MainMenu._listeners.recentMenuItemContextMenu);
-
-                    entireItem.dataset.filename = projects[i].filename;
-                    entireItem.dataset.projectname = projects[i].name;
-                    entireItem.dataset.projectindex = i;
-
-                    Ensemble.MainMenu.ui.recentProjectContainer.appendChild(entireItem);
-                    WinJS.UI.Animation.enterContent(entireItem);
-                }
-                if (1 > projects.length) {
-                    let noItemsEl = document.createElement("li");
-                    noItemsEl.innerText = "Nothing to show here.";
-                    Ensemble.MainMenu.ui.recentProjectContainer.appendChild(noItemsEl);
-                    WinJS.UI.Animation.enterContent(noItemsEl);
-                }
+                let dataList = new WinJS.Binding.List(projects);
+                Ensemble.MainMenu.ui.recentProjectContainer.winControl.itemDataSource = dataList.dataSource;
             },
 
             pointerDown: function (event) {
@@ -173,24 +154,6 @@
 
             openMenuItemContextMenu: function (event) {
                 console.log("Context menu for item.");
-            },
-
-            recentMenuItemClicked: function (event) {
-                let filename = event.currentTarget.dataset.filename,
-                    text = event.currentTarget.dataset.projectname,
-                    index = parseInt(event.currentTarget.dataset.projectindex, 10),
-                    projectFile = Ensemble.MainMenu._recentProjects[index];
-
-                let loadingPage = document.getElementsByClassName("app-page--loading-editor")[0];
-                $(loadingPage).removeClass("app-page--hidden").addClass("app-page--enter");
-                Ensemble.Session.setCurrentPage(Ensemble.Session.PageStates.loadingToEditor);
-                window.setTimeout(function () {
-                    Ensemble.FileIO.loadInternalProject(filename, projectFile.src);
-                }, 1000);
-            },
-
-            recentMenuItemContextMenu: function (event) {
-                console.log("Context menu for recent project.");
             },
 
             projectFinishedLoading: function () {
@@ -251,6 +214,20 @@
                         }, 1000);
                     }
                 });
+            },
+
+            recentListItemInvoked: function (event) {
+                let itemIndex = event.detail.itemIndex,
+                    projectFile = Ensemble.MainMenu._recentProjects[itemIndex],
+                    filename = projectFile.filename,
+                    text = projectFile.name;;
+
+                let loadingPage = document.getElementsByClassName("app-page--loading-editor")[0];
+                $(loadingPage).removeClass("app-page--hidden").addClass("app-page--enter");
+                Ensemble.Session.setCurrentPage(Ensemble.Session.PageStates.loadingToEditor);
+                window.setTimeout(function () {
+                    Ensemble.FileIO.loadInternalProject(filename, projectFile.src);
+                }, 1000);
             }
         }
 

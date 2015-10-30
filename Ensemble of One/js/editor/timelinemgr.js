@@ -938,6 +938,7 @@
 
                     $(".ensemble-clickeater--ew-cursor").addClass("ensemble-clickeater--active");
                     WinJS.Utilities.removeClass(Ensemble.Editor.TimelineMGR.ui.cursorLabelText, "timeline__cursor-label-text--hidden");
+                    WinJS.Utilities.removeClass(Ensemble.Editor.TimelineMGR.ui.hoverCursor, "timeline__hover-cursor--visible");
 
                     let allClips = document.getElementsByClassName("timeline-clip");
                     for (let i = 0; i < allClips.length; i++) {

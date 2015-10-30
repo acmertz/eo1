@@ -15,6 +15,7 @@
             this.name = projectName;
             this.filename = projectFilename;
             this.modified = dateModified;
+            this.modifiedFriendly = dateModified.toLocaleDateString();
             this.numberOfClips = numOfClips;
             this.aspectRatio = aspect;
             this.duration = dur;
@@ -30,6 +31,8 @@
             filename: null,
             //Date the project was last modified.
             modified: null,
+            //Friendly depiction of the date.
+            modifiedFriendly: null,
             //Number of clips in the project.
             numberOfClips: null,
             //Aspect ratio of the project.

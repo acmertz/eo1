@@ -94,6 +94,21 @@
                 </div>
             </div>
         </div>
+        <div class="listview-template listview-template--project-list-item" data-win-control="WinJS.Binding.Template" style="display: none">
+            <div class="eo1-list-item">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><img data-win-bind="src: thumbnail" height="50" /></td>
+                            <td>
+                                <h4 class="win-h4" data-win-bind="textContent: name"></h4>
+                                <span data-win-bind="textContent: modifiedFriendly"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
     <div class="editor-media-container"></div>
     <div class="app-page app-page--main-menu">
@@ -145,9 +160,12 @@
                 <div>
                     <h2 class="win-h2">Recent projects</h2>
                 </div>
-                <div>
-                    <ul class="home-menu__recent-projects"></ul>
-                </div>
+                <div class="home-menu__recent-projects-listview" data-win-control="WinJS.UI.ListView" data-win-options="{
+                            itemTemplate: select('.listview-template--project-list-item'),
+                            selectionMode: 'none',
+                            tapBehavior: 'invokeOnly',
+                            layout: { type: WinJS.UI.ListLayout }
+                         }"></div>
             </section>
             <section class="main-menu__content-section main-menu__content-section--new-project main-menu__content-section--hidden" data-menu="new-project">
                 <div>

@@ -18,6 +18,11 @@
     overflow-y: auto;
 }
 
+.main-menu__content-section--home {
+    display: flex;
+    flex-direction: column;
+}
+
 .main-menu__content-section--visible {
     display: block;
     width: 100%;
@@ -140,10 +145,8 @@
     pointer-events: none;
 }
 
-
-.home-menu__recent-projects {
-    list-style: none;
-    padding: 0;
+.home-menu__recent-projects-listview {
+    flex-grow: 1;
 }
 
 
