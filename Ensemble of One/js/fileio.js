@@ -561,42 +561,20 @@
                     //Generate a thumbnail.
                     console.log("Creating save files...");
                     Windows.Storage.FileIO.writeTextAsync(projectFile, xml.ToString()).then(function () {
-                        Ensemble.FileIO._createProjectCallback(projectFile.name);
+                        Ensemble.FileIO._createProjectCallback(projectFile);
                         Ensemble.FileIO._createProjectCallback = null;
                     });
                 });
             });
         },
 
-        loadInternalProject: function (filename, srcFile) {
-            /// <summary>Loads a saved project from internal storage.</summary>
-            /// <param name="filename" type="String">The filename of the project to be loaded.</param>
-            /// <param name="srcFile" type="Windows.Storage.StorageFile">Optional. If the internal project lookup fails, attempts loading the project as an external file.</param>
-
-            Ensemble.Session.projectFileInApp = true;
-            let uri = new Windows.Foundation.Uri('ms-appdata:///local/Projects/' + filename);
-            let file = Windows.Storage.StorageFile.getFileFromApplicationUriAsync(uri).then(function (projectFile) {
-                Ensemble.FileIO.addOrReplaceRecentProject(projectFile);
-                Ensemble.Session.projectFile = projectFile;
-                Windows.Storage.FileIO.readTextAsync(projectFile).then(function (contents) {
-                    Ensemble.FileIO._processLoadedProjectData(filename, projectFile.displayName, contents);
-                });
-            }, function (error) {
-                console.log("Unable to load " + filename + " as an internal project.");
-                if (srcFile) {
-                    console.log("Attempting to load as an external project...");
-                    Ensemble.FileIO.loadExternalProject(srcFile);
-                }
-            });
-
-        },
-
-        loadExternalProject: function (file) {
+        loadProject: function (file, internal) {
             /// <summary>Loads a saved project from storage external to the application.</summary>
             /// <param name="file" type="Windows.Storage.StorageFile">The project file to load.</param>
+            /// <param name="internal" type="Boolean">Optional. If true, treat the project as an unsaved internal project.</param>
             Ensemble.FileIO.addOrReplaceRecentProject(file);
             Ensemble.Session.projectFile = file;
-            Ensemble.Session.projectFileInApp = false;
+            Ensemble.Session.projectFileInApp = internal;
             Windows.Storage.FileIO.readTextAsync(file).then(function (contents) {
                 Ensemble.FileIO._processLoadedProjectData(file.name, file.displayName, contents);
             });
@@ -1377,9 +1355,10 @@
                     if (projectFiles.length == 0) callback([]);
                     else {
                         for (var i = 0; i < projectFiles.length; i++) {
-                            (function () { 
-                                var loadedFilename = projectFiles[i].name;
-                                var loadedProjectName = projectFiles[i].displayName;
+                            (function () {
+                                let currentFile = projectFiles[i],
+                                    loadedFilename = projectFiles[i].name,
+                                    loadedProjectName = projectFiles[i].displayName;
                                 Windows.Storage.FileIO.readTextAsync(projectFiles[i]).then(function (contents) {
                                     var parser = new DOMParser();
                                     var xmlDoc = parser.parseFromString(contents, "text/xml");
@@ -1397,7 +1376,8 @@
                                     var loadedProjectLength = xmlDoc.getElementsByTagName("ProjectLength")[0].childNodes[0].nodeValue;
                                     let loadedThumbnailPath = xmlDoc.getElementsByTagName("ProjectThumb")[0].childNodes[0].nodeValue;
 
-                                    dataArray.push(new Ensemble.Editor.ProjectFile(loadedProjectName, loadedFilename, loadedDateModified, loadedNumberOfClips, loadedAspectRatio, loadedProjectLength, loadedThumbnailPath));
+                                    dataArray.push(new Ensemble.Editor.ProjectFile(loadedProjectName, loadedFilename, loadedDateModified, loadedNumberOfClips, loadedAspectRatio, loadedProjectLength, loadedThumbnailPath, null, currentFile));
+                                    dataArray[dataArray.length - 1].internal = true;
 
                                     if (dataArray.length == projectFiles.length) {
                                         dataArray.sort(function (a, b) {
@@ -1474,6 +1454,27 @@
                 }
                 callback(dataArray);
             }
+        },
+
+        pruneDuplicateProjects: function (projects) {
+            /// <summary>Returns a new array with no duplicate projects. Biased toward keeping "internal" (unsaved) project.</summary>
+            /// <param name="projects" type="Array"></param>
+            /// <returns type="Array"></returns>
+            let prunedList = [],
+                projectCount = projects.length;
+            
+            for (let i = 0; i < projectCount; i++) {
+                let found = false;
+                for (let k = 0; k < prunedList.length; k++) {
+                    if (prunedList[k].src.isEqual(projects[i].src)) {
+                        found = true;
+                        if (projects[i].internal) prunedList[k] = projects[i];
+                    }
+                }
+                if (!found) prunedList.push(projects[i]);
+            }
+
+            return prunedList;
         },
 
         pickItemsFromFolder: function (folder, callback) {

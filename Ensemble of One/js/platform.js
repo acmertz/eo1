@@ -43,7 +43,7 @@
                             $(loadingPage).removeClass("app-page--hidden").addClass("app-page--enter");
                             Ensemble.Session.setCurrentPage(Ensemble.Session.PageStates.loadingToEditor);
                             setTimeout(function () {
-                                Ensemble.FileIO.loadInternalProject(args.detail.files[0].name, args.detail.files[0]);
+                                Ensemble.FileIO.loadProject(args.detail.files[0], false);
                             }, 1000);
                         }
                         else {

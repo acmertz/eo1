@@ -31,6 +31,10 @@
     overflow-x: hidden;
 }
 
+.main-menu__content-section--visible.main-menu__content-section--home {
+    display: flex;
+}
+
 .main-menu__content-section--hidden {
     display: none;
 }
@@ -147,12 +151,6 @@
 
 .home-menu__recent-projects-listview {
     flex-grow: 1;
-}
-
-
-.open-menu__local-projects {
-    list-style: none;
-    padding: 0;
 }
 
 .open-menu__project-item {

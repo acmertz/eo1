@@ -96,17 +96,22 @@
         </div>
         <div class="listview-template listview-template--project-list-item" data-win-control="WinJS.Binding.Template" style="display: none">
             <div class="eo1-list-item">
-                <table>
-                    <tbody>
-                        <tr>
-                            <td><img data-win-bind="src: thumbnail" height="50" /></td>
-                            <td>
-                                <h4 class="win-h4" data-win-bind="textContent: name"></h4>
-                                <span data-win-bind="textContent: modifiedFriendly"></span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="eo1-list-item__project-thumb-container">
+                    <img data-win-bind="src: thumbnail" />
+                </div>
+                <div class="eo1-list-item__project-details-container">
+                    <h4 class="win-h4" data-win-bind="textContent: name"></h4>
+                    <div class="eo1-list-item__row">
+                        <div class="eo1-list-item__column"><span data-win-bind="textContent: modifiedFriendly"></span></div>
+                        <div class="eo1-list-item__column"><span data-win-bind="textContent: numberOfClips"></span><span> clips</span></div>
+                        <div class="eo1-list-item__column"><span data-win-bind="textContent: aspectRatio"></span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="listview-template listview-template--project-list-group" data-win-control="WinJS.Binding.Template" style="display: none">
+            <div class="eo1-list-item eo1-list-item--project-group-header">
+                <h4 class="win-h4" data-win-bind="textContent: this"></h4>
             </div>
         </div>
     </div>
@@ -114,20 +119,12 @@
     <div class="app-page app-page--main-menu">
         <nav class="main-menu__nav-container">
             <header class="main-menu__nav-header">
-                <h1 class="win-h1 main-menu__app-logo">Menu</h1>
+                <h2 class="win-h2 main-menu__app-logo">Menu</h2>
             </header>
             <section class="main-menu__nav-section main-menu__nav-section--primary">
-                <a class="main-menu__nav-item main-menu__nav-item--active" data-menu="home" title="Quickstart">
+                <a class="main-menu__nav-item main-menu__nav-item--active" data-menu="home" title="Home">
                     <span class="main-menu-nav-item__icon"></span>
-                    <span class="main-menu-nav-item__label">Quickstart</span>
-                </a>
-                <a class="main-menu__nav-item" data-menu="new-project" title="New project">
-                    <span class="main-menu-nav-item__icon"></span>
-                    <span class="main-menu-nav-item__label">New</span>
-                </a>
-                <a class="main-menu__nav-item" data-menu="open-project" title="Open project">
-                    <span class="main-menu-nav-item__icon"></span>
-                    <span class="main-menu-nav-item__label">Open</span>
+                    <span class="main-menu-nav-item__label">Home</span>
                 </a>
             </section>
             <section class="main-menu__nav-section main-menu__nav-section--spacer"></section>
@@ -141,7 +138,7 @@
         <main class="main-menu__content-container">
             <section class="main-menu__content-section main-menu__content-section--home main-menu__content-section--visible" data-menu="home">
                 <div>
-                    <h2 class="win-h2">Quickstart</h2>
+                    <h3 class="win-h3">New project</h3>
                     <p>Select an aspect ratio to get started! We reccommend 16:9.</p>
                     </div>
                 <div>
@@ -158,48 +155,16 @@
                     </div>
                 </div>
                 <div>
-                    <h2 class="win-h2">Recent projects</h2>
+                    <h3 class="win-h3">Open project</h3>
+                    <button class="win-button eo1-btn menu-open-project-param menu-open-project-param--browse">Browse...</button>
                 </div>
                 <div class="home-menu__recent-projects-listview" data-win-control="WinJS.UI.ListView" data-win-options="{
                             itemTemplate: select('.listview-template--project-list-item'),
+                            groupHeaderTemplate: select('.listview-template--project-list-group'),
                             selectionMode: 'none',
                             tapBehavior: 'invokeOnly',
-                            layout: { type: WinJS.UI.ListLayout }
+                            layout: { type: WinJS.UI.ListLayout, groupHeaderPosition: 'top' }
                          }"></div>
-            </section>
-            <section class="main-menu__content-section main-menu__content-section--new-project main-menu__content-section--hidden" data-menu="new-project">
-                <div>
-                    <h2 class="win-h2">New project</h2>
-
-                    <p>Create a new Ensemble of One project. Projects can contain as many videos, audio clips, and images as you care to import. Let loose and make something great!</p>
-                    </div>
-                <div>
-                    <h3 class="win-h3">Project name</h3>
-                    <input type="text" autocomplete="off" spellcheck="true" placeholder="My great project" class="win-textbox menu-create-project-param menu-create-project-param--name" />
-                    <p>Give your project a fitting name.</p>
-
-                    <h3 class="win-h3">Aspect ratio</h3>
-                    <select class="win-dropdown menu-create-project-param menu-create-project-param--aspect">
-                        <option selected value="16:9">Widescreen (HDTV, 16:9)</option>
-                        <option value="16:10">Widescreen (laptop, 16:10)</option>
-                        <option value="2.39:1">Widescreen (cinematic, 2.39:1)</option>
-                        <option value="4:3">Standard (tube TV, 4:3)</option>
-                    </select>
-                    <p>Decide what shape you want your video to be. HDTVs usually have a ratio of 16:9, so in most cases this'll probably be your best shot.</p>
-                </div>
-                <p><button class="win-button eo1-btn menu-create-project-param menu-create-project-param--submit">Create</button></p>
-            </section>
-            <section class="main-menu__content-section main-menu__content-section--open-project main-menu__content-section--hidden" data-menu="open-project">
-                <div>
-                    <h2 class="win-h2">Open project</h2>
-                    <p>
-                        <button class="win-button eo1-btn menu-open-project-param menu-open-project-param--browse">Browse...</button>
-                    </p>
-                    </div>
-                <div>
-                    <h3 class="win-h3">Local projects</h3>
-                    <ul class="open-menu__local-projects"></ul>
-                </div>
             </section>
             <section class="main-menu__content-section main-menu__content-section--settings main-menu__content-section--hidden" data-menu="settings">
                 
@@ -585,7 +550,7 @@
         <div class="app-page__inner app-page__inner--app-settings">
             <nav class="main-menu__nav-container">
                 <header class="main-menu__nav-header">
-                    <h1 class="win-h1 main-menu__app-logo">Settings</h1>
+                    <h2 class="win-h2 main-menu__app-logo">Settings</h2>
                 </header>
                 <section class="main-menu__nav-section main-menu__nav-section--primary">
                     <a class="main-menu__nav-item main-menu__nav-item--active" data-menu="editor-settings" title="Editor">
@@ -603,16 +568,16 @@
             </nav>
             <main class="main-menu__content-container">
                 <section class="main-menu__content-section main-menu__content-section--editor-settings main-menu__content-section--visible" data-menu="editor-settings">
-                    <h2 class="win-h2">Editor settings</h2>
+                    <h3 class="win-h3">Editor settings</h3>
                     <p></p>
                     <div class="settings-menu-section">
-                        <h3 class="win-h3">Canvas Sticky Edges</h3>
+                        <h4 class="win-h4">Canvas Sticky Edges</h4>
                         <p>Sticky Edges helps you line up clips on the playback canvas. Comes in handy when you're making a picture-in-picture effect.</p>
                         <div class="app-setting app-setting--sticky-edges-clip" data-app-setting="sticky-edges-clip" data-setting-type="toggle" data-win-control="WinJS.UI.ToggleSwitch" data-win-options="{title: 'Clips stick to each other', checked: true}"></div>
                         <div class="app-setting app-setting--sticky-edges-canvas" data-app-setting="sticky-edges-canvas" data-setting-type="toggle" data-win-control="WinJS.UI.ToggleSwitch" data-win-options="{title: 'Clips stick to canvas edges', checked: true}"></div>
                     </div>
                     <div class="settings-menu-section">
-                        <h3 class="win-h3">Default picture duration</h3>
+                        <h4 class="win-h4">Default picture duration</h4>
                         <p>Pictures will start out with this duration when you first import them. You can always resize them to be as long (or short) as you want.</p>
                         <select class="win-dropdown app-setting app-setting--default-picture-duration" data-app-setting="default-picture-duration" data-setting-type="dropdown-num">
                             <option value="1">1</option>
@@ -629,22 +594,22 @@
                     </div>
                 </section>
                 <section class="main-menu__content-section main-menu__content-section--reset-settings main-menu__content-section--hidden" data-menu="reset-settings">
-                    <h2 class="win-h2">Reset settings</h2>
+                    <h3 class="win-h3">Reset settings</h3>
                     <p>Use this menu to reset your settings.</p>
                     <div class="settings-menu-section">
-                        <h3 class="win-h3">Reset all settings</h3>
+                        <h4 class="win-h4">Reset all settings</h4>
                         <p>For when you want to go nuclear. This will set all of your Ensemble of One settings back to their default state.</p>
                         <p><button class="win-button eo1-btn app-setting app-setting--reset-settings" data-app-setting="reset-settings" data-setting-type="instant">Reset settings</button></p>                      
                     </div>
                     <div class="settings-menu-section">
-                        <h3 class="win-h3">Clear recent projects</h3>
+                        <h4 class="win-h4">Clear recent projects</h4>
                         <p>Maybe you're in the mood for some spring cleaning&hellip; or maybe you just don't want THAT project showing up on the main screen. This will clear the list of recent projects from the main menu. No projects are deleted.</p>
                         <p><button class="win-button eo1-btn app-setting app-setting--clear-recent-projects" data-app-setting="clear-recent-projects" data-setting-type="instant">Clear recent projects</button></p>
                     </div>
                     <div class="settings-menu-section">
-                        <h3 class="win-h3">Delete all projects</h3>
-                        <p>Fresh start, much? This will delete every project in your Ensemble of One folder. Exported media and projects you saved elsewhere (external drive, cloud storage, etc.) won't be affected.</p>
-                        <p><button class="win-button eo1-btn app-setting app-setting--delete-all-projects" data-app-setting="delete-all-projects" data-setting-type="instant">Delete all projects</button></p>
+                        <h4 class="win-h4">Delete unsaved projects</h4>
+                        <p>Permanently delete all unsaved projects stored within the app.</p>
+                        <p><button class="win-button eo1-btn app-setting app-setting--delete-all-projects" data-app-setting="delete-all-projects" data-setting-type="instant">Delete unsaved projects</button></p>
                     </div>
                 </section>
             </main>

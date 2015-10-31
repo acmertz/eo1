@@ -137,14 +137,13 @@
                         let loadingPage = document.getElementsByClassName("app-page--loading-main-menu")[0];
                         $(loadingPage).addClass("app-page--exit");
                         loadingPage.addEventListener("animationend", Ensemble.Pages.Editor._listeners.loadingMenuExitFinished);
-                        Ensemble.FileIO.enumerateLocalProjects(Ensemble.MainMenu._listeners.enumeratedLocalProjects);
-                        Ensemble.FileIO.enumerateRecentProjects(Ensemble.MainMenu._listeners.enumeratedRecentProjects);
+                        Ensemble.MainMenu.refreshProjectListView();
                         Ensemble.Session.setCurrentPage(Ensemble.Session.PageStates.mainMenu);
                     }, 1000);
                 }
                 else {
                     Ensemble.Session.setCurrentPage(Ensemble.Session.PageStates.loadingToEditor);
-                    Ensemble.FileIO.loadInternalProject(Ensemble.Pages.Editor.pendingLoad.name, Ensemble.Pages.Editor.pendingLoad);
+                    Ensemble.FileIO.loadProject(Ensemble.Pages.Editor.pendingLoad, false);
                 }
             },
 

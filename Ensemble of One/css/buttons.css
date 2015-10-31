@@ -32,3 +32,7 @@
 .eo1-btn--clear:active {
     background: #f1a1b1;
 }
+
+.menu-open-project-param--browse {
+    margin-top: 10px;
+}

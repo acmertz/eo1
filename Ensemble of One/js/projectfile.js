@@ -22,6 +22,7 @@
             this.thumbnail = thumbnailPath;
             this.extra = extra;
             this.src = srcfile;
+            this.internal = false;
         },
         {
             //Instance members
@@ -44,7 +45,9 @@
             //Optional extra value.
             extra: null,
             //Optional source file for the project.
-            src: null
+            src: null,
+            //Indicates whether the project is an "unsaved" project in AppData
+            internal: null
         },
         {
             //Static members
