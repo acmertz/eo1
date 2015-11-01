@@ -11,7 +11,7 @@
             this._refreshUI();
             this.refreshProjectListView();
             
-            WinJS.UI.Animation.enterPage(document.getElementsByClassName("main-menu__content-section--home")[0].children, null);
+            WinJS.UI.Animation.enterPage(document.getElementsByClassName("main-menu__section--home")[0].children, null);
         },
 
         unload: function () {
@@ -42,7 +42,7 @@
         },
 
         _refreshUI: function () {
-            this.ui.navItems = document.getElementsByClassName("main-menu__nav-item");
+            this.ui.navItems = document.getElementsByClassName("main-menu__splitview-command");
             this.ui.quickStartItems = document.getElementsByClassName("home-menu__quick-start-item");
             this.ui.recentProjectContainer = document.getElementsByClassName("home-menu__recent-projects-listview")[0];
             this.ui.browseButton = document.getElementsByClassName("menu-open-project-param--browse")[0];
@@ -51,7 +51,7 @@
             this.ui.browseButton.addEventListener("click", Ensemble.MainMenu._listeners.browseProjectButtonClicked);
 
             for (let i = 0; i < this.ui.navItems.length; i++) {
-                this.ui.navItems[i].addEventListener("pointerdown", this._listeners.navItemClicked);
+                this.ui.navItems[i].addEventListener("click", this._listeners.navItemClicked);
             }
             for (let i = 0; i < this.ui.quickStartItems.length; i++) {
                 this.ui.quickStartItems[i].addEventListener("pointerdown", this._listeners.pointerDown);
@@ -66,15 +66,16 @@
 
         _cleanUI: function () {
             for (let i = 0; i < this.ui.navItems.length; i++) {
-                this.ui.navItems[i].removeEventListener("pointerdown", this._listeners.navItemClicked);
+                this.ui.navItems[i].removeEventListener("click", this._listeners.navItemClicked);
             }
             for (let i = 0; i < this.ui.quickStartItems.length; i++) {
-                this.ui.navItems[i].removeEventListener("pointerdown", this._listeners.pointerDown);
-                this.ui.navItems[i].removeEventListener("touchstart", this._listeners.pointerDown);
-                this.ui.navItems[i].removeEventListener("mousedown", this._listeners.pointerDown);
-                this.ui.navItems[i].removeEventListener("pointerup", this._listeners.pointerUp);
-                this.ui.navItems[i].removeEventListener("touchend", this._listeners.pointerUp);
-                this.ui.navItems[i].removeEventListener("mouseup", this._listeners.pointerUp);
+                this.ui.quickStartItems[i].removeEventListener("pointerdown", this._listeners.pointerDown);
+                this.ui.quickStartItems[i].removeEventListener("touchstart", this._listeners.pointerDown);
+                this.ui.quickStartItems[i].removeEventListener("mousedown", this._listeners.pointerDown);
+                this.ui.quickStartItems[i].removeEventListener("pointerup", this._listeners.pointerUp);
+                this.ui.quickStartItems[i].removeEventListener("touchend", this._listeners.pointerUp);
+                this.ui.quickStartItems[i].removeEventListener("mouseup", this._listeners.pointerUp);
+                this.ui.quickStartItems[i].removeEventListener("click", this._listeners.quickstartItemClicked);
             }
 
             this.ui.recentProjectContainer.removeEventListener("iteminvoked", this._listeners.recentListItemInvoked);
@@ -89,15 +90,13 @@
         _listeners: {
             navItemClicked: function (event) {
                 if (!WinJS.Utilities.hasClass(event.currentTarget, "app-trigger")) {
-                    let parentMenuContainer = $(event.currentTarget).closest(".main-menu__nav-container").parent()[0],
-                        outgoing = $(parentMenuContainer).find(".main-menu__content-section--visible")[0],
-                        incoming = $(parentMenuContainer).find(".main-menu__content-section--" + event.currentTarget.dataset.menu)[0];
-                    $(parentMenuContainer).find(".main-menu__nav-item--active").removeClass("main-menu__nav-item--active");
-                    $(event.currentTarget).addClass("main-menu__nav-item--active");
+                    let parentMenuContainer = $(event.currentTarget).closest(".win-splitview")[0],
+                        outgoing = $(parentMenuContainer).find(".main-menu__section--visible")[0],
+                        incoming = $(parentMenuContainer).find(".main-menu__section--" + event.currentTarget.dataset.menu)[0];
                     if (outgoing != incoming) {
                         WinJS.UI.Animation.exitPage(outgoing.children, null).done(function () {
-                            $(outgoing).removeClass("main-menu__content-section--visible").addClass("main-menu__content-section--hidden");
-                            $(incoming).removeClass("main-menu__content-section--hidden").addClass("main-menu__content-section--visible");
+                            $(outgoing).removeClass("main-menu__section--visible").addClass("main-menu__section--hidden");
+                            $(incoming).removeClass("main-menu__section--hidden").addClass("main-menu__section--visible");
                             WinJS.UI.Animation.enterPage(incoming.children, null);
 
                             // special cases for certain menu pages

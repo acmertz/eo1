@@ -117,59 +117,72 @@
     </div>
     <div class="editor-media-container"></div>
     <div class="app-page app-page--main-menu">
-        <nav class="main-menu__nav-container">
-            <header class="main-menu__nav-header">
-                <h2 class="win-h2 main-menu__app-logo">Menu</h2>
-            </header>
-            <section class="main-menu__nav-section main-menu__nav-section--primary">
-                <a class="main-menu__nav-item main-menu__nav-item--active" data-menu="home" title="Home">
-                    <span class="main-menu-nav-item__icon"></span>
-                    <span class="main-menu-nav-item__label">Home</span>
-                </a>
-            </section>
-            <section class="main-menu__nav-section main-menu__nav-section--spacer"></section>
-            <section class="main-menu__nav-section main-menu__nav-section--secondary">
-                <a class="main-menu__nav-item app-trigger app-trigger--settings" data-menu="settings" title="Settings">
-                    <span class="main-menu-nav-item__icon"></span>
-                    <span class="main-menu-nav-item__label">Settings</span>
-                </a>
-            </section>
-        </nav>
-        <main class="main-menu__content-container">
-            <section class="main-menu__content-section main-menu__content-section--home main-menu__content-section--visible" data-menu="home">
-                <div>
-                    <h3 class="win-h3">New project</h3>
-                    <p>Select an aspect ratio to get started! We reccommend 16:9.</p>
-                    </div>
-                <div>
-                    <div class="home-menu__quick-start-container">
-                        <a class="home-menu__quick-start-item home-menu__quick-start-item--4-3" data-quickstart="4:3" title="Fullscreen 4:3">
-                            <span class="quick-start-item__label">4:3</span>
-                        </a><a class="home-menu__quick-start-item home-menu__quick-start-item--16-10" data-quickstart="16:10" title="Widescreen 16:10">
-                            <span class="quick-start-item__label">16:10</span>
-                        </a><a class="home-menu__quick-start-item home-menu__quick-start-item--16-9" data-quickstart="16:9" title="Widescreen 16:9">
-                            <span class="quick-start-item__label">16:9</span>
-                        </a><a class="home-menu__quick-start-item home-menu__quick-start-item--239-1" data-quickstart="2.39:1" title="Widescreen 2.39:1">
-                            <span class="quick-start-item__label">2.39:1</span>
-                        </a>
-                    </div>
+        <div class="splitView" data-win-control="WinJS.UI.SplitView"
+             data-win-options="{
+                openedDisplayMode: 'inline',
+                closedDisplayMode: 'inline'
+             }">
+            <!-- Pane area -->
+            <div>
+                <div class="main-menu-nav__splitview-header">
+                    <button class="win-splitviewpanetoggle"
+                            data-win-control="WinJS.UI.SplitViewPaneToggle"
+                            data-win-options="{ splitView: select('.splitView') }"></button>
+                    <h3 class="win-h3 main-menu-nav__splitview-header-title">Ensemble of One</h3>
                 </div>
+
                 <div>
-                    <h3 class="win-h3">Open project</h3>
-                    <button class="win-button eo1-btn menu-open-project-param menu-open-project-param--browse">Browse...</button>
+                    <div data-win-control="WinJS.UI.SplitViewCommand" data-win-options="{ label: 'Home', icon: 'home'}" class="main-menu__splitview-command main-menu__splitview-command--home" data-menu="home"></div>
+                    <div data-win-control="WinJS.UI.SplitViewCommand" data-win-options="{ label: 'What\'s new', icon: 'previewlink'}" class="main-menu__splitview-command main-menu__splitview-command--news" data-menu="news"></div>
+                    <div data-win-control="WinJS.UI.SplitViewCommand" data-win-options="{ label: 'Feedback', icon: 'likedislike'}" class="main-menu__splitview-command main-menu__splitview-command--feedback" data-menu="feedback"></div>
+                    <div data-win-control="WinJS.UI.SplitViewCommand" data-win-options="{ label: 'Settings', icon: 'settings'}" class="main-menu__splitview-command main-menu__splitview-command--settings app-trigger app-trigger--settings"></div>
                 </div>
-                <div class="home-menu__recent-projects-listview" data-win-control="WinJS.UI.ListView" data-win-options="{
+            </div>
+
+            <!-- Content area -->
+            <div style="width:100%; height:100%">
+                <section class="main-menu__section main-menu__section--home main-menu__section--visible" data-menu="home">
+                    <div class="main-menu__content-container main-menu__content-container--padded">
+                        <h3 class="win-h3">New project</h3>
+                        <p>Select an aspect ratio to get started! We reccommend 16:9.</p>
+                    </div>
+                    <div class="main-menu__content-container main-menu__content-container--padded">
+                        <div class="home-menu__quick-start-container">
+                            <a class="home-menu__quick-start-item home-menu__quick-start-item--4-3" data-quickstart="4:3" title="Fullscreen 4:3">
+                                <span class="quick-start-item__label">4:3</span>
+                            </a><a class="home-menu__quick-start-item home-menu__quick-start-item--16-10" data-quickstart="16:10" title="Widescreen 16:10">
+                                <span class="quick-start-item__label">16:10</span>
+                            </a><a class="home-menu__quick-start-item home-menu__quick-start-item--16-9" data-quickstart="16:9" title="Widescreen 16:9">
+                                <span class="quick-start-item__label">16:9</span>
+                            </a><a class="home-menu__quick-start-item home-menu__quick-start-item--239-1" data-quickstart="2.39:1" title="Widescreen 2.39:1">
+                                <span class="quick-start-item__label">2.39:1</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="main-menu__content-container main-menu__content-container--padded">
+                        <h3 class="win-h3">Open project</h3>
+                        <button class="win-button eo1-btn menu-open-project-param menu-open-project-param--browse">Browse...</button>
+                    </div>
+                    <div class="home-menu__recent-projects-listview" data-win-control="WinJS.UI.ListView" data-win-options="{
                             itemTemplate: select('.listview-template--project-list-item'),
                             groupHeaderTemplate: select('.listview-template--project-list-group'),
                             selectionMode: 'none',
                             tapBehavior: 'invokeOnly',
                             layout: { type: WinJS.UI.ListLayout, groupHeaderPosition: 'top' }
                          }"></div>
-            </section>
-            <section class="main-menu__content-section main-menu__content-section--settings main-menu__content-section--hidden" data-menu="settings">
-                
-            </section>
-        </main>
+                </section>
+                <section class="main-menu__section main-menu__section--news main-menu__section--hidden" data-menu="news">
+                    <div class="main-menu__content-container main-menu__content-container--padded">
+                        <h3 class="win-h3">News menu</h3>
+                    </div>
+                </section>
+                <section class="main-menu__section main-menu__section--feedback main-menu__section--hidden" data-menu="feedback">
+                    <div class="main-menu__content-container main-menu__content-container--padded">
+                        <h3 class="win-h3">Feedback menu</h3>
+                    </div>
+                </section>
+            </div>
+        </div>
     </div>
 
 
@@ -548,71 +561,47 @@
     <div class="app-page app-page--app-settings app-page--hidden">
         <div class="ensemble-clickeater ensemble-clickeater--active ensemble-clickeater--backnav"></div>
         <div class="app-page__inner app-page__inner--app-settings">
-            <nav class="main-menu__nav-container">
-                <header class="main-menu__nav-header">
-                    <h2 class="win-h2 main-menu__app-logo">Settings</h2>
-                </header>
-                <section class="main-menu__nav-section main-menu__nav-section--primary">
-                    <a class="main-menu__nav-item main-menu__nav-item--active" data-menu="editor-settings" title="Editor">
-                        <span class="main-menu-nav-item__icon">&#57604;</span>
-                        <span class="main-menu-nav-item__label">Editor</span>
-                    </a>
-                </section>
-                <section class="main-menu__nav-section main-menu__nav-section--spacer"></section>
-                <section class="main-menu__nav-section main-menu__nav-section--secondary">
-                    <a class="main-menu__nav-item" data-menu="reset-settings" title="Reset">
-                        <span class="main-menu-nav-item__icon">&#57694;</span>
-                        <span class="main-menu-nav-item__label">Reset</span>
-                    </a>
-                </section>
-            </nav>
-            <main class="main-menu__content-container">
-                <section class="main-menu__content-section main-menu__content-section--editor-settings main-menu__content-section--visible" data-menu="editor-settings">
-                    <h3 class="win-h3">Editor settings</h3>
-                    <p></p>
-                    <div class="settings-menu-section">
-                        <h4 class="win-h4">Canvas Sticky Edges</h4>
-                        <p>Sticky Edges helps you line up clips on the playback canvas. Comes in handy when you're making a picture-in-picture effect.</p>
-                        <div class="app-setting app-setting--sticky-edges-clip" data-app-setting="sticky-edges-clip" data-setting-type="toggle" data-win-control="WinJS.UI.ToggleSwitch" data-win-options="{title: 'Clips stick to each other', checked: true}"></div>
-                        <div class="app-setting app-setting--sticky-edges-canvas" data-app-setting="sticky-edges-canvas" data-setting-type="toggle" data-win-control="WinJS.UI.ToggleSwitch" data-win-options="{title: 'Clips stick to canvas edges', checked: true}"></div>
-                    </div>
-                    <div class="settings-menu-section">
-                        <h4 class="win-h4">Default picture duration</h4>
-                        <p>Pictures will start out with this duration when you first import them. You can always resize them to be as long (or short) as you want.</p>
-                        <select class="win-dropdown app-setting app-setting--default-picture-duration" data-app-setting="default-picture-duration" data-setting-type="dropdown-num">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3" selected>3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
-                            <option value="10">10</option>
-                        </select>
-                    </div>
-                </section>
-                <section class="main-menu__content-section main-menu__content-section--reset-settings main-menu__content-section--hidden" data-menu="reset-settings">
-                    <h3 class="win-h3">Reset settings</h3>
-                    <p>Use this menu to reset your settings.</p>
-                    <div class="settings-menu-section">
-                        <h4 class="win-h4">Reset all settings</h4>
-                        <p>For when you want to go nuclear. This will set all of your Ensemble of One settings back to their default state.</p>
-                        <p><button class="win-button eo1-btn app-setting app-setting--reset-settings" data-app-setting="reset-settings" data-setting-type="instant">Reset settings</button></p>                      
-                    </div>
-                    <div class="settings-menu-section">
-                        <h4 class="win-h4">Clear recent projects</h4>
-                        <p>Maybe you're in the mood for some spring cleaning&hellip; or maybe you just don't want THAT project showing up on the main screen. This will clear the list of recent projects from the main menu. No projects are deleted.</p>
-                        <p><button class="win-button eo1-btn app-setting app-setting--clear-recent-projects" data-app-setting="clear-recent-projects" data-setting-type="instant">Clear recent projects</button></p>
-                    </div>
-                    <div class="settings-menu-section">
-                        <h4 class="win-h4">Delete unsaved projects</h4>
-                        <p>Permanently delete all unsaved projects stored within the app.</p>
-                        <p><button class="win-button eo1-btn app-setting app-setting--delete-all-projects" data-app-setting="delete-all-projects" data-setting-type="instant">Delete unsaved projects</button></p>
-                    </div>
-                </section>
-            </main>
+            <h3 class="win-h3">Editor settings</h3>
+            <p></p>
+            <div class="settings-menu-section">
+                <h4 class="win-h4">Canvas Sticky Edges</h4>
+                <p>Sticky Edges helps you line up clips on the playback canvas. Comes in handy when you're making a picture-in-picture effect.</p>
+                <div class="app-setting app-setting--sticky-edges-clip" data-app-setting="sticky-edges-clip" data-setting-type="toggle" data-win-control="WinJS.UI.ToggleSwitch" data-win-options="{title: 'Clips stick to each other', checked: true}"></div>
+                <div class="app-setting app-setting--sticky-edges-canvas" data-app-setting="sticky-edges-canvas" data-setting-type="toggle" data-win-control="WinJS.UI.ToggleSwitch" data-win-options="{title: 'Clips stick to canvas edges', checked: true}"></div>
+            </div>
+            <div class="settings-menu-section">
+                <h4 class="win-h4">Default picture duration</h4>
+                <p>Pictures will start out with this duration when you first import them. You can always resize them to be as long (or short) as you want.</p>
+                <select class="win-dropdown app-setting app-setting--default-picture-duration" data-app-setting="default-picture-duration" data-setting-type="dropdown-num">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3" selected>3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+            </div>
+            <h3 class="win-h3">Reset settings</h3>
+            <p>Use this menu to reset your settings.</p>
+            <div class="settings-menu-section">
+                <h4 class="win-h4">Reset all settings</h4>
+                <p>For when you want to go nuclear. This will set all of your Ensemble of One settings back to their default state.</p>
+                <p><button class="win-button eo1-btn app-setting app-setting--reset-settings" data-app-setting="reset-settings" data-setting-type="instant">Reset settings</button></p>                      
+            </div>
+            <div class="settings-menu-section">
+                <h4 class="win-h4">Clear recent projects</h4>
+                <p>Maybe you're in the mood for some spring cleaning&hellip; or maybe you just don't want THAT project showing up on the main screen. This will clear the list of recent projects from the main menu. No projects are deleted.</p>
+                <p><button class="win-button eo1-btn app-setting app-setting--clear-recent-projects" data-app-setting="clear-recent-projects" data-setting-type="instant">Clear recent projects</button></p>
+            </div>
+            <div class="settings-menu-section">
+                <h4 class="win-h4">Delete unsaved projects</h4>
+                <p>Permanently delete all unsaved projects stored within the app.</p>
+                <p><button class="win-button eo1-btn app-setting app-setting--delete-all-projects" data-app-setting="delete-all-projects" data-setting-type="instant">Delete unsaved projects</button></p>
+            </div>
         </div>
     </div>
 </body>
