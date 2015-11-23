@@ -605,16 +605,21 @@
             Ensemble.FileIO.addOrReplaceRecentProject(file);
             Ensemble.Session.projectFile = file;
             Ensemble.Session.projectFileInApp = internal;
-            Windows.Storage.FileIO.readTextAsync(file).then(function (contents) {
-                Ensemble.FileIO._processLoadedProjectData(file.name, file.displayName, contents);
+            file.getBasicPropertiesAsync().then(function (basicProperties) {
+                Ensemble.Session.projectFileBasicProperties = basicProperties;
+                Windows.Storage.FileIO.readTextAsync(file).then(function (contents) {
+                    Ensemble.FileIO._processLoadedProjectData(file.name, file.displayName, contents);
+                });
             });
         },
 
         _processLoadedProjectData: function (filename, projectName, xmlString) {
-            var parser = new DOMParser();
-            var xmlDoc = parser.parseFromString(xmlString, "text/xml");
-
-            var ensembleProject = xmlDoc.firstChild;
+            /// <param name="filename" type="String">The project's filename.</param>
+            /// <param name="projectName" type="String">The name of the project.</param>
+            /// <param name="xmlString" type="String">An XML string containing the project data.</param>
+            let parser = new DOMParser(),
+                xmlDoc = parser.parseFromString(xmlString, "text/xml"),
+                ensembleProject = xmlDoc.getElementsByTagName("EnsembleOfOneProject")[0];
 
             let correctedProjectName = projectName.toLowerCase();
             if (correctedProjectName.slice(-4) == ".eo1") correctedProjectName = projectName.substr(0, projectName.length - 4);
@@ -622,27 +627,23 @@
 
             console.log("Loading project \"" + correctedProjectName + "...\"");
 
-            let projectThumb = xmlDoc.getElementsByTagName("ProjectThumb")[0].childNodes[0].nodeValue;
+            let projectThumb = xmlDoc.getElementsByTagName("ProjectThumb")[0].childNodes[0].nodeValue,
+                zoomLevel = parseInt(xmlDoc.getElementsByTagName("TimelineZoom")[0].childNodes[0].nodeValue, 10),
+                dateModified = Ensemble.Session.projectFileBasicProperties.dateModified,
+                dateCreated = Ensemble.Session.projectFile.dateCreated,
+                numberOfClips = parseInt(xmlDoc.getElementsByTagName("NumberOfClips")[0].childNodes[0].nodeValue, 10);
+                aspectRatio = xmlDoc.getElementsByTagName("AspectRatio")[0].childNodes[0].nodeValue,
+                resolution = {
+                    width: parseInt(xmlDoc.getElementsByTagName("Resolution")[0].getAttribute("width"), 10),
+                    height: parseInt(xmlDoc.getElementsByTagName("Resolution")[0].getAttribute("height"), 10) },
+                duration = parseInt(xmlDoc.getElementsByTagName("ProjectLength")[0].childNodes[0].nodeValue, 10),
+                tracks = xmlDoc.getElementsByTagName("Tracks")[0].getElementsByTagName("Track"),
+                freeTrackId = parseInt(xmlDoc.getElementsByTagName("Tracks")[0].getAttribute("FreeTrackId")),
+                freeClipId = parseInt(xmlDoc.getElementsByTagName("Tracks")[0].getAttribute("FreeClipId")),
 
-            var zoomLevel = parseInt(xmlDoc.getElementsByTagName("TimelineZoom")[0].childNodes[0].nodeValue, 10);
-
-            var dateModified = new Date(parseInt(xmlDoc.getElementsByTagName("DateModified")[0].childNodes[0].nodeValue, 10));
-            var dateCreated = new Date(parseInt(xmlDoc.getElementsByTagName("DateCreated")[0].childNodes[0].nodeValue, 10));
-            var numberOfClips = parseInt(xmlDoc.getElementsByTagName("NumberOfClips")[0].childNodes[0].nodeValue, 10);
-            var aspectRatio = xmlDoc.getElementsByTagName("AspectRatio")[0].childNodes[0].nodeValue;
-            let resolution = {
-                width: parseInt(xmlDoc.getElementsByTagName("Resolution")[0].getAttribute("width"), 10),
-                height: parseInt(xmlDoc.getElementsByTagName("Resolution")[0].getAttribute("height"), 10)
-            };
-            var duration = parseInt(xmlDoc.getElementsByTagName("ProjectLength")[0].childNodes[0].nodeValue, 10);
-
-            var tracks = xmlDoc.getElementsByTagName("Tracks")[0].getElementsByTagName("Track");
-            var freeTrackId = parseInt(xmlDoc.getElementsByTagName("Tracks")[0].getAttribute("FreeTrackId"));
-            var freeClipId = parseInt(xmlDoc.getElementsByTagName("Tracks")[0].getAttribute("FreeClipId"));
-
-            var historyParent = xmlDoc.getElementsByTagName("History")[0];
-            var undoParent = historyParent.getElementsByTagName("Undo")[0];
-            var redoParent = historyParent.getElementsByTagName("Redo")[0];
+                historyParent = xmlDoc.getElementsByTagName("History")[0],
+                undoParent = historyParent.getElementsByTagName("Undo")[0],
+                redoParent = historyParent.getElementsByTagName("Redo")[0];
 
             Ensemble.Session.projectAspect = aspectRatio;
             Ensemble.Session.projectResolution = resolution;
@@ -661,7 +662,7 @@
             Ensemble.Editor.TimelineMGR._uniqueTrackID = freeTrackId;
             Ensemble.Editor.TimelineMGR._uniqueClipID = freeClipId;
 
-            var undoActions = undoParent.getElementsByTagName("HistoryAction");
+            let undoActions = undoParent.getElementsByTagName("HistoryAction");
             if (undoActions.length > 0) {
                 console.log("Loading " + undoActions.length + " back history items.");
                 for (var i = 0; i < undoActions.length; i++) {
@@ -853,7 +854,7 @@
                 }
             }
 
-            var redoActions = redoParent.getElementsByTagName("HistoryAction");
+            let redoActions = redoParent.getElementsByTagName("HistoryAction");
             if (redoActions.length > 0) {
                 console.log("Loading " + redoActions.length + " forward history items.");
                 for (var i = 0; i < redoActions.length; i++) {
@@ -1389,34 +1390,30 @@
                                 let currentFile = projectFiles[i],
                                     loadedFilename = projectFiles[i].name,
                                     loadedProjectName = projectFiles[i].displayName;
-                                Windows.Storage.FileIO.readTextAsync(projectFiles[i]).then(function (contents) {
-                                    var parser = new DOMParser();
-                                    var xmlDoc = parser.parseFromString(contents, "text/xml");
+                                projectFiles[i].getBasicPropertiesAsync().then(function (basicProperties) {
+                                    Windows.Storage.FileIO.readTextAsync(currentFile).then(function (contents) {
+                                        var parser = new DOMParser();
+                                        var xmlDoc = parser.parseFromString(contents, "text/xml");
 
-                                    var ensembleProject = xmlDoc.firstChild;
-                                            
-                                    try {
-                                        var loadedDateModified = new Date(parseInt(xmlDoc.getElementsByTagName("DateModified")[0].childNodes[0].nodeValue, 10));
-                                    }
-                                    catch (exception) {
-                                        var loadedDateModified = "Unknown";
-                                    }
-                                    var loadedAspectRatio = xmlDoc.getElementsByTagName("AspectRatio")[0].childNodes[0].nodeValue;
-                                    var loadedNumberOfClips = xmlDoc.getElementsByTagName("MediaClip").length;
-                                    var loadedProjectLength = xmlDoc.getElementsByTagName("ProjectLength")[0].childNodes[0].nodeValue;
-                                    let loadedThumbnailPath = xmlDoc.getElementsByTagName("ProjectThumb")[0].childNodes[0].nodeValue;
+                                        let ensembleProject = xmlDoc.firstChild,
+                                            loadedDateModified = basicProperties.dateModified,
+                                            loadedAspectRatio = xmlDoc.getElementsByTagName("AspectRatio")[0].childNodes[0].nodeValue,
+                                            loadedNumberOfClips = xmlDoc.getElementsByTagName("MediaClip").length,
+                                            loadedProjectLength = xmlDoc.getElementsByTagName("ProjectLength")[0].childNodes[0].nodeValue,
+                                            loadedThumbnailPath = xmlDoc.getElementsByTagName("ProjectThumb")[0].childNodes[0].nodeValue;
 
-                                    dataArray.push(new Ensemble.Editor.ProjectFile(loadedProjectName, loadedFilename, loadedDateModified, loadedNumberOfClips, loadedAspectRatio, loadedProjectLength, loadedThumbnailPath, null, currentFile));
-                                    dataArray[dataArray.length - 1].internal = true;
+                                        dataArray.push(new Ensemble.Editor.ProjectFile(loadedProjectName, loadedFilename, loadedDateModified, loadedNumberOfClips, loadedAspectRatio, loadedProjectLength, loadedThumbnailPath, null, currentFile));
+                                        dataArray[dataArray.length - 1].internal = true;
 
-                                    if (dataArray.length == projectFiles.length) {
-                                        dataArray.sort(function (a, b) {
-                                            if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
-                                            if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
-                                            return 0;
-                                        });
-                                        callback(dataArray);
-                                    }
+                                        if (dataArray.length == projectFiles.length) {
+                                            dataArray.sort(function (a, b) {
+                                                if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+                                                if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+                                                return 0;
+                                            });
+                                            callback(dataArray);
+                                        }
+                                    });
                                 });
                             })();
                         }
@@ -1440,26 +1437,21 @@
                     mostRecentlyUsedList.getFileAsync(projectTokens[iter]).then(function (projectFile) {
                         let loadedFilename = projectFile.name,
                             loadedProjectName = projectFile.displayName;
-                        Windows.Storage.FileIO.readTextAsync(projectFile).done(function (contents) {
-                            let parser = new DOMParser(),
-                                xmlDoc = parser.parseFromString(contents, "text/xml"),
-                                ensembleProject = xmlDoc.firstChild,
-                                loadedAspectRatio = xmlDoc.getElementsByTagName("AspectRatio")[0].childNodes[0].nodeValue,
-                                loadedNumberOfClips = xmlDoc.getElementsByTagName("MediaClip").length,
-                                loadedProjectLength = xmlDoc.getElementsByTagName("ProjectLength")[0].childNodes[0].nodeValue,
-                                loadedThumbnailPath = xmlDoc.getElementsByTagName("ProjectThumb")[0].childNodes[0].nodeValue,
-                                loadedDateModified = "";
+                        projectFile.getBasicPropertiesAsync().then(function (basicProperties) {
+                            Windows.Storage.FileIO.readTextAsync(projectFile).done(function (contents) {
+                                let parser = new DOMParser(),
+                                    xmlDoc = parser.parseFromString(contents, "text/xml"),
+                                    ensembleProject = xmlDoc.firstChild,
+                                    loadedAspectRatio = xmlDoc.getElementsByTagName("AspectRatio")[0].childNodes[0].nodeValue,
+                                    loadedNumberOfClips = xmlDoc.getElementsByTagName("MediaClip").length,
+                                    loadedProjectLength = xmlDoc.getElementsByTagName("ProjectLength")[0].childNodes[0].nodeValue,
+                                    loadedThumbnailPath = xmlDoc.getElementsByTagName("ProjectThumb")[0].childNodes[0].nodeValue,
+                                    loadedDateModified = basicProperties.dateModified;
 
-                            try {
-                                loadedDateModified = new Date(parseInt(xmlDoc.getElementsByTagName("DateModified")[0].childNodes[0].nodeValue, 10));
-                            }
-                            catch (exception) {
-                                loadedDateModified = "Unknown";
-                            }
+                                dataArray.push(new Ensemble.Editor.ProjectFile(loadedProjectName, loadedFilename, loadedDateModified, loadedNumberOfClips, loadedAspectRatio, loadedProjectLength, loadedThumbnailPath, iter, projectFile));
 
-                            dataArray.push(new Ensemble.Editor.ProjectFile(loadedProjectName, loadedFilename, loadedDateModified, loadedNumberOfClips, loadedAspectRatio, loadedProjectLength, loadedThumbnailPath, iter, projectFile));
-
-                            Ensemble.FileIO._enumerateRecentProjectsCompletionTest(dataArray, errorArray, projectCount, callback);
+                                Ensemble.FileIO._enumerateRecentProjectsCompletionTest(dataArray, errorArray, projectCount, callback);
+                            });
                         });
                     }, function (error) {
                         console.error("Unable to lookup recent project.");
