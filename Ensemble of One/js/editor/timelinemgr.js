@@ -3,6 +3,7 @@
         /// <summary>Manages the history state of the current project.</summary>
 
         tracks: [],
+        composition: new Windows.Media.Editing.MediaComposition(),
         _clipIndex: [],
         _clipIndexPosition: 0,
         _timeIndex: [],
@@ -48,6 +49,7 @@
         init: function () {
             /// <summary>Links all UI references.</summary>
             this._refreshUI();
+            this.composition = null;
 
             // todo: iterate through all tracks in the list and build their display.
             for (let i = 0; i < this.tracks.length; i++) {
@@ -78,6 +80,7 @@
             }
 
             this.tracks = [];
+            this.composition = null;
             this._clipIndex = [];
             this._clipIndexPosition = 0;
             this._timeIndex = [];
@@ -97,14 +100,18 @@
             /// <param name="nameToUse" type="String">Optional. A name to give the track.</param>
             /// <param name="volumeToUse" type="Number">Optional. A volume level to assign the track.</param>
 
-            var newTrack = new Ensemble.Editor.Track(idToUse, nameToUse, volumeToUse);
+            let newTrack = new Ensemble.Editor.Track(idToUse, nameToUse, volumeToUse),
+                newOverlayLayer = Windows.Media.Editing.MediaOverlayLayer();
             this.tracks.push(newTrack);
+            this.composition.overlayLayers.append(newOverlayLayer);
             Ensemble.Session.projectTrackCount = this.tracks.length;
             let trackDisplayObj = Ensemble.Editor.TimelineMGR._buildTrackDisplay(newTrack);
             
             // Append the track to the end.
             Ensemble.Editor.UI.PageSections.lowerHalf.timelineDetails.appendChild(trackDisplayObj.detail);
             Ensemble.Editor.UI.PageSections.lowerHalf.timelineTracks.appendChild(trackDisplayObj.content);
+
+            this.refreshComposition();
 
             return newTrack.id;
         },
@@ -451,9 +458,13 @@
                 $(trackItself).insertBefore($("#" + this._buildTrackDOMId(this.tracks[destination].id)));
             }
 
-            var movingItem = this.tracks.splice(origin, 1)[0];
+            let movingItem = this.tracks.splice(origin, 1)[0],
+                movingOverlayLayer = this.composition.overlayLayers.getAt(origin);
+            this.composition.overlayLayers.removeAt(origin);
             this.tracks.splice(destination, 0, movingItem);
+            this.composition.overlayLayers.insertAt(destination, movingOverlayLayer);
             this._rebuildIndex();
+            this.refreshComposition();
             Ensemble.Editor.Renderer.requestFrame();
         },
 
@@ -673,6 +684,12 @@
             document.getElementsByClassName("timeline__inner-track-wrap")[0].appendChild(rightGripper);
         },
 
+        refreshComposition: function () {
+            /// <summary>Refreshes the MediaComposition preview display.</summary>
+            let previewElement = document.getElementsByClassName("editor-composition-player")[0],
+                mediaStreamSource = Ensemble.Editor.TimelineMGR.composition.generatePreviewMediaStreamSource(previewElement.offsetWidth, previewElement.offsetHeight);
+            previewElement.src = URL.createObjectURL(mediaStreamSource, { oneTimeOnly: true });
+        },
 
         _buildClipDisplay: function (clip) {
             /// <param name="clip" type="Ensemble.Editor.Clip">The Clip to represent on the timeline.</param>

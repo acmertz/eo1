@@ -21,6 +21,7 @@
 
         _projectLoadBuffer: {},
         _projectClipsFullyLoaded: 0,
+        _projectLoadComposition: new Windows.Media.Editing.MediaComposition(),
 
         _pickItemsCallback: null,
         _pickItemsTempFiles: [],
@@ -638,6 +639,7 @@
                     height: parseInt(xmlDoc.getElementsByTagName("Resolution")[0].getAttribute("height"), 10) },
                 duration = parseInt(xmlDoc.getElementsByTagName("ProjectLength")[0].childNodes[0].nodeValue, 10),
                 tracks = xmlDoc.getElementsByTagName("Tracks")[0].getElementsByTagName("Track"),
+                compositionXML = xmlDoc.getElementsByName("Composition")[0],
                 freeTrackId = parseInt(xmlDoc.getElementsByTagName("Tracks")[0].getAttribute("FreeTrackId")),
                 freeClipId = parseInt(xmlDoc.getElementsByTagName("Tracks")[0].getAttribute("FreeClipId")),
 
@@ -1046,6 +1048,9 @@
                 }
             }
 
+            Ensemble.FileIO._projectLoadComposition = null;
+            Ensemble.FileIO._loadCompositionFromXMLString(compositionXML);
+
             if (tracks.length > 0) {
                 //Create empty tracks
                 for (let i = 0; i < tracks.length; i++) {
@@ -1056,7 +1061,7 @@
                 Ensemble.FileIO._projectClipsFullyLoaded = 0;
                 for (let i = 0; i < Ensemble.Editor.TimelineMGR.tracks.length; i++) {
                     for (let k = 0; k < Ensemble.Editor.TimelineMGR.tracks[i].clips.length; k++) {
-                        if (Ensemble.Editor.TimelineMGR.tracks[i].clips[k].type == Ensemble.Editor.Clip.ClipType.lens) Ensemble.FileIO._projectProjectLoadCompletionChecker();
+                        if (Ensemble.Editor.TimelineMGR.tracks[i].clips[k].type == Ensemble.Editor.Clip.ClipType.lens) Ensemble.FileIO._projectFileLoadCompletionChecker();
                         else Ensemble.FileIO._loadFileFromStub(Ensemble.Editor.TimelineMGR.tracks[i].clips[k], i, Ensemble.FileIO._projectFileStubLoaded);
                     }
                 }
@@ -1065,6 +1070,17 @@
                 //Fire callback. Project is empty (no tracks or media).
                 Ensemble.MainMenu._listeners.projectFinishedLoading();
             }
+        },
+
+        _loadCompositionFromXMLString: function (compositionXML) {
+            Windows.Storage.ApplicationData.current.temporaryFolder.createFileAsync("tmp.cmp", Windows.Storage.CreationCollisionOption.generateUniqueName).then(function (compositionFile) {
+                Windows.Storage.FileIO.writeTextAsync(compositionFile, compositionXML).then(function () {
+                    Windows.Media.Editing.MediaComposition.loadAsync(compositionFile).done(function (loadedComposition) {
+                        Ensemble.FileIO._projectLoadComposition = loadedComposition;
+                        Ensemble.FileIO._projectFinalLoadChecker();
+                    });
+                });
+            });
         },
 
         _loadMultipleClips: function (clipArr, payload, callback) {
@@ -1218,14 +1234,21 @@
                     player = payload.player;
                 Ensemble.FileIO._projectLoadBuffer[id].setPlayer(player);
                 console.log("Finished loading clip with ID " + id + ".");
-                Ensemble.FileIO._projectProjectLoadCompletionChecker();
+                Ensemble.FileIO._projectFileLoadCompletionChecker();
             })();
         },
 
-        _projectProjectLoadCompletionChecker: function () {
+        _projectFileLoadCompletionChecker: function () {
             Ensemble.FileIO._projectClipsFullyLoaded++;
-            if (Ensemble.FileIO._projectClipsFullyLoaded === Ensemble.Session.projectClipCount) {
+            Ensemble.FileIO._projectFinalLoadChecker();
+        },
+
+        _projectFinalLoadChecker: function () {
+            if (Ensemble.FileIO._projectLoadComposition != null && Ensemble.FileIO._projectClipsFullyLoaded === Ensemble.Session.projectClipCount) {
                 console.info("Finished loading all clips!");
+                Ensemble.Editor.TimelineMGR.composition = Ensemble.FileIO._projectLoadComposition;
+                Ensemble.FileIO._projectLoadComposition = null;
+                Ensemble.Editor.TimelineMGR.refreshComposition();
                 Ensemble.Editor.TimelineMGR.refreshClipVolumeModifiers();
                 requestAnimationFrame(function () {
                     Ensemble.MainMenu._listeners.projectFinishedLoading();
