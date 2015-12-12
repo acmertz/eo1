@@ -33,6 +33,8 @@
         _multiClipLoadCb: null,
         _multiClipLoadBuffer: [],
 
+        _loadMediaClipFromStubData: { clip: new Ensemble.Editor.Clip(-1), callback: function () { } },
+
         saveProject: function (overrideFile) {
             /// <summary>Saves the currently loaded project to disk.</summary>
             /// <param name="overrideFile" type="Windows.Storage.StorageFile">Optional. A target for the save operation.</param>
@@ -1130,6 +1132,68 @@
             }
         },
 
+        loadMediaClipFromStub: function (clip, callback) {
+            /// <summary>Loads a MediaClip object from the given Ensemble.Clip stub.</summary>
+            /// <param name="clip" type="Ensemble.Editor.Clip">The clip to load.</param>
+            /// <param name="callback" type="Function">The function to execute upon loading completion. Passes an object containing the Ensemble.Clip object, a metadata object, and the MediaClip that represents the clip for playback.</param>
+            Ensemble.FileIO._loadMediaClipFromStubData.clip = clip;
+            Ensemble.FileIO._loadMediaClipFromStubData.callback = callback;
+
+            let clipObj = clip,
+                cb = callback;
+
+            if (clipObj.file.token.length > 0) {
+                Windows.Storage.AccessCache.StorageApplicationPermissions.futureAccessList.getFileAsync(clipObj.file.token).done(function (loadedFile) {
+                    console.log("Loading file stub for clip with ID " + payloadObj + "...");
+                    let newFile = Ensemble.FileIO._mergeFileStub(loadedFile);
+                    newFile.token = clipObj.file.token;
+                    clipObj.file = newFile;
+                    if (continueLoad) {
+                        Ensemble.FileIO.loadClip(clipObj.file, clipObj, cb, null, null, true);
+                    }
+                    else cb(clipObj, payloadObj);
+                });
+            }
+            else {
+                Windows.Storage.StorageFile.getFileFromPathAsync(clipObj.file.path).done(function (loadedFile) {
+                    console.log("Loading file stub for clip with ID " + payloadObj + "...");
+                    let newFile = Ensemble.FileIO._mergeFileStub(loadedFile);
+                    clipObj.file = newFile;
+
+                    if (continueLoad) {
+                        Ensemble.FileIO.loadClip(clipObj.file, clipObj, cb, null, null, true);
+                    }
+                    else cb(clipObj, payloadObj);
+                });
+            }
+        },
+
+        loadMediaClipFromFile: function (file, callback) {
+            /// <summary>Loads a MediaClip object for the given file.</summary>
+            /// <param name="file" type="Ensemble.EnsembleFile">The file to load.</param>
+            /// <param name="callback" type="Function">The callback to execute upon completion.</param>
+            switch (file.eo1type) {
+                case "video":
+                    Windows.Media.Editing.MediaClip.createFromFileAsync(file).done(Ensemble.FileIO._mediaClipObjectLoaded);
+                    break;
+                case "audio":
+                    Windows.Media.Editing.BackgroundAudioTrack.createFromFileAsync(file).done(Ensemble.FileIO._backgroundAudioTrackLoaded);
+                    break;
+                case "picture":
+                    Windows.Media.Editing.MediaClip.createFromImageFileAsync(file, 3000).done(Ensemble.FileIO._mediaClipObjectLoaded);
+                    break;
+            }
+        },
+
+        _mediaClipObjectLoaded: function (mediaClip) {
+            /// <param name="mediaClip" type="Windows.Media.Editing.MediaClip">The loaded MediaClip object.</param>
+
+        },
+
+        _backgroundAudioTrackLoaded: function (audioTrack) {
+            /// <param name="audioTrack" type="Windows.Media.Editing.BackgroundAudioTrack">The loaded BackgroundAudioTrack object.</param>
+        },
+
         _loadFileFromStub: function (clip, payload, callback, loadClip) {
             /// <summary>Loads an EnsembleFile from disk for the given clip stub.</summary>
             /// <param name="clip" type="Ensemble.Editor.Clip">The clip whose stub to load.</param>
@@ -1304,27 +1368,28 @@
             /// <param name="continueLoad" type="Boolean">Optional. If true, metadata load will be triggered instead of firing the callback.</param>
             
             (function () {
-                var file = ensembleFile;
-                var data = payload;
-                var callback = complete;
-
-                var fileURI = URL.createObjectURL(file._src, { oneTimeOnly: false });
-
-                var srcElement = null;
+                let file = ensembleFile,
+                    data = payload,
+                    callback = complete,
+                    fileURI = URL.createObjectURL(file._src, { oneTimeOnly: false }),
+                    srcElement = null;
                 switch (file.eo1type) {
                     case "video":
+                        Windows.Media.Editing.MediaClip.createFromFileAsync(file).done(Ensemble.FileIO._clipFinishedLoading, Ensemble.FileIO._clipLoadError);
                         srcElement = document.createElement("video");
                         //srcElement.oncanplaythrough = function () { console.log("Video clip finished loading!"); };
                         srcElement.oncanplaythrough = Ensemble.FileIO._clipFinishedLoading;
                         srcElement.onerror = Ensemble.FileIO._clipLoadError;
                         break;
                     case "audio":
+                        Windows.Media.Editing.BackgroundAudioTrack.createFromFileAsync(file).done(Ensemble.FileIO._clipFinishedLoading, Ensemble.FileIO._clipLoadError);
                         srcElement = document.createElement("audio");
                         //srcElement.oncanplaythrough = function () { console.log("Audio clip finished loading!"); };
                         srcElement.oncanplaythrough = Ensemble.FileIO._clipFinishedLoading;
                         srcElement.onerror = Ensemble.FileIO._clipLoadError;
                         break;
                     case "picture":
+                        Windows.Media.Editing.MediaClip.createFromImageFileAsync(file, 3000).done(Ensemble.FileIO._clipFinishedLoading, Ensemble.FileIO._clipLoadError);
                         srcElement = document.createElement("img");
                         //srcElement.onload = function () { console.log("Image loaded!"); };
                         srcElement.onload = Ensemble.FileIO._clipFinishedLoading;
