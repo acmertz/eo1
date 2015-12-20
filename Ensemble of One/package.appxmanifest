@@ -29,6 +29,7 @@
             <uap:DisplayName>Ensemble of One Project</uap:DisplayName>
             <uap:Logo>img\packaging\taskbar.png</uap:Logo>
             <uap:InfoTip>An Ensemble of One video project</uap:InfoTip>
+            <uap:EditFlags OpenIsSafe="true" />
             <uap:SupportedFileTypes>
               <uap:FileType ContentType="text/xml">.eo1</uap:FileType>
             </uap:SupportedFileTypes>

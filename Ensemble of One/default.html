@@ -14,34 +14,25 @@
     <!-- Ensemble_of_One_Win10 references -->
     <link rel="stylesheet" href="/css/default.css" />
     <link rel="stylesheet" href="/css/app-page.css" />
-    <link rel="stylesheet" href="/css/buttons.css" />
-    <link rel="stylesheet" href="/css/editor.css" />
     <link rel="stylesheet" href="/css/editor-menu.css" />
-    <link rel="stylesheet" href="/css/editor-new.css" />
+    <link rel="stylesheet" href="/css/editor.css" />
     <link rel="stylesheet" href="/css/listviews.css" />
     <link rel="stylesheet" href="/css/main-menu.css" />
-    <link rel="stylesheet" href="/css/media-browser.css" />
     <link rel="stylesheet" href="/css/panels.css" />
     <link rel="stylesheet" href="/css/timeline.css" />
 
     <!-- Libraries -->
-    <link rel="stylesheet" href="/lib/font-awesome-4.1.0/css/font-awesome.min.css">
-    <script src="/lib/glfx.js"></script>
-    <script src="/lib/jquery-2.1.1.min.js"></script>
+    <script src="/lib/jquery-3.0.0-pre.js"></script>
     <script src="/lib/underscore-min.js"></script>
-    <script src="/lib/XMLWriter.js"></script>
 
     <!-- Classes, functions, and global variables -->
     <!-- Editor -->
     <script src="/js/editor/audiocapturemgr.js"></script>
-    <script src="/js/editor/calloutmgr.js"></script>
     <script src="/js/editor/clip.js"></script>
     <script src="/js/editor/effectmgr.js"></script>
-    <script src="/js/editor/mediabrowser.js"></script>
-    <script src="/js/editor/menumgr.js"></script>
+    <script src="/js/editor/toolbarmgr.js"></script>
     <script src="/js/editor/playbackmgr.js"></script>
     <script src="/js/editor/panelmgr.js"></script>
-    <script src="/js/editor/renderer.js"></script>
     <script src="/js/editor/selectionmgr.js"></script>
     <script src="/js/editor/timelinemgr.js"></script>
     <script src="/js/editor/timelinezoommgr.js"></script>
@@ -73,7 +64,6 @@
     <script src="/js/projectfile.js"></script>
     <script src="/js/session.js"></script>
     <script src="/js/settings.js"></script>
-    <script src="/js/ui.js"></script>
 
     <script src="/js/default.js"></script>
 </head>
@@ -115,7 +105,6 @@
             </div>
         </div>
     </div>
-    <div class="editor-media-container"></div>
     <div class="app-page app-page--main-menu">
         <div class="splitView" data-win-control="WinJS.UI.SplitView"
              data-win-options="{
@@ -199,11 +188,6 @@
             <span class="editor-hamburger-button">&#59136;</span>
             
             <div data-win-control="WinJS.UI.ToolBar" class="editor-toolbar">
-                <button data-editor-command="add-item" class="editor-toolbar-command editor-toolbar-command--add-button" data-win-control="WinJS.UI.Command" data-win-options="{
-                    label:'New track',
-                    section:'primary',
-                    type:'button',
-                    icon: 'add'}"></button>
                 <button data-editor-command="browse-media" class="editor-toolbar-command editor-toolbar-command--browse-media" data-win-control="WinJS.UI.Command" data-win-options="{
                     label:'Browse…',
                     section:'primary',
@@ -230,25 +214,6 @@
 
                 <hr data-win-control="WinJS.UI.Command" class="editor-toolbar-command" data-win-options="{type:'separator'}" />
 
-                <button data-editor-command="create-title" class="editor-toolbar-command editor-toolbar-command--create-title" data-win-control="WinJS.UI.Command" data-win-options="{
-                    label:'Title',
-                    section:'primary',
-                    type:'button',
-                    icon: 'previewlink'}"></button>
-                <button data-editor-command="create-filter" class="editor-toolbar-command editor-toolbar-command--create-filter" data-win-control="WinJS.UI.Command" data-win-options="{
-                    label:'Effect',
-                    section:'primary',
-                    type:'flyout',
-                    icon: 'favorite',
-                    flyout:select('.flyout--editor-new-effect')}"></button>
-                <button data-editor-command="edit-animation" class="editor-toolbar-command editor-toolbar-command--edit-animation" data-win-control="WinJS.UI.Command" data-win-options="{
-                    label:'Animation',
-                    section:'primary',
-                    type:'button',
-                    icon: 'list'}"></button>
-
-                <hr data-win-control="WinJS.UI.Command" class="editor-toolbar-command" data-win-options="{type:'separator'}" />
-
                 <button data-editor-command="split-clip" class="editor-toolbar-command editor-toolbar-command--split-clip" data-win-control="WinJS.UI.Command" data-win-options="{
                     label:'Split',
                     section:'primary',
@@ -259,20 +224,6 @@
                     section:'primary',
                     type:'button',
                     icon: 'clearselection'}"></button>
-
-                <hr data-win-control="WinJS.UI.Command" class="editor-toolbar-command" data-win-options="{type:'separator'}" />
-
-                <button data-editor-command="zoom-in" class="editor-toolbar-command editor-toolbar-command--zoom-in" data-win-control="WinJS.UI.Command" data-win-options="{
-                    label:'Zoom in',
-                    section:'primary',
-                    type:'button',
-                    icon: 'zoomin'}"></button>
-
-                <button data-editor-command="zoom-out" class="editor-toolbar-command editor-toolbar-command--zoom-out" data-win-control="WinJS.UI.Command" data-win-options="{
-                    label:'Zoom out',
-                    section:'primary',
-                    type:'button',
-                    icon: 'zoomout'}"></button>
             </div>
 
             <span class="editor-history-controls">
@@ -282,6 +233,11 @@
         </nav>
         <main class="editor-content">
             <section class="editor-section editor-section--upper">
+
+                <div class="editor-canvas-container">
+                    
+                </div>
+
                 <div class="editor-panel-container">
                     <div class="editor-panel-container__panels">
                         <div class="editor-panel editor-panel--webcam" data-editor-panel="webcam">
@@ -309,166 +265,38 @@
                                 <button class="editor-titlebar-control editor-titlebar-control--inverted media-capture-control--settings eo1-btn--mic-capture-settings">&#57694;</button>
                             </div>
                         </div>
-                        <div class="editor-panel editor-panel--effect" data-editor-panel="effect">
-                            <h3 class="win-h3">Edit effect</h3>
-                            <div class="editor-effect editor-effect--solid-color">
-                                <div class="editor-effect-column">
-                                    <h4 class="win-h4">Background</h4>
-                                    <h5 class="win-h5">Red</h5>
-                                    <p><input type="range" class="win-slider effect-param effect-param--solid-color-red" data-effect-param="solid-color-red" min="0" max="255" step="1" /></p>
-
-                                    <h5 class="win-h5">Green</h5>
-                                    <p><input type="range" class="win-slider effect-param effect-param--solid-color-green" data-effect-param="solid-color-green" min="0" max="255" step="1" /></p>
-
-                                    <h5 class="win-h5">Blue</h5>
-                                    <p><input type="range" class="win-slider effect-param effect-param--solid-color-blue" data-effect-param="solid-color-blue" min="0" max="255" step="1" /></p>
-
-                                    <h5 class="win-h5">Opacity</h5>
-                                    <p><input type="range" class="win-slider effect-param effect-param--solid-color-opacity" data-effect-param="solid-color-opacity" min="0" max="100" step="1" /></p>
-                                </div>
-                                
-                                <div class="editor-effect-column">
-                                    <h4 class="win-h4">Border</h4>
-                                    <h5 class="win-h5">Red</h5>
-                                    <p><input type="range" class="win-slider effect-param effect-param--solid-color-border-red" data-effect-param="solid-color-border-red" min="0" max="255" step="1" /></p>
-
-                                    <h5 class="win-h5">Green</h5>
-                                    <p><input type="range" class="win-slider effect-param effect-param--solid-color-border-green" data-effect-param="solid-color-border-green" min="0" max="255" step="1" /></p>
-
-                                    <h5 class="win-h5">Blue</h5>
-                                    <p><input type="range" class="win-slider effect-param effect-param--solid-color-border-blue" data-effect-param="solid-color-border-blue" min="0" max="255" step="1" /></p>
-
-                                    <h5 class="win-h5">Opacity</h5>
-                                    <p><input type="range" class="win-slider effect-param effect-param--solid-color-border-opacity" data-effect-param="solid-color-border-opacity" min="0" max="100" step="1" /></p>
-
-                                    <h5 class="win-h5">Width</h5>
-                                    <p><input type="range" class="win-slider effect-param effect-param--solid-color-border-width" data-effect-param="solid-color-border-width" min="0" max="100" step="1" /></p>
-                                </div>
-                            </div>
-                        </div>
                         <div class="editor-panel-close-button">&#57610;</div>
                         </div>
                     <div class="editor-panel-container__tabs">
                         <div class="editor-panel-tab editor-panel-tab--webcam" data-editor-panel="webcam">&#57622;</div>
                         <div class="editor-panel-tab editor-panel-tab--mic" data-editor-panel="mic">&#57814;</div>
-                        <div class="editor-panel-tab editor-panel-tab--effect" data-editor-panel="effect">&#57619;</div>
-                    </div>
-                </div>
-                
-                <div class="editor-canvas-container">
-                    <canvas class="editor-canvas"></canvas>
-                    <div class="editor-playback-widget">
-                        <div class="editor-playback-widget__section">
-                            <div class="editor-time-display">00:00:00.000</div>
-                        </div>
-                        <div class="editor-playback-widget__section editor-playback-widget__section--no-flex">
-                            <button class="win-button eo1-btn eo1-btn--editor-playpause" title="Play">&#xE102;</button>
-                        </div>
-                        <div class="editor-playback-widget__section">
-                            <button class="editor-titlebar-control editor-titlebar-control--inverted eo1-btn--editor-fullscreen" disabled title="Fullscreen">&#57817;</button>
-                        </div>
                     </div>
                 </div>
             </section>
 
             <section class="editor-section editor-section--lower">
-                <div class="timeline">
-                    <div class="timeline__header-container"></div>
-                    <div class="timeline__header-mask"></div>
-                    <div class="timeline__track-container">
-                        <div class="timeline__inner-track-wrap">
-                            <div class="timeline__drop-preview"></div>
-                        </div>
-                        <canvas class="timeline__ruler"></canvas>
-                        <div class="timeline__hover-cursor">
-                            <div class="timeline__cursor-label-container timeline__cursor-label-container--hover">
-                                <div class="timeline__cursor-label-text timeline__cursor-label-text--hover-cursor">00:00:00.000</div>
-                                <div class="timeline__cursor-label-triangle timeline__cursor-label-triangle--upper"></div>
-                                <div class="timeline__cursor-label-triangle timeline__cursor-label-triangle--lower"></div>
-                            </div>
-                        </div>
-                        <div class="timeline__cursor">
-                            <div class="timeline__cursor-label-container">
-                                <div class="timeline__cursor-label-triangle timeline__cursor-label-triangle--upper"></div>
-                                <div class="timeline__cursor-label-triangle timeline__cursor-label-triangle--lower"></div>
-                                <div class="timeline__cursor-label-rect"></div>
-                                <div class="timeline__cursor-label-text timeline__cursor-label-text--main-cursor timeline__cursor-label-text--hidden">00:00:00.000</div>
-                            </div>
-                        </div>
+                <div class="editor-timeline-controls">
+                    <div class="timeline-zoom-controls">Zoom controls here.</div>
+                    <div class="timeline-scroll-preview">Scroll preview here.</div>
+                </div>
+                <div class="editor-timeline-display">
+                    <div class="timeline-track-controls">
+                        <div class="timeline-new-track-control">New track</div>
                     </div>
+                    <div class="timeline-track-container"></div>
                 </div>
             </section>
-
-            <video style="position:fixed;width:320px;height:180px;top:50px;right:0" class="editor-composition-player"></video>
         </main>
 
-        <div class="timeline-selection-callout" tabindex="-1">
-            <div class="selection-callout__state selection-callout__state--standard">
-                <div class="selection-callout__command callout-command--move-track-clip" data-callout-command="move-track-clip">&#xE174;</div>
-                <div class="selection-callout__command callout-command--move-clip" data-callout-command="move-clip">&#xE13C;</div>
-                <div class="selection-callout__command callout-command--context-menu" data-callout-command="context-menu">&#xE10C;</div>
-            </div>
-            <div class="selection-callout__state selection-callout__state--clip-trim">
-                <div class="selection-callout__command callout-command--accept-trim" data-callout-command="accept-trim">&#xE10B;</div>
-                <div class="selection-callout__command callout-command--reject-trim" data-callout-command="reject-trim">&#xE10A;</div>
-            </div>
-        </div>
-
-        
-
-        <div class="editor-menu-container" style="display: none !important">
-            <div class="editor-menu editor-menu--file">
-                
-            </div>
-        </div>
-
-        <div class="media-browser__drag-preview"></div>
-
-        <div class="ensemble-clickeater ensemble-clickeater--backnav ensemble-clickeater--editor-menu"></div>
         <div class="ensemble-clickeater ensemble-clickeater--ew-cursor"></div>
     </div>
 
-    <div class="app-page app-page--media-browser app-page--hidden">
-        <div class="mediaBrowserHeaderContainer">
-            <button class="editor-titlebar-control app-trigger app-trigger--backnav" title="Back">&#57557;</button>
-            <div id="editorMediaBrowserLocationButtonContainer"><span id="editorMediaBrowserLocationButton">Videos library</span><span>&nbsp;&rsaquo;</span></div>
-            <div id="editorMediaBrowserCurrentPathContainer"></div>
-            <div id="editorMediaBrowserFolderControlContainer">
-                <progress class="win-ring win-medium" id="editorMediaBrowserLoadingProgress"></progress>
-                <button class="editor-titlebar-control" id="editorMediaBrowserHomeButton">&#xE10F;</button>
-                <button class="editor-titlebar-control" id="editorMediaBrowserUpOneLevelButton">&#xE110;</button>
-                <button class="editor-titlebar-control" id="editorMediaBrowserRefreshButton">&#xE117;</button>
-            </div>
-        </div>
-        <div id="editorMenuMediaBrowserFileList"></div>
-    </div>
-
-    <div class="app-page app-page--editor-menu app-page--hidden">
-        <section class="editor-menu-titlebar">
-            <button class="editor-titlebar-control app-trigger app-trigger--backnav" title="Back">&#57557;</button>
-            <button class="editor-titlebar-control" data-editor-command="close-project" title="Close project"></button>
-            <button class="editor-titlebar-control" data-editor-command="force-save" title="Save">&#57605;</button>
-            <button class="editor-titlebar-control" data-editor-command="save-as" title="Save as...">&#57999;</button>
-            <button class="editor-titlebar-control" title="Settings">&#57621;</button>
-        </section>
-
-        <section class="editor-menu-section">
-            <h2 class="win-h2">Editor</h2>
-            <p>Editor menu content here.</p>
-        </section>
-    </div>
-
     <div>
-        <div id="flyout--editor-media-browser-location" data-win-control="WinJS.UI.Menu">
-            <button class="media-browser-location-flyout__command" data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Videos library'}" data-mediabrowser-location="video"></button>
-            <button class="media-browser-location-flyout__command" data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Music library'}" data-mediabrowser-location="music"></button>
-            <button class="media-browser-location-flyout__command" data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Pictures library'}" data-mediabrowser-location="picture"></button>
-        </div>
         <div id="flyout--editor-move-track" data-win-control="WinJS.UI.Menu">
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMoveTrackTop',label:'Move to top'}" data-move-direction="top" class="timeline-move-track-command"></button>
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMoveTrackUp',label:'Move up'}" data-move-direction="up" class="timeline-move-track-command"></button>
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMoveTrackDown',label:'Move down'}" data-move-direction="down" class="timeline-move-track-command"></button>
-            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'editorMoveTrackBottom',label:'Move to bottom'}" data-move-direction="bottom" class="timeline-move-track-command"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Move to top'}" data-move-direction="top" class="timeline-move-track-command"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Move up'}" data-move-direction="up" class="timeline-move-track-command"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Move down'}" data-move-direction="down" class="timeline-move-track-command"></button>
+            <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Move to bottom'}" data-move-direction="bottom" class="timeline-move-track-command"></button>
         </div>
         <div id="flyout--editor-track-delete" data-win-control="WinJS.UI.Flyout">
             <h3 class="win-h3">
@@ -483,23 +311,12 @@
             <audio class="media-browser-preview media-browser-preview--audio" autoplay controls></audio>
             <img class="media-browser-preview media-browser-preview--picture" />
         </div>
-        <div class="flyout--editor-media-browser-properties" data-win-control="WinJS.UI.Flyout" aria-label="{Clip properties}">
-            <h3 class="win-h3 media-browser-property media-browser-property--display-name">[Display name here]</h3>
-            <span class="bold">Folder-unique ID: </span><span class="media-browser-property media-browser-property--unique-id"></span><br />
-            <span class="bold">Path: </span><span class="media-browser-property media-browser-property--path"></span><br />
-            <span class="bold">Mime: </span><span class="media-browser-property media-browser-property--mime"></span><br />
-            <span class="bold">Width: </span><span class="media-browser-property media-browser-property--width"></span><br />
-            <span class="bold">Height: </span><span class="media-browser-property media-browser-property--height"></span><br />
-            <span class="bold">Duration: </span><span class="media-browser-property media-browser-property--duration"></span><br />
-            <span class="bold">Bitrate: </span><span class="media-browser-property media-browser-property--bitrate"></span>
-        </div>
         <div class="flyout--editor-track-rename" data-win-control="WinJS.UI.Flyout" aria-label="{Rename track}">
             <input type="text" class="win-textbox flyout--editor-track-rename__name-textbox" /><br />
             <button class="win-button eo1-btn flyout--editor-track-rename__confirm-button">Rename track</button>
         </div>
         <div id="contextmenu--editor-clip-selected" data-win-control="WinJS.UI.Menu">
             <button data-win-control="WinJS.UI.MenuCommand" class="clip-selected-contextmenu__command clip-selected-contextmenu__command--volume" data-contextmenu-command="volume" data-win-options="{id:'',label:'Volume'}"></button>
-            <button data-win-control="WinJS.UI.MenuCommand" class="clip-selected-contextmenu__command clip-selected-contextmenu__command--edit-effect" data-contextmenu-command="edit-effect" data-win-options="{id:'',label:'Edit effect…'}"></button>
             <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',type:'separator'}" />
             <button data-win-control="WinJS.UI.MenuCommand" class="clip-selected-contextmenu__command clip-selected-contextmenu__command--remove" data-contextmenu-command="remove" data-win-options="{id:'',label:'Remove'}"></button>
             <button data-win-control="WinJS.UI.MenuCommand" class="clip-selected-contextmenu__command clip-selected-contextmenu__command--rename" data-contextmenu-command="rename" data-win-options="{id:'',label:'Rename'}"></button>
@@ -514,7 +331,6 @@
             <input type="range" min="0" max="100" value="100" class="win-slider flyout--editor-clip-volume__slider" />
             <span class="flyout--editor-clip-volume__indicator">100</span>
         </div>
-        <div class="contextmenu--editor-create-lens" data-win-control="WinJS.UI.Menu"></div>
         <div class="contextmenu--webcam-panel-options" data-win-control="WinJS.UI.Menu">
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Change camera', type:'flyout', flyout:select('.contextmenu--webcam-device-select')}"></button>
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Change mic', type:'flyout', flyout:select('.contextmenu--mic-device-select')}"></button>
@@ -539,17 +355,6 @@
             <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{type:'separator'}" />
             <button class="app-trigger app-trigger--editor app-trigger--close-project" data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:' Close project'}"></button>
         </div>
-        <div class="flyout--editor-new-effect" data-win-control="WinJS.UI.Flyout" aria-label="{New effect}">
-            <h3 class="win-h3">New effect</h3>
-            <p>
-                <select class="win-dropdown editor-new-effect-dropdown">
-                    <option value="solid-color">Solid color</option>
-                </select>
-            </p>
-            <p>
-                <button class="win-button eo1-btn eo1-btn--create-effect">Create</button>
-            </p>
-        </div>
         <div class="contextmenu--editor-track" data-win-control="WinJS.UI.Menu">
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Rename'}" class="timeline-edit-track-command" data-track-command="rename"></button>
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Volume'}" class="timeline-edit-track-command" data-track-command="volume"></button>
@@ -557,7 +362,12 @@
             <hr data-win-control="WinJS.UI.MenuCommand" data-win-options="{id:'',type:'separator'}" />
             <button data-win-control="WinJS.UI.MenuCommand" data-win-options="{label:'Delete'}" class="timeline-edit-track-command" data-track-command="delete"></button>
         </div>
-        <div class="my-test-flyout" data-win-control="WinJS.UI.Flyout">This is my great flyout</div>
+        <template class="eo1-template eo1-template--track-control">
+            <div class="track-control" data-track-id="-1"></div>
+        </template>
+        <template class="eo1-template eo1-template--track-content">
+            <div class="track-content" data-track-id="-1"></div>
+        </template>
     </div>
 
     <div class="app-page app-page--app-settings app-page--hidden">

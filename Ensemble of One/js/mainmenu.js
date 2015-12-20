@@ -120,6 +120,7 @@
             },
 
             projectFinishedLoading: function () {
+                // CALL THIS FUNCTION TO SHOW THE EDITOR PAGE WHEN THE PROJECT FINISHES LOADING
                 console.log("Project finished loading. Show the Editor.");
                 let loadingPage = document.getElementsByClassName("app-page--loading-editor")[0];
                 let editorPage = document.getElementsByClassName("app-page--editor")[0];

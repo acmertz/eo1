@@ -213,7 +213,7 @@
                 }
 
                 else if (this._type == Ensemble.Events.Action.ActionType.splitClip) {
-                    Ensemble.Editor.TimelineMGR.concatClip(this._payload.clipIds, this._payload.newIds);
+                    Ensemble.Editor.TimelineMGR.unsplitClip(this._payload.clipIds, this._payload.newIds);
                 }
 
                 else if (this._type == Ensemble.Events.Action.ActionType.positionClip) {

@@ -1,5 +1,5 @@
 ﻿(function () {
-    WinJS.Namespace.define("Ensemble.Utilities.TimeConverter", {
+    WinJS.Namespace.define("Ensemble.Util.TimeConverter", {
         /// <summary>Provides tools for generating aspect ratio-proportional widths and heights.</summary>
 
         convertTime: function (milliseconds, shortForm) {

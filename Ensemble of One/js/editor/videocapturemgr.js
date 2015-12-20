@@ -296,7 +296,7 @@
             // populate the webcam quality flyout menu
             for (let i = 0; i < prunedResLen; i++) {
                 // add an item to the flyout
-                let resString = prunedCaptureResolutions[i].width + "x" + prunedCaptureResolutions[i].height + ", " + Ensemble.Utilities.TimeConverter.convertFPS(prunedCaptureResolutions[i].frameRate.numerator, prunedCaptureResolutions[i].frameRate.denominator) + "fps",
+                let resString = prunedCaptureResolutions[i].width + "x" + prunedCaptureResolutions[i].height + ", " + Ensemble.Util.TimeConverter.convertFPS(prunedCaptureResolutions[i].frameRate.numerator, prunedCaptureResolutions[i].frameRate.denominator) + "fps",
                     newItem = new WinJS.UI.MenuCommand(document.createElement("button"), { type: 'toggle', label: resString, onclick: Ensemble.Editor.VideoCaptureMGR._listeners.webcamQualitySelected });
                 newItem.element.dataset.webcamStreamIndex = i;
                 menuItems.push(newItem);

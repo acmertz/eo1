@@ -1,5 +1,5 @@
 ﻿(function () {
-    WinJS.Namespace.define("Ensemble.Utilities.FriendlyResolutionGenerator", {
+    WinJS.Namespace.define("Ensemble.Util.FriendlyResolutionGenerator", {
         /// <summary>Provides tools for generating aspect ratio-proportional widths and heights.</summary>
 
         turnFriendly: function (width, height) {
