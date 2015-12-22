@@ -245,18 +245,32 @@
             lengthNode.appendChild(xmlDoc.createTextNode(Ensemble.Session.projectDuration.toString(10)));
             rootNode.appendChild(lengthNode);
 
-            /* CONTINUE HERE */
-
             let trackContainerNode = xmlDoc.createElement("Tracks"),
-                trackData = JSON.stringify([Ensemble.Editor.TimelineMGR.generateNewTrackMap()]);
-            trackContainerNode.setAttribute("FreeTrackId", "1");
-            trackContainerNode.setAttribute("FreeClipId", "0");
+                trackData = JSON.stringify(Ensemble.Editor.TimelineMGR.tracks);
+            trackContainerNode.setAttribute("FreeTrackId", Ensemble.Editor.TimelineMGR.uniqueTrackID.toString(10));
+            trackContainerNode.setAttribute("FreeClipId", Ensemble.Editor.TimelineMGR.uniqueClipID.toString(10));
             trackContainerNode.setAttribute("trackData", trackData);
             rootNode.appendChild(trackContainerNode);
 
             let historyNode = xmlDoc.createElement("History"),
                 undoNode = xmlDoc.createElement("Undo"),
-                redoNode = xmlDoc.createElement("Redo");
+                redoNode = xmlDoc.createElement("Redo"),
+                undoCount = Ensemble.HistoryMGR._backStack.length,
+                redoCount = Ensemble.HistoryMGR._forwardStack.length;
+
+            // Iterate through all history items and serialize
+            for (let i = 0; i < undoCount; i++) {
+                let singleHistoryItemNode = xmlDoc.createElement("HistoryAction");
+                singleHistoryItemNode.setAttribute(JSON.stringify(Ensemble.HistoryMGR._backStack[i]._payload));
+                undoNode.appendChild(singleHistoryItemNode);
+            }
+
+            for (let i = 0; i < redoCount; i++) {
+                let singleHistoryItemNode = xmlDoc.createElement("HistoryAction");
+                singleHistoryItemNode.setAttribute(JSON.stringify(Ensemble.HistoryMGR._forwardStack[i]._payload));
+                redoNode.appendChild(singleHistoryItemNode);
+            }
+
             historyNode.appendChild(undoNode);
             historyNode.appendChild(redoNode);
             rootNode.appendChild(historyNode);
