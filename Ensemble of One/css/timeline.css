@@ -19,7 +19,7 @@
     height: 10000px;
 }
 
-.timeline-new-track-control {
+.timeline-new-track-control, .timeline-drop-container {
     width: 100%;
     height: 50px;
     display: flex;
@@ -41,6 +41,10 @@
 
 .timeline-new-track-control:active {
     background-color: rgba(0, 0, 0, 0.2);
+}
+
+.timeline-drop-container {
+    opacity: 0;
 }
 
 .timeline-track-container {
@@ -81,6 +85,7 @@
 
 .track-control, .track-content {
     height: 50px;
+    width: 100%;
     display: flex;
     justify-content: flex-start;
     align-items: center;

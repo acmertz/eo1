@@ -32,7 +32,6 @@
                     Ensemble.HistoryMGR.refreshMessage();
                     Ensemble.FileIO.saveProject();
                     Ensemble.Editor.ToolbarMGR._reevaluateState();
-                    if (Ensemble.Editor.SelectionMGR.selected.length == 1) Ensemble.Editor.TimelineMGR.showTrimControls(Ensemble.Editor.SelectionMGR.selected[0]);
                 }
                 else cb();
             }

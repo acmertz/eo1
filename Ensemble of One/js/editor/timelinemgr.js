@@ -4,9 +4,6 @@
 
         tracks: [],
         mediaComposition: new Windows.Media.Editing.MediaComposition(),
-        clipIndex: [],
-        clipIndexPosition: 0,
-        timeIndex: [],
         uniqueTrackID: 0,
         uniqueClipID: 0,
 
@@ -14,8 +11,12 @@
             /// <summary>Links all UI references.</summary>
             this._refreshUI();
 
-            // rebuild the index
-            this.rebuildIndex();
+            let trackCount = this.tracks.length;
+            for (let i = 0; i < trackCount; i++) {
+                let generatedMarkup = this.generateNewTrackMarkup(this.tracks[i].id, this.tracks[i].name);
+                Ensemble.Editor.TimelineMGR.ui.trackControls.insertBefore(generatedMarkup.control, Ensemble.Editor.TimelineMGR.ui.trackControls.lastElementChild);
+                Ensemble.Editor.TimelineMGR.ui.trackContainer.insertBefore(generatedMarkup.content, Ensemble.Editor.TimelineMGR.ui.trackContainer.lastElementChild);
+            }
         },
         
         unload: function () {
@@ -25,11 +26,30 @@
             this._cleanUI();
         },
 
-        createTrack: function (idToUse, nameToUse, volumeToUse) {
+        createTrack: function (idToUse) {
             /// <summary>Creates a new track in the timeline.</summary>
-            /// <param name="idToUse" type="Number">Optional. An ID to give the newly-created track, for use in project loading.</param>
-            /// <param name="nameToUse" type="String">Optional. A name to give the track.</param>
-            /// <param name="volumeToUse" type="Number">Optional. A volume level to assign the track.</param>
+            /// <param name="idToUse" type="Number">Optional. An ID to give the newly-created track. If no ID is specified, a new one is uniquely generated.</param>
+            /// <returns type="Number">The unique ID of the track.</returns>
+
+            let newTrackId = idToUse;
+            if (idToUse == null) newTrackId = this.generateNewTrackId();
+
+            let generatedMap = this.generateNewTrackMap(newTrackId),
+                generatedMarkup = Ensemble.Editor.TimelineMGR.generateNewTrackMarkup(newTrackId, generatedMap.name);
+
+            this.tracks.push(generatedMap);
+            this.mediaComposition.overlayLayers.append(new Windows.Media.Editing.MediaOverlayLayer());
+
+            let anim1 = WinJS.UI.Animation.createAddToListAnimation(generatedMarkup.control, Ensemble.Editor.TimelineMGR.ui.trackControls.lastElementChild),
+                anim2 = WinJS.UI.Animation.createAddToListAnimation(generatedMarkup.content, Ensemble.Editor.TimelineMGR.ui.trackContainer.lastElementChild);
+
+            Ensemble.Editor.TimelineMGR.ui.trackControls.insertBefore(generatedMarkup.control, Ensemble.Editor.TimelineMGR.ui.trackControls.lastElementChild);
+            Ensemble.Editor.TimelineMGR.ui.trackContainer.insertBefore(generatedMarkup.content, Ensemble.Editor.TimelineMGR.ui.trackContainer.lastElementChild);
+
+            anim1.execute();
+            anim2.execute();
+
+            return newTrackId;
         },
 
         addTrackAtIndex: function (track, index) {
@@ -42,6 +62,41 @@
             /// <summary>Removes the track with the given ID, unloading any clips it may contain.</summary>
             /// <param name="trackId" type="Number">An ID representing the track to be removed.</param>
             /// <returns type="Object">An object containing the track that was removed, as well as its original position in the array of tracks.</returns>
+
+            let trackCount = this.tracks.length,
+                removedMap = null,
+                removedOverlayLayer = null;
+
+            for (let i = 0; i < trackCount; i++) {
+                if (this.tracks[i].id == trackId) {
+                    removedMap = this.tracks[i];
+                    removedOverlayLayer = this.mediaComposition.overlayLayers.getAt(i);
+                    this.mediaComposition.overlayLayers.removeAt(i);
+                    break;
+                }
+            }
+
+            let trackControl = document.querySelector(".track-control.timeline-track--" + trackId),
+                trackContent = document.querySelector(".track-content.timeline-track--" + trackId);
+
+            trackControl.setAttribute("deleting");
+            trackContent.setAttribute("deleting");
+
+            let affectedControls = document.querySelectorAll(".track-control:not([deleting]), .timeline-new-track-control"),
+                affectedContents = document.querySelectorAll(".track-content:not([deleting]), .timeline-drop-container"),
+                controlsAnimation = WinJS.UI.Animation.createDeleteFromListAnimation(trackControl, affectedControls),
+                contentsAnimation = WinJS.UI.Animation.createDeleteFromListAnimation(trackContent, affectedContents);
+
+            trackControl.style.position = "absolute";
+            trackControl.style.opacity = "0";
+            trackContent.style.position = "absolute";
+            trackContent.style.opacity = "0";
+
+            controlsAnimation.execute().done(function () { trackControl.parentElement.removeChild(trackControl) });
+            contentsAnimation.execute().done(function () { trackContent.parentElement.removeChild(trackContent) });
+            
+
+            return removedMap;
         },
 
         moveClip: function (clipId, trackId, time) {
@@ -139,52 +194,6 @@
             /// <param name="newVolume" type="Number">The volume to assign the track.</param>
         },
 
-        rebuildIndex: function () {
-            /// <summary>Rebuilds the index used as a target by the Renderer and the PlaybackMGR. WARNING: not safe to call during playback.</summary>
-            this.refreshComposition();
-
-            let timeList = [];
-            let totalClipCount = 0;
-            for (let i = 0; i < this.tracks.length; i++) {
-                for (let k = 0; k < this.tracks[i].clips.length; k++) {
-                    let start = this.tracks[i].clips[k].startTime;
-                    let end = this.tracks[i].clips[k].startTime + this.tracks[i].clips[k].duration;
-                    if (timeList.indexOf(start) === -1) timeList.push(start);
-                    if (timeList.indexOf(end) === -1) timeList.push(end);
-                    totalClipCount++;
-                }
-            }
-            Ensemble.Session.projectClipCount = totalClipCount;
-            timeList.sort(function (a, b) { return a - b });
-
-            if (timeList.length > 0 && timeList[0] != 0) timeList.unshift(0);
-            this.timeIndex = _.clone(timeList);
-
-            for (let i = 0; i < timeList.length; i++) {
-                timeList[i] = {
-                    time: timeList[i],
-                    starting: [],
-                    stopping: [],
-                    renderList: [],
-                    playbackList: []
-                };
-                for (let k = 0; k < this.tracks.length; k++) {
-                    for (let g = 0; g < this.tracks[k].clips.length; g++) {
-                        let tempClip = this.tracks[k].clips[g];
-                        if (tempClip.startTime === timeList[i].time) timeList[i].starting.push(tempClip);
-                        if (tempClip.startTime + tempClip.duration === timeList[i].time) timeList[i].stopping.push(tempClip);
-                        if ((tempClip.startTime <= timeList[i].time) && (timeList[i].time < tempClip.startTime + tempClip.duration)) {
-                            if (tempClip.isRenderable()) timeList[i].renderList.push(tempClip);
-                            timeList[i].playbackList.push(tempClip);
-                        }
-                    }
-                }
-            }
-            this.clipIndex = timeList;
-            if (this.clipIndex.length > 0) Ensemble.Session.projectDuration = this.clipIndex[this.clipIndex.length - 1].time;
-            else Ensemble.Session.projectDuration = 0;
-        },
-
         refreshComposition: function () {
             ///// <summary>Refreshes the MediaComposition preview display.</summary>
             //let previewElement = document.getElementsByClassName("editor-composition-player")[0],
@@ -206,15 +215,40 @@
             return this.uniqueClipID - 1;
         },
 
-        generateNewTrackMap: function () {
+        generateNewTrackMap: function (idval) {
             /// <summary>Generates a new track object.</summary>
+            /// <param name="idval" type="Number">The ID of the track being generated.</param>
             /// <returns type="Object">An object representing the track.</returns>
+            let itemId = (idval == null) ? -1 : idval;
             return {
-                id: -1,
+                id: itemId,
                 name: "Untitled track",
                 volume: 1,
                 selected: false,
                 clips: []
+            };
+        },
+
+        generateNewTrackMarkup: function (idval, nameval) {
+            /// <summary>Generates markup for a new track based on the HTML track template.</summary>
+            /// <param name="idval" type="Number">The track ID.</param>
+            /// <param name="nameval" type="String">The track name.</param>
+            /// <returns type="Object">An object representing the track. Contains two members: control and content.</returns>
+            let newTrackControl = document.importNode(document.getElementsByClassName("eo1-template--track-control")[0].content.querySelectorAll(".track-control")[0], true),
+                newTrackContent = document.importNode(document.getElementsByClassName("eo1-template--track-content")[0].content.querySelectorAll(".track-content")[0], true);
+
+            newTrackControl.dataset.trackId = idval;
+            newTrackContent.dataset.trackId = idval;
+
+            WinJS.Utilities.addClass(newTrackControl, "timeline-track--" + idval);
+            WinJS.Utilities.addClass(newTrackContent, "timeline-track--" + idval);
+
+            if (nameval != null) newTrackControl.innerText = nameval;
+            if (idval != null) newTrackContent.innerText = "Track " + idval;
+
+            return {
+                control: newTrackControl,
+                content: newTrackContent
             };
         },
 
@@ -242,23 +276,7 @@
 
         _listeners: {
             newTrackButtonClicked: function (event) {
-                console.log("Create new track.");
-
-                let newId = Ensemble.Editor.TimelineMGR.generateNewTrackId(),
-                    newTrackControl = document.importNode(document.getElementsByClassName("eo1-template--track-control")[0].content.querySelectorAll(".track-control")[0], true),
-                    newTrackContent = document.importNode(document.getElementsByClassName("eo1-template--track-content")[0].content.querySelectorAll(".track-content")[0], true);
-                
-                newTrackControl.dataset.trackId = newId;
-                newTrackContent.dataset.trackId = newId;
-
-                WinJS.Utilities.addClass(newTrackControl, "timeline-track--" + newId);
-                WinJS.Utilities.addClass(newTrackContent, "timeline-track--" + newId);
-
-                newTrackControl.innerText = "Track " + newId;
-                newTrackContent.innerText = "Track " + newId;
-
-                Ensemble.Editor.TimelineMGR.ui.trackControls.insertBefore(newTrackControl, Ensemble.Editor.TimelineMGR.ui.trackControls.lastElementChild);
-                Ensemble.Editor.TimelineMGR.ui.trackContainer.appendChild(newTrackContent);
+                Ensemble.HistoryMGR.performAction(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.createTrack, null));
             }
         }
     });

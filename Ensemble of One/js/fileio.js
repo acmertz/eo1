@@ -14,7 +14,7 @@
             aspect: ""
         },
 
-        _saveProjectOverrideFile: new Windows.Storage.StorageFile(),
+        _saveProjectOverrideFile: null,
 
         createProject: function (name, aspect, callback) {
             /// <summary>Creates save files for a new project.</summary>
@@ -71,10 +71,10 @@
             rootNode.appendChild(lengthNode);
 
             let trackContainerNode = xmlDoc.createElement("Tracks"),
-                trackData = JSON.stringify([Ensemble.Editor.TimelineMGR.generateNewTrackMap()]);
+                trackData = Ensemble.Editor.TimelineMGR.generateNewTrackMap(0);
             trackContainerNode.setAttribute("FreeTrackId", "1");
             trackContainerNode.setAttribute("FreeClipId", "0");
-            trackContainerNode.setAttribute("trackData", trackData);
+            trackContainerNode.setAttribute("trackData", JSON.stringify([trackData]));
             rootNode.appendChild(trackContainerNode);
 
             let historyNode = xmlDoc.createElement("History"),
@@ -153,11 +153,11 @@
                 redoStack = [];
 
             for (let i = 0; i < undoCount; i++) {
-                undoStack.push(JSON.parse(undoItems[i].getAttribute("historyData")));
+                undoStack.push(new Ensemble.Events.Action(undoItems[i].getAttribute("actionType"), JSON.parse(undoItems[i].getAttribute("actionPayload"))));
             }
 
             for (let i = 0; i < redoCount; i++) {
-                redoStack.push(JSON.parse(redoItems[i].getAttribute("historyData")));
+                redoStack.push(new Ensemble.Events.Action(redoItems[i].getAttribute("actionType"), JSON.parse(redoItems[i].getAttribute("actionPayload"))));
             }
 
             Ensemble.Session.projectAspect = aspectRatio;
@@ -224,11 +224,11 @@
                 rootNode = xmlDoc.firstChild;
 
             let tempCanvas = document.createElement("canvas");
-            tempCanvas.width = projectData.resolution.width * 0.25;
-            tempCanvas.height = projectData.resolution.height * 0.25;
+            tempCanvas.width = Ensemble.Session.projectResolution.width * 0.25;
+            tempCanvas.height = Ensemble.Session.projectResolution.height * 0.25;
             let tempContext = tempCanvas.getContext("2d");
             tempContext.fillStyle = "#000";
-            tempContext.fillRect(0, 0, projectData.resolution.width * 0.25, projectData.resolution.height * 0.25);
+            tempContext.fillRect(0, 0, Ensemble.Session.projectResolution.width * 0.25, Ensemble.Session.projectResolution.height * 0.25);
             let thumbNode = xmlDoc.createElement("ProjectThumb");
             thumbNode.appendChild(xmlDoc.createTextNode(tempCanvas.toDataURL("image/png")));
             rootNode.appendChild(thumbNode);
@@ -266,13 +266,15 @@
             // Iterate through all history items and serialize
             for (let i = 0; i < undoCount; i++) {
                 let singleHistoryItemNode = xmlDoc.createElement("HistoryAction");
-                singleHistoryItemNode.setAttribute("historyData", JSON.stringify(Ensemble.HistoryMGR._backStack[i]._payload));
+                singleHistoryItemNode.setAttribute("actionPayload", JSON.stringify(Ensemble.HistoryMGR._backStack[i]._payload));
+                singleHistoryItemNode.setAttribute("actionType", Ensemble.HistoryMGR._backStack[i]._type);
                 undoNode.appendChild(singleHistoryItemNode);
             }
 
             for (let i = 0; i < redoCount; i++) {
                 let singleHistoryItemNode = xmlDoc.createElement("HistoryAction");
-                singleHistoryItemNode.setAttribute("historyData", JSON.stringify(Ensemble.HistoryMGR._forwardStack[i]._payload));
+                singleHistoryItemNode.setAttribute("actionPayload", JSON.stringify(Ensemble.HistoryMGR._forwardStack[i]._payload));
+                singleHistoryItemNode.setAttribute("actionType", Ensemble.HistoryMGR._forwardStack[i]._type);
                 redoNode.appendChild(singleHistoryItemNode);
             }
 
