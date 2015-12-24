@@ -14,6 +14,10 @@
             aspect: ""
         },
 
+        _loadMediaFileData: {
+
+        },
+
         _saveProjectOverrideFile: null,
 
         createProject: function (name, aspect, callback) {
@@ -312,6 +316,13 @@
                     console.info("Saved " + Ensemble.Session.projectName + ".");
                 });
             }
+        },
+
+        loadMediaFileFromPath: function (path, callback) {
+            ///<summary>Loads the file at the specified path. Passes an object containing the file, its media properties, and a BackgroundAudioTrack or MediaClip object to represent the media file (depending on its media type).</summary>
+            ///<param name="path" type="String">A path to the media file to load.</param>
+            ///<param name="callback" type="Function">The callback to execute after loading is completed.</param>
+
         },
 
 
