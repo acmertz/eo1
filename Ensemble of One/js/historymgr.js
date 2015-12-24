@@ -31,8 +31,7 @@
                     Ensemble.HistoryMGR._forwardStack = [];
                     Ensemble.HistoryMGR.refreshMessage();
                     Ensemble.FileIO.saveProject();
-                    Ensemble.Editor.MenuMGR._reevaluateState();
-                    if (Ensemble.Editor.SelectionMGR.selected.length == 1) Ensemble.Editor.TimelineMGR.showTrimControls(Ensemble.Editor.SelectionMGR.selected[0]);
+                    Ensemble.Editor.ToolbarMGR._reevaluateState();
                 }
                 else cb();
             }
@@ -60,7 +59,7 @@
                 Ensemble.HistoryMGR._batchActions = [];
                 Ensemble.HistoryMGR._batchCallback();
                 Ensemble.HistoryMGR._batchCallback = null;
-                Ensemble.Editor.MenuMGR._reevaluateState();
+                Ensemble.Editor.ToolbarMGR._reevaluateState();
                 Ensemble.FileIO.saveProject();
             }
         },
@@ -79,7 +78,7 @@
                     Ensemble.HistoryMGR._isActionRedo = false;
                 }
                 Ensemble.HistoryMGR.refreshMessage();
-                Ensemble.Editor.MenuMGR._reevaluateState();
+                Ensemble.Editor.ToolbarMGR._reevaluateState();
                 Ensemble.Editor.TimelineMGR.refreshClipVolumeModifiers();
                 Ensemble.FileIO.saveProject();
             }
@@ -93,7 +92,7 @@
         _undoRemoveTrackComplete: function (loadedClips) {
             Ensemble.HistoryMGR._pendingAction.finishUndo(loadedClips);
             Ensemble.HistoryMGR._forwardStack.push(Ensemble.HistoryMGR._pendingAction);
-            Ensemble.Editor.MenuMGR._reevaluateState();
+            Ensemble.Editor.ToolbarMGR._reevaluateState();
             Ensemble.HistoryMGR._pendingAction = null;
             Ensemble.FileIO.saveProject();
         },
@@ -101,7 +100,7 @@
         _undoRemoveClipComplete: function (loadedClips) {
             Ensemble.HistoryMGR._pendingAction.finishUndo(loadedClips);
             Ensemble.HistoryMGR._forwardStack.push(Ensemble.HistoryMGR._pendingAction);
-            Ensemble.Editor.MenuMGR._reevaluateState();
+            Ensemble.Editor.ToolbarMGR._reevaluateState();
             Ensemble.HistoryMGR._pendingAction = null;
             Ensemble.Editor.TimelineMGR.refreshClipVolumeModifiers();
             Ensemble.FileIO.saveProject();
@@ -122,7 +121,7 @@
                     this.refreshMessage();
                     Ensemble.FileIO.saveProject();
                 }
-                Ensemble.Editor.MenuMGR._reevaluateState();
+                Ensemble.Editor.ToolbarMGR._reevaluateState();
                 if (actionToUndo._type == Ensemble.Events.Action.ActionType.editLens) Ensemble.Editor.EffectMGR.switchedTo(actionToUndo._payload.lensId);
             }
         },
@@ -144,7 +143,7 @@
                     this._isActionRedo = false;
                     Ensemble.FileIO.saveProject();
                 }
-                Ensemble.Editor.MenuMGR._reevaluateState();
+                Ensemble.Editor.ToolbarMGR._reevaluateState();
                 if (actionToRedo._type == Ensemble.Events.Action.ActionType.editLens) Ensemble.Editor.EffectMGR.switchedTo(actionToRedo._payload.lensId);
                 if (Ensemble.Editor.SelectionMGR.selected.length == 1) Ensemble.Editor.TimelineMGR.showTrimControls(Ensemble.Editor.SelectionMGR.selected[0]);
             }

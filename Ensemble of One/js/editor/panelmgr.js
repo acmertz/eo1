@@ -210,8 +210,7 @@
 
         PanelTypes: {
             cameraCapture: "webcam",
-            micCapture: "mic",
-            effect: "effect"
+            micCapture: "mic"
         }
     });
 })();

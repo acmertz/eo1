@@ -45,8 +45,8 @@
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\$(WMSJSProjectDirectory)\Microsoft.VisualStudio.$(WMSJSProject).props" />
   <PropertyGroup>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion>10.0.10240.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.10240.0</TargetPlatformMinVersion>
+    <TargetPlatformVersion>10.0.10586.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.10586.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>$(VersionNumberMajor).$(VersionNumberMinor)</MinimumVisualStudioVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
     <PackageCertificateKeyFile>Ensemble of One_TemporaryKey.pfx</PackageCertificateKeyFile>
@@ -62,13 +62,10 @@
       <SubType>Designer</SubType>
     </AppxManifest>
     <Content Include="css\app-page.css" />
-    <Content Include="css\buttons.css" />
     <Content Include="css\editor-menu.css" />
-    <Content Include="css\editor-new.css" />
     <Content Include="css\editor.css" />
     <Content Include="css\listviews.css" />
     <Content Include="css\main-menu.css" />
-    <Content Include="css\media-browser.css" />
     <Content Include="css\panels.css" />
     <Content Include="css\timeline.css" />
     <Content Include="default.html" />
@@ -77,6 +74,10 @@
     <Content Include="images\smalllogo.scale-100.png" />
     <Content Include="images\splashscreen.scale-100.png" />
     <Content Include="images\storelogo.scale-100.png" />
+    <Content Include="img\compositionFillers\2560x1440.png" />
+    <Content Include="img\compositionFillers\2560x1600.png" />
+    <Content Include="img\compositionFillers\2560x1920.png" />
+    <Content Include="img\compositionFillers\3824x1600.png" />
     <Content Include="img\packaging\logo_sq150.scale-100.png" />
     <Content Include="img\packaging\logo_sq150.scale-125.png" />
     <Content Include="img\packaging\logo_sq150.scale-150.png" />
@@ -115,19 +116,15 @@
     <Content Include="js\default.js" />
     <Content Include="css\default.css" />
     <Content Include="js\editor\effectmgr.js" />
-    <Content Include="js\editor\calloutmgr.js" />
     <Content Include="js\editor\clip.js" />
-    <Content Include="js\editor\mediabrowser.js" />
     <Content Include="js\editor\audiocapturemgr.js" />
     <Content Include="js\editor\videocapturemgr.js" />
     <Content Include="js\editor\panelmgr.js" />
-    <Content Include="js\editor\menumgr.js" />
+    <Content Include="js\editor\toolbarmgr.js" />
     <Content Include="js\editor\playbackmgr.js" />
-    <Content Include="js\editor\renderer.js" />
     <Content Include="js\editor\selectionmgr.js" />
     <Content Include="js\editor\timelinemgr.js" />
     <Content Include="js\editor\timelinezoommgr.js" />
-    <Content Include="js\editor\timer.js" />
     <Content Include="js\editor\track.js" />
     <Content Include="js\ensemblefile.js" />
     <Content Include="js\ensemblefolder.js" />
@@ -142,52 +139,16 @@
     <Content Include="js\projectfile.js" />
     <Content Include="js\session.js" />
     <Content Include="js\settings.js" />
-    <Content Include="js\ui.js" />
     <Content Include="js\util\aspectgenerator.js" />
     <Content Include="js\util\friendlyResolutionGenerator.js" />
     <Content Include="js\util\mousetracker.js" />
     <Content Include="js\util\screen.js" />
     <Content Include="js\util\timeConverter.js" />
-    <Content Include="lib\font-awesome-4.1.0\css\font-awesome.css" />
-    <Content Include="lib\font-awesome-4.1.0\css\font-awesome.min.css" />
-    <Content Include="lib\font-awesome-4.1.0\fonts\fontawesome-webfont.eot" />
-    <Content Include="lib\font-awesome-4.1.0\fonts\fontawesome-webfont.svg" />
-    <Content Include="lib\font-awesome-4.1.0\fonts\fontawesome-webfont.ttf" />
-    <Content Include="lib\font-awesome-4.1.0\fonts\fontawesome-webfont.woff" />
-    <Content Include="lib\font-awesome-4.1.0\fonts\FontAwesome.otf" />
-    <Content Include="lib\font-awesome-4.1.0\less\bordered-pulled.less" />
-    <Content Include="lib\font-awesome-4.1.0\less\core.less" />
-    <Content Include="lib\font-awesome-4.1.0\less\fixed-width.less" />
-    <Content Include="lib\font-awesome-4.1.0\less\font-awesome.less" />
-    <Content Include="lib\font-awesome-4.1.0\less\icons.less" />
-    <Content Include="lib\font-awesome-4.1.0\less\larger.less" />
-    <Content Include="lib\font-awesome-4.1.0\less\list.less" />
-    <Content Include="lib\font-awesome-4.1.0\less\mixins.less" />
-    <Content Include="lib\font-awesome-4.1.0\less\path.less" />
-    <Content Include="lib\font-awesome-4.1.0\less\rotated-flipped.less" />
-    <Content Include="lib\font-awesome-4.1.0\less\spinning.less" />
-    <Content Include="lib\font-awesome-4.1.0\less\stacked.less" />
-    <Content Include="lib\font-awesome-4.1.0\less\variables.less" />
-    <Content Include="lib\font-awesome-4.1.0\scss\font-awesome.scss" />
-    <Content Include="lib\font-awesome-4.1.0\scss\_bordered-pulled.scss" />
-    <Content Include="lib\font-awesome-4.1.0\scss\_core.scss" />
-    <Content Include="lib\font-awesome-4.1.0\scss\_fixed-width.scss" />
-    <Content Include="lib\font-awesome-4.1.0\scss\_icons.scss" />
-    <Content Include="lib\font-awesome-4.1.0\scss\_larger.scss" />
-    <Content Include="lib\font-awesome-4.1.0\scss\_list.scss" />
-    <Content Include="lib\font-awesome-4.1.0\scss\_mixins.scss" />
-    <Content Include="lib\font-awesome-4.1.0\scss\_path.scss" />
-    <Content Include="lib\font-awesome-4.1.0\scss\_rotated-flipped.scss" />
-    <Content Include="lib\font-awesome-4.1.0\scss\_spinning.scss" />
-    <Content Include="lib\font-awesome-4.1.0\scss\_stacked.scss" />
-    <Content Include="lib\font-awesome-4.1.0\scss\_variables.scss" />
-    <Content Include="lib\glfx.js" />
-    <Content Include="lib\jquery-2.1.1.min.js" />
+    <Content Include="lib\jquery-3.0.0-pre.js" />
     <Content Include="lib\pure\buttons-min.css" />
     <Content Include="lib\pure\pure-min.css" />
     <Content Include="lib\underscore-min.js" />
     <Content Include="lib\underscore-min.map" />
-    <Content Include="lib\XMLWriter.js" />
     <Content Include="WinJS\css\ui-dark.css" />
     <Content Include="WinJS\css\ui-dark.min.css" />
     <Content Include="WinJS\css\ui-light.css" />

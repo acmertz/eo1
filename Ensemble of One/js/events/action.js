@@ -12,7 +12,6 @@
         },
         {
             //Instance members
-            _compound: null,
             _type: null,
             _payload:  null,
 
@@ -35,9 +34,8 @@
             performAction: function () {
                 /// <summary>Performs the task associated with the Action.</summary>
                 if (this._type == Ensemble.Events.Action.ActionType.createTrack) {
-                    console.log("Creating new track...");
                     if (this._payload) {
-                        Ensemble.Editor.TimelineMGR.createTrack(null, this._payload.trackId);
+                        Ensemble.Editor.TimelineMGR.createTrack(this._payload.trackId);
                     }
                     else {
                         var affectedId = Ensemble.Editor.TimelineMGR.createTrack();
@@ -213,7 +211,7 @@
                 }
 
                 else if (this._type == Ensemble.Events.Action.ActionType.splitClip) {
-                    Ensemble.Editor.TimelineMGR.concatClip(this._payload.clipIds, this._payload.newIds);
+                    Ensemble.Editor.TimelineMGR.unsplitClip(this._payload.clipIds, this._payload.newIds);
                 }
 
                 else if (this._type == Ensemble.Events.Action.ActionType.positionClip) {

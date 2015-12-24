@@ -30,14 +30,14 @@
                     let targetClip = Ensemble.Editor.TimelineMGR.getClipById(this.selected[i]);
                     targetClip.deselect();
                     $("#" + Ensemble.Editor.TimelineMGR._buildClipDOMId(this.selected[i])).removeClass("timeline-clip--selected");
-                    if (targetClip.isRenderable() && Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList.indexOf(targetClip) > -1) needFrame = true;
+                    if (targetClip.isRenderable() && Ensemble.Editor.TimelineMGR.clipIndex[Ensemble.Editor.TimelineMGR.clipIndexPosition].renderList.indexOf(targetClip) > -1) needFrame = true;
                 }
             }
 
             if (!found) {
                 let targetClip = Ensemble.Editor.TimelineMGR.getClipById(clipId);
                 targetClip.select();
-                if (targetClip.isRenderable() && Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList.indexOf(targetClip) > -1) needFrame = true;
+                if (targetClip.isRenderable() && Ensemble.Editor.TimelineMGR.clipIndex[Ensemble.Editor.TimelineMGR.clipIndexPosition].renderList.indexOf(targetClip) > -1) needFrame = true;
                 $("#" + Ensemble.Editor.TimelineMGR._buildClipDOMId(clipId)).addClass("timeline-clip--selected");
                 console.log("Selected clip " + clipId + ".");
             }
@@ -46,7 +46,7 @@
 
             if (needFrame) Ensemble.Editor.Renderer.requestFrame();
             if (updateCallout && event.pointerType != "mouse") Ensemble.Editor.CalloutMGR.show(clipId, event)
-            Ensemble.Editor.MenuMGR._reevaluateState();
+            Ensemble.Editor.ToolbarMGR._reevaluateState();
             Ensemble.Editor.TimelineMGR.showTrimControls(clipId);
 
             if (event) Ensemble.Editor.Renderer._currentPointerTargetSize = event.pointerType == "mouse" ? Ensemble.Editor.Renderer.PointerTargetSize.mouse : Ensemble.Editor.Renderer.PointerTargetSize.touch;
@@ -72,7 +72,7 @@
                 $(Ensemble.Editor.TimelineMGR._trimGripperArr).remove();
                 Ensemble.Editor.TimelineMGR._trimGripperArr = [];
                 $("#" + Ensemble.Editor.TimelineMGR._buildClipDOMId(clipId)).removeClass("timeline-clip--selected");
-                //if (clip.isRenderable() && Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList.indexOf(clip) > -1) Ensemble.Editor.Renderer.requestFrame();
+                //if (clip.isRenderable() && Ensemble.Editor.TimelineMGR.clipIndex[Ensemble.Editor.TimelineMGR.clipIndexPosition].renderList.indexOf(clip) > -1) Ensemble.Editor.Renderer.requestFrame();
             }
         },
 
@@ -96,7 +96,7 @@
 
             if (needFrame) Ensemble.Editor.Renderer.requestFrame();
             Ensemble.Editor.CalloutMGR.hide();
-            Ensemble.Editor.MenuMGR._reevaluateState();
+            Ensemble.Editor.ToolbarMGR._reevaluateState();
 
             console.log("Cleared selection.");
         },
@@ -119,7 +119,7 @@
                 clip.hovering = true;
                 this.hovering.push(clip);
                 $("#" + Ensemble.Editor.TimelineMGR._buildClipDOMId(clipId)).addClass("timeline-clip--hovering");
-                if (clip.isRenderable() && Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList.indexOf(clip) > -1) Ensemble.Editor.Renderer.requestFrame();
+                if (clip.isRenderable() && Ensemble.Editor.TimelineMGR.clipIndex[Ensemble.Editor.TimelineMGR.clipIndexPosition].renderList.indexOf(clip) > -1) Ensemble.Editor.Renderer.requestFrame();
             }
         },
 
@@ -141,7 +141,7 @@
                 let clip = this.hovering.splice(clipIndex, 1)[0];
                 clip.hovering = false;
                 $("#" + Ensemble.Editor.TimelineMGR._buildClipDOMId(clipId)).removeClass("timeline-clip--hovering");
-                if (clip.isRenderable() && Ensemble.Editor.TimelineMGR._clipIndex[Ensemble.Editor.TimelineMGR._clipIndexPosition].renderList.indexOf(clip) > -1) Ensemble.Editor.Renderer.requestFrame();
+                if (clip.isRenderable() && Ensemble.Editor.TimelineMGR.clipIndex[Ensemble.Editor.TimelineMGR.clipIndexPosition].renderList.indexOf(clip) > -1) Ensemble.Editor.Renderer.requestFrame();
             }
         },
 

@@ -38,22 +38,6 @@
     background-color: #fff;
 }
 
-.app-page--editor-menu {
-    width: 320px;
-    max-width: 100%;
-    background-color: #fff;
-    box-shadow: 5px 0px 10px 0px rgba(50,50,50,0.5);
-}
-
-.app-page--media-browser {
-    display: flex;
-    flex-direction: column;
-    background: #fff;
-    width: 600px;
-    max-width: 100%;
-    box-shadow: 5px 0px 10px 0px rgba(50,50,50,0.5);
-}
-
 .app-page--enter {
     animation: pageEnterForward 0.2s ease;
     pointer-events: all;
@@ -67,19 +51,6 @@
     100% {
         transform: scale(1);
         opacity: 1;
-    }
-}
-
-.app-page--enter-left {
-    animation: pageEnterFromLeft 0.3s ease;
-}
-
-@keyframes pageEnterFromLeft {
-    0% {
-        transform: translateX(-100%);
-    }
-    100% {
-        transform: translateX(0);
     }
 }
 
@@ -98,20 +69,6 @@
     }
 }
 
-.app-page--exit-left {
-    animation: pageExitToLeft 0.3s ease;
-    transform: translateX(-100%);
-}
-
-@keyframes pageExitToLeft {
-    0% {
-        transform: translateX(0);
-    }
-    100% {
-        transform: translateX(-100%);
-    }
-}
-
 .app-page--hidden {
     display: none;
 }
@@ -122,14 +79,6 @@
     position: absolute;
     top: 0;
     left: 0;
-}
-
-.app-page__inner--editor-menu {
-    background: #fff;
-}
-
-.app-page__inner--media-browser {
-    
 }
 
 .app-page--app-settings {

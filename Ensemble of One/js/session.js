@@ -8,6 +8,7 @@
         projectName: null,
         projectFilename: null,
         projectFile: null,
+        projectFileBasicProperties: null,
         projectAspect: null,
         projectDuration: null,
         projectClipCount: null,

@@ -1,5 +1,5 @@
 ﻿(function () {
-    WinJS.Namespace.define("Ensemble.Utilities.AspectGenerator", {
+    WinJS.Namespace.define("Ensemble.Util.AspectGenerator", {
         /// <summary>Provides tools for generating aspect ratio-proportional widths and heights.</summary>
 
         generateHeight: function (aspect, width) {
@@ -23,7 +23,7 @@
             /// <param name="width" type="Number">The width.</param>
             /// <param name="height" type="Number">The height.</param>
             /// <returns type="String">The aspect ratio of the given dimensions; for example, "16:9"</returns>
-            let g = Ensemble.Utilities.AspectGenerator.gcd(width, height);
+            let g = Ensemble.Util.AspectGenerator.gcd(width, height);
             return width / g + ":" + height / g;
         },
 
@@ -32,7 +32,7 @@
             /// <param name="a" type="Number"></param>
             /// <param name="b" type="Number"></param>
             /// <returns type="Number"></returns>
-            return (b == 0) ? a : Ensemble.Utilities.AspectGenerator.gcd (b, a%b);
+            return (b == 0) ? a : Ensemble.Util.AspectGenerator.gcd (b, a%b);
         }
     });
 })();
