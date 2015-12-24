@@ -71,7 +71,7 @@
             exitAnimationFinished: function (event) {
                 let editorPage = document.getElementsByClassName("app-page--editor")[0];
                 editorPage.removeEventListener("animationend", Ensemble.Pages.Editor._listeners.exitAnimationFinished);
-                $(editorPage).removeClass("app-page--exit-right-from-displace-320").removeClass("app-page--exit").addClass("app-page--hidden");
+                $(editorPage).removeClass("app-page--exit").addClass("app-page--hidden");
                 
                 Ensemble.Editor.TimelineMGR.unload();
                 Ensemble.Editor.PlaybackMGR.unload();
@@ -85,6 +85,7 @@
                         $(loadingPage).addClass("app-page--exit");
                         loadingPage.addEventListener("animationend", Ensemble.Pages.Editor._listeners.loadingMenuExitFinished);
                         Ensemble.MainMenu.refreshProjectListView();
+                        Ensemble.MainMenu.showSplitviewPane();
                         Ensemble.Session.setCurrentPage(Ensemble.Session.PageStates.mainMenu);
                     }, 1000);
                 }

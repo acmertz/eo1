@@ -106,9 +106,9 @@
         </div>
     </div>
     <div class="app-page app-page--main-menu">
-        <div class="splitView" data-win-control="WinJS.UI.SplitView"
+        <div data-win-control="WinJS.UI.SplitView" class="main-menu__splitview"
              data-win-options="{
-                openedDisplayMode: 'inline',
+                openedDisplayMode: 'overlay',
                 closedDisplayMode: 'inline'
              }">
             <!-- Pane area -->
@@ -116,7 +116,7 @@
                 <div class="main-menu-nav__splitview-header">
                     <button class="win-splitviewpanetoggle"
                             data-win-control="WinJS.UI.SplitViewPaneToggle"
-                            data-win-options="{ splitView: select('.splitView') }"></button>
+                            data-win-options="{ splitView: select('.main-menu__splitview') }"></button>
                     <h3 class="win-h3 main-menu-nav__splitview-header-title">Ensemble of One</h3>
                 </div>
 
@@ -150,7 +150,7 @@
                     </div>
                     <div class="main-menu__content-container main-menu__content-container--padded">
                         <h3 class="win-h3">Open project</h3>
-                        <button class="win-button eo1-btn menu-open-project-param menu-open-project-param--browse">Browse...</button>
+                        <p><button class="win-button eo1-btn menu-open-project-param menu-open-project-param--browse">Browse...</button></p>
                     </div>
                     <div class="home-menu__recent-projects-listview" data-win-control="WinJS.UI.ListView" data-win-options="{
                             itemTemplate: select('.listview-template--project-list-item'),

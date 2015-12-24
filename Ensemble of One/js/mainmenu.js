@@ -34,11 +34,26 @@
             Ensemble.FileIO.enumerateLocalProjects(this._listeners.receivedUnsavedProjects);
         },
 
+        hideSplitviewPane: function () {
+            /// <summary>Hides the SplitView pane.</summary>
+            let pane = document.querySelector(".win-splitview-panewrapper");
+            WinJS.Utilities.removeClass(pane, "main-menu__splitview-pane--visible");
+            WinJS.Utilities.addClass(pane, "main-menu__splitview-pane--hidden");
+        },
+
+        showSplitviewPane: function () {
+            /// <summary>Shows the SplitView pane.</summary>
+            let pane = document.querySelector(".win-splitview-panewrapper");
+            WinJS.Utilities.removeClass(pane, "main-menu__splitview-pane--hidden");
+            WinJS.Utilities.addClass(pane, "main-menu__splitview-pane--visible");
+        },
+
         ui: {
             navItems: [],
             quickStartItems: [],
             recentProjectContainer: null,
-            browseButton: null
+            browseButton: null,
+            splitview: null
         },
 
         _refreshUI: function () {
@@ -46,6 +61,7 @@
             this.ui.quickStartItems = document.getElementsByClassName("home-menu__quick-start-item");
             this.ui.recentProjectContainer = document.getElementsByClassName("home-menu__recent-projects-listview")[0];
             this.ui.browseButton = document.getElementsByClassName("menu-open-project-param--browse")[0];
+            this.ui.splitview = document.querySelector(".main-menu__splitview");
 
             this.ui.recentProjectContainer.addEventListener("iteminvoked", this._listeners.recentListItemInvoked);
             this.ui.browseButton.addEventListener("click", Ensemble.MainMenu._listeners.browseProjectButtonClicked);
@@ -55,11 +71,7 @@
             }
             for (let i = 0; i < this.ui.quickStartItems.length; i++) {
                 this.ui.quickStartItems[i].addEventListener("pointerdown", this._listeners.pointerDown);
-                this.ui.quickStartItems[i].addEventListener("touchstart", this._listeners.pointerDown);
-                this.ui.quickStartItems[i].addEventListener("mousedown", this._listeners.pointerDown);
                 this.ui.quickStartItems[i].addEventListener("pointerup", this._listeners.pointerUp);
-                this.ui.quickStartItems[i].addEventListener("touchend", this._listeners.pointerUp);
-                this.ui.quickStartItems[i].addEventListener("mouseup", this._listeners.pointerUp);
                 this.ui.quickStartItems[i].addEventListener("click", this._listeners.quickstartItemClicked);
             }
         },
@@ -70,11 +82,7 @@
             }
             for (let i = 0; i < this.ui.quickStartItems.length; i++) {
                 this.ui.quickStartItems[i].removeEventListener("pointerdown", this._listeners.pointerDown);
-                this.ui.quickStartItems[i].removeEventListener("touchstart", this._listeners.pointerDown);
-                this.ui.quickStartItems[i].removeEventListener("mousedown", this._listeners.pointerDown);
                 this.ui.quickStartItems[i].removeEventListener("pointerup", this._listeners.pointerUp);
-                this.ui.quickStartItems[i].removeEventListener("touchend", this._listeners.pointerUp);
-                this.ui.quickStartItems[i].removeEventListener("mouseup", this._listeners.pointerUp);
                 this.ui.quickStartItems[i].removeEventListener("click", this._listeners.quickstartItemClicked);
             }
 
@@ -85,6 +93,7 @@
             this.ui.quickStartItems = [];
             this.ui.recentProjectContainer = null;
             this.ui.browseButton = null;
+            this.ui.splitview = null;
         },
 
         _listeners: {
@@ -104,6 +113,7 @@
                         });
                     }
                 }
+                Ensemble.MainMenu.ui.splitview.winControl.closePane();
             },
 
             quickstartItemClicked: function (event) {
@@ -112,11 +122,11 @@
             },
 
             pointerDown: function (event) {
-                WinJS.UI.Animation.pointerDown(event.target);
+                WinJS.UI.Animation.pointerDown(event.srcElement);
             },
 
             pointerUp: function (event) {
-                WinJS.UI.Animation.pointerUp(event.target);
+                WinJS.UI.Animation.pointerUp(event.srcElement);
             },
 
             projectFinishedLoading: function () {
@@ -146,6 +156,7 @@
             newProjectCreated: function (newProject) {                
                 let loadingPage = document.getElementsByClassName("app-page--loading-editor")[0];
                 $(loadingPage).removeClass("app-page--hidden").addClass("app-page--enter");
+                Ensemble.MainMenu.hideSplitviewPane();
                 Ensemble.Session.setCurrentPage(Ensemble.Session.PageStates.loadingToEditor);
                 window.setTimeout(function () {
                     Ensemble.FileIO.loadProject(newProject);
@@ -176,6 +187,7 @@
 
                 let loadingPage = document.getElementsByClassName("app-page--loading-editor")[0];
                 $(loadingPage).removeClass("app-page--hidden").addClass("app-page--enter");
+                Ensemble.MainMenu.hideSplitviewPane();
                 Ensemble.Session.setCurrentPage(Ensemble.Session.PageStates.loadingToEditor);
                 window.setTimeout(function () {
                     Ensemble.FileIO.loadProject(projectFile.src, true);

@@ -1,14 +1,39 @@
 ﻿/* NEW SPLITVIEW CODE */
+.main-menu__splitview-pane--hidden {
+    animation: mainMenuSplitviewHide 0.2s ease;
+    visibility: hidden;
+    transform: translateX(-100%);
+}
+
+@keyframes mainMenuSplitviewHide {
+    from {
+        visibility: visible;
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+.main-menu__splitview-pane--visible {
+    animation: mainMenuSplitviewShow 0.2s ease;
+}
+
+@keyframes mainMenuSplitviewShow {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
 .main-menu-nav__splitview-header {
     white-space: nowrap;
 }
 
 .main-menu-nav__splitview-header-title {
     display: inline-block;
-}
-
-.win-splitview-panewrapper {
-    z-index: auto !important;
 }
 
 .main-menu__content-container--padded {
@@ -136,7 +161,6 @@ html.win-hoverable button.win-splitviewpanetoggle:active {
 
 .home-menu__recent-projects-listview {
     flex-grow: 1;
-    margin-top: 10px;
 }
 
 
