@@ -12,7 +12,6 @@
 }
 
 .editor-section--upper {
-    padding: 10px;
     top: 0;
 }
 
@@ -22,4 +21,64 @@
     flex-direction: column;
     border-top: 1px solid #aaa;
     background-color: #e6e6e6;
+}
+
+.editor-canvas-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.editor-canvas-wrap {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.editor-playback-toolbar .win-toolbar-actionarea {
+    justify-content: center;
+    background-color: transparent;
+}
+
+.editor-playback-toolbar .win-toolbar-overflowbutton {
+    display: none;
+}
+
+.editor-canvas-spaceholder {
+    width: auto;
+    transition: width 0.2s ease;
+    background-color: #000;
+    position: relative;
+}
+
+.editor-canvas-spaceholder::after {
+    display: block;
+    content: "";
+}
+
+.editor-canvas-spaceholder--aspect-16-9::after {
+    padding-bottom: 56.25%;
+}
+
+.editor-canvas-spaceholder--aspect-4-3::after {
+    padding-bottom: 75%;
+}
+
+.editor-canvas-spaceholder--aspect-16-10::after {
+    padding-bottom: 62.5%;
+}
+
+.editor-canvas-spaceholder--aspect-239-1::after {
+    padding-bottom: 41.84%;
+}
+
+.editor-playback-canvas {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
 }

@@ -235,7 +235,18 @@
             <section class="editor-section editor-section--upper">
 
                 <div class="editor-canvas-container">
-                    
+                    <div class="editor-canvas-wrap">
+                        <div class="editor-canvas-spaceholder">
+                            <video class="editor-playback-canvas"></video>
+                        </div>
+                    </div>
+                    <div class="editor-playback-toolbar" data-win-control="WinJS.UI.ToolBar">
+                        <button data-win-control="WinJS.UI.Command" data-win-options="{
+                            label:'Play',
+                            section:'primary',
+                            type:'button',
+                            icon: 'play'}"></button>
+                    </div>
                 </div>
 
                 <div class="editor-panel-container">

@@ -39,32 +39,69 @@
             Ensemble.Editor.AudioCaptureMGR.unload();
             Ensemble.Editor.ToolbarMGR.unload();
             Ensemble.Editor.PanelMGR.unload();
-            Ensemble.Pages.Editor._cleanUI();
 
             let appView = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
             appView.title = "";
         },
 
+        refreshCanvasSize: function () {
+            wrapWidth = this.ui.canvasContainer.clientWidth,
+            wrapHeight = this.ui.canvasContainer.clientHeight - this.ui.playbackToolbar.clientHeight,
+            candidateWidth = wrapWidth,
+            candidateHeight = Ensemble.Util.AspectGenerator.generateHeight(Ensemble.Session.projectAspect, candidateWidth);
+
+            if (candidateHeight > wrapHeight) {
+                candidateHeight = wrapHeight;
+                candidateWidth = Ensemble.Util.AspectGenerator.generateWidth(Ensemble.Session.projectAspect, candidateHeight);
+            }
+
+            Ensemble.Pages.Editor.ui.canvasSpaceholder.style.width = candidateWidth + "px";
+        },
+
         ui: {
-            upperSection: null,
             canvasContainer: null,
-            playbackWidget: null
+            canvasWrap: null,
+            canvasSpaceholder: null,
+            playbackToolbar: null
         },
 
         _refreshUI: function () {
-            this.ui.upperSection = document.getElementsByClassName("editor-section--upper")[0];
-            this.ui.canvasContainer = document.getElementsByClassName("editor-canvas-container")[0];
-            this.ui.playbackWidget = document.getElementsByClassName("editor-playback-widget")[0];
+            this.ui.canvasContainer = document.querySelector(".editor-canvas-container");
+            this.ui.canvasWrap = document.querySelector(".editor-canvas-wrap");
+            this.ui.canvasSpaceholder = document.querySelector(".editor-canvas-spaceholder");
+            this.ui.playbackToolbar = document.querySelector(".editor-playback-toolbar");
+
+            Ensemble.Pages.Editor.refreshCanvasSize();
+            let aspectClass = "";
+            switch (Ensemble.Session.projectAspect) {
+                case "16:9":
+                    aspectClass = "editor-canvas-spaceholder--aspect-16-9";
+                    break;
+                case "16:10":
+                    aspectClass = "editor-canvas-spaceholder--aspect-16-10";
+                    break;
+                case "2.39:1":
+                    aspectClass = "editor-canvas-spaceholder--aspect-239-1";
+                    break;
+                case "4:3":
+                    aspectClass = "editor-canvas-spaceholder--aspect-4-3";
+                    break;
+            }
+            WinJS.Utilities.addClass(this.ui.canvasSpaceholder, aspectClass);
 
             window.addEventListener("resize", Ensemble.Pages.Editor._listeners.viewResized);
         },
 
         _cleanUI: function () {
-            window.removeEventListener("resize", Ensemble.Pages.Editor._listeners.viewResized);
+            WinJS.Utilities.removeClass(this.ui.canvasSpaceholder, "editor-canvas-spaceholder--aspect-16-9 editor-canvas-spaceholder--aspect-4-3 editor-canvas-spaceholder--aspect-16-10 editor-canvas-spaceholder--aspect-239-1");
+            this.ui.canvasSpaceholder.style.width = "";
 
-            this.ui.upperSection = null;
             this.ui.canvasContainer = null;
-            this.ui.playbackWidget = null;
+            this.ui.canvasWrap = null;
+            this.ui.canvasSpaceholder = null;
+            this.ui.playbackToolbar = null;
+
+            window.removeEventListener("resize", Ensemble.Pages.Editor._listeners.viewResized);
         },
 
         _listeners: {
@@ -100,9 +137,9 @@
                 $(event.currentTarget).removeClass("app-page--exit").addClass("app-page--hidden");
             },
 
-            viewResized: function () {
-                /// <summary>Adjusts the size of all display surfaces to match the change in window dimensions.</summary>
-            }
+            viewResized: _.debounce(function () {
+                Ensemble.Pages.Editor.refreshCanvasSize();
+            }, 100)
         }
     });
 })();
