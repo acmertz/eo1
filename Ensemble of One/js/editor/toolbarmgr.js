@@ -102,9 +102,7 @@
                 let command = event.currentTarget.dataset.editorCommand;
 
                 if (command == "browse-media") {
-                    Ensemble.FileIO.showMediaFilePicker(Ensemble.Editor.ToolbarMGR._listeners.browseMediaReturned, {
-                        currentTarget: event.currentTarget
-                    });
+                    Ensemble.FileIO.showMediaFilePicker(Ensemble.Editor.ToolbarMGR._listeners.browseMediaReturned);
                 }
 
                 else if (command == "add-item") {
@@ -140,9 +138,8 @@
                 }
             },
 
-            browseMediaReturned: function (file, payload) {
-                Ensemble.Editor.MediaBrowser._currentPreview = file;
-                Ensemble.Editor.MediaBrowser._addPreviewToProject(payload);
+            browseMediaReturned: function (file) {
+                console.info('Import file "' + file.name + '" to track ' + Ensemble.Editor.SelectionMGR.activeTrack + ' at time ' + Ensemble.Editor.PlaybackMGR.getCurrentTime());
             }
         },
     });

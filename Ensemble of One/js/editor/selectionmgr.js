@@ -1,190 +1,51 @@
 ﻿(function () {
     WinJS.Namespace.define("Ensemble.Editor.SelectionMGR", {
-        /// <summary>Manages the history state of the current project.</summary>
+        /// <summary>Manages selected/hovering clips and tracks.</summary>
         selected: [],
         hovering: [],
 
+        activeTrack: -1,
+
         init: function () {
             this._refreshUI();
+            this.autosetActiveTrack();
         },
 
         unload: function () {
             this._cleanUI();
             this.selected = [];
             this.hovering = [];
+            this.activeTrack = -1;
         },
 
-        replaceSelection: function (clipId, event, updateCallout) {
-            /// <summary>Removes all clips from the current selection array except for the clip with the given ID.</summary>
-            /// <param name="clipId" type="Number">The ID of the clip.</param>
-            /// <param name="event" type="Event">Optional. The event that triggered the selection.</param>
-            /// <param name="updateCallout" type="Boolean">Optional. If true, also trigger a repositioning of the Timeline touch callout.</param>
-            let needFrame = false;
-            let found = false;
-            for (let i = 0; i < this.selected.length; i++) {
-                if (this.selected[i] == clipId) {
-                    // clip already hovering.
-                    found = true;
-                }
-                if (this.selected[i] != clipId) {
-                    let targetClip = Ensemble.Editor.TimelineMGR.getClipById(this.selected[i]);
-                    targetClip.deselect();
-                    $("#" + Ensemble.Editor.TimelineMGR._buildClipDOMId(this.selected[i])).removeClass("timeline-clip--selected");
-                    if (targetClip.isRenderable() && Ensemble.Editor.TimelineMGR.clipIndex[Ensemble.Editor.TimelineMGR.clipIndexPosition].renderList.indexOf(targetClip) > -1) needFrame = true;
-                }
-            }
-
-            if (!found) {
-                let targetClip = Ensemble.Editor.TimelineMGR.getClipById(clipId);
-                targetClip.select();
-                if (targetClip.isRenderable() && Ensemble.Editor.TimelineMGR.clipIndex[Ensemble.Editor.TimelineMGR.clipIndexPosition].renderList.indexOf(targetClip) > -1) needFrame = true;
-                $("#" + Ensemble.Editor.TimelineMGR._buildClipDOMId(clipId)).addClass("timeline-clip--selected");
-                console.log("Selected clip " + clipId + ".");
-            }
-            this.selected = [];
-            this.selected.push(clipId);
-
-            if (needFrame) Ensemble.Editor.Renderer.requestFrame();
-            if (updateCallout && event.pointerType != "mouse") Ensemble.Editor.CalloutMGR.show(clipId, event)
-            Ensemble.Editor.ToolbarMGR._reevaluateState();
-            Ensemble.Editor.TimelineMGR.showTrimControls(clipId);
-
-            if (event) Ensemble.Editor.Renderer._currentPointerTargetSize = event.pointerType == "mouse" ? Ensemble.Editor.Renderer.PointerTargetSize.mouse : Ensemble.Editor.Renderer.PointerTargetSize.touch;
-        },
-
-        removeFromSelection: function (clipId) {
-            /// <summary>Removes the Clip with the given ID from the selection.</summary>
-            /// <param name="clipId" type="Number">The ID of the clip to remove.
-            let found = false,
-                clipIndex = null;
-            for (let i = 0; i < this.selected.length; i++) {
-                if (this.selected[i] == clipId) {
-                    found = true;
-                    clipIndex = i;
-                    break;
-                }
-            }
-
-            if (found) {
-                // selection changing.
-                let clip = Ensemble.Editor.TimelineMGR.getClipById(this.selected.splice(clipIndex, 1)[0]);
-                clip.deselect();
-                $(Ensemble.Editor.TimelineMGR._trimGripperArr).remove();
-                Ensemble.Editor.TimelineMGR._trimGripperArr = [];
-                $("#" + Ensemble.Editor.TimelineMGR._buildClipDOMId(clipId)).removeClass("timeline-clip--selected");
-                //if (clip.isRenderable() && Ensemble.Editor.TimelineMGR.clipIndex[Ensemble.Editor.TimelineMGR.clipIndexPosition].renderList.indexOf(clip) > -1) Ensemble.Editor.Renderer.requestFrame();
+        setActiveTrack: function (trackId) {
+            /// <summary>Clears the active track, and then sets it to the track with the given ID.</summary>
+            /// <param name="trackId" type="Number">The ID of the track that should be activated.</param>
+            this.clearActiveTrack();
+            this.activeTrack = trackId;
+            let trackElements = document.querySelectorAll(".timeline-track--" + trackId),
+                itemCount = trackElements.length;
+            for (let i = 0; i < itemCount; i++) {
+                WinJS.Utilities.addClass(trackElements[i], "timeline-track--active");
             }
         },
 
-        clearSelection: function () {
-            /// <summary>Clears the list of selected clips.</summary>
-
-            $(Ensemble.Editor.TimelineMGR._trimGripperArr).remove();
-            $(Ensemble.Editor.TimelineMGR._ghostDragArr).remove();
-
-            Ensemble.Editor.TimelineMGR._trimGripperArr = [];
-            Ensemble.Editor.TimelineMGR._clipDragArr = [];
-            Ensemble.Editor.TimelineMGR._ghostDragArr = [];
-
-            let needFrame = false;
-            if (this.selected.length > 0) needFrame = true;
-            for (let i = 0; i < this.selected.length; i++) {
-                Ensemble.Editor.TimelineMGR.getClipById(this.selected[i]).deselect();
-                $("#" + Ensemble.Editor.TimelineMGR._buildClipDOMId(this.selected[i])).removeClass("timeline-clip--selected");
+        clearActiveTrack: function () {
+            /// <summary>Clears the active track.</summary>
+            let trackElements = document.querySelectorAll(".timeline-track--active"),
+                itemCount = trackElements.length;
+            for (let i = 0; i < itemCount; i++) {
+                WinJS.Utilities.removeClass(trackElements[i], "timeline-track--active");
             }
-            this.selected = [];
-
-            if (needFrame) Ensemble.Editor.Renderer.requestFrame();
-            Ensemble.Editor.CalloutMGR.hide();
-            Ensemble.Editor.ToolbarMGR._reevaluateState();
-
-            console.log("Cleared selection.");
+            this.activeTrack = -1;
         },
 
-        addToHovering: function (clipId, clip) {
-            /// <summary>Adds the clip with the given ID to the current hovering array.</summary>
-            /// <param name="clipId" type="Number">The ID of the clip.</param>
-            /// <param name="clip" type="Ensemble.Editor.Clip">Optional. A reference to the clip. Used in place of searching for a clip.</param>
-            let found = false;
-            for (let i = 0; i < this.hovering.length; i++) {
-                if (this.hovering[i].id == clipId) {
-                    found = true;
-                    break;
-                }
+        autosetActiveTrack: function () {
+            /// <summary>Checks to make sure there exists an active track; if not, automatically sets the first track as active.</summary>
+            if (this.activeTrack == -1) {
+                let firstTrackId = document.querySelector(".track-content").dataset.trackId;
+                this.setActiveTrack(firstTrackId);
             }
-
-            if (!found) {
-                // selection changing.
-                let clip = Ensemble.Editor.TimelineMGR.getClipById(clipId);
-                clip.hovering = true;
-                this.hovering.push(clip);
-                $("#" + Ensemble.Editor.TimelineMGR._buildClipDOMId(clipId)).addClass("timeline-clip--hovering");
-                if (clip.isRenderable() && Ensemble.Editor.TimelineMGR.clipIndex[Ensemble.Editor.TimelineMGR.clipIndexPosition].renderList.indexOf(clip) > -1) Ensemble.Editor.Renderer.requestFrame();
-            }
-        },
-
-        removeFromHovering: function (clipId) {
-            /// <summary>Removes the clip with the given ID from the current hovering array.</summary>
-            /// <param name="clipId" type="Number">The ID of the clip.</param>
-            let found = false,
-                clipIndex = null;
-            for (let i = 0; i < this.hovering.length; i++) {
-                if (this.hovering[i].id == clipId) {
-                    found = true;
-                    clipIndex = i;
-                    break;
-                }
-            }
-
-            if (found) {
-                // selection changing.
-                let clip = this.hovering.splice(clipIndex, 1)[0];
-                clip.hovering = false;
-                $("#" + Ensemble.Editor.TimelineMGR._buildClipDOMId(clipId)).removeClass("timeline-clip--hovering");
-                if (clip.isRenderable() && Ensemble.Editor.TimelineMGR.clipIndex[Ensemble.Editor.TimelineMGR.clipIndexPosition].renderList.indexOf(clip) > -1) Ensemble.Editor.Renderer.requestFrame();
-            }
-        },
-
-        clearHovering: function () {
-            /// <summary>Clears the list of hovering clips.</summary>
-            let needFrame = false;
-            if (this.hovering.length > 0) needFrame = true;
-            for (let i = 0; i < this.hovering.length; i++) {
-                Ensemble.Editor.TimelineMGR.getClipById(this.hovering[i]).hovering = false;
-                $("#" + Ensemble.Editor.TimelineMGR._buildClipDOMId(this.hovering[i])).removeClass("timeline-clip--hovering");
-            }
-            this.hovering = [];
-            if (needFrame) Ensemble.Editor.Renderer.requestFrame();
-        },
-
-        replaceHovering: function (clipId) {
-            /// <summary>Removes all clips from the current hovering array except for the clip with the given ID.</summary>
-            /// <param name="clipId" type="Number">The ID of the clip.</param>
-            let needFrame = false,
-                found = false;
-            for (let i = 0; i < this.hovering.length; i++) {
-                if (this.hovering[i] == clipId) {
-                    // clip already hovering.
-                    found = true;
-                }
-                if (this.hovering[i] != clipId) {
-                    let targetClip = Ensemble.Editor.TimelineMGR.getClipById(this.hovering[i]);
-                    targetClip.hovering = false;
-                    $("#" + Ensemble.Editor.TimelineMGR._buildClipDOMId(this.hovering[i])).removeClass("timeline-clip--hovering");
-                    if (targetClip.isRenderable()) needFrame = true;
-                }
-            }
-
-            if (!found) {
-                let targetClip = Ensemble.Editor.TimelineMGR.getClipById(clipId);
-                targetClip.hovering = true;
-                if (targetClip.isRenderable()) needFrame = true;
-                $("#" + Ensemble.Editor.TimelineMGR._buildClipDOMId(clipId)).addClass("timeline-clip--hovering");
-            }
-            this.hovering = [];
-            this.hovering.push(clipId);
-
-            if (needFrame) Ensemble.Editor.Renderer.requestFrame();
         },
 
         ui: {

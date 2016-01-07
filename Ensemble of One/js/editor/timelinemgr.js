@@ -259,9 +259,9 @@
         },
 
         _refreshUI: function () {
-            this.ui.newTrackButton = document.getElementsByClassName("timeline-new-track-control")[0];
-            this.ui.trackControls = document.getElementsByClassName("timeline-track-controls")[0];
-            this.ui.trackContainer = document.getElementsByClassName("timeline-track-container")[0];
+            this.ui.newTrackButton = document.querySelector(".timeline-new-track-control");
+            this.ui.trackControls = document.querySelector(".timeline-track-controls");
+            this.ui.trackContainer = document.querySelector(".timeline-track-container");
 
             this.ui.newTrackButton.addEventListener("click", this._listeners.newTrackButtonClicked);
         },

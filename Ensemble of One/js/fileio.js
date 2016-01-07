@@ -471,20 +471,21 @@
             return prunedList;
         },
 
-        _generateAccessToken: function (file, callback, payload) {
+        generateAccessToken: function (file, callback) {
+            /// <summary>Generates and caches a Future Access List token so the file is available for future use. Executes the specified callback when complete.</summary>
             Windows.Storage.StorageFile.getFileFromPathAsync(file.path).done(function (complete) {
                 //No token necessary - the file is accessible via path (is in a known library).
-                callback(file, payload);
+                callback(file);
             }, function (error) {
                 if (Windows.Storage.AccessCache.StorageApplicationPermissions.futureAccessList.entries.length == Windows.Storage.AccessCache.StorageApplicationPermissions.futureAccessList.maximumItemsAllowed) {
-                    Ensemble.FileIO._removeOldestAccessToken();
+                    Ensemble.FileIO.removeOldestAccessToken();
                 }
-                file.token = Windows.Storage.AccessCache.StorageApplicationPermissions.futureAccessList.add(file._src, new Date().getTime());
-                callback(file, payload);
+                file.token = Windows.Storage.AccessCache.StorageApplicationPermissions.futureAccessList.add(file, new Date().getTime());
+                callback(file);
             })
         },
 
-        _removeOldestAccessToken: function () {
+        removeOldestAccessToken: function () {
             /// <summary>Removes the oldest file access token from the Windows FutureAccessList.</summary>
             let min = Infinity;
             let token = null;
@@ -534,26 +535,18 @@
             });
         },
 
-        showMediaFilePicker: function (callback, payload) {
+        showMediaFilePicker: function (callback) {
+            /// <summary>Shows a standard OS file picker for media files. Calls the specified callback if the user picked a file, passing a path to the file.</summary>
+            /// <param name="callback" type="Function">The callback to execute if/when the user selects a file.</param>
             let openPicker = new Windows.Storage.Pickers.FileOpenPicker();
             openPicker.viewMode = Windows.Storage.Pickers.PickerViewMode.list;
             openPicker.suggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.videosLibrary;
             openPicker.fileTypeFilter.replaceAll(Ensemble.FileIO.supportedAudioTypes.concat(Ensemble.FileIO.supportedImageTypes).concat(Ensemble.FileIO.supportedVideoTypes));
             openPicker.pickSingleFileAsync().then(function (file) {
                 if (file) {
-                    let newFile = Ensemble.FileIO._createFileFromSrc(file);
-                    Ensemble.FileIO.retrieveMediaProperties(newFile, newFile, function (index, returnVal, uniqueId) {
-                        console.log("Picked a file.");
-                        for (prop in returnVal) {
-                            index[prop] = returnVal[prop];
-                        }
-
-                        Ensemble.FileIO._generateAccessToken(index, function (fileWithToken, filePayload) {
-                            callback(fileWithToken, filePayload);
-                        }, payload);
+                    Ensemble.FileIO.generateAccessToken(file, function () {
+                        callback(file);
                     });
-                } else {
-                    console.log("Did not pick a file.");
                 }
             });
         },

@@ -24,6 +24,13 @@
             /// <param name="time" type="Number">The time in milliseconds.</param>
         },
 
+        getCurrentTime: function () {
+            /// <summary>Returns the current playback time.</summary>
+            /// <returns type="Number">The current playback time, in milliseconds.</returns>
+            // TODO
+            return 0;
+        },
+
         ui: {
         },
 

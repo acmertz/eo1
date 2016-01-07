@@ -11,6 +11,7 @@
 
             Ensemble.Session.setCurrentPage(Ensemble.Session.PageStates.editor);
             Ensemble.Editor.TimelineMGR.init();
+            Ensemble.Editor.SelectionMGR.init();
             Ensemble.Editor.PlaybackMGR.init();
             Ensemble.Editor.PanelMGR.init();
             Ensemble.Editor.VideoCaptureMGR.init();
