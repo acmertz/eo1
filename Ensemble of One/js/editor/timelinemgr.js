@@ -6,6 +6,11 @@
         mediaComposition: new Windows.Media.Editing.MediaComposition(),
         uniqueTrackID: 0,
         uniqueClipID: 0,
+        pointerInfo: {
+            active: false,
+            nextMode: null,
+            pointerMode: null
+        },
 
         init: function () {
             /// <summary>Links all UI references.</summary>
@@ -259,6 +264,39 @@
             };
         },
 
+        startPointerTracking: function (pointerMode) {
+            /// <summary>Starts pointer tracking in the Timeline.</summary>
+            /// <param name="pointerMode" type="String">The pointer mode to start.</param>
+            if (this.pointerInfo.active) this.pointerInfo.nextMode = pointerMode;
+            else {
+                this.pointerInfo.active = true;
+                this.pointerInfo.pointerMode = pointerMode;
+                this.pointerInfo.nextMode = null;
+                this.setupPointerMode(pointerMode);
+                requestAnimationFrame(this._listeners.pointerTrackUpdate);
+            }
+        },
+
+        stopPointerTracking: function (pointerMode) {
+            /// <summary>Stops pointer tracking if tracking is currently in the specified mode.</summary>
+            /// <param name="pointerMode" type="String">The pointer mode to start.</param>
+            if (this.pointerInfo.pointerMode == pointerMode) this.pointerInfo.active = false;
+        },
+
+        setupPointerMode: function (pointerMode) {
+            /// <summary>Sets up the specified pointer tracking mode.</summary>
+            /// <param name="pointerMode" type="String">The pointer mode to set up.</param>
+        },
+
+        cleanupPointerMode: function (pointerMode) {
+            /// <summary>Cleans up the specified pointer tracking mode.</summary>
+            /// <param name="pointerMode" type="String">The pointer mode to clean up.</param>
+        },
+
+        updateTrackedPointer: function () {
+            /// <summary>Updates the UI based on the current pointer information.</summary>
+        },
+
         ui: {
             newTrackButton: null,
             trackControls: null,
@@ -271,10 +309,14 @@
             this.ui.trackContainer = document.querySelector(".timeline-track-container");
 
             this.ui.newTrackButton.addEventListener("click", this._listeners.newTrackButtonClicked);
+            this.ui.trackContainer.addEventListener("pointerenter", this._listeners.pointerEnterTimeline);
+            this.ui.trackContainer.addEventListener("pointerleave", this._listeners.pointerLeaveTimeline);
         },
 
         _cleanUI: function () {
             this.ui.newTrackButton.removeEventListener("click", this._listeners.newTrackButtonClicked);
+            this.ui.trackContainer.removeEventListener("pointerenter", this._listeners.pointerEnterTimeline);
+            this.ui.trackContainer.removeEventListener("pointerleave", this._listeners.pointerLeaveTimeline);
 
             this.ui.newTrackButton = null;
             this.ui.trackControls = null;
@@ -284,7 +326,38 @@
         _listeners: {
             newTrackButtonClicked: function (event) {
                 Ensemble.HistoryMGR.performAction(new Ensemble.Events.Action(Ensemble.Events.Action.ActionType.createTrack, null));
+            },
+
+            pointerEnterTimeline: function (event) {
+                Ensemble.Editor.TimelineMGR.startPointerTracking(Ensemble.Editor.TimelineMGR.PointerMode.hover);
+            },
+
+            pointerLeaveTimeline: function (event) {
+                Ensemble.Editor.TimelineMGR.stopPointerTracking(Ensemble.Editor.TimelineMGR.PointerMode.hover);
+            },
+
+            pointerTrackUpdate: function (event) {
+                Ensemble.Editor.TimelineMGR.updateTrackedPointer();
+                let continueTracking = Ensemble.Editor.TimelineMGR.pointerInfo.active,
+                    continueMode = Ensemble.Editor.TimelineMGR.pointerInfo.nextMode;
+
+                if (continueTracking == false || continueMode != null) {
+                    Ensemble.Editor.TimelineMGR.cleanupPointerMode(Ensemble.Editor.TimelineMGR.pointerInfo.pointerMode);
+                    Ensemble.Editor.TimelineMGR.pointerInfo.nextMode = null;
+                    if (continueMode != null) Ensemble.Editor.TimelineMGR.setupPointerMode(continueMode);
+                }
+
+                if (continueTracking) requestAnimationFrame(Ensemble.Editor.TimelineMGR._listeners.pointerTrackUpdate);
+                else {
+                    Ensemble.Editor.TimelineMGR.pointerInfo.active = false;
+                    Ensemble.Editor.TimelineMGR.pointerInfo.nextMode = null;
+                    Ensemble.Editor.TimelineMGR.pointerInfo.pointerMode = null;
+                }
             }
+        },
+
+        PointerMode: {
+            hover: "hover"
         }
     });
 })();

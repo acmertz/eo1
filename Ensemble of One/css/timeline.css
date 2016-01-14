@@ -100,6 +100,31 @@
     background-color: #f2f2f2;
 }
 
+/* Timeline cursor */
+
+.timeline-cursor {
+    height: 100%;
+    position: absolute;
+    top: 0;
+}
+
+.timeline-cursor--hover {
+    background-color: #aaa;
+    width: 1px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.timeline-cursor--hover-visible {
+    opacity: 1;
+}
+
+.timeline-cursor--playback {
+    background-color: #000;
+    width: 2px;
+}
+
 /* Volume change flyout */
 
 .flyout--editor-clip-volume__icon {
