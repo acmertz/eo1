@@ -12,7 +12,6 @@
 
         play: function () {
             /// <summary>Begins playback from the current position in the project.</summary>
-            /// <param name="callback" type="Function">Optional. The callback to execute after playback has begun.</param>
         },
 
         pause: function () {

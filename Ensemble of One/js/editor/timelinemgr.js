@@ -22,7 +22,14 @@
         unload: function () {
             /// <summary>Clears the timeline, unloads all the clips stored within it, and resets all values back to their defaults.</summary>
             this.tracks = [];
+            let allTracks = Array.from(document.querySelectorAll(".track-content")).concat(Array.from(document.querySelectorAll(".track-control"))),
+                itemCount = allTracks.length;
 
+            for (let i = 0; i < itemCount; i++) {
+                let tempTrack = allTracks[i];
+                tempTrack.parentElement.removeChild(tempTrack);
+            }
+            
             this._cleanUI();
         },
 
