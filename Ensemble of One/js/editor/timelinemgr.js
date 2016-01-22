@@ -7,9 +7,8 @@
         uniqueTrackID: 0,
         uniqueClipID: 0,
         pointerInfo: {
-            active: false,
-            nextMode: null,
-            pointerMode: null
+            hoverEvent: null,
+            hoverActive: false
         },
 
         init: function () {
@@ -264,49 +263,36 @@
             };
         },
 
-        startPointerTracking: function (pointerMode) {
-            /// <summary>Starts pointer tracking in the Timeline.</summary>
+        startPointerHoverTracking: function (event) {
+            /// <summary>Starts pointer hover tracking in the Timeline.</summary>
             /// <param name="pointerMode" type="String">The pointer mode to start.</param>
-            if (this.pointerInfo.active) this.pointerInfo.nextMode = pointerMode;
-            else {
-                this.pointerInfo.active = true;
-                this.pointerInfo.pointerMode = pointerMode;
-                this.pointerInfo.nextMode = null;
-                this.setupPointerMode(pointerMode);
-                requestAnimationFrame(this._listeners.pointerTrackUpdate);
-            }
+            this.pointerInfo.hoverActive = true;
+            this.pointerInfo.hoverEvent = event;
+            this.ui.hoverCursor.style.left = (Ensemble.Editor.TimelineMGR.pointerInfo.hoverEvent.pageX - Ensemble.Editor.TimelineMGR.ui.trackContainer.offsetLeft) + "px";
+            this.ui.hoverCursor.classList.add("timeline-cursor--hover-visible");
+            document.addEventListener("pointermove", this._listeners.singlePointerMove);
+            requestAnimationFrame(this._listeners.pointerHoverUpdate);
         },
 
-        stopPointerTracking: function (pointerMode) {
-            /// <summary>Stops pointer tracking if tracking is currently in the specified mode.</summary>
-            /// <param name="pointerMode" type="String">The pointer mode to start.</param>
-            if (this.pointerInfo.pointerMode == pointerMode) this.pointerInfo.active = false;
-        },
-
-        setupPointerMode: function (pointerMode) {
-            /// <summary>Sets up the specified pointer tracking mode.</summary>
-            /// <param name="pointerMode" type="String">The pointer mode to set up.</param>
-        },
-
-        cleanupPointerMode: function (pointerMode) {
-            /// <summary>Cleans up the specified pointer tracking mode.</summary>
-            /// <param name="pointerMode" type="String">The pointer mode to clean up.</param>
-        },
-
-        updateTrackedPointer: function () {
-            /// <summary>Updates the UI based on the current pointer information.</summary>
+        stopPointerHoverTracking: function () {
+            /// <summary>Stops hover tracking.</summary>
+            this.pointerInfo.hoverActive = false;
+            this.ui.hoverCursor.classList.remove("timeline-cursor--hover-visible");
+            document.removeEventListener("pointermove", this._listeners.singlePointerMove);
         },
 
         ui: {
             newTrackButton: null,
             trackControls: null,
-            trackContainer: null
+            trackContainer: null,
+            hoverCursor: null
         },
 
         _refreshUI: function () {
             this.ui.newTrackButton = document.querySelector(".timeline-new-track-control");
             this.ui.trackControls = document.querySelector(".timeline-track-controls");
             this.ui.trackContainer = document.querySelector(".timeline-track-container");
+            this.ui.hoverCursor = document.querySelector(".timeline-cursor--hover");
 
             this.ui.newTrackButton.addEventListener("click", this._listeners.newTrackButtonClicked);
             this.ui.trackContainer.addEventListener("pointerenter", this._listeners.pointerEnterTimeline);
@@ -321,6 +307,7 @@
             this.ui.newTrackButton = null;
             this.ui.trackControls = null;
             this.ui.trackContainer = null;
+            this.ui.hoverCursor = null;
         },
 
         _listeners: {
@@ -329,30 +316,20 @@
             },
 
             pointerEnterTimeline: function (event) {
-                Ensemble.Editor.TimelineMGR.startPointerTracking(Ensemble.Editor.TimelineMGR.PointerMode.hover);
+                if (event.pointerType != "touch") Ensemble.Editor.TimelineMGR.startPointerHoverTracking(event);
             },
 
             pointerLeaveTimeline: function (event) {
-                Ensemble.Editor.TimelineMGR.stopPointerTracking(Ensemble.Editor.TimelineMGR.PointerMode.hover);
+                if (event.pointerType != "touch") Ensemble.Editor.TimelineMGR.stopPointerHoverTracking();
             },
 
-            pointerTrackUpdate: function (event) {
-                Ensemble.Editor.TimelineMGR.updateTrackedPointer();
-                let continueTracking = Ensemble.Editor.TimelineMGR.pointerInfo.active,
-                    continueMode = Ensemble.Editor.TimelineMGR.pointerInfo.nextMode;
+            pointerHoverUpdate: function () {
+                Ensemble.Editor.TimelineMGR.ui.hoverCursor.style.left = (Ensemble.Editor.TimelineMGR.pointerInfo.hoverEvent.pageX - Ensemble.Editor.TimelineMGR.ui.trackContainer.offsetLeft) + "px";
+                if (Ensemble.Editor.TimelineMGR.pointerInfo.hoverActive) requestAnimationFrame(Ensemble.Editor.TimelineMGR._listeners.pointerHoverUpdate);
+            },
 
-                if (continueTracking == false || continueMode != null) {
-                    Ensemble.Editor.TimelineMGR.cleanupPointerMode(Ensemble.Editor.TimelineMGR.pointerInfo.pointerMode);
-                    Ensemble.Editor.TimelineMGR.pointerInfo.nextMode = null;
-                    if (continueMode != null) Ensemble.Editor.TimelineMGR.setupPointerMode(continueMode);
-                }
-
-                if (continueTracking) requestAnimationFrame(Ensemble.Editor.TimelineMGR._listeners.pointerTrackUpdate);
-                else {
-                    Ensemble.Editor.TimelineMGR.pointerInfo.active = false;
-                    Ensemble.Editor.TimelineMGR.pointerInfo.nextMode = null;
-                    Ensemble.Editor.TimelineMGR.pointerInfo.pointerMode = null;
-                }
+            singlePointerMove: function (event) {
+                Ensemble.Editor.TimelineMGR.pointerInfo.hoverEvent = event;
             }
         },
 
