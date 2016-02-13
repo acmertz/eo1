@@ -10,6 +10,7 @@
             hoverEvent: null,
             hoverActive: false
         },
+        zoomLevel: 100,
 
         init: function () {
             /// <summary>Links all UI references.</summary>
@@ -324,7 +325,9 @@
             },
 
             pointerHoverUpdate: function () {
-                Ensemble.Editor.TimelineMGR.ui.hoverCursor.style.left = (Ensemble.Editor.TimelineMGR.pointerInfo.hoverEvent.pageX - Ensemble.Editor.TimelineMGR.ui.trackContainer.offsetLeft) + "px";
+                const hoverPos = (Ensemble.Editor.TimelineMGR.pointerInfo.hoverEvent.pageX - Ensemble.Editor.TimelineMGR.ui.trackContainer.offsetLeft) + Ensemble.Editor.TimelineMGR.ui.trackContainer.scrollLeft;
+                Ensemble.Editor.TimelineMGR.ui.hoverCursor.style.left = hoverPos + "px";
+                console.log("Hovering at time " + Ensemble.Util.TimeConverter.convertTime(Ensemble.Editor.TimelineMGR.zoomLevel * hoverPos, true));
                 if (Ensemble.Editor.TimelineMGR.pointerInfo.hoverActive) requestAnimationFrame(Ensemble.Editor.TimelineMGR._listeners.pointerHoverUpdate);
             },
 

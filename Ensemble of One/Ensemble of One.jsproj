@@ -124,7 +124,6 @@
     <Content Include="js\editor\playbackmgr.js" />
     <Content Include="js\editor\selectionmgr.js" />
     <Content Include="js\editor\timelinemgr.js" />
-    <Content Include="js\editor\timelinezoommgr.js" />
     <Content Include="js\editor\track.js" />
     <Content Include="js\ensemblefile.js" />
     <Content Include="js\ensemblefolder.js" />
