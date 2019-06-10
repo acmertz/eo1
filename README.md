@@ -4,6 +4,22 @@ Ensemble of One is a multi-track video editor written in HTML5/ES2015 for Window
 
 The [WinJS](http://try.buildwinjs.com/) library is used to achieve the Windows 10 look-and-feel, as well as to provide a convention for organizing class objects and namespaces within the application. Some elements (such as the Timeline and Canvas) require custom-built UI widgets, but WinJS components are used whenever possible in order to decrease the complexity of the application.
 
+## Screenshots
+### Splash screen
+<img alt="Splash screen screenshot" width="320" src="https://user-images.githubusercontent.com/4888172/59166289-bc260000-8aed-11e9-871f-dc105234e7b0.png">
+
+### Main menu
+<img alt="Main menu screenshot" width="320" src="https://user-images.githubusercontent.com/4888172/59166321-0c04c700-8aee-11e9-9d0c-5c92b06f0034.png">
+
+### Editor
+<img alt="Editor screenshot" width="320" src="https://user-images.githubusercontent.com/4888172/59166375-a402b080-8aee-11e9-9efc-266dbadd552b.png">
+
+### Play-along media capture
+<img alt="Media capture screenshot" width="320" src="https://user-images.githubusercontent.com/4888172/59166407-e75d1f00-8aee-11e9-9796-7c9b460e09ce.png">
+
+## Installation
+Ensemble of One is a UWP app for Windows 10. Visual Studio 2017 is required to build and install this application (Microsoft dropped support for WinJS apps in Visual Studio 2019). There are no JavaScript dependencies to install, since most of the code was written in vanilla JavaScript and the few libraries that were needed were included in source control. After cloning the repository, you can open `Ensemble of One.sln` in Visual Studio and build the project.
+
 ## Code conventions
 ### Classes
 [WinJS documentation on Classes](https://msdn.microsoft.com/en-us/library/windows/apps/br229813.aspx)
