@@ -47,7 +47,7 @@
     "http-post": "~0.1.1",
     "less": "^1.7.4",
     "load-grunt-tasks": "^0.6.0",
-    "minimist": "0.2.0",
+    "minimist": "1.2.5",
     "qunitjs": "~1.14.0",
     "seed-random": "^2.2.0",
     "text-table": "~0.2.0",
